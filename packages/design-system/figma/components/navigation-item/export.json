@@ -1,5 +1,5 @@
 {
-  "description": "폴더 트리의 한 항목으로, 탐색기 NavigationPane에 쓴다.",
+  "description": "폴더 트리의 한 항목으로, 탐색기 NavigationPane에 쓴다.\n@sample-size width",
   "name": "NavigationItem",
   "nodeId": "29:427",
   "propertyDefinitions": {
@@ -60,7 +60,7 @@
         "children": [
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -100,7 +100,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -118,17 +118,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -138,7 +138,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/control/height",
         "layout": {
@@ -168,8 +168,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=collapsed,state=hover,level=1": {
@@ -203,7 +202,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -243,7 +242,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -261,17 +260,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -281,7 +280,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/control/height",
         "layout": {
@@ -311,8 +310,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=collapsed,state=hover,level=2": {
@@ -346,7 +344,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -386,7 +384,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -404,17 +402,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -424,7 +422,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/control/height",
         "layout": {
@@ -454,8 +452,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=collapsed,state=hover,level=3": {
@@ -489,7 +486,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -529,7 +526,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -547,17 +544,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -567,7 +564,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/control/height",
         "layout": {
@@ -597,8 +594,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=collapsed,state=rest,level=0": {
@@ -618,7 +614,7 @@
         "children": [
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -658,7 +654,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -676,17 +672,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -741,8 +737,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=collapsed,state=rest,level=1": {
@@ -776,7 +771,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -816,7 +811,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -834,17 +829,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -899,8 +894,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=collapsed,state=rest,level=2": {
@@ -934,7 +928,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -974,7 +968,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -992,17 +986,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -1057,8 +1051,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=collapsed,state=rest,level=3": {
@@ -1092,7 +1085,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -1132,7 +1125,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -1150,17 +1143,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -1215,8 +1208,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=collapsed,state=selected,level=0": {
@@ -1236,7 +1228,7 @@
         "children": [
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -1276,7 +1268,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -1294,17 +1286,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -1314,7 +1306,7 @@
           }
         ],
         "fills": [
-          "control-alt-fill/tertiary"
+          "color/black/6"
         ],
         "height": "size/control/height",
         "layout": {
@@ -1344,8 +1336,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=collapsed,state=selected,level=1": {
@@ -1379,7 +1370,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -1419,7 +1410,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -1437,17 +1428,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -1457,7 +1448,7 @@
           }
         ],
         "fills": [
-          "control-alt-fill/tertiary"
+          "color/black/6"
         ],
         "height": "size/control/height",
         "layout": {
@@ -1487,8 +1478,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=collapsed,state=selected,level=2": {
@@ -1522,7 +1512,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -1562,7 +1552,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -1580,17 +1570,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -1600,7 +1590,7 @@
           }
         ],
         "fills": [
-          "control-alt-fill/tertiary"
+          "color/black/6"
         ],
         "height": "size/control/height",
         "layout": {
@@ -1630,8 +1620,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=collapsed,state=selected,level=3": {
@@ -1665,7 +1654,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -1705,7 +1694,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -1723,17 +1712,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -1743,7 +1732,7 @@
           }
         ],
         "fills": [
-          "control-alt-fill/tertiary"
+          "color/black/6"
         ],
         "height": "size/control/height",
         "layout": {
@@ -1773,8 +1762,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=expanded,state=hover,level=0": {
@@ -1794,7 +1782,7 @@
         "children": [
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -1838,7 +1826,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -1856,17 +1844,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -1876,7 +1864,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/control/height",
         "layout": {
@@ -1906,8 +1894,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=expanded,state=hover,level=1": {
@@ -1941,7 +1928,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -1985,7 +1972,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -2003,17 +1990,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -2023,7 +2010,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/control/height",
         "layout": {
@@ -2053,8 +2040,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=expanded,state=hover,level=2": {
@@ -2088,7 +2074,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -2132,7 +2118,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -2150,17 +2136,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -2170,7 +2156,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/control/height",
         "layout": {
@@ -2200,8 +2186,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=expanded,state=hover,level=3": {
@@ -2235,7 +2220,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -2279,7 +2264,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -2297,17 +2282,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -2317,7 +2302,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/control/height",
         "layout": {
@@ -2347,8 +2332,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=expanded,state=rest,level=0": {
@@ -2368,7 +2352,7 @@
         "children": [
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -2412,7 +2396,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -2430,17 +2414,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -2495,8 +2479,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=expanded,state=rest,level=1": {
@@ -2530,7 +2513,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -2574,7 +2557,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -2592,17 +2575,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -2657,8 +2640,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=expanded,state=rest,level=2": {
@@ -2692,7 +2674,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -2736,7 +2718,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -2754,17 +2736,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -2819,8 +2801,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=expanded,state=rest,level=3": {
@@ -2854,7 +2835,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -2898,7 +2879,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -2916,17 +2897,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -2981,8 +2962,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=expanded,state=selected,level=0": {
@@ -3002,7 +2982,7 @@
         "children": [
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -3046,7 +3026,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -3064,17 +3044,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -3084,7 +3064,7 @@
           }
         ],
         "fills": [
-          "control-alt-fill/tertiary"
+          "color/black/6"
         ],
         "height": "size/control/height",
         "layout": {
@@ -3114,8 +3094,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=expanded,state=selected,level=1": {
@@ -3149,7 +3128,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -3193,7 +3172,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -3211,17 +3190,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -3231,7 +3210,7 @@
           }
         ],
         "fills": [
-          "control-alt-fill/tertiary"
+          "color/black/6"
         ],
         "height": "size/control/height",
         "layout": {
@@ -3261,8 +3240,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=expanded,state=selected,level=2": {
@@ -3296,7 +3274,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -3340,7 +3318,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -3358,17 +3336,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -3378,7 +3356,7 @@
           }
         ],
         "fills": [
-          "control-alt-fill/tertiary"
+          "color/black/6"
         ],
         "height": "size/control/height",
         "layout": {
@@ -3408,8 +3386,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=expanded,state=selected,level=3": {
@@ -3443,7 +3420,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -3487,7 +3464,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -3505,17 +3482,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -3525,7 +3502,7 @@
           }
         ],
         "fills": [
-          "control-alt-fill/tertiary"
+          "color/black/6"
         ],
         "height": "size/control/height",
         "layout": {
@@ -3555,8 +3532,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=none,state=hover,level=0": {
@@ -3611,7 +3587,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -3629,17 +3605,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -3649,7 +3625,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/control/height",
         "layout": {
@@ -3679,8 +3655,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=none,state=hover,level=1": {
@@ -3749,7 +3724,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -3767,17 +3742,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -3787,7 +3762,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/control/height",
         "layout": {
@@ -3817,8 +3792,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=none,state=hover,level=2": {
@@ -3887,7 +3861,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -3905,17 +3879,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -3925,7 +3899,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/control/height",
         "layout": {
@@ -3955,8 +3929,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=none,state=hover,level=3": {
@@ -4025,7 +3998,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -4043,17 +4016,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -4063,7 +4036,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/control/height",
         "layout": {
@@ -4093,8 +4066,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=none,state=rest,level=0": {
@@ -4149,7 +4121,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -4167,17 +4139,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -4232,8 +4204,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=none,state=rest,level=1": {
@@ -4302,7 +4273,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -4320,17 +4291,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -4385,8 +4356,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=none,state=rest,level=2": {
@@ -4455,7 +4425,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -4473,17 +4443,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -4538,8 +4508,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=none,state=rest,level=3": {
@@ -4608,7 +4577,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -4626,17 +4595,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -4691,8 +4660,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=none,state=selected,level=0": {
@@ -4747,7 +4715,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -4765,17 +4733,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -4785,7 +4753,7 @@
           }
         ],
         "fills": [
-          "control-alt-fill/tertiary"
+          "color/black/6"
         ],
         "height": "size/control/height",
         "layout": {
@@ -4815,8 +4783,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=none,state=selected,level=1": {
@@ -4885,7 +4852,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -4903,17 +4870,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -4923,7 +4890,7 @@
           }
         ],
         "fills": [
-          "control-alt-fill/tertiary"
+          "color/black/6"
         ],
         "height": "size/control/height",
         "layout": {
@@ -4953,8 +4920,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=none,state=selected,level=2": {
@@ -5023,7 +4989,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -5041,17 +5007,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -5061,7 +5027,7 @@
           }
         ],
         "fills": [
-          "control-alt-fill/tertiary"
+          "color/black/6"
         ],
         "height": "size/control/height",
         "layout": {
@@ -5091,8 +5057,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     },
     "expand=none,state=selected,level=3": {
@@ -5161,7 +5126,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -5179,17 +5144,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -5199,7 +5164,7 @@
           }
         ],
         "fills": [
-          "control-alt-fill/tertiary"
+          "color/black/6"
         ],
         "height": "size/control/height",
         "layout": {
@@ -5229,8 +5194,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/navigation-item/width"
+        "type": "COMPONENT"
       }
     }
   }

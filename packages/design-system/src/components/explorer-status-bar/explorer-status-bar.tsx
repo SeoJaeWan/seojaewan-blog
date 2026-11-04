@@ -12,8 +12,8 @@ type ExplorerStatusBarProps = Omit<ComponentProps<'div'>, 'children'> & {
   itemCount?: string;
   /** 피그마 TEXT 속성 Selection. 선택 정보 글자다 */
   selection?: string;
-  /** 피그마 BOOLEAN 속성 Show selection. 선택 정보를 보일지 정한다 */
-  showSelection?: boolean;
+  /** 피그마 BOOLEAN 속성 Has selection. 선택 정보를 보일지 정한다 */
+  hasSelection?: boolean;
   /** 자세히 보기 버튼의 접근성 이름 */
   detailsViewLabel?: string;
   /** 큰 아이콘 보기 버튼의 접근성 이름 */
@@ -35,7 +35,7 @@ export function ExplorerStatusBar(props: ExplorerStatusBarProps): JSX.Element {
     device = 'desktop',
     itemCount = '항목 개수',
     selection = '선택 정보',
-    showSelection: isSelectionShown = true,
+    hasSelection = true,
     detailsViewLabel = '자세히',
     largeIconsViewLabel = '큰 아이콘',
     onDetailsView: handleDetailsView,
@@ -52,9 +52,7 @@ export function ExplorerStatusBar(props: ExplorerStatusBarProps): JSX.Element {
       )}
     >
       <span className="shrink-shrink-none whitespace-nowrap">{itemCount}</span>
-      {isSelectionShown && (
-        <span className="shrink-shrink-none whitespace-nowrap">{selection}</span>
-      )}
+      {hasSelection && <span className="shrink-shrink-none whitespace-nowrap">{selection}</span>}
       <div className="h-size-status-bar-spacer-height min-w-size-none flex-flex-fill" />
       {device === 'desktop' && (
         <>
