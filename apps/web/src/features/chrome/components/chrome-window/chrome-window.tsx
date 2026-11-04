@@ -52,7 +52,7 @@ type WindowFrameControlProps = Pick<
 // 도구 모음에 그대로 넘기는 이동 버튼 속성이다.
 type ToolbarProps = Pick<
   ComponentProps<typeof BrowserToolbar>,
-  'backDisabled' | 'forwardDisabled' | 'onBack' | 'onForward' | 'onRefresh' | 'addressBar'
+  'canGoBack' | 'canGoForward' | 'onBack' | 'onForward' | 'onRefresh' | 'addressBar'
 >;
 
 type ChromeWindowProps = WindowFrameControlProps &
@@ -116,8 +116,8 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
     onTabClose,
     onTabMove,
     onNewTab: handleNewTab,
-    backDisabled: isBackDisabled,
-    forwardDisabled: isForwardDisabled,
+    canGoBack,
+    canGoForward,
     onBack: handleBack,
     onForward: handleForward,
     onRefresh: handleRefresh,
@@ -210,8 +210,8 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
       addressBar={addressBar}
       showForward={isDesktop}
       showRefresh={isDesktop}
-      backDisabled={isBackDisabled}
-      forwardDisabled={isForwardDisabled}
+      canGoBack={canGoBack}
+      canGoForward={canGoForward}
       onBack={handleBack}
       onForward={handleForward}
       onRefresh={handleRefresh}
