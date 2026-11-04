@@ -24,7 +24,7 @@ type FigmaArgs = {
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 피그마 조립처럼 창 자리는 비우고, 작업 표시줄에 고정 앱(File Explorer, Chrome) 버튼을 표시 없이 둔다.
-// 화면 크기는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 크기(size/screen/*)로 감싼다.
+// 화면 크기는 쓰는 곳이 정하므로 FigmaFrame이 export.json의 화면 크기 숫자로 감싼다.
 // 화면 너비(1920)가 캡처 화면 너비보다 넓어, 여백 없이(fullscreen) 그린다.
 const meta = {
   title: 'Patterns/Desktop/Scene',
