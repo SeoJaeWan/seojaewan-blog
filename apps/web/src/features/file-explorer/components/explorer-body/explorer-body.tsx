@@ -1127,7 +1127,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
         }
         itemCount={`항목 ${String(children.length)}개`}
         selection={`${String(selectedIds.length)}개 항목 선택함`}
-        showSelection={selectedIds.length > 0}
+        hasSelection={selectedIds.length > 0}
         onDetailsView={() => {
           changeIconView('details');
         }}

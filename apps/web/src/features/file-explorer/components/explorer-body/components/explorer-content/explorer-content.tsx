@@ -47,7 +47,7 @@ type ExplorerContentProps = Pick<
 > &
   Pick<
     StatusBarProps,
-    'itemCount' | 'selection' | 'showSelection' | 'onDetailsView' | 'onLargeIconsView'
+    'itemCount' | 'selection' | 'hasSelection' | 'onDetailsView' | 'onLargeIconsView'
   > & {
     /** 피그마 Device. mobile은 탐색 창과 나눔선 없이 항목만 보인다 */
     device?: ExplorerContentDevice;
@@ -95,7 +95,7 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
     children,
     itemCount,
     selection,
-    showSelection: isSelectionShown,
+    hasSelection: isSelectionShown,
     onBack: handleBack,
     backDisabled: isBackDisabled,
     forwardDisabled: isForwardDisabled,
@@ -182,7 +182,7 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
         device={device}
         itemCount={itemCount}
         selection={selection}
-        showSelection={isSelectionShown}
+        hasSelection={isSelectionShown}
         onDetailsView={handleDetailsView}
         onLargeIconsView={handleLargeIconsView}
       />
