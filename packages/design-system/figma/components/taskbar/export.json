@@ -1,5 +1,5 @@
 {
-  "description": "화면 아래 작업 표시줄의 재질 바탕으로, Taskbar/Default 조립에 쓴다.",
+  "description": "화면 아래 작업 표시줄의 재질 바탕으로, Taskbar/Default 조립에 쓴다.\n@sample-size width",
   "name": "Taskbar",
   "nodeId": "26:281",
   "propertyDefinitions": {
@@ -109,7 +109,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/secondary",
+                      "color": "color/black/61",
                       "path": "icons/ic_fluent_search_16_regular"
                     },
                     "component": "ic_fluent_search_16_regular",
@@ -128,7 +128,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/secondary"
+                      "color/black/61"
                     ],
                     "name": "label",
                     "size": {
@@ -146,7 +146,7 @@
                       "segments": [
                         {
                           "characters": "검색",
-                          "fill": "text-fill/secondary",
+                          "fill": "color/black/61",
                           "textStyle": "Hangul/Body"
                         }
                       ],
@@ -157,7 +157,7 @@
                 ],
                 "component": "SearchBox",
                 "fills": [
-                  "control-fill/default"
+                  "color/white/70"
                 ],
                 "height": "size/control/height",
                 "layout": {
@@ -174,11 +174,11 @@
                 },
                 "name": "검색",
                 "properties": {
-                  "Appearance": "Taskbar",
                   "Filled": "False",
                   "Placeholder": "검색",
                   "State": "Rest",
-                  "Value": "검색어"
+                  "Value": "검색어",
+                  "Variant": "Taskbar"
                 },
                 "radius": [
                   "radius/circular",
@@ -201,7 +201,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "control-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": false,
                 "type": "INSTANCE",
@@ -358,7 +358,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "time",
                     "size": {
@@ -376,12 +376,12 @@
                       "segments": [
                         {
                           "characters": "오후",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         },
                         {
                           "characters": " 3:24",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         }
                       ],
@@ -391,7 +391,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "date",
                     "size": {
@@ -409,7 +409,7 @@
                       "segments": [
                         {
                           "characters": "2026-10-20",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         }
                       ],
@@ -510,11 +510,10 @@
           0
         ],
         "strokes": [
-          "card-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": false,
-        "type": "COMPONENT",
-        "width": "size/taskbar/width"
+        "type": "COMPONENT"
       }
     }
   }
