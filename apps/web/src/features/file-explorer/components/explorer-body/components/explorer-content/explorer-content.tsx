@@ -33,9 +33,9 @@ type ExplorerContentProps = Pick<
   | 'locationIcon'
   | 'searchPlaceholder'
   | 'onBack'
-  | 'backDisabled'
-  | 'forwardDisabled'
-  | 'upDisabled'
+  | 'isBackDisabled'
+  | 'isForwardDisabled'
+  | 'isUpDisabled'
   | 'onForward'
   | 'onUp'
   | 'onRefresh'
@@ -97,9 +97,9 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
     selection,
     hasSelection: isSelectionShown,
     onBack: handleBack,
-    backDisabled: isBackDisabled,
-    forwardDisabled: isForwardDisabled,
-    upDisabled: isUpDisabled,
+    isBackDisabled,
+    isForwardDisabled,
+    isUpDisabled,
     onForward: handleForward,
     onUp: handleUp,
     onRefresh: handleRefresh,
@@ -135,9 +135,9 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
         searchPlaceholder={searchPlaceholder}
         searchValue={searchValue}
         onBack={handleBack}
-        backDisabled={isBackDisabled}
-        forwardDisabled={isForwardDisabled}
-        upDisabled={isUpDisabled}
+        isBackDisabled={isBackDisabled}
+        isForwardDisabled={isForwardDisabled}
+        isUpDisabled={isUpDisabled}
         onForward={handleForward}
         onUp={handleUp}
         onRefresh={handleRefresh}
