@@ -29,7 +29,8 @@ _codocs:
   함수 안의 `const`는 초기값과 상관없이 camelCase다.
 
   우리 Props 타입에 선언하는 boolean 속성도 모두 `is`·`has`·`can`·`should`로 시작한다(`isSelected`, `isActive`, `isOpen`, `isExpanded`, `isCurrent`). lint(`naming-convention`)가 Props 타입의 boolean 속성도 검사한다. Toc·Scrollbar의 펼침도 `state` 문자열이 아니라 `isExpanded` boolean으로 받는다. 피그마 불리언 속성 `Has …`는 `has…` prop이 된다([[컴포넌트 목록:속성 이름]]).
-  HTML·Base UI에서 이어받는 표준 이름(`disabled`, `checked`, `type` 등)은 바꿀 수 없어 그대로 쓴다.
+  `ComponentProps<...>`로 받아 `...rest`로 그대로 흘려보내는 HTML·Base UI 표준 이름(`disabled`, `type` 등)만 그대로 쓴다.
+  우리 Props 타입에 직접 선언한 boolean은 표준 이름과 같아도 접두어를 붙이고(`checked` → `isChecked`), 안쪽 요소나 Base UI에 넘길 때만 표준 이름으로 바꿔 넘긴다(Checkbox `isChecked` → `aria-checked={isChecked}`).
 
   예외: 스토리 파일(`*.stories.tsx`)에서 내보내는 모듈 최상위 `const`는 PascalCase도 쓸 수 있다(예: `export const Figma`). `export default`로 내보내는 `meta`는 camelCase 그대로다. Storybook CSF는 export 이름이 스토리 이름이 되고 PascalCase가 Storybook의 관례이기 때문이다. 스토리 파일의 다른 이름은 위 규칙을 그대로 따른다.
 함수: |

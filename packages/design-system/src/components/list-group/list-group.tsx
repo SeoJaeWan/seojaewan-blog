@@ -4,13 +4,13 @@ import { cn } from '../../cn';
 import { SectionHeader } from '../section-header/section-header';
 
 type ListGroupProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 Show header 속성. 위쪽 머리글을 보일지 정한다 */
-  showHeader?: boolean;
+  /** 피그마 Has header 속성. 위쪽 머리글을 보일지 정한다 */
+  hasHeader?: boolean;
   /** 머리글(피그마 `header` SectionHeader 인스턴스)의 Label. 쓰는 곳마다 묶음 이름이 다르다 */
   label?: string;
   /** 머리글을 눌렀을 때. 넘기면 머리글이 버튼이 된다(SectionHeader에 넘긴다) */
   onHeaderClick?: () => void;
-  /** 피그마 `items` 슬롯. 목록 항목을 세로로 넣는다 */
+  /** 피그마 `Items` 슬롯. 목록 항목을 세로로 넣는다 */
   children?: ReactNode;
 };
 
@@ -22,7 +22,7 @@ type ListGroupProps = Omit<ComponentProps<'div'>, 'children'> & {
  */
 export function ListGroup(props: ListGroupProps): JSX.Element {
   const {
-    showHeader: hasHeader = true,
+    hasHeader = true,
     label,
     onHeaderClick: handleHeaderClick,
     children,
