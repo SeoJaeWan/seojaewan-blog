@@ -43,7 +43,7 @@ const meta = {
     <div role="tree" aria-label="탐색 창">
       <NavigationItem
         expand={args.expand}
-        selected={args.state === 'selected'}
+        isSelected={args.state === 'selected'}
         level={Number(args.level) as 0 | 1 | 2 | 3}
         label={args.label}
         icon={<img src={folderIcon} alt="" />}
@@ -115,11 +115,11 @@ export const Expandable: Story = {
 };
 
 // @codocs [[컴포넌트 목록:Windows 화면 요소]]
-/** selected면 선택된 항목이다 */
+/** isSelected면 선택된 항목이다 */
 export const Selected: Story = {
   render: () => (
     <TreeFrame>
-      <NavigationItem selected label="문서" icon={<i />} />
+      <NavigationItem isSelected label="문서" icon={<i />} />
     </TreeFrame>
   ),
   play: async ({ canvas }) => {
