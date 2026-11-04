@@ -13,8 +13,8 @@ type FigmaArgs = {
   message: string;
   /** 피그마 TEXT 속성 Code */
   code: string;
-  /** 피그마 BOOLEAN 속성 Show button */
-  showButton: boolean;
+  /** 피그마 BOOLEAN 속성 Has button */
+  hasButton: boolean;
   /** 동작 스토리가 호출 횟수를 확인하려고 받는다 */
   onReload?: ComponentProps<typeof EmptyState>['onReload'];
 };
@@ -22,12 +22,12 @@ type FigmaArgs = {
 const meta = {
   title: 'Components/EmptyState',
   // 글자는 피그마 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
-  args: { heading: '제목', message: '메시지 내용', code: '오류 코드', showButton: true },
+  args: { heading: '제목', message: '메시지 내용', code: '오류 코드', hasButton: true },
   argTypes: {
     heading: { control: 'text' },
     message: { control: 'text' },
     code: { control: 'text' },
-    showButton: { control: 'boolean' },
+    hasButton: { control: 'boolean' },
   },
   // EmptyState는 너비를 갖지 않고 쓰는 곳이 정한다. FigmaFrame이 피그마 원본의 미리보기 너비로 감싼다.
   decorators: [figmaFrame(emptyStateExport)],
@@ -38,7 +38,7 @@ const meta = {
         heading={args.heading}
         message={args.message}
         code={args.code}
-        showButton={args.showButton}
+        hasButton={args.hasButton}
         onReload={handleReload}
       />
     );
@@ -76,10 +76,10 @@ export const Default: Story = {
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 export const WithoutButton: Story = {
-  args: { showButton: false },
+  args: { hasButton: false },
   play: async ({ canvasElement, step }) => {
     // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-    await step('showButton=false면 버튼을 그리지 않는다', async () => {
+    await step('hasButton=false면 버튼을 그리지 않는다', async () => {
       await expect(within(canvasElement).queryByRole('button')).not.toBeInTheDocument();
     });
   },
