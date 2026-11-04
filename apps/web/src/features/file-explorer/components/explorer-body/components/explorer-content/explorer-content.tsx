@@ -5,6 +5,7 @@ import {
   ExplorerAddressRow,
   ExplorerCommandBar,
   ExplorerStatusBar,
+  LayerSurface,
   NavigationPane,
   ScrollArea,
 } from '@seojaewan/design-system';
@@ -78,7 +79,7 @@ type ExplorerContentProps = Pick<
 
 /**
  * 탐색기 창의 본문(피그마 조립 `Explorer/Content`)을 그린다. 주소 줄, 명령 막대, 탐색 창·나눔선·항목 자리, 상태 줄을
- * 위에서부터 놓는다. 자리마다 들어갈 내용은 쓰는 쪽(`Window/Explorer`)이 넣고, 크기도 쓰는 쪽이 정한다.
+ * 위에서부터 놓는다. 탐색 창·나눔선·항목 자리는 카드 바탕(LayerSurface) 위에 가로로 놓는다. 자리마다 들어갈 내용은 쓰는 쪽(`Window/Explorer`)이 넣고, 크기도 쓰는 쪽이 정한다.
  * @codocs [[디자인 시스템:조립]]
  * @param props
  */
@@ -148,7 +149,7 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
         {path}
       </ExplorerAddressRow>
       <ExplorerCommandBar>{commands}</ExplorerCommandBar>
-      <div className="flex min-h-size-none flex-flex-fill overflow-clip border-t-stroke-width-default border-color-black-6 bg-color-white-50">
+      <LayerSurface className="min-h-size-none flex-flex-fill">
         {isDesktop && (
           <>
             {/* 폴더 트리가 길면 세로로 스크롤한다. */}
@@ -176,7 +177,7 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
             </div>,
           )}
         </ScrollArea>
-      </div>
+      </LayerSurface>
       <ExplorerStatusBar
         device={device}
         itemCount={itemCount}

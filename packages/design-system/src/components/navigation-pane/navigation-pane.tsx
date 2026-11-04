@@ -3,7 +3,7 @@ import type { ComponentProps, JSX, ReactNode } from 'react';
 import { cn } from '../../cn';
 
 type NavigationPaneProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 `items` 슬롯. 폴더 트리의 NavigationItem을 세로로 넣는다 */
+  /** 피그마 `Items` 슬롯. 폴더 트리의 NavigationItem을 세로로 넣는다 */
   children?: ReactNode;
 };
 
