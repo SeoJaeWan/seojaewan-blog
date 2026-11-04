@@ -70,10 +70,10 @@ export const Default: PlainStory = {
 };
 
 // @codocs [[Notion 블록:모양]]
-/** defaultExpanded로 펼친 채 시작한다 */
+/** isDefaultExpanded로 펼친 채 시작한다 */
 export const Open: PlainStory = {
   render: () => (
-    <Toggle defaultExpanded>
+    <Toggle isDefaultExpanded>
       <p>본문</p>
     </Toggle>
   ),

@@ -289,7 +289,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
             key={index}
             className="w-full"
             title={renderRichText(block.richText)}
-            defaultExpanded={isTopLevel && expandedToggleIndexes.includes(index)}
+            isDefaultExpanded={isTopLevel && expandedToggleIndexes.includes(index)}
           >
             {renderBlocks(block.children ?? [], depth + 1)}
           </Toggle>
