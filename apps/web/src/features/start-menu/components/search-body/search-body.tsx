@@ -209,14 +209,14 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
           meta={cardItem.date === undefined ? cardKindLabel : `${cardKindLabel} · ${cardItem.date}`}
         >
           <MenuItem
-            standalone
+            isStandalone
             label="열기"
             icon="icons/ic_fluent_open_20_regular.svg"
             onClick={handleOpenCardItem}
           />
           {canCopyLink && (
             <MenuItem
-              standalone
+              isStandalone
               label="링크 복사"
               icon="icons/ic_fluent_link_20_regular.svg"
               onClick={handleCopyCardItemLink}

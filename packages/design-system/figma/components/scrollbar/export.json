@@ -1,5 +1,5 @@
 {
-  "description": "얇은 스크롤 막대로, 넘치는 영역의 오른쪽(가로 막대는 아래쪽)에 겹쳐 놓아 스크롤 위치를 보여 줄 때 쓴다.",
+  "description": "얇은 스크롤 막대로, 넘치는 영역의 오른쪽(가로 막대는 아래쪽)에 겹쳐 놓아 스크롤 위치를 보여 줄 때 쓴다.\n@sample-size height",
   "name": "Scrollbar",
   "nodeId": "16:137",
   "propertyDefinitions": {
@@ -37,7 +37,7 @@
         "children": [
           {
             "asset": {
-              "color": "control-strong-fill/default",
+              "color": "color/black/45",
               "path": "icons/ic_fluent_chevron_down_16_regular"
             },
             "component": "ic_fluent_chevron_down_16_regular",
@@ -64,7 +64,7 @@
               "vertical": "MIN"
             },
             "fills": [
-              "control-strong-fill/default"
+              "color/black/45"
             ],
             "height": "size/scrollbar/thumb-length",
             "name": "thumb",
@@ -87,7 +87,7 @@
           },
           {
             "asset": {
-              "color": "control-strong-fill/default",
+              "color": "color/black/45",
               "path": "icons/ic_fluent_chevron_down_16_regular"
             },
             "component": "ic_fluent_chevron_down_16_regular",
@@ -107,7 +107,6 @@
         ],
         "effectStyle": "Material/Acrylic",
         "fillStyle": "Material/Acrylic Default",
-        "height": "size/scrollbar/length",
         "layout": {
           "counterAlign": "CENTER",
           "gap": "spacing/none",
@@ -155,7 +154,7 @@
         "children": [
           {
             "asset": {
-              "color": "control-strong-fill/default",
+              "color": "color/black/45",
               "path": "icons/ic_fluent_chevron_down_16_regular"
             },
             "component": "ic_fluent_chevron_down_16_regular",
@@ -182,7 +181,7 @@
               "vertical": "MIN"
             },
             "fills": [
-              "control-strong-fill/default"
+              "color/black/45"
             ],
             "height": "size/scrollbar/thumb-length",
             "name": "thumb",
@@ -205,7 +204,7 @@
           },
           {
             "asset": {
-              "color": "control-strong-fill/default",
+              "color": "color/black/45",
               "path": "icons/ic_fluent_chevron_down_16_regular"
             },
             "component": "ic_fluent_chevron_down_16_regular",
@@ -224,7 +223,6 @@
           }
         ],
         "fillStyle": "Material/Fallback/Acrylic Default",
-        "height": "size/scrollbar/length",
         "layout": {
           "counterAlign": "CENTER",
           "gap": "spacing/none",
@@ -276,7 +274,7 @@
               "vertical": "MIN"
             },
             "fills": [
-              "control-strong-fill/default"
+              "color/black/45"
             ],
             "height": "size/scrollbar/thumb-length",
             "name": "thumb",
@@ -298,7 +296,6 @@
             "width": "size/scrollbar/thumb-rest"
           }
         ],
-        "height": "size/scrollbar/length",
         "layout": {
           "counterAlign": "CENTER",
           "gap": "spacing/none",
@@ -344,7 +341,7 @@
               "vertical": "MIN"
             },
             "fills": [
-              "control-strong-fill/default"
+              "color/black/45"
             ],
             "height": "size/scrollbar/thumb-length",
             "name": "thumb",
@@ -366,7 +363,6 @@
             "width": "size/scrollbar/thumb-rest"
           }
         ],
-        "height": "size/scrollbar/length",
         "layout": {
           "counterAlign": "CENTER",
           "gap": "spacing/none",

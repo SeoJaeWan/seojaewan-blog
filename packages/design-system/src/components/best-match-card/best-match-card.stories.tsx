@@ -9,8 +9,8 @@ const meta = {
   // 제목·부가 정보는 피그마 TEXT 속성의 기본값이라 넘기지 않는다. 아이콘은 피그마 Icon의 기본 인스턴스다.
   render: () => (
     <BestMatchCard icon={<ImageAsset name="images/file-document" />}>
-      <MenuItem standalone label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
-      <MenuItem standalone label="링크 복사" icon="icons/ic_fluent_link_20_regular.svg" />
+      <MenuItem isStandalone label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
+      <MenuItem isStandalone label="링크 복사" icon="icons/ic_fluent_link_20_regular.svg" />
     </BestMatchCard>
   ),
 } satisfies Meta;

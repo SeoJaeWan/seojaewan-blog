@@ -173,7 +173,7 @@ export function getExplorerWindowParts(variant: ExplorerWindowVariant): Explorer
           <BreadcrumbItem
             key={label}
             label={label}
-            current={isCurrent}
+            isCurrent={isCurrent}
             showSeparator={!isCurrent}
             className="shrink-shrink-none"
           />
