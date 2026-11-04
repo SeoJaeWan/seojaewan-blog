@@ -31,7 +31,7 @@ export type GridPoint = {
 
 /** 아이콘 칸 하나의 크기(px). 아이콘(FileItem) 크기와 아이콘 사이 간격이다 */
 type CellGeometry = {
-  /** 아이콘 너비. FileItem `Surface=Desktop`의 View별 너비다 */
+  /** 아이콘 너비. FileItem `Surface=Desktop`의 Size별 너비다 */
   itemWidth: number;
   /** 이름 한 줄인 아이콘 높이. 위아래 여백 4씩 + 아이콘 + 간격 2 + 글자 한 줄 16이다 */
   itemHeight: number;
@@ -43,7 +43,7 @@ export const GRID_PADDING = 8;
 /** 아이콘 사이 간격(피그마 icons 프레임의 gap 16) */
 export const GRID_GAP = 16;
 
-// FileItem `Surface=Desktop`의 View별 크기다. 너비는 FileItem이 정한 값(112·76·76),
+// FileItem `Surface=Desktop`의 Size별 크기다. 너비는 FileItem이 정한 값(112·76·76),
 // 높이는 위아래 여백(4+4)과 아이콘(96·48·32), 이름과의 간격(2), caption 글자 한 줄(16)을 더한 값이다.
 // 이름이 두 줄이면 아이콘이 아래 간격만큼 길어지지만 칸은 그대로다(Windows처럼 칸은 일정하다).
 const cellGeometries = {

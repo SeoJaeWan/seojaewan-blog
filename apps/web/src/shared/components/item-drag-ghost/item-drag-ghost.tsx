@@ -22,8 +22,8 @@ type ItemDragGhostProps = {
   items: readonly ItemDragGhostItem[];
   /** 복제본의 FileItem Surface. 바탕화면 아이콘이면 desktop, 탐색기 항목이면 explorer다 */
   surface: NonNullable<ComponentProps<typeof FileItem>['surface']>;
-  /** 복제본의 FileItem View */
-  view: NonNullable<ComponentProps<typeof FileItem>['view']>;
+  /** 복제본의 FileItem Size */
+  view: NonNullable<ComponentProps<typeof FileItem>['size']>;
   /** 누른 자리에서 움직인 거리(px) */
   delta: PointerPoint;
   /** 지금 포인터 자리(화면 기준) */
@@ -57,10 +57,10 @@ export function ItemDragGhost(props: ItemDragGhostProps): JSX.Element {
           <FileItem
             key={item.id}
             surface={surface}
-            view={view}
+            size={view}
             name={item.name}
             icon={item.icon}
-            cut
+            isCut
             aria-hidden="true"
             className="absolute"
             style={{ left: item.origin.x + delta.x, top: item.origin.y + delta.y }}
