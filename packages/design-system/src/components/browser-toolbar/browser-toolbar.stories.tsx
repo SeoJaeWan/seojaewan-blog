@@ -92,30 +92,27 @@ export const WithUrl: Story = {
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 export const WithoutForwardRefresh: Story = {
-  args: { showForward: false, showRefresh: false },
+  args: { hasForward: false, hasRefresh: false },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-    await step(
-      'showForward·showRefresh가 false면 앞으로·새로고침 버튼을 그리지 않는다',
-      async () => {
-        await expect(canvas.queryByRole('button', { name: '앞으로' })).not.toBeInTheDocument();
-        await expect(canvas.queryByRole('button', { name: '새로고침' })).not.toBeInTheDocument();
-        await expect(canvas.getByRole('button', { name: '뒤로' })).toBeInTheDocument();
-      },
-    );
+    await step('hasForward·hasRefresh가 false면 앞으로·새로고침 버튼을 그리지 않는다', async () => {
+      await expect(canvas.queryByRole('button', { name: '앞으로' })).not.toBeInTheDocument();
+      await expect(canvas.queryByRole('button', { name: '새로고침' })).not.toBeInTheDocument();
+      await expect(canvas.getByRole('button', { name: '뒤로' })).toBeInTheDocument();
+    });
   },
 };
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 export const Disabled: Story = {
-  args: { backDisabled: true, forwardDisabled: true },
+  args: { canGoBack: false, canGoForward: false },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-    await step('backDisabled·forwardDisabled면 뒤로·앞으로 버튼이 비활성이다', async () => {
+    await step('canGoBack·canGoForward가 false면 뒤로·앞으로 버튼이 비활성이다', async () => {
       await expect(canvas.getByRole('button', { name: '뒤로' })).toBeDisabled();
       await expect(canvas.getByRole('button', { name: '앞으로' })).toBeDisabled();
       await expect(canvas.getByRole('button', { name: '새로고침' })).toBeEnabled();

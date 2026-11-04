@@ -3,7 +3,7 @@
   "name": "DetailsHeader",
   "nodeId": "870:9324",
   "propertyDefinitions": {
-    "Show location": {
+    "Has location": {
       "default": false,
       "type": "BOOLEAN"
     },
@@ -34,7 +34,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "label",
                 "size": {
@@ -52,7 +52,7 @@
                   "segments": [
                     {
                       "characters": "이름",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -62,7 +62,7 @@
               },
               {
                 "asset": {
-                  "color": "text-fill/secondary",
+                  "color": "color/black/61",
                   "path": "icons/ic_fluent_chevron_down_16_regular"
                 },
                 "component": "ic_fluent_chevron_down_16_regular",
@@ -119,7 +119,7 @@
               0
             ],
             "strokes": [
-              "divider-stroke/default"
+              "color/black/8"
             ],
             "strokesIncludedInLayout": true,
             "type": "INSTANCE",
@@ -129,7 +129,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "label",
                 "size": {
@@ -147,17 +147,17 @@
                   "segments": [
                     {
                       "characters": "수정한",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Caption"
                     },
                     {
                       "characters": "날짜",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -201,7 +201,7 @@
               0
             ],
             "strokes": [
-              "divider-stroke/default"
+              "color/black/8"
             ],
             "strokesIncludedInLayout": true,
             "type": "INSTANCE",
@@ -211,7 +211,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "label",
                 "size": {
@@ -229,7 +229,7 @@
                   "segments": [
                     {
                       "characters": "유형",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -273,7 +273,7 @@
               0
             ],
             "strokes": [
-              "divider-stroke/default"
+              "color/black/8"
             ],
             "strokesIncludedInLayout": true,
             "type": "INSTANCE",
@@ -321,7 +321,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "label",
                 "size": {
@@ -339,7 +339,7 @@
                   "segments": [
                     {
                       "characters": "이름",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -349,7 +349,7 @@
               },
               {
                 "asset": {
-                  "color": "text-fill/secondary",
+                  "color": "color/black/61",
                   "path": "icons/ic_fluent_chevron_down_16_regular"
                 },
                 "component": "ic_fluent_chevron_down_16_regular",
@@ -406,7 +406,7 @@
               0
             ],
             "strokes": [
-              "divider-stroke/default"
+              "color/black/8"
             ],
             "strokesIncludedInLayout": true,
             "type": "INSTANCE",
@@ -416,7 +416,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "label",
                 "size": {
@@ -434,7 +434,7 @@
                   "segments": [
                     {
                       "characters": "원래 위치",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -478,7 +478,7 @@
               0
             ],
             "strokes": [
-              "divider-stroke/default"
+              "color/black/8"
             ],
             "strokesIncludedInLayout": true,
             "type": "INSTANCE",
@@ -488,7 +488,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "label",
                 "size": {
@@ -506,7 +506,7 @@
                   "segments": [
                     {
                       "characters": "삭제한 날짜",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -550,7 +550,7 @@
               0
             ],
             "strokes": [
-              "divider-stroke/default"
+              "color/black/8"
             ],
             "strokesIncludedInLayout": true,
             "type": "INSTANCE",

@@ -8,12 +8,6 @@ import { DEFAULT_EXPLORER_VIEW } from '@/shared/utils/workspace-rules/workspace-
 
 import { getEmptyMenuEntries } from './empty-menu-entries';
 
-// 피그마 Submenu 변형마다 펼친 하위 메뉴 항목의 이름이다.
-const OPEN_SUBMENUS = { none: undefined, view: '보기', sort: '정렬 기준' } as const;
-
-// 피그마 Menu/RecycleBinEmpty Submenu 변형마다 펼친 하위 메뉴 항목의 이름이다.
-const RECYCLE_BIN_OPEN_SUBMENUS = { none: undefined, sort: '정렬 기준' } as const;
-
 /**
  * 피그마 탐색기 빈 곳 메뉴의 상태: 기본 보기(보통 아이콘, 이름 오름차순), 붙여넣기 가능, 휴지통이 참
  * @param isRecycleBin 휴지통 보기인지
@@ -35,25 +29,14 @@ export function emptyMenuOptions(isRecycleBin: boolean): Parameters<typeof getEm
   };
 }
 
-/**
- * 피그마 Menu/ExplorerEmpty: 탐색기 빈 곳 우클릭. 펼친 하위 메뉴(Submenu)에 따라 항목이 달라진다
- * @param submenu 펼친 하위 메뉴
- * @returns 메뉴 항목
- */
-export function menuExplorerEmpty(submenu: keyof typeof OPEN_SUBMENUS): readonly MenuPopupEntry[] {
-  return previewMenu(getEmptyMenuEntries(emptyMenuOptions(false)), OPEN_SUBMENUS[submenu]);
-}
+/** 실제 탐색기 빈 곳 메뉴 항목. 하위 메뉴가 열리는 `play` 스토리가 쓴다 */
+export const menuExplorerEmptyLive = getEmptyMenuEntries(emptyMenuOptions(false));
 
-/**
- * 피그마 Menu/RecycleBinEmpty: 탐색기 휴지통 빈 곳 우클릭. 펼친 하위 메뉴(Submenu)에 따라 항목이 달라진다
- * @param submenu 펼친 하위 메뉴
- * @returns 메뉴 항목
- */
-export function menuRecycleBinEmpty(
-  submenu: keyof typeof RECYCLE_BIN_OPEN_SUBMENUS,
-): readonly MenuPopupEntry[] {
-  return previewMenu(
-    getEmptyMenuEntries(emptyMenuOptions(true)),
-    RECYCLE_BIN_OPEN_SUBMENUS[submenu],
-  );
-}
+/** 실제 휴지통 빈 곳 메뉴 항목. 하위 메뉴가 열리는 `play` 스토리가 쓴다 */
+export const menuRecycleBinEmptyLive = getEmptyMenuEntries(emptyMenuOptions(true));
+
+/** 피그마 Menu/ExplorerEmpty: 탐색기 빈 곳 우클릭. 하위 메뉴는 닫은 모양이다 */
+export const menuExplorerEmpty: readonly MenuPopupEntry[] = previewMenu(menuExplorerEmptyLive);
+
+/** 피그마 Menu/RecycleBinEmpty: 탐색기 휴지통 빈 곳 우클릭. 하위 메뉴는 닫은 모양이다 */
+export const menuRecycleBinEmpty: readonly MenuPopupEntry[] = previewMenu(menuRecycleBinEmptyLive);

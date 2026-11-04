@@ -29,7 +29,7 @@
                                 "children": [
                                   {
                                     "asset": {
-                                      "color": "text-fill/primary",
+                                      "color": "color/black/89",
                                       "path": "icons/ic_fluent_link_20_regular"
                                     },
                                     "component": "ic_fluent_link_20_regular",
@@ -74,7 +74,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
@@ -92,17 +92,17 @@
                                   "segments": [
                                     {
                                       "characters": "링크",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     },
                                     {
                                       "characters": " ",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Body"
                                     },
                                     {
                                       "characters": "복사",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -112,7 +112,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -159,13 +159,13 @@
                         },
                         "name": "item 링크 복사",
                         "properties": {
-                          "Kind": "Default",
+                          "Has icon": true,
+                          "Has shortcut": false,
                           "Label": "링크 복사",
                           "Shortcut": "Ctrl+O",
-                          "Show icon": true,
-                          "Show shortcut": false,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Default"
                         },
                         "size": {
                           "h": 32,
@@ -185,7 +185,7 @@
                                 "children": [
                                   {
                                     "asset": {
-                                      "color": "text-fill/primary",
+                                      "color": "color/black/89",
                                       "path": "icons/ic_fluent_search_20_regular"
                                     },
                                     "component": "ic_fluent_search_20_regular",
@@ -230,7 +230,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
@@ -248,17 +248,17 @@
                                   "segments": [
                                     {
                                       "characters": "페이지에서",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     },
                                     {
                                       "characters": " ",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Body"
                                     },
                                     {
                                       "characters": "찾기",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -268,7 +268,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/secondary"
+                                  "color/black/61"
                                 ],
                                 "name": "shortcut",
                                 "size": {
@@ -286,7 +286,7 @@
                                   "segments": [
                                     {
                                       "characters": "Ctrl+F",
-                                      "fill": "text-fill/secondary",
+                                      "fill": "color/black/61",
                                       "textStyle": "Caption"
                                     }
                                   ],
@@ -296,7 +296,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -343,13 +343,13 @@
                         },
                         "name": "item 페이지에서 찾기",
                         "properties": {
-                          "Kind": "Default",
+                          "Has icon": true,
+                          "Has shortcut": true,
                           "Label": "페이지에서 찾기",
                           "Shortcut": "Ctrl+F",
-                          "Show icon": true,
-                          "Show shortcut": true,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Default"
                         },
                         "size": {
                           "h": 32,
@@ -369,7 +369,7 @@
                                 "children": [
                                   {
                                     "asset": {
-                                      "color": "text-fill/primary",
+                                      "color": "color/black/89",
                                       "path": "icons/ic_fluent_zoom_in_20_regular"
                                     },
                                     "component": "ic_fluent_zoom_in_20_regular",
@@ -414,7 +414,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
@@ -432,7 +432,7 @@
                                   "segments": [
                                     {
                                       "characters": "확대/축소",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -446,7 +446,7 @@
                                     "children": [
                                       {
                                         "asset": {
-                                          "color": "text-fill/primary",
+                                          "color": "color/black/89",
                                           "path": "icons/ic_fluent_subtract_20_regular"
                                         },
                                         "component": "ic_fluent_subtract_20_regular",
@@ -466,7 +466,7 @@
                                     ],
                                     "component": "IconButton",
                                     "fills": [
-                                      "subtle-fill/transparent"
+                                      "color/white/0"
                                     ],
                                     "layout": {
                                       "counterAlign": "CENTER",
@@ -483,7 +483,7 @@
                                     "name": "zoom out button",
                                     "properties": {
                                       "State": "Rest",
-                                      "Style": "Subtle"
+                                      "Variant": "Subtle"
                                     },
                                     "radius": [
                                       "radius/control",
@@ -503,7 +503,7 @@
                                   },
                                   {
                                     "fills": [
-                                      "text-fill/primary"
+                                      "color/black/89"
                                     ],
                                     "name": "value",
                                     "size": {
@@ -521,7 +521,7 @@
                                       "segments": [
                                         {
                                           "characters": "100%",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Body"
                                         }
                                       ],
@@ -534,7 +534,7 @@
                                     "children": [
                                       {
                                         "asset": {
-                                          "color": "text-fill/primary",
+                                          "color": "color/black/89",
                                           "path": "icons/ic_fluent_add_20_regular"
                                         },
                                         "component": "ic_fluent_add_20_regular",
@@ -554,7 +554,7 @@
                                     ],
                                     "component": "IconButton",
                                     "fills": [
-                                      "subtle-fill/transparent"
+                                      "color/white/0"
                                     ],
                                     "layout": {
                                       "counterAlign": "CENTER",
@@ -571,7 +571,7 @@
                                     "name": "zoom in button",
                                     "properties": {
                                       "State": "Rest",
-                                      "Style": "Subtle"
+                                      "Variant": "Subtle"
                                     },
                                     "radius": [
                                       "radius/control",
@@ -659,13 +659,13 @@
                         },
                         "name": "item 확대·축소",
                         "properties": {
-                          "Kind": "Zoom",
+                          "Has icon": true,
+                          "Has shortcut": false,
                           "Label": "확대/축소",
                           "Shortcut": "단축키",
-                          "Show icon": true,
-                          "Show shortcut": false,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Zoom"
                         },
                         "size": {
                           "h": 32,
@@ -748,7 +748,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "surface-stroke/flyout"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": true,
                 "type": "INSTANCE"
@@ -776,8 +776,7 @@
               "h": "FIXED",
               "v": "HUG"
             },
-            "type": "INSTANCE",
-            "width": "size/menu/width"
+            "type": "INSTANCE"
           }
         ],
         "layout": {
