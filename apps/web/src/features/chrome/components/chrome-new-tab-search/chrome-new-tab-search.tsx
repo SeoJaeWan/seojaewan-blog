@@ -91,7 +91,7 @@ export function ChromeNewTabSearch(props: ChromeNewTabSearchProps): JSX.Element 
         <SearchBox
           {...searchBoxProps}
           ref={inputRef}
-          appearance="web"
+          variant="web"
           placeholder={PLACEHOLDER}
           aria-label={PLACEHOLDER}
           className="w-size-search-box-wide-width"
