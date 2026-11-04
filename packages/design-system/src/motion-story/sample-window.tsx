@@ -22,7 +22,7 @@ type SampleWindowProps = {
  * @returns 견본 창
  */
 export function SampleWindow(props: SampleWindowProps): JSX.Element {
-  const { motionClassName, placement = 'normal' } = props;
+  const { motionClassName, placement = 'default' } = props;
   return (
     <FigmaFrame source={windowFrameExport}>
       <WindowFrame

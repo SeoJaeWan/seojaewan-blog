@@ -29,7 +29,7 @@ export type ExplorerWindowTab = {
 // 창 층이 넘기는 창 동작 속성이다. WindowFrame에 그대로 넘긴다.
 type WindowFrameControlProps = Pick<
   ComponentProps<typeof WindowFrame>,
-  | 'inactive'
+  | 'isInactive'
   | 'placement'
   | 'onMinimize'
   | 'onMaximize'
@@ -158,7 +158,7 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
         {...frameProps}
         onTitleBarPointerDown={handleFrameTitleBarPointerDown}
         placement="maximized"
-        showMaximize={false}
+        hasMaximize={false}
         appIcon={explorerAppIcon}
         title={selectedTab?.title}
         className={className}

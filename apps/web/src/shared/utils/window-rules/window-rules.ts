@@ -32,6 +32,15 @@ type WindowSize = Pick<WindowBounds, 'width' | 'height'>;
 /** 창 배치. normal은 떠 있는 창, maximized는 작업 영역을 채운 창, snapped는 스냅 칸을 채운 창이다 */
 export type WindowPlacement = 'normal' | 'maximized' | 'snapped';
 
+/**
+ * 창 배치를 WindowFrame의 `placement` 값으로 바꾼다. 창 상태의 `normal`(떠 있는 창)이 WindowFrame에서는 `default`다.
+ * @param placement 창 상태의 배치
+ * @returns WindowFrame 배치 값
+ */
+export function toFramePlacement(placement: WindowPlacement): 'default' | 'maximized' | 'snapped' {
+  return placement === 'normal' ? 'default' : placement;
+}
+
 /** 스냅 레이아웃 종류. 반반, 2:1, 반 + 4분의 1 두 칸, 4분할이다(디자인 시스템 `SnapLayoutOption`과 같은 이름) */
 export type SnapLayout = 'half' | 'two-thirds' | 'half-quarter' | 'quad';
 
@@ -132,9 +141,9 @@ export type WindowWorkArea = {
 /** 창 층이 앱 창(`ExplorerWindow`, `ChromeWindow`)의 WindowFrame에 넘기는 속성 */
 export type WindowFrameControls = {
   /** 맨 앞 창이 아니면 흐리게 그린다 */
-  inactive: boolean;
-  /** 창 배치. 모바일은 늘 maximized다 */
-  placement: WindowPlacement;
+  isInactive: boolean;
+  /** 창 배치(WindowFrame의 `placement` 값). 모바일은 늘 maximized다 */
+  placement: 'default' | 'maximized' | 'snapped';
   /** 최소화 버튼을 눌렀을 때 */
   onMinimize: () => void;
   /** 닫기 버튼을 눌렀을 때 */

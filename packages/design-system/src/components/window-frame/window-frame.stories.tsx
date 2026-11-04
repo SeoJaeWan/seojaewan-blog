@@ -9,7 +9,7 @@ import { WindowFrame } from './window-frame';
 // 피그마 WindowFrame의 변형 속성 값이다(정규화한 이름).
 const TITLE_BARS = ['default', 'custom'] as const;
 const STATES = ['active', 'inactive'] as const;
-const PLACEMENTS = ['normal', 'maximized', 'snapped'] as const;
+const PLACEMENTS = ['default', 'maximized', 'snapped'] as const;
 const MATERIALS = ['mica', 'chrome'] as const;
 
 type FigmaArgs = {
@@ -24,7 +24,7 @@ const appIcon = new URL('../../assets/images/app-file-explorer.webp', import.met
 
 const meta = {
   title: 'Components/WindowFrame',
-  args: { titleBar: 'default', state: 'active', placement: 'normal', material: 'mica' },
+  args: { titleBar: 'default', state: 'active', placement: 'default', material: 'mica' },
   argTypes: {
     titleBar: { control: 'inline-radio', options: TITLE_BARS },
     state: { control: 'inline-radio', options: STATES },
@@ -37,7 +37,7 @@ const meta = {
   // 컴포넌트의 Content·Title bar content 슬롯은 언제나 비어 있다.
   render: (args) => {
     const common = {
-      inactive: args.state === 'inactive',
+      isInactive: args.state === 'inactive',
       placement: args.placement,
       material: args.material,
     };
@@ -123,9 +123,9 @@ export const Maximized: MaximizedStory = {
 };
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** showMaximize가 false면 창 버튼에서 최대화 버튼을 뺀다 */
+/** hasMaximize가 false면 창 버튼에서 최대화 버튼을 뺀다 */
 export const WithoutMaximize: Story = {
-  render: () => <WindowFrame appIcon={null} showMaximize={false} />,
+  render: () => <WindowFrame appIcon={null} hasMaximize={false} />,
   play: async ({ canvasElement, step }) => {
     await step('최대화 버튼이 없다', async () => {
       await expect(

@@ -58,8 +58,8 @@ function ExplorerWindowLayerHost(props: ExplorerWindowLayerHostProps): JSX.Eleme
       content={target.content}
       device={device}
       controls={{
-        inactive: false,
-        placement: 'normal',
+        isInactive: false,
+        placement: 'default',
         onMinimize: handleMinimize,
         onClose,
       }}

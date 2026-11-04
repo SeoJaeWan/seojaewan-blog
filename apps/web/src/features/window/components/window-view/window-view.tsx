@@ -18,7 +18,7 @@ import type {
   SnapZone,
   WindowWorkArea,
 } from '@/shared/utils/window-rules/window-rules';
-import { getWindowRect } from '@/shared/utils/window-rules/window-rules';
+import { getWindowRect, toFramePlacement } from '@/shared/utils/window-rules/window-rules';
 
 import { SnapLayoutMenu } from './components/snap-layout-menu/snap-layout-menu';
 import { useWindowDrag } from './hooks/use-window-drag/use-window-drag';
@@ -259,14 +259,14 @@ export function WindowView(props: WindowViewProps): JSX.Element {
           target,
           isMobile
             ? {
-                inactive: !isActive,
+                isInactive: !isActive,
                 placement: 'maximized',
                 onMinimize: handleMinimize,
                 onClose: handleClose,
               }
             : {
-                inactive: !isActive,
-                placement: target.placement,
+                isInactive: !isActive,
+                placement: toFramePlacement(target.placement),
                 onMinimize: handleMinimize,
                 onClose: handleClose,
                 onMaximize: handleMaximize,
@@ -275,7 +275,7 @@ export function WindowView(props: WindowViewProps): JSX.Element {
                 onTitleBarPointerDown: handleTitleBarPointerDown,
                 maximizeSlot: (
                   <SnapLayoutMenu
-                    inactive={!isActive}
+                    isInactive={!isActive}
                     onMaximize={handleMaximize}
                     onSelectZone={handleSelectZone}
                   />
