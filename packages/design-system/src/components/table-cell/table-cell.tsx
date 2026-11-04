@@ -3,8 +3,8 @@ import { type ComponentProps, createElement, type JSX } from 'react';
 import { cn } from '../../cn';
 
 type TableCellProps = ComponentProps<'td'> & {
-  /** 피그마 `Type` 변형. `header`는 머리 칸(`th`), `body`는 본문 칸(`td`)이다 */
-  type?: 'body' | 'header';
+  /** 피그마 `Variant` 변형. `header`는 머리 칸(`th`), `body`는 본문 칸(`td`)이다 */
+  variant?: 'body' | 'header';
 };
 
 /**
@@ -16,8 +16,8 @@ type TableCellProps = ComponentProps<'td'> & {
  * @param props
  */
 export function TableCell(props: TableCellProps): JSX.Element {
-  const { type = 'body', className, children, ...cellProps } = props;
-  const isHeader = type === 'header';
+  const { variant = 'body', className, children, ...cellProps } = props;
+  const isHeader = variant === 'header';
   return createElement(
     isHeader ? 'th' : 'td',
     {
