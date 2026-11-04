@@ -1,5 +1,5 @@
 {
-  "description": "넘치는 내용을 잘라 보이고 오른쪽에 Scrollbar를 겹쳐 그리는 스크롤 영역. 크기는 쓰는 곳이 정한다(부모 채움). 내용은 Content 슬롯에 넣는다. State=Hover는 Scrollbar를 펼친다(Expanded). 막대 위치와 길이는 코드가 실행 중에 정하고, 피그마는 Scrollbar 기본값(기본 내용을 맨 위에 둔 값)을 쓴다.",
+  "description": "넘치는 내용을 잘라 보이고 오른쪽에 Scrollbar를 겹쳐 그리는 스크롤 영역. 크기는 쓰는 곳이 정한다(부모 채움). 내용은 Content 슬롯에 넣는다. State=Hover는 Scrollbar를 펼친다(Expanded). 막대 위치와 길이는 코드가 실행 중에 정하고, 피그마는 Scrollbar 기본값(기본 내용을 맨 위에 둔 값)을 쓴다.\n@sample-size width height",
   "name": "ScrollArea",
   "nodeId": "2216:8574",
   "propertyDefinitions": {
@@ -67,7 +67,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -85,17 +85,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -144,8 +144,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -195,7 +195,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -213,17 +213,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -272,8 +272,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -323,7 +323,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -341,17 +341,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -400,8 +400,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -451,7 +451,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -469,17 +469,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -528,8 +528,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -579,7 +579,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -597,17 +597,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -656,8 +656,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -707,7 +707,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -725,17 +725,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -784,8 +784,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -835,7 +835,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -853,17 +853,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -912,8 +912,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -963,7 +963,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -981,17 +981,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -1040,8 +1040,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -1096,7 +1096,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "control-strong-fill/default",
+                  "color": "color/black/45",
                   "path": "icons/ic_fluent_chevron_down_16_regular"
                 },
                 "component": "ic_fluent_chevron_down_16_regular",
@@ -1123,7 +1123,7 @@
                   "vertical": "MIN"
                 },
                 "fills": [
-                  "control-strong-fill/default"
+                  "color/black/45"
                 ],
                 "height": "size/scrollbar/thumb-length",
                 "name": "thumb",
@@ -1146,7 +1146,7 @@
               },
               {
                 "asset": {
-                  "color": "control-strong-fill/default",
+                  "color": "color/black/45",
                   "path": "icons/ic_fluent_chevron_down_16_regular"
                 },
                 "component": "ic_fluent_chevron_down_16_regular",
@@ -1202,7 +1202,6 @@
             "width": "size/scrollbar/thickness"
           }
         ],
-        "height": "size/scrollbar/length",
         "layout": {
           "counterAlign": "MIN",
           "gap": "spacing/none",
@@ -1224,8 +1223,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/list-item/width"
+        "type": "COMPONENT"
       }
     },
     "state=hover,material=solid": {
@@ -1271,7 +1269,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -1289,17 +1287,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -1348,8 +1346,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -1399,7 +1397,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -1417,17 +1415,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -1476,8 +1474,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -1527,7 +1525,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -1545,17 +1543,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -1604,8 +1602,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -1655,7 +1653,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -1673,17 +1671,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -1732,8 +1730,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -1783,7 +1781,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -1801,17 +1799,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -1860,8 +1858,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -1911,7 +1909,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -1929,17 +1927,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -1988,8 +1986,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -2039,7 +2037,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -2057,17 +2055,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -2116,8 +2114,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -2167,7 +2165,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -2185,17 +2183,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -2244,8 +2242,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -2300,7 +2298,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "control-strong-fill/default",
+                  "color": "color/black/45",
                   "path": "icons/ic_fluent_chevron_down_16_regular"
                 },
                 "component": "ic_fluent_chevron_down_16_regular",
@@ -2327,7 +2325,7 @@
                   "vertical": "MIN"
                 },
                 "fills": [
-                  "control-strong-fill/default"
+                  "color/black/45"
                 ],
                 "height": "size/scrollbar/thumb-length",
                 "name": "thumb",
@@ -2350,7 +2348,7 @@
               },
               {
                 "asset": {
-                  "color": "control-strong-fill/default",
+                  "color": "color/black/45",
                   "path": "icons/ic_fluent_chevron_down_16_regular"
                 },
                 "component": "ic_fluent_chevron_down_16_regular",
@@ -2405,7 +2403,6 @@
             "width": "size/scrollbar/thickness"
           }
         ],
-        "height": "size/scrollbar/length",
         "layout": {
           "counterAlign": "MIN",
           "gap": "spacing/none",
@@ -2427,8 +2424,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/list-item/width"
+        "type": "COMPONENT"
       }
     },
     "state=rest,material=acrylic": {
@@ -2474,7 +2470,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -2492,17 +2488,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -2551,8 +2547,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -2602,7 +2598,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -2620,17 +2616,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -2679,8 +2675,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -2730,7 +2726,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -2748,17 +2744,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -2807,8 +2803,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -2858,7 +2854,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -2876,17 +2872,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -2935,8 +2931,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -2986,7 +2982,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -3004,17 +3000,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -3063,8 +3059,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -3114,7 +3110,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -3132,17 +3128,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -3191,8 +3187,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -3242,7 +3238,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -3260,17 +3256,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -3319,8 +3315,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -3370,7 +3366,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -3388,17 +3384,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -3447,8 +3443,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -3507,7 +3503,7 @@
                   "vertical": "MIN"
                 },
                 "fills": [
-                  "control-strong-fill/default"
+                  "color/black/45"
                 ],
                 "height": "size/scrollbar/thumb-length",
                 "name": "thumb",
@@ -3559,7 +3555,6 @@
             "width": "size/scrollbar/thickness"
           }
         ],
-        "height": "size/scrollbar/length",
         "layout": {
           "counterAlign": "MIN",
           "gap": "spacing/none",
@@ -3581,8 +3576,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/list-item/width"
+        "type": "COMPONENT"
       }
     },
     "state=rest,material=solid": {
@@ -3628,7 +3622,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -3646,17 +3640,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -3705,8 +3699,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -3756,7 +3750,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -3774,17 +3768,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -3833,8 +3827,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -3884,7 +3878,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -3902,17 +3896,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -3961,8 +3955,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -4012,7 +4006,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -4030,17 +4024,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -4089,8 +4083,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -4140,7 +4134,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -4158,17 +4152,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -4217,8 +4211,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -4268,7 +4262,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -4286,17 +4280,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -4345,8 +4339,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -4396,7 +4390,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -4414,17 +4408,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -4473,8 +4467,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -4524,7 +4518,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -4542,17 +4536,17 @@
                           "segments": [
                             {
                               "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이름",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -4601,8 +4595,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "보조 설명",
@@ -4661,7 +4655,7 @@
                   "vertical": "MIN"
                 },
                 "fills": [
-                  "control-strong-fill/default"
+                  "color/black/45"
                 ],
                 "height": "size/scrollbar/thumb-length",
                 "name": "thumb",
@@ -4713,7 +4707,6 @@
             "width": "size/scrollbar/thickness"
           }
         ],
-        "height": "size/scrollbar/length",
         "layout": {
           "counterAlign": "MIN",
           "gap": "spacing/none",
@@ -4735,8 +4728,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/list-item/width"
+        "type": "COMPONENT"
       }
     }
   }

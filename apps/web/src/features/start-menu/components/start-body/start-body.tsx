@@ -182,7 +182,7 @@ function StartJumpListView(props: StartJumpListViewProps): JSX.Element {
     <div inert={props.isInert} className={props.className}>
       <SectionTitle
         title="모두"
-        showAction
+        hasAction
         action={<Button variant="subtle" label="뒤로" onClick={props.onBack} />}
         className="w-full shrink-shrink-none"
       />
@@ -417,7 +417,7 @@ function StartListView(props: StartListViewProps): JSX.Element {
               <SectionTitle
                 title="모두"
                 titleId={allTitleId}
-                showAction
+                hasAction
                 action={renderViewControl()}
                 className="w-full shrink-shrink-none"
               />

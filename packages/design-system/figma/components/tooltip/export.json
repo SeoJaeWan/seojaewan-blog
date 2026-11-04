@@ -11,7 +11,7 @@
       "default": "도움말",
       "type": "TEXT"
     },
-    "Type": {
+    "Variant": {
       "default": "Default",
       "options": [
         "Default",
@@ -21,7 +21,7 @@
     }
   },
   "variants": {
-    "type=balloon": {
+    "variant=balloon": {
       "node": {
         "height": 42,
         "width": 300,
@@ -30,7 +30,7 @@
       },
       "nodeId": "14:339",
       "properties": {
-        "Type": "Balloon"
+        "Variant": "Balloon"
       },
       "tree": {
         "children": [
@@ -38,7 +38,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "system-fill/caution",
+                  "color": "color/yellow/54",
                   "path": "icons/ic_fluent_warning_24_regular"
                 },
                 "component": "ic_fluent_warning_24_regular",
@@ -57,7 +57,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -75,7 +75,7 @@
                   "segments": [
                     {
                       "characters": "메시지 내용",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -113,7 +113,7 @@
               "vertical": "MIN"
             },
             "asset": {
-              "color": "solid-background-fill/quarternary",
+              "color": "color/white",
               "path": "shapes/tooltip-tail-fill"
             },
             "component": "tooltip/Tail fill",
@@ -136,7 +136,7 @@
               "vertical": "MIN"
             },
             "asset": {
-              "color": "surface-stroke/flyout",
+              "color": "color/black/6",
               "path": "shapes/tooltip-tail-border"
             },
             "component": "tooltip/Tail border",
@@ -156,7 +156,7 @@
         ],
         "effectStyle": "Elevation/Tooltip",
         "fills": [
-          "solid-background-fill/quarternary"
+          "color/white"
         ],
         "layout": {
           "counterAlign": "MIN",
@@ -170,7 +170,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Type=Balloon",
+        "name": "Variant=Balloon",
         "radius": [
           "radius/control",
           "radius/control",
@@ -192,14 +192,14 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "surface-stroke/flyout"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT",
         "width": "size/tooltip/balloon-width"
       }
     },
-    "type=default": {
+    "variant=default": {
       "node": {
         "height": 30,
         "width": 50,
@@ -208,13 +208,13 @@
       },
       "nodeId": "14:337",
       "properties": {
-        "Type": "Default"
+        "Variant": "Default"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -222,17 +222,17 @@
               "w": 32
             },
             "sizing": {
-              "h": "HUG",
+              "h": "FILL",
               "v": "HUG"
             },
             "text": {
-              "autoResize": "WIDTH_AND_HEIGHT",
+              "autoResize": "HEIGHT",
               "maxLines": null,
               "maxLinesVariable": null,
               "segments": [
                 {
                   "characters": "도움말",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -256,7 +256,7 @@
           "primaryAlign": "MIN"
         },
         "maxWidth": "size/tooltip/max-width",
-        "name": "Type=Default",
+        "name": "Variant=Default",
         "radius": [
           "radius/control",
           "radius/control",
@@ -278,7 +278,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "surface-stroke/flyout"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT"

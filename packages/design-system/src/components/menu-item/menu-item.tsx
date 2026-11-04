@@ -11,11 +11,11 @@ type MenuItemCommonProps = {
   /** 항목 이름. 길면 한 줄로 말줄임한다 */
   label: string;
   /**
-   * 이름 앞 16px 아이콘(피그마 Show icon). SVG 아이콘이나 앱 로고 같은 래스터 자산(`images/*`)을 넣는다.
+   * 이름 앞 16px 아이콘(피그마 Has icon). SVG 아이콘이나 앱 로고 같은 래스터 자산(`images/*`)을 넣는다.
    * 확인·라디오 항목은 아이콘 자리에 선택 표시를 그린다
    */
   icon?: SvgAssetName | ImageAssetName;
-  /** 오른쪽에 보이는 단축키(예: `Ctrl+O`, 피그마 Show shortcut) */
+  /** 오른쪽에 보이는 단축키(예: `Ctrl+O`, 피그마 Has shortcut) */
   shortcut?: string;
   /** 고를 수 없게 한다 */
   disabled?: boolean;
@@ -26,42 +26,42 @@ type MenuItemCommonProps = {
 type MenuItemProps = MenuItemCommonProps &
   (
     | {
-        /** 피그마 Kind=Default. 누르면 onClick을 부르고 메뉴를 닫는다 */
-        kind?: 'default';
+        /** 피그마 Variant=Default. 누르면 onClick을 부르고 메뉴를 닫는다 */
+        variant?: 'default';
         /**
          * 메뉴 밖에 홀로 둔다. 검색 최고 일치 카드(BestMatchCard)의 동작 목록처럼 Base UI 메뉴가 없는 곳에서
          * 같은 모양의 버튼으로 그리고, 강조는 hover·focus-visible로 한다
          */
-        standalone?: boolean;
+        isStandalone?: boolean;
         /** 항목을 골랐을 때 호출 */
         onClick?: () => void;
       }
     | {
-        /** 피그마 Kind=Submenu. Menu.SubmenuRoot 안에 두고 하위 메뉴를 연다 */
-        kind: 'submenu';
+        /** 피그마 Variant=Submenu. Menu.SubmenuRoot 안에 두고 하위 메뉴를 연다 */
+        variant: 'submenu';
       }
     | {
-        /** 피그마 Kind=Toggle on/off. 켜져 있으면 확인 표시를 그린다 */
-        kind: 'checkbox';
+        /** 피그마 Variant=Toggle on/off. 켜져 있으면 확인 표시를 그린다 */
+        variant: 'checkbox';
         /** 켜짐 여부(제어) */
-        checked?: boolean;
+        isChecked?: boolean;
         /** 처음 켜짐 여부(비제어) */
-        defaultChecked?: boolean;
+        isDefaultChecked?: boolean;
         /** 켜짐 여부가 바뀔 때 호출 */
         onCheckedChange?: (checked: boolean) => void;
       }
     | {
-        /** 피그마 Kind=Radio on/off. Menu.RadioGroup 안에 두며, 골라져 있으면 점을 그린다 */
-        kind: 'radio';
+        /** 피그마 Variant=Radio on/off. Menu.RadioGroup 안에 두며, 골라져 있으면 점을 그린다 */
+        variant: 'radio';
         /** 라디오 묶음 안에서 이 항목의 값 */
         value: string;
       }
     | {
         /**
-         * 피그마 Kind=Zoom. Chrome ⋮ 메뉴의 확대/축소 조절 줄이다. 이름 오른쪽에 지금 배율과 −·+ 버튼을 둔다.
+         * 피그마 Variant=Zoom. Chrome ⋮ 메뉴의 확대/축소 조절 줄이다. 이름 오른쪽에 지금 배율과 −·+ 버튼을 둔다.
          * −·+는 Base UI 메뉴 항목이라 ↑↓로 닿고, 눌러도 메뉴가 닫히지 않는다
          */
-        kind: 'zoom';
+        variant: 'zoom';
         /** 지금 배율 글자(피그마 value, 예: `100%`) */
         value: string;
         /** 줄이기(−)를 눌렀을 때 호출 */
@@ -89,11 +89,11 @@ const baseClassName = cn(
   'group-data-disabled:text-color-black-36',
 );
 
-// 메뉴 밖에 홀로 둔 항목(standalone)의 상태 색이다. Base UI 강조 대신 hover·focus-visible·active로 바꾼다.
+// 메뉴 밖에 홀로 둔 항목(isStandalone)의 상태 색이다. Base UI 강조 대신 hover·focus-visible·active로 바꾼다.
 const STANDALONE_BASE_CLASS_NAME =
   'group-enabled:group-hover:bg-color-black-4 group-focus-visible:bg-color-black-4 group-enabled:group-active:bg-color-black-2 group-enabled:group-active:text-color-black-61';
 
-// 확대/축소 줄(Kind=Zoom)의 기본 아이콘이다.
+// 확대/축소 줄(Variant=Zoom)의 기본 아이콘이다.
 const ZOOM_DEFAULT_ICON = 'icons/ic_fluent_zoom_in_20_regular.svg';
 
 // 단축키·꺾쇠처럼 흐린 글자 색이다.
@@ -101,7 +101,7 @@ const SECONDARY_TEXT_CLASS_NAME = 'text-color-black-61 group-data-disabled:text-
 
 /**
  * 메뉴 항목(피그마 MenuItem)을 그린다. Base UI Menu의 Popup 안에 둔다.
- * kind에 따라 Base UI의 Item, SubmenuTrigger, CheckboxItem, RadioItem이 키보드 조작과 접근성을 맡는다.
+ * variant에 따라 Base UI의 Item, SubmenuTrigger, CheckboxItem, RadioItem이 키보드 조작과 접근성을 맡는다.
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
  * @param props
  */
@@ -109,7 +109,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
   const className = cn(ROW_CLASS_NAME, props.className);
   const isDisabled = props.disabled ?? false;
   const icon = props.icon === undefined ? undefined : <MenuItemIcon name={props.icon} />;
-  switch (props.kind) {
+  switch (props.variant) {
     case 'submenu':
       return (
         <Menu.SubmenuTrigger className={className} disabled={isDisabled} label={props.label}>
@@ -124,8 +124,8 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           className={className}
           disabled={isDisabled}
           label={props.label}
-          checked={props.checked}
-          defaultChecked={props.defaultChecked}
+          checked={props.isChecked}
+          defaultChecked={props.isDefaultChecked}
           onCheckedChange={props.onCheckedChange}
         >
           <MenuItemContent
@@ -161,7 +161,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
       );
     case 'default':
     case undefined:
-      if (props.standalone === true) {
+      if (props.isStandalone === true) {
         return (
           <button
             type="button"
@@ -191,7 +191,7 @@ type MenuZoomRowProps = MenuItemCommonProps & {
   /**
    *
    */
-  kind: 'zoom';
+  variant: 'zoom';
   /**
    *
    */
@@ -215,7 +215,7 @@ type MenuZoomRowProps = MenuItemCommonProps & {
 };
 
 /**
- * 확대/축소 줄(피그마 MenuItem `Kind=Zoom`)을 그린다. 줄 전체가 아니라 −·+ 버튼이 Base UI 메뉴 항목(`Menu.Item`)이라
+ * 확대/축소 줄(피그마 MenuItem `Variant=Zoom`)을 그린다. 줄 전체가 아니라 −·+ 버튼이 Base UI 메뉴 항목(`Menu.Item`)이라
  * ↑↓ 키로 닿고, `closeOnClick={false}`라 눌러도 메뉴가 닫히지 않는다. 실제 배율 동작은 쓰는 곳이 콜백과 값으로 잇는다.
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
  * @codocs [[Chrome:확대/축소]]
@@ -304,7 +304,7 @@ type MenuItemContentProps = MenuItemCommonProps & {
   /** 이름 앞 16px 자리(피그마 base/leading)에 그릴 내용. 확인·라디오 항목은 항상 자리를 둔다 */
   leading: ReactNode;
   /** 항목 종류 */
-  kind?: 'default' | 'submenu' | 'checkbox' | 'radio';
+  variant?: 'default' | 'submenu' | 'checkbox' | 'radio';
   /** 강조 영역에 덧붙일 상태 클래스 */
   baseClassName?: string;
 };
@@ -327,7 +327,7 @@ function MenuItemContent(props: MenuItemContentProps): JSX.Element {
           {props.shortcut}
         </span>
       )}
-      {props.kind === 'submenu' && (
+      {props.variant === 'submenu' && (
         <Asset
           name="icons/ic_fluent_chevron_right_16_regular.svg"
           className={cn('size-size-icon-sm shrink-shrink-none', SECONDARY_TEXT_CLASS_NAME)}

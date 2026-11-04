@@ -8,7 +8,7 @@ type StartMenuPanelProps = {
   /** 피그마 Device. 모바일은 검색 줄의 좌우 여백이 16으로 좁다. 패널 크기와 모서리는 ShellSurface가 정한다 */
   device?: StartMenuPanelDevice;
   /** 위쪽 검색 입력칸(SearchBox `Appearance=Pill`)에 넘길 속성 */
-  searchBoxProps?: Omit<ComponentProps<typeof SearchBox>, 'appearance' | 'className'>;
+  searchBoxProps?: Omit<ComponentProps<typeof SearchBox>, 'variant' | 'className'>;
   /** 아래 줄 프로필 이름 */
   profileName: string;
   /** 아래 줄 프로필 사진(32×32) */
@@ -60,7 +60,7 @@ export function StartMenuPanel(props: StartMenuPanelProps): JSX.Element {
           >
             <SearchBox
               {...searchBoxProps}
-              appearance="pill"
+              variant="pill"
               className="min-w-size-none flex-flex-fill"
             />
           </div>
