@@ -21,7 +21,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "title",
                     "size": {
@@ -39,7 +39,7 @@
                       "segments": [
                         {
                           "characters": "휴지통 비우기",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Subtitle"
                         }
                       ],
@@ -49,7 +49,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "message",
                     "size": {
@@ -67,37 +67,37 @@
                       "segments": [
                         {
                           "characters": "소중한",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body"
                         },
                         {
                           "characters": "글이에요",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body"
                         },
                         {
                           "characters": "지우지",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body"
                         },
                         {
                           "characters": "말아주세요",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body"
                         }
                       ],
@@ -107,7 +107,7 @@
                   }
                 ],
                 "fills": [
-                  "layer-fill/alt"
+                  "color/white"
                 ],
                 "layout": {
                   "counterAlign": "MIN",
@@ -138,7 +138,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-on-accent-fill/primary"
+                          "color/white"
                         ],
                         "name": "label",
                         "size": {
@@ -156,7 +156,7 @@
                           "segments": [
                             {
                               "characters": "확인",
-                              "fill": "text-on-accent-fill/primary",
+                              "fill": "color/white",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -167,7 +167,7 @@
                     ],
                     "component": "Button",
                     "fills": [
-                      "accent-fill/default"
+                      "color/blue/59"
                     ],
                     "layout": {
                       "counterAlign": "CENTER",
@@ -184,10 +184,10 @@
                     "minWidth": "size/button/min-width",
                     "name": "primary button",
                     "properties": {
+                      "Has icon": false,
                       "Label": "확인",
-                      "Show icon": false,
                       "State": "Rest",
-                      "Style": "Accent"
+                      "Variant": "Accent"
                     },
                     "radius": [
                       "radius/control",
@@ -215,7 +215,7 @@
                   }
                 ],
                 "fills": [
-                  "solid-background-fill/base"
+                  "color/gray/4"
                 ],
                 "layout": {
                   "counterAlign": "MIN",
@@ -245,7 +245,7 @@
                   0
                 ],
                 "strokes": [
-                  "card-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": true,
                 "type": "FRAME"
@@ -254,7 +254,7 @@
             "component": "MessageBox",
             "effectStyle": "Elevation/Dialog",
             "fills": [
-              "solid-background-fill/base"
+              "color/gray/4"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -295,11 +295,10 @@
               "stroke-width/default"
             ],
             "strokes": [
-              "surface-stroke/default"
+              "color/gray/51/40"
             ],
             "strokesIncludedInLayout": false,
-            "type": "INSTANCE",
-            "width": "size/message-box/width"
+            "type": "INSTANCE"
           }
         ],
         "layout": {
