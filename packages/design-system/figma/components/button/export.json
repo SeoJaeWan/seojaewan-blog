@@ -3,16 +3,16 @@
   "name": "Button",
   "nodeId": "13:62",
   "propertyDefinitions": {
+    "Has icon": {
+      "default": false,
+      "type": "BOOLEAN"
+    },
     "Icon": {
       "type": "INSTANCE_SWAP"
     },
     "Label": {
       "default": "버튼",
       "type": "TEXT"
-    },
-    "Show icon": {
-      "default": false,
-      "type": "BOOLEAN"
     },
     "State": {
       "default": "Rest",
@@ -25,8 +25,8 @@
       ],
       "type": "VARIANT"
     },
-    "Style": {
-      "default": "Accent",
+    "Variant": {
+      "default": "Standard",
       "options": [
         "Accent",
         "Standard",
@@ -36,7 +36,7 @@
     }
   },
   "variants": {
-    "style=accent,state=disabled": {
+    "variant=accent,state=disabled": {
       "node": {
         "height": 32,
         "width": 120,
@@ -46,13 +46,13 @@
       "nodeId": "13:14",
       "properties": {
         "State": "Disabled",
-        "Style": "Accent"
+        "Variant": "Accent"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-on-accent-fill/disabled"
+              "color/white"
             ],
             "name": "label",
             "size": {
@@ -70,7 +70,7 @@
               "segments": [
                 {
                   "characters": "버튼",
-                  "fill": "text-on-accent-fill/disabled",
+                  "fill": "color/white",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -80,7 +80,7 @@
           }
         ],
         "fills": [
-          "accent-fill/disabled"
+          "color/black/22"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -95,7 +95,7 @@
           "primaryAlign": "CENTER"
         },
         "minWidth": "size/button/min-width",
-        "name": "Style=Accent, State=Disabled",
+        "name": "Variant=Accent, State=Disabled",
         "radius": [
           "radius/control",
           "radius/control",
@@ -113,7 +113,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=accent,state=focused": {
+    "variant=accent,state=focused": {
       "node": {
         "height": 32,
         "width": 120,
@@ -123,13 +123,13 @@
       "nodeId": "13:18",
       "properties": {
         "State": "Focused",
-        "Style": "Accent"
+        "Variant": "Accent"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-on-accent-fill/primary"
+              "color/white"
             ],
             "name": "label",
             "size": {
@@ -147,7 +147,7 @@
               "segments": [
                 {
                   "characters": "버튼",
-                  "fill": "text-on-accent-fill/primary",
+                  "fill": "color/white",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -157,7 +157,7 @@
           }
         ],
         "fills": [
-          "accent-fill/default"
+          "color/blue/59"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -172,7 +172,7 @@
           "primaryAlign": "CENTER"
         },
         "minWidth": "size/button/min-width",
-        "name": "Style=Accent, State=Focused",
+        "name": "Variant=Accent, State=Focused",
         "radius": [
           "radius/control",
           "radius/control",
@@ -194,13 +194,13 @@
           "stroke-width/focus-outer"
         ],
         "strokes": [
-          "focus-stroke/outer"
+          "color/black/89"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT"
       }
     },
-    "style=accent,state=hover": {
+    "variant=accent,state=hover": {
       "node": {
         "height": 32,
         "width": 120,
@@ -210,13 +210,13 @@
       "nodeId": "13:6",
       "properties": {
         "State": "Hover",
-        "Style": "Accent"
+        "Variant": "Accent"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-on-accent-fill/primary"
+              "color/white"
             ],
             "name": "label",
             "size": {
@@ -234,7 +234,7 @@
               "segments": [
                 {
                   "characters": "버튼",
-                  "fill": "text-on-accent-fill/primary",
+                  "fill": "color/white",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -244,7 +244,7 @@
           }
         ],
         "fills": [
-          "accent-fill/secondary"
+          "color/blue/59/90"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -259,7 +259,7 @@
           "primaryAlign": "CENTER"
         },
         "minWidth": "size/button/min-width",
-        "name": "Style=Accent, State=Hover",
+        "name": "Variant=Accent, State=Hover",
         "radius": [
           "radius/control",
           "radius/control",
@@ -268,7 +268,7 @@
         ],
         "reactions": [
           {
-            "destination": "Style=Accent, State=Pressed",
+            "destination": "Variant=Accent, State=Pressed",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -303,7 +303,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=accent,state=pressed": {
+    "variant=accent,state=pressed": {
       "node": {
         "height": 32,
         "width": 120,
@@ -313,13 +313,13 @@
       "nodeId": "13:10",
       "properties": {
         "State": "Pressed",
-        "Style": "Accent"
+        "Variant": "Accent"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-on-accent-fill/secondary"
+              "color/white/70"
             ],
             "name": "label",
             "size": {
@@ -337,7 +337,7 @@
               "segments": [
                 {
                   "characters": "버튼",
-                  "fill": "text-on-accent-fill/secondary",
+                  "fill": "color/white/70",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -347,7 +347,7 @@
           }
         ],
         "fills": [
-          "accent-fill/tertiary"
+          "color/blue/59/80"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -362,7 +362,7 @@
           "primaryAlign": "CENTER"
         },
         "minWidth": "size/button/min-width",
-        "name": "Style=Accent, State=Pressed",
+        "name": "Variant=Accent, State=Pressed",
         "radius": [
           "radius/control",
           "radius/control",
@@ -384,13 +384,13 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/on-accent-default"
+          "color/white/8"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT"
       }
     },
-    "style=accent,state=rest": {
+    "variant=accent,state=rest": {
       "node": {
         "height": 32,
         "width": 120,
@@ -400,13 +400,13 @@
       "nodeId": "13:2",
       "properties": {
         "State": "Rest",
-        "Style": "Accent"
+        "Variant": "Accent"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-on-accent-fill/primary"
+              "color/white"
             ],
             "name": "label",
             "size": {
@@ -424,7 +424,7 @@
               "segments": [
                 {
                   "characters": "버튼",
-                  "fill": "text-on-accent-fill/primary",
+                  "fill": "color/white",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -434,7 +434,7 @@
           }
         ],
         "fills": [
-          "accent-fill/default"
+          "color/blue/59"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -449,7 +449,7 @@
           "primaryAlign": "CENTER"
         },
         "minWidth": "size/button/min-width",
-        "name": "Style=Accent, State=Rest",
+        "name": "Variant=Accent, State=Rest",
         "radius": [
           "radius/control",
           "radius/control",
@@ -458,7 +458,7 @@
         ],
         "reactions": [
           {
-            "destination": "Style=Accent, State=Hover",
+            "destination": "Variant=Accent, State=Hover",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -493,7 +493,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=standard,state=disabled": {
+    "variant=standard,state=disabled": {
       "node": {
         "height": 32,
         "width": 120,
@@ -503,13 +503,13 @@
       "nodeId": "13:34",
       "properties": {
         "State": "Disabled",
-        "Style": "Standard"
+        "Variant": "Standard"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-fill/disabled"
+              "color/black/36"
             ],
             "name": "label",
             "size": {
@@ -527,7 +527,7 @@
               "segments": [
                 {
                   "characters": "버튼",
-                  "fill": "text-fill/disabled",
+                  "fill": "color/black/36",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -537,7 +537,7 @@
           }
         ],
         "fills": [
-          "control-fill/disabled"
+          "color/gray/2/30"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -552,7 +552,7 @@
           "primaryAlign": "CENTER"
         },
         "minWidth": "size/button/min-width",
-        "name": "Style=Standard, State=Disabled",
+        "name": "Variant=Standard, State=Disabled",
         "radius": [
           "radius/control",
           "radius/control",
@@ -574,13 +574,13 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT"
       }
     },
-    "style=standard,state=focused": {
+    "variant=standard,state=focused": {
       "node": {
         "height": 32,
         "width": 120,
@@ -590,13 +590,13 @@
       "nodeId": "13:38",
       "properties": {
         "State": "Focused",
-        "Style": "Standard"
+        "Variant": "Standard"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -614,7 +614,7 @@
               "segments": [
                 {
                   "characters": "버튼",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -624,7 +624,7 @@
           }
         ],
         "fills": [
-          "control-fill/default"
+          "color/white/70"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -639,7 +639,7 @@
           "primaryAlign": "CENTER"
         },
         "minWidth": "size/button/min-width",
-        "name": "Style=Standard, State=Focused",
+        "name": "Variant=Standard, State=Focused",
         "radius": [
           "radius/control",
           "radius/control",
@@ -661,13 +661,13 @@
           "stroke-width/focus-outer"
         ],
         "strokes": [
-          "focus-stroke/outer"
+          "color/black/89"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT"
       }
     },
-    "style=standard,state=hover": {
+    "variant=standard,state=hover": {
       "node": {
         "height": 32,
         "width": 120,
@@ -677,13 +677,13 @@
       "nodeId": "13:26",
       "properties": {
         "State": "Hover",
-        "Style": "Standard"
+        "Variant": "Standard"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -701,7 +701,7 @@
               "segments": [
                 {
                   "characters": "버튼",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -711,7 +711,7 @@
           }
         ],
         "fills": [
-          "control-fill/secondary"
+          "color/gray/3/50"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -726,7 +726,7 @@
           "primaryAlign": "CENTER"
         },
         "minWidth": "size/button/min-width",
-        "name": "Style=Standard, State=Hover",
+        "name": "Variant=Standard, State=Hover",
         "radius": [
           "radius/control",
           "radius/control",
@@ -735,7 +735,7 @@
         ],
         "reactions": [
           {
-            "destination": "Style=Standard, State=Pressed",
+            "destination": "Variant=Standard, State=Pressed",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -770,7 +770,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=standard,state=pressed": {
+    "variant=standard,state=pressed": {
       "node": {
         "height": 32,
         "width": 120,
@@ -780,13 +780,13 @@
       "nodeId": "13:30",
       "properties": {
         "State": "Pressed",
-        "Style": "Standard"
+        "Variant": "Standard"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "label",
             "size": {
@@ -804,7 +804,7 @@
               "segments": [
                 {
                   "characters": "버튼",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -814,7 +814,7 @@
           }
         ],
         "fills": [
-          "control-fill/tertiary"
+          "color/gray/2/30"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -829,7 +829,7 @@
           "primaryAlign": "CENTER"
         },
         "minWidth": "size/button/min-width",
-        "name": "Style=Standard, State=Pressed",
+        "name": "Variant=Standard, State=Pressed",
         "radius": [
           "radius/control",
           "radius/control",
@@ -851,13 +851,13 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT"
       }
     },
-    "style=standard,state=rest": {
+    "variant=standard,state=rest": {
       "node": {
         "height": 32,
         "width": 120,
@@ -867,13 +867,13 @@
       "nodeId": "13:22",
       "properties": {
         "State": "Rest",
-        "Style": "Standard"
+        "Variant": "Standard"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -891,7 +891,7 @@
               "segments": [
                 {
                   "characters": "버튼",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -901,7 +901,7 @@
           }
         ],
         "fills": [
-          "control-fill/default"
+          "color/white/70"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -916,7 +916,7 @@
           "primaryAlign": "CENTER"
         },
         "minWidth": "size/button/min-width",
-        "name": "Style=Standard, State=Rest",
+        "name": "Variant=Standard, State=Rest",
         "radius": [
           "radius/control",
           "radius/control",
@@ -925,7 +925,7 @@
         ],
         "reactions": [
           {
-            "destination": "Style=Standard, State=Hover",
+            "destination": "Variant=Standard, State=Hover",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -960,7 +960,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=subtle,state=disabled": {
+    "variant=subtle,state=disabled": {
       "node": {
         "height": 32,
         "width": 120,
@@ -970,13 +970,13 @@
       "nodeId": "13:54",
       "properties": {
         "State": "Disabled",
-        "Style": "Subtle"
+        "Variant": "Subtle"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-fill/disabled"
+              "color/black/36"
             ],
             "name": "label",
             "size": {
@@ -994,7 +994,7 @@
               "segments": [
                 {
                   "characters": "버튼",
-                  "fill": "text-fill/disabled",
+                  "fill": "color/black/36",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -1004,7 +1004,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/disabled"
+          "color/white/0"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -1019,7 +1019,7 @@
           "primaryAlign": "CENTER"
         },
         "minWidth": "size/button/min-width",
-        "name": "Style=Subtle, State=Disabled",
+        "name": "Variant=Subtle, State=Disabled",
         "radius": [
           "radius/control",
           "radius/control",
@@ -1037,7 +1037,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=subtle,state=focused": {
+    "variant=subtle,state=focused": {
       "node": {
         "height": 32,
         "width": 120,
@@ -1047,13 +1047,13 @@
       "nodeId": "13:58",
       "properties": {
         "State": "Focused",
-        "Style": "Subtle"
+        "Variant": "Subtle"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -1071,7 +1071,7 @@
               "segments": [
                 {
                   "characters": "버튼",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -1081,7 +1081,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/transparent"
+          "color/white/0"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -1096,7 +1096,7 @@
           "primaryAlign": "CENTER"
         },
         "minWidth": "size/button/min-width",
-        "name": "Style=Subtle, State=Focused",
+        "name": "Variant=Subtle, State=Focused",
         "radius": [
           "radius/control",
           "radius/control",
@@ -1118,13 +1118,13 @@
           "stroke-width/focus-outer"
         ],
         "strokes": [
-          "focus-stroke/outer"
+          "color/black/89"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT"
       }
     },
-    "style=subtle,state=hover": {
+    "variant=subtle,state=hover": {
       "node": {
         "height": 32,
         "width": 120,
@@ -1134,13 +1134,13 @@
       "nodeId": "13:46",
       "properties": {
         "State": "Hover",
-        "Style": "Subtle"
+        "Variant": "Subtle"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -1158,7 +1158,7 @@
               "segments": [
                 {
                   "characters": "버튼",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -1168,7 +1168,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -1183,7 +1183,7 @@
           "primaryAlign": "CENTER"
         },
         "minWidth": "size/button/min-width",
-        "name": "Style=Subtle, State=Hover",
+        "name": "Variant=Subtle, State=Hover",
         "radius": [
           "radius/control",
           "radius/control",
@@ -1192,7 +1192,7 @@
         ],
         "reactions": [
           {
-            "destination": "Style=Subtle, State=Pressed",
+            "destination": "Variant=Subtle, State=Pressed",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -1219,7 +1219,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=subtle,state=pressed": {
+    "variant=subtle,state=pressed": {
       "node": {
         "height": 32,
         "width": 120,
@@ -1229,13 +1229,13 @@
       "nodeId": "13:50",
       "properties": {
         "State": "Pressed",
-        "Style": "Subtle"
+        "Variant": "Subtle"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "label",
             "size": {
@@ -1253,7 +1253,7 @@
               "segments": [
                 {
                   "characters": "버튼",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -1263,7 +1263,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/tertiary"
+          "color/black/2"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -1278,7 +1278,7 @@
           "primaryAlign": "CENTER"
         },
         "minWidth": "size/button/min-width",
-        "name": "Style=Subtle, State=Pressed",
+        "name": "Variant=Subtle, State=Pressed",
         "radius": [
           "radius/control",
           "radius/control",
@@ -1296,7 +1296,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=subtle,state=rest": {
+    "variant=subtle,state=rest": {
       "node": {
         "height": 32,
         "width": 120,
@@ -1306,13 +1306,13 @@
       "nodeId": "13:42",
       "properties": {
         "State": "Rest",
-        "Style": "Subtle"
+        "Variant": "Subtle"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -1330,7 +1330,7 @@
               "segments": [
                 {
                   "characters": "버튼",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -1340,7 +1340,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/transparent"
+          "color/white/0"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -1355,7 +1355,7 @@
           "primaryAlign": "CENTER"
         },
         "minWidth": "size/button/min-width",
-        "name": "Style=Subtle, State=Rest",
+        "name": "Variant=Subtle, State=Rest",
         "radius": [
           "radius/control",
           "radius/control",
@@ -1364,7 +1364,7 @@
         ],
         "reactions": [
           {
-            "destination": "Style=Subtle, State=Hover",
+            "destination": "Variant=Subtle, State=Hover",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [

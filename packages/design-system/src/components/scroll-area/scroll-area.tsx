@@ -130,7 +130,7 @@ export function ScrollArea(props: ScrollAreaProps): JSX.Element {
       <Scrollbar
         ref={scrollbarRef}
         aria-hidden
-        state={isHovered ? 'expanded' : 'rest'}
+        isExpanded={isHovered}
         material={material}
         thumbOffset={thumb?.offset}
         thumbLength={thumb?.length}
