@@ -17,7 +17,7 @@
         "children": [
           {
             "fills": [
-              "SOLID"
+              "color/black/89"
             ],
             "name": "heading 1",
             "size": {
@@ -35,22 +35,22 @@
               "segments": [
                 {
                   "characters": "Notion ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Title"
                 },
                 {
                   "characters": "블록",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Title"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Title"
                 },
                 {
                   "characters": "견본",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Title"
                 }
               ],
@@ -60,7 +60,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "heading 2",
             "size": {
@@ -78,27 +78,27 @@
               "segments": [
                 {
                   "characters": "글자",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Subtitle"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Subtitle"
                 },
                 {
                   "characters": "서식과",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Subtitle"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Subtitle"
                 },
                 {
                   "characters": "목록",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Subtitle"
                 }
               ],
@@ -123,117 +123,117 @@
               "segments": [
                 {
                   "characters": "문단에는",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Large"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Large"
                 },
                 {
                   "characters": "굵게",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Large Strong"
                 },
                 {
                   "characters": ", ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Large"
                 },
                 {
                   "characters": "italic",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Large Italic"
                 },
                 {
                   "characters": ", ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Large"
                 },
                 {
                   "characters": "밑줄",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Large Underline"
                 },
                 {
                   "characters": ", ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Large"
                 },
                 {
                   "characters": "취소선",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Large Strikethrough"
                 },
                 {
                   "characters": ", ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Large"
                 },
                 {
                   "characters": "inlineCode()",
-                  "fill": "post/inline-code",
+                  "fill": "color/red/56",
                   "textStyle": "Code/Inline"
                 },
                 {
                   "characters": ", ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Large"
                 },
                 {
                   "characters": "링크",
-                  "fill": "accent-text-fill/primary",
+                  "fill": "color/blue/72",
                   "textStyle": "Hangul/Body Large Link"
                 },
                 {
                   "characters": "를",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Large"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Large"
                 },
                 {
                   "characters": "섞어",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Large"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Large"
                 },
                 {
                   "characters": "쓸",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Large"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Large"
                 },
                 {
                   "characters": "수",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Large"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Large"
                 },
                 {
                   "characters": "있다",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Large"
                 },
                 {
                   "characters": ".",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Large"
                 }
               ],
@@ -251,7 +251,7 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "marker text",
                             "size": {
@@ -269,7 +269,7 @@
                               "segments": [
                                 {
                                   "characters": "•",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body Large"
                                 }
                               ],
@@ -305,7 +305,7 @@
                       },
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "text",
                         "size": {
@@ -322,28 +322,8 @@
                           "maxLinesVariable": null,
                           "segments": [
                             {
-                              "characters": "글머리",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Hangul/Body Large"
-                            },
-                            {
-                              "characters": " ",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Body Large"
-                            },
-                            {
-                              "characters": "목록",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Hangul/Body Large"
-                            },
-                            {
-                              "characters": " ",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Body Large"
-                            },
-                            {
-                              "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "characters": "글머리 목록 항목",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body Large"
                             }
                           ],
@@ -385,7 +365,7 @@
                                 "children": [
                                   {
                                     "fills": [
-                                      "text-fill/primary"
+                                      "color/black/89"
                                     ],
                                     "name": "marker text",
                                     "size": {
@@ -403,7 +383,7 @@
                                       "segments": [
                                         {
                                           "characters": "◦",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Body Large"
                                         }
                                       ],
@@ -439,7 +419,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "text",
                                 "size": {
@@ -456,38 +436,8 @@
                                   "maxLinesVariable": null,
                                   "segments": [
                                     {
-                                      "characters": "한",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Hangul/Body Large"
-                                    },
-                                    {
-                                      "characters": " ",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Body Large"
-                                    },
-                                    {
-                                      "characters": "단계",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Hangul/Body Large"
-                                    },
-                                    {
-                                      "characters": " ",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Body Large"
-                                    },
-                                    {
-                                      "characters": "들여쓴",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Hangul/Body Large"
-                                    },
-                                    {
-                                      "characters": " ",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Body Large"
-                                    },
-                                    {
-                                      "characters": "항목",
-                                      "fill": "text-fill/primary",
+                                      "characters": "한 단계 들여쓴 항목",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body Large"
                                     }
                                   ],
@@ -520,19 +470,27 @@
                             "type": "FRAME"
                           }
                         ],
+                        "component": "ListBlock",
                         "layout": {
                           "counterAlign": "MIN",
                           "gap": "spacing/xs",
                           "mode": "VERTICAL",
                           "padding": [
-                            0,
-                            0,
-                            0,
-                            0
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none"
                           ],
                           "primaryAlign": "MIN"
                         },
-                        "name": "list item",
+                        "name": "ListBlock",
+                        "properties": {
+                          "Checked": "False",
+                          "Has children": false,
+                          "Marker": "◦",
+                          "Text": "한 단계 들여쓴 항목",
+                          "Variant": "Bulleted"
+                        },
                         "size": {
                           "h": 24,
                           "w": 688
@@ -541,7 +499,7 @@
                           "h": "FILL",
                           "v": "HUG"
                         },
-                        "type": "FRAME"
+                        "type": "INSTANCE"
                       }
                     ],
                     "layout": {
@@ -556,7 +514,7 @@
                       ],
                       "primaryAlign": "MIN"
                     },
-                    "name": "children",
+                    "name": "Children",
                     "size": {
                       "h": 24,
                       "w": 720
@@ -565,22 +523,30 @@
                       "h": "FILL",
                       "v": "HUG"
                     },
-                    "type": "FRAME"
+                    "type": "SLOT"
                   }
                 ],
+                "component": "ListBlock",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/xs",
                   "mode": "VERTICAL",
                   "padding": [
-                    0,
-                    0,
-                    0,
-                    0
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
                   ],
                   "primaryAlign": "MIN"
                 },
-                "name": "list item",
+                "name": "ListBlock",
+                "properties": {
+                  "Checked": "False",
+                  "Has children": true,
+                  "Marker": "•",
+                  "Text": "글머리 목록 항목",
+                  "Variant": "Bulleted"
+                },
                 "size": {
                   "h": 52,
                   "w": 720
@@ -589,7 +555,7 @@
                   "h": "FILL",
                   "v": "HUG"
                 },
-                "type": "FRAME"
+                "type": "INSTANCE"
               },
               {
                 "children": [
@@ -599,7 +565,7 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "marker text",
                             "size": {
@@ -617,7 +583,7 @@
                               "segments": [
                                 {
                                   "characters": "•",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body Large"
                                 }
                               ],
@@ -653,7 +619,7 @@
                       },
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "text",
                         "size": {
@@ -670,48 +636,8 @@
                           "maxLinesVariable": null,
                           "segments": [
                             {
-                              "characters": "글머리",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Hangul/Body Large"
-                            },
-                            {
-                              "characters": " ",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Body Large"
-                            },
-                            {
-                              "characters": "목록",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Hangul/Body Large"
-                            },
-                            {
-                              "characters": " ",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Body Large"
-                            },
-                            {
-                              "characters": "두",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Hangul/Body Large"
-                            },
-                            {
-                              "characters": " ",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Body Large"
-                            },
-                            {
-                              "characters": "번째",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Hangul/Body Large"
-                            },
-                            {
-                              "characters": " ",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Body Large"
-                            },
-                            {
-                              "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "characters": "글머리 목록 두 번째 항목",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body Large"
                             }
                           ],
@@ -744,19 +670,27 @@
                     "type": "FRAME"
                   }
                 ],
+                "component": "ListBlock",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/xs",
                   "mode": "VERTICAL",
                   "padding": [
-                    0,
-                    0,
-                    0,
-                    0
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
                   ],
                   "primaryAlign": "MIN"
                 },
-                "name": "list item",
+                "name": "ListBlock",
+                "properties": {
+                  "Checked": "False",
+                  "Has children": false,
+                  "Marker": "•",
+                  "Text": "글머리 목록 두 번째 항목",
+                  "Variant": "Bulleted"
+                },
                 "size": {
                   "h": 24,
                   "w": 720
@@ -765,7 +699,7 @@
                   "h": "FILL",
                   "v": "HUG"
                 },
-                "type": "FRAME"
+                "type": "INSTANCE"
               }
             ],
             "layout": {
@@ -801,7 +735,7 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "marker text",
                             "size": {
@@ -819,7 +753,7 @@
                               "segments": [
                                 {
                                   "characters": "1.",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body Large"
                                 }
                               ],
@@ -855,7 +789,7 @@
                       },
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "text",
                         "size": {
@@ -872,28 +806,8 @@
                           "maxLinesVariable": null,
                           "segments": [
                             {
-                              "characters": "번호",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Hangul/Body Large"
-                            },
-                            {
-                              "characters": " ",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Body Large"
-                            },
-                            {
-                              "characters": "목록",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Hangul/Body Large"
-                            },
-                            {
-                              "characters": " ",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Body Large"
-                            },
-                            {
-                              "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "characters": "번호 목록 항목",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body Large"
                             }
                           ],
@@ -935,7 +849,7 @@
                                 "children": [
                                   {
                                     "fills": [
-                                      "text-fill/primary"
+                                      "color/black/89"
                                     ],
                                     "name": "marker text",
                                     "size": {
@@ -953,7 +867,7 @@
                                       "segments": [
                                         {
                                           "characters": "a.",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Body Large"
                                         }
                                       ],
@@ -989,7 +903,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "text",
                                 "size": {
@@ -1006,38 +920,8 @@
                                   "maxLinesVariable": null,
                                   "segments": [
                                     {
-                                      "characters": "한",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Hangul/Body Large"
-                                    },
-                                    {
-                                      "characters": " ",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Body Large"
-                                    },
-                                    {
-                                      "characters": "단계",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Hangul/Body Large"
-                                    },
-                                    {
-                                      "characters": " ",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Body Large"
-                                    },
-                                    {
-                                      "characters": "들여쓴",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Hangul/Body Large"
-                                    },
-                                    {
-                                      "characters": " ",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Body Large"
-                                    },
-                                    {
-                                      "characters": "항목",
-                                      "fill": "text-fill/primary",
+                                      "characters": "한 단계 들여쓴 항목",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body Large"
                                     }
                                   ],
@@ -1070,19 +954,27 @@
                             "type": "FRAME"
                           }
                         ],
+                        "component": "ListBlock",
                         "layout": {
                           "counterAlign": "MIN",
                           "gap": "spacing/xs",
                           "mode": "VERTICAL",
                           "padding": [
-                            0,
-                            0,
-                            0,
-                            0
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none"
                           ],
                           "primaryAlign": "MIN"
                         },
-                        "name": "list item",
+                        "name": "ListBlock",
+                        "properties": {
+                          "Checked": "False",
+                          "Has children": false,
+                          "Marker": "a.",
+                          "Text": "한 단계 들여쓴 항목",
+                          "Variant": "Numbered"
+                        },
                         "size": {
                           "h": 24,
                           "w": 688
@@ -1091,7 +983,7 @@
                           "h": "FILL",
                           "v": "HUG"
                         },
-                        "type": "FRAME"
+                        "type": "INSTANCE"
                       }
                     ],
                     "layout": {
@@ -1106,7 +998,7 @@
                       ],
                       "primaryAlign": "MIN"
                     },
-                    "name": "children",
+                    "name": "Children",
                     "size": {
                       "h": 24,
                       "w": 720
@@ -1115,22 +1007,30 @@
                       "h": "FILL",
                       "v": "HUG"
                     },
-                    "type": "FRAME"
+                    "type": "SLOT"
                   }
                 ],
+                "component": "ListBlock",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/xs",
                   "mode": "VERTICAL",
                   "padding": [
-                    0,
-                    0,
-                    0,
-                    0
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
                   ],
                   "primaryAlign": "MIN"
                 },
-                "name": "list item",
+                "name": "ListBlock",
+                "properties": {
+                  "Checked": "False",
+                  "Has children": true,
+                  "Marker": "1.",
+                  "Text": "번호 목록 항목",
+                  "Variant": "Numbered"
+                },
                 "size": {
                   "h": 52,
                   "w": 720
@@ -1139,7 +1039,7 @@
                   "h": "FILL",
                   "v": "HUG"
                 },
-                "type": "FRAME"
+                "type": "INSTANCE"
               },
               {
                 "children": [
@@ -1149,7 +1049,7 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "marker text",
                             "size": {
@@ -1167,7 +1067,7 @@
                               "segments": [
                                 {
                                   "characters": "2.",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body Large"
                                 }
                               ],
@@ -1203,7 +1103,7 @@
                       },
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "text",
                         "size": {
@@ -1220,48 +1120,8 @@
                           "maxLinesVariable": null,
                           "segments": [
                             {
-                              "characters": "번호",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Hangul/Body Large"
-                            },
-                            {
-                              "characters": " ",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Body Large"
-                            },
-                            {
-                              "characters": "목록",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Hangul/Body Large"
-                            },
-                            {
-                              "characters": " ",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Body Large"
-                            },
-                            {
-                              "characters": "두",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Hangul/Body Large"
-                            },
-                            {
-                              "characters": " ",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Body Large"
-                            },
-                            {
-                              "characters": "번째",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Hangul/Body Large"
-                            },
-                            {
-                              "characters": " ",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Body Large"
-                            },
-                            {
-                              "characters": "항목",
-                              "fill": "text-fill/primary",
+                              "characters": "번호 목록 두 번째 항목",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body Large"
                             }
                           ],
@@ -1294,19 +1154,27 @@
                     "type": "FRAME"
                   }
                 ],
+                "component": "ListBlock",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/xs",
                   "mode": "VERTICAL",
                   "padding": [
-                    0,
-                    0,
-                    0,
-                    0
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
                   ],
                   "primaryAlign": "MIN"
                 },
-                "name": "list item",
+                "name": "ListBlock",
+                "properties": {
+                  "Checked": "False",
+                  "Has children": false,
+                  "Marker": "2.",
+                  "Text": "번호 목록 두 번째 항목",
+                  "Variant": "Numbered"
+                },
                 "size": {
                   "h": 24,
                   "w": 720
@@ -1315,7 +1183,7 @@
                   "h": "FILL",
                   "v": "HUG"
                 },
-                "type": "FRAME"
+                "type": "INSTANCE"
               }
             ],
             "layout": {
@@ -1343,7 +1211,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "heading 3",
             "size": {
@@ -1361,27 +1229,27 @@
               "segments": [
                 {
                   "characters": "할",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Large Strong"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Large Strong"
                 },
                 {
                   "characters": "일",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Large Strong"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Large Strong"
                 },
                 {
                   "characters": "목록",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Large Strong"
                 }
               ],
@@ -1401,7 +1269,7 @@
                             "children": [
                               {
                                 "asset": {
-                                  "color": "text-on-accent-fill/primary",
+                                  "color": "color/white",
                                   "path": "icons/ic_fluent_checkmark_20_regular"
                                 },
                                 "component": "ic_fluent_checkmark_20_regular",
@@ -1421,7 +1289,7 @@
                             ],
                             "component": "Checkbox",
                             "fills": [
-                              "accent-fill/default"
+                              "color/blue/59"
                             ],
                             "height": "size/checkbox/box",
                             "layout": {
@@ -1485,7 +1353,7 @@
                       },
                       {
                         "fills": [
-                          "text-fill/secondary"
+                          "color/black/61"
                         ],
                         "name": "text",
                         "size": {
@@ -1502,28 +1370,8 @@
                           "maxLinesVariable": null,
                           "segments": [
                             {
-                              "characters": "끝낸",
-                              "fill": "text-fill/secondary",
-                              "textStyle": "Hangul/Body Large Strikethrough"
-                            },
-                            {
-                              "characters": " ",
-                              "fill": "text-fill/secondary",
-                              "textStyle": "Body Large Strikethrough"
-                            },
-                            {
-                              "characters": "할",
-                              "fill": "text-fill/secondary",
-                              "textStyle": "Hangul/Body Large Strikethrough"
-                            },
-                            {
-                              "characters": " ",
-                              "fill": "text-fill/secondary",
-                              "textStyle": "Body Large Strikethrough"
-                            },
-                            {
-                              "characters": "일",
-                              "fill": "text-fill/secondary",
+                              "characters": "끝낸 할 일",
+                              "fill": "color/black/61",
                               "textStyle": "Hangul/Body Large Strikethrough"
                             }
                           ],
@@ -1556,19 +1404,27 @@
                     "type": "FRAME"
                   }
                 ],
+                "component": "ListBlock",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/xs",
                   "mode": "VERTICAL",
                   "padding": [
-                    0,
-                    0,
-                    0,
-                    0
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
                   ],
                   "primaryAlign": "MIN"
                 },
-                "name": "list item",
+                "name": "ListBlock",
+                "properties": {
+                  "Checked": "True",
+                  "Has children": false,
+                  "Marker": "1.",
+                  "Text": "끝낸 할 일",
+                  "Variant": "To do"
+                },
                 "size": {
                   "h": 24,
                   "w": 720
@@ -1577,7 +1433,7 @@
                   "h": "FILL",
                   "v": "HUG"
                 },
-                "type": "FRAME"
+                "type": "INSTANCE"
               },
               {
                 "children": [
@@ -1588,7 +1444,7 @@
                           {
                             "component": "Checkbox",
                             "fills": [
-                              "control-alt-fill/secondary"
+                              "color/black/2"
                             ],
                             "height": "size/checkbox/box",
                             "layout": {
@@ -1628,7 +1484,7 @@
                               "stroke-width/default"
                             ],
                             "strokes": [
-                              "control-strong-stroke/default"
+                              "color/black/61"
                             ],
                             "strokesIncludedInLayout": true,
                             "type": "INSTANCE",
@@ -1662,7 +1518,7 @@
                       },
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "text",
                         "size": {
@@ -1679,28 +1535,8 @@
                           "maxLinesVariable": null,
                           "segments": [
                             {
-                              "characters": "남은",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Hangul/Body Large"
-                            },
-                            {
-                              "characters": " ",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Body Large"
-                            },
-                            {
-                              "characters": "할",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Hangul/Body Large"
-                            },
-                            {
-                              "characters": " ",
-                              "fill": "text-fill/primary",
-                              "textStyle": "Body Large"
-                            },
-                            {
-                              "characters": "일",
-                              "fill": "text-fill/primary",
+                              "characters": "남은 할 일",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body Large"
                             }
                           ],
@@ -1743,7 +1579,7 @@
                                   {
                                     "component": "Checkbox",
                                     "fills": [
-                                      "control-alt-fill/secondary"
+                                      "color/black/2"
                                     ],
                                     "height": "size/checkbox/box",
                                     "layout": {
@@ -1783,7 +1619,7 @@
                                       "stroke-width/default"
                                     ],
                                     "strokes": [
-                                      "control-strong-stroke/default"
+                                      "color/black/61"
                                     ],
                                     "strokesIncludedInLayout": true,
                                     "type": "INSTANCE",
@@ -1817,7 +1653,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "text",
                                 "size": {
@@ -1834,48 +1670,8 @@
                                   "maxLinesVariable": null,
                                   "segments": [
                                     {
-                                      "characters": "한",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Hangul/Body Large"
-                                    },
-                                    {
-                                      "characters": " ",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Body Large"
-                                    },
-                                    {
-                                      "characters": "단계",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Hangul/Body Large"
-                                    },
-                                    {
-                                      "characters": " ",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Body Large"
-                                    },
-                                    {
-                                      "characters": "들여쓴",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Hangul/Body Large"
-                                    },
-                                    {
-                                      "characters": " ",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Body Large"
-                                    },
-                                    {
-                                      "characters": "할",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Hangul/Body Large"
-                                    },
-                                    {
-                                      "characters": " ",
-                                      "fill": "text-fill/primary",
-                                      "textStyle": "Body Large"
-                                    },
-                                    {
-                                      "characters": "일",
-                                      "fill": "text-fill/primary",
+                                      "characters": "한 단계 들여쓴 할 일",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body Large"
                                     }
                                   ],
@@ -1908,19 +1704,27 @@
                             "type": "FRAME"
                           }
                         ],
+                        "component": "ListBlock",
                         "layout": {
                           "counterAlign": "MIN",
                           "gap": "spacing/xs",
                           "mode": "VERTICAL",
                           "padding": [
-                            0,
-                            0,
-                            0,
-                            0
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none"
                           ],
                           "primaryAlign": "MIN"
                         },
-                        "name": "list item",
+                        "name": "ListBlock",
+                        "properties": {
+                          "Checked": "False",
+                          "Has children": false,
+                          "Marker": "1.",
+                          "Text": "한 단계 들여쓴 할 일",
+                          "Variant": "To do"
+                        },
                         "size": {
                           "h": 24,
                           "w": 688
@@ -1929,7 +1733,7 @@
                           "h": "FILL",
                           "v": "HUG"
                         },
-                        "type": "FRAME"
+                        "type": "INSTANCE"
                       }
                     ],
                     "layout": {
@@ -1944,7 +1748,7 @@
                       ],
                       "primaryAlign": "MIN"
                     },
-                    "name": "children",
+                    "name": "Children",
                     "size": {
                       "h": 24,
                       "w": 720
@@ -1953,22 +1757,30 @@
                       "h": "FILL",
                       "v": "HUG"
                     },
-                    "type": "FRAME"
+                    "type": "SLOT"
                   }
                 ],
+                "component": "ListBlock",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/xs",
                   "mode": "VERTICAL",
                   "padding": [
-                    0,
-                    0,
-                    0,
-                    0
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
                   ],
                   "primaryAlign": "MIN"
                 },
-                "name": "list item",
+                "name": "ListBlock",
+                "properties": {
+                  "Checked": "False",
+                  "Has children": true,
+                  "Marker": "1.",
+                  "Text": "남은 할 일",
+                  "Variant": "To do"
+                },
                 "size": {
                   "h": 52,
                   "w": 720
@@ -1977,7 +1789,7 @@
                   "h": "FILL",
                   "v": "HUG"
                 },
-                "type": "FRAME"
+                "type": "INSTANCE"
               }
             ],
             "layout": {
@@ -2009,7 +1821,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "text",
                     "size": {
@@ -2027,72 +1839,72 @@
                       "segments": [
                         {
                           "characters": "인용",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "블록의",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "글이다",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": ". ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "출처나",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "강조할",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "문장을",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "담는다",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": ".",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         }
                       ],
@@ -2155,7 +1967,7 @@
               "stroke-width/indicator"
             ],
             "strokes": [
-              "control-strong-stroke/default"
+              "color/black/61"
             ],
             "strokesIncludedInLayout": true,
             "type": "INSTANCE"
@@ -2166,7 +1978,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_info_24_regular"
                     },
                     "component": "ic_fluent_info_24_regular",
@@ -2212,7 +2024,7 @@
                 "children": [
                   {
                     "fills": [
-                      "SOLID"
+                      "color/black/89"
                     ],
                     "name": "text",
                     "size": {
@@ -2230,147 +2042,147 @@
                       "segments": [
                         {
                           "characters": "콜아웃은",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "아이콘과",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "함께",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "눈에",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "띄게",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "보여",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "줄",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "글을",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "담는다",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": ". ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "글자",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large Strong"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large Strong"
                         },
                         {
                           "characters": "서식",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large Strong"
                         },
                         {
                           "characters": "도",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "쓸",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "수",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "있다",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": ".",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         }
                       ],
@@ -2405,7 +2217,7 @@
             ],
             "component": "Callout",
             "fills": [
-              "card-background-fill/secondary"
+              "color/gray/3/50"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -2442,7 +2254,7 @@
               "stroke-width/default"
             ],
             "strokes": [
-              "card-stroke/default"
+              "color/black/6"
             ],
             "strokesIncludedInLayout": true,
             "type": "INSTANCE"
@@ -2453,7 +2265,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-fill/secondary"
+                      "color/black/61"
                     ],
                     "name": "language",
                     "size": {
@@ -2471,7 +2283,7 @@
                       "segments": [
                         {
                           "characters": "tsx",
-                          "fill": "text-fill/secondary",
+                          "fill": "color/black/61",
                           "textStyle": "Hangul/Caption"
                         }
                       ],
@@ -2483,7 +2295,7 @@
                     "children": [
                       {
                         "asset": {
-                          "color": "text-fill/primary",
+                          "color": "color/black/89",
                           "path": "icons/ic_fluent_copy_20_regular"
                         },
                         "component": "ic_fluent_copy_20_regular",
@@ -2503,7 +2315,7 @@
                     ],
                     "component": "IconButton",
                     "fills": [
-                      "subtle-fill/transparent"
+                      "color/white/0"
                     ],
                     "layout": {
                       "counterAlign": "CENTER",
@@ -2520,7 +2332,7 @@
                     "name": "copy",
                     "properties": {
                       "State": "Rest",
-                      "Style": "Subtle"
+                      "Variant": "Subtle"
                     },
                     "radius": [
                       "radius/control",
@@ -2565,6 +2377,9 @@
               {
                 "children": [
                   {
+                    "fills": [
+                      "color/black"
+                    ],
                     "name": "code",
                     "size": {
                       "h": 200,
@@ -2580,473 +2395,8 @@
                       "maxLinesVariable": null,
                       "segments": [
                         {
-                          "characters": "// 글을 읽어 제목을 그린다\n",
-                          "fill": "code-syntax/comment",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "import",
-                          "fill": "code-syntax/keyword-control",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "{",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "use",
-                          "fill": "code-syntax/variable",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "}",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "from",
-                          "fill": "code-syntax/keyword-control",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "'react'",
-                          "fill": "code-syntax/string",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": ";\n",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "\n",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "export",
-                          "fill": "code-syntax/keyword-control",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "function",
-                          "fill": "code-syntax/keyword",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "PostTitle",
-                          "fill": "code-syntax/function",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "({",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "post",
-                          "fill": "code-syntax/parameter",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "}:",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "{",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "post",
-                          "fill": "code-syntax/variable",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": ":",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "Post",
-                          "fill": "code-syntax/type",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "})",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "{\n",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "  ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "const",
-                          "fill": "code-syntax/keyword",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "count",
-                          "fill": "code-syntax/variable",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "=",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "3",
-                          "fill": "code-syntax/constant",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": ";\n",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "  ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "return",
-                          "fill": "code-syntax/keyword-control",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "<h1",
-                          "fill": "code-syntax/tag",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "className",
-                          "fill": "code-syntax/attribute",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "=",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "\"title\"",
-                          "fill": "code-syntax/string",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": ">",
-                          "fill": "code-syntax/tag",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "{",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "post",
-                          "fill": "code-syntax/variable",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": ".",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "title",
-                          "fill": "code-syntax/variable",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "}",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "</h1>",
-                          "fill": "code-syntax/tag",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": ";\n}\n",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "\n",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "const",
-                          "fill": "code-syntax/keyword",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "SLUG",
-                          "fill": "code-syntax/variable-constant",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "=",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "/",
-                          "fill": "code-syntax/regexp",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "^",
-                          "fill": "code-syntax/escape",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "(",
-                          "fill": "code-syntax/regexp-group",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "post",
-                          "fill": "code-syntax/regexp",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "|",
-                          "fill": "code-syntax/escape",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "page",
-                          "fill": "code-syntax/regexp",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": ")",
-                          "fill": "code-syntax/regexp-group",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "\\n$",
-                          "fill": "code-syntax/escape",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "/",
-                          "fill": "code-syntax/regexp",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": ";\n",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "const",
-                          "fill": "code-syntax/keyword",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "META",
-                          "fill": "code-syntax/variable-constant",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "=",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "{",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "\"slug\"",
-                          "fill": "code-syntax/key-value",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": ":",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "$slug",
-                          "fill": "code-syntax/variable-navy",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": ",",
-                          "fill": "code-syntax/punctuation",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "@",
-                          "fill": "code-syntax/invalid",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/text",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "};",
-                          "fill": "code-syntax/punctuation",
+                          "characters": "// 글을 읽어 제목을 그린다\nimport { use } from 'react';\n\nexport function PostTitle({ post }: { post: Post }) {\n  const count = 3;\n  return <h1 className=\"title\">{post.title}</h1>;\n}\n\nconst SLUG = /^(post|page)\\n$/;\nconst META = { \"slug\": $slug, @ };",
+                          "fill": "color/black",
                           "textStyle": "Code"
                         }
                       ],
@@ -3081,7 +2431,7 @@
             ],
             "component": "CodeBlock",
             "fills": [
-              "solid-background-fill/tertiary"
+              "color/gray/2"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -3120,7 +2470,7 @@
               "stroke-width/default"
             ],
             "strokes": [
-              "card-stroke/default"
+              "color/black/6"
             ],
             "strokesIncludedInLayout": true,
             "type": "INSTANCE"
@@ -3184,7 +2534,7 @@
               },
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "caption",
                 "size": {
@@ -3202,37 +2552,37 @@
                   "segments": [
                     {
                       "characters": "이미지",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "아래에",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "붙는",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "캡션",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -3257,7 +2607,7 @@
             "name": "figure",
             "properties": {
               "Caption": "이미지 아래에 붙는 캡션",
-              "Show caption": true
+              "Has caption": true
             },
             "size": {
               "h": 478,
@@ -3272,9 +2622,8 @@
           {
             "component": "Separator",
             "fills": [
-              "divider-stroke/default"
+              "color/black/8"
             ],
-            "height": "stroke-width/default",
             "name": "divider",
             "properties": {
               "Orientation": "Horizontal"
@@ -3297,7 +2646,7 @@
                     "children": [
                       {
                         "asset": {
-                          "color": "text-fill/primary",
+                          "color": "color/black/89",
                           "path": "icons/ic_fluent_chevron_right_16_regular"
                         },
                         "component": "ic_fluent_chevron_right_16_regular",
@@ -3346,7 +2695,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "title",
                     "size": {
@@ -3364,17 +2713,17 @@
                       "segments": [
                         {
                           "characters": "펼친",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "토글",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         }
                       ],
@@ -3410,7 +2759,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "text",
                     "size": {
@@ -3428,42 +2777,42 @@
                       "segments": [
                         {
                           "characters": "토글을",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "펼치면",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "보이는",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "글이다",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": ".",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         }
                       ],
@@ -3532,7 +2881,7 @@
                     "children": [
                       {
                         "asset": {
-                          "color": "text-fill/primary",
+                          "color": "color/black/89",
                           "path": "icons/ic_fluent_chevron_right_16_regular"
                         },
                         "component": "ic_fluent_chevron_right_16_regular",
@@ -3577,7 +2926,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "title",
                     "size": {
@@ -3595,17 +2944,17 @@
                       "segments": [
                         {
                           "characters": "접힌",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body Large"
                         },
                         {
                           "characters": "토글",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Large"
                         }
                       ],
@@ -3676,7 +3025,7 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "text",
                             "size": {
@@ -3694,7 +3043,7 @@
                               "segments": [
                                 {
                                   "characters": "훅",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body Strong"
                                 }
                               ],
@@ -3705,7 +3054,7 @@
                         ],
                         "component": "TableCell",
                         "fills": [
-                          "subtle-fill/secondary"
+                          "color/black/4"
                         ],
                         "layout": {
                           "counterAlign": "MIN",
@@ -3721,9 +3070,9 @@
                         },
                         "name": "cell",
                         "properties": {
-                          "Body Text": "칸 내용",
+                          "Body text": "칸 내용",
                           "Text": "훅",
-                          "Type": "Header"
+                          "Variant": "Header"
                         },
                         "size": {
                           "h": 37,
@@ -3740,7 +3089,7 @@
                           0
                         ],
                         "strokes": [
-                          "divider-stroke/default"
+                          "color/black/8"
                         ],
                         "strokesIncludedInLayout": true,
                         "type": "INSTANCE"
@@ -3749,7 +3098,7 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "text",
                             "size": {
@@ -3767,17 +3116,17 @@
                               "segments": [
                                 {
                                   "characters": "하는",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body Strong"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body Strong"
                                 },
                                 {
                                   "characters": "일",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body Strong"
                                 }
                               ],
@@ -3788,7 +3137,7 @@
                         ],
                         "component": "TableCell",
                         "fills": [
-                          "subtle-fill/secondary"
+                          "color/black/4"
                         ],
                         "layout": {
                           "counterAlign": "MIN",
@@ -3804,9 +3153,9 @@
                         },
                         "name": "cell",
                         "properties": {
-                          "Body Text": "칸 내용",
+                          "Body text": "칸 내용",
                           "Text": "하는 일",
-                          "Type": "Header"
+                          "Variant": "Header"
                         },
                         "size": {
                           "h": 37,
@@ -3823,7 +3172,7 @@
                           0
                         ],
                         "strokes": [
-                          "divider-stroke/default"
+                          "color/black/8"
                         ],
                         "strokesIncludedInLayout": true,
                         "type": "INSTANCE"
@@ -3858,7 +3207,7 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "text",
                             "size": {
@@ -3876,7 +3225,7 @@
                               "segments": [
                                 {
                                   "characters": "use",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 }
                               ],
@@ -3900,9 +3249,9 @@
                         },
                         "name": "cell",
                         "properties": {
-                          "Body Text": "use",
+                          "Body text": "use",
                           "Text": "use",
-                          "Type": "Body"
+                          "Variant": "Body"
                         },
                         "size": {
                           "h": 37,
@@ -3919,7 +3268,7 @@
                           0
                         ],
                         "strokes": [
-                          "divider-stroke/default"
+                          "color/black/8"
                         ],
                         "strokesIncludedInLayout": true,
                         "type": "INSTANCE"
@@ -3928,7 +3277,7 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "text",
                             "size": {
@@ -3946,52 +3295,52 @@
                               "segments": [
                                 {
                                   "characters": "Promise",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "와",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " Context",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "를",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "렌더링",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "중에",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "읽는다",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 }
                               ],
@@ -4015,9 +3364,9 @@
                         },
                         "name": "cell",
                         "properties": {
-                          "Body Text": "Promise와 Context를 렌더링 중에 읽는다",
+                          "Body text": "Promise와 Context를 렌더링 중에 읽는다",
                           "Text": "Promise와 Context를 렌더링 중에 읽는다",
-                          "Type": "Body"
+                          "Variant": "Body"
                         },
                         "size": {
                           "h": 37,
@@ -4034,7 +3383,7 @@
                           0
                         ],
                         "strokes": [
-                          "divider-stroke/default"
+                          "color/black/8"
                         ],
                         "strokesIncludedInLayout": true,
                         "type": "INSTANCE"
@@ -4069,7 +3418,7 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "text",
                             "size": {
@@ -4087,7 +3436,7 @@
                               "segments": [
                                 {
                                   "characters": "useActionState",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 }
                               ],
@@ -4111,9 +3460,9 @@
                         },
                         "name": "cell",
                         "properties": {
-                          "Body Text": "useActionState",
+                          "Body text": "useActionState",
                           "Text": "useActionState",
-                          "Type": "Body"
+                          "Variant": "Body"
                         },
                         "size": {
                           "h": 37,
@@ -4130,7 +3479,7 @@
                           0
                         ],
                         "strokes": [
-                          "divider-stroke/default"
+                          "color/black/8"
                         ],
                         "strokesIncludedInLayout": true,
                         "type": "INSTANCE"
@@ -4139,7 +3488,7 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "text",
                             "size": {
@@ -4157,57 +3506,57 @@
                               "segments": [
                                 {
                                   "characters": "폼",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "제출",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "결과와",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "대기",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "상태를",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "다룬다",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 }
                               ],
@@ -4231,9 +3580,9 @@
                         },
                         "name": "cell",
                         "properties": {
-                          "Body Text": "폼 제출 결과와 대기 상태를 다룬다",
+                          "Body text": "폼 제출 결과와 대기 상태를 다룬다",
                           "Text": "폼 제출 결과와 대기 상태를 다룬다",
-                          "Type": "Body"
+                          "Variant": "Body"
                         },
                         "size": {
                           "h": 37,
@@ -4250,7 +3599,7 @@
                           0
                         ],
                         "strokes": [
-                          "divider-stroke/default"
+                          "color/black/8"
                         ],
                         "strokesIncludedInLayout": true,
                         "type": "INSTANCE"
@@ -4334,7 +3683,7 @@
               "stroke-width/default"
             ],
             "strokes": [
-              "divider-stroke/default"
+              "color/black/8"
             ],
             "strokesIncludedInLayout": true,
             "type": "INSTANCE"
@@ -4343,7 +3692,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "title",
                 "size": {
@@ -4361,22 +3710,22 @@
                   "segments": [
                     {
                       "characters": "React ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Strong"
                     },
                     {
                       "characters": "공식",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Strong"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Strong"
                     },
                     {
                       "characters": "문서",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Strong"
                     }
                   ],
@@ -4386,7 +3735,7 @@
               },
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "description",
                 "size": {
@@ -4404,67 +3753,67 @@
                   "segments": [
                     {
                       "characters": "React",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Caption"
                     },
                     {
                       "characters": "로",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Caption"
                     },
                     {
                       "characters": "사용자",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Caption"
                     },
                     {
                       "characters": "인터페이스를",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Caption"
                     },
                     {
                       "characters": "만드는",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Caption"
                     },
                     {
                       "characters": "방법을",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Caption"
                     },
                     {
                       "characters": "배운다",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     },
                     {
                       "characters": ".",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Caption"
                     }
                   ],
@@ -4476,7 +3825,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/secondary",
+                      "color": "color/black/61",
                       "path": "icons/ic_fluent_link_20_regular"
                     },
                     "component": "ic_fluent_link_20_regular",
@@ -4495,7 +3844,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/secondary"
+                      "color/black/61"
                     ],
                     "name": "address",
                     "size": {
@@ -4513,7 +3862,7 @@
                       "segments": [
                         {
                           "characters": "https://react.dev",
-                          "fill": "text-fill/secondary",
+                          "fill": "color/black/61",
                           "textStyle": "Caption"
                         }
                       ],
@@ -4548,7 +3897,7 @@
             ],
             "component": "Bookmark",
             "fills": [
-              "card-background-fill/secondary"
+              "color/gray/3/50"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -4589,7 +3938,7 @@
               "stroke-width/default"
             ],
             "strokes": [
-              "card-stroke/default"
+              "color/black/6"
             ],
             "strokesIncludedInLayout": true,
             "type": "INSTANCE"
@@ -4606,7 +3955,6 @@
                     "fills": [
                       "IMAGE"
                     ],
-                    "height": "size/equation/height",
                     "name": "formula",
                     "size": {
                       "h": 50,
@@ -4616,8 +3964,7 @@
                       "h": "FIXED",
                       "v": "FIXED"
                     },
-                    "type": "INSTANCE",
-                    "width": "size/equation/width"
+                    "type": "INSTANCE"
                   }
                 ],
                 "layout": {
@@ -4673,7 +4020,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "text-fill/secondary",
+                  "color": "color/black/61",
                   "path": "icons/ic_fluent_warning_24_regular"
                 },
                 "component": "ic_fluent_warning_24_regular",
@@ -4692,7 +4039,7 @@
               },
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "message",
                 "size": {
@@ -4710,32 +4057,32 @@
                   "segments": [
                     {
                       "characters": "지원하지",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "않는",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "블록",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": "(embed)",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Body"
                     }
                   ],
@@ -4746,7 +4093,7 @@
             ],
             "component": "UnsupportedBlock",
             "fills": [
-              "subtle-fill/secondary"
+              "color/black/4"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -4785,14 +4132,14 @@
               "stroke-width/default"
             ],
             "strokes": [
-              "card-stroke/default"
+              "color/black/6"
             ],
             "strokesIncludedInLayout": true,
             "type": "INSTANCE"
           }
         ],
         "fills": [
-          "chrome/page-fill"
+          "color/white"
         ],
         "layout": {
           "counterAlign": "MIN",
@@ -4815,8 +4162,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/post/width"
+        "type": "COMPONENT"
       }
     }
   }
