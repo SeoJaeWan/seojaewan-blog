@@ -12,7 +12,7 @@ const coverImage = new URL('../../assets/images/wallpaper-bloom.webp', import.me
 const meta = {
   title: 'Components/PostCover',
   // 이미지는 글마다 달라 필수 prop이므로, Figma 스토리가 피그마 기본 인스턴스(wallpaper/Bloom)를 넣는다.
-  // 너비는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 너비로 감싼다.
+  // 너비는 쓰는 곳이 정하므로 견본 크기(@sample-size width)인 export.json 숫자로 FigmaFrame이 감싼다.
   decorators: [figmaFrame(postCoverExport)],
   render: () => <PostCover image={<ImageAsset name="images/wallpaper-bloom" />} />,
 } satisfies Meta;
