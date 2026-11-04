@@ -1,5 +1,5 @@
 {
-  "description": "항목 수와 선택 상태를 보여 주는 줄로, 파일 탐색기 본문 맨 아래에 쓴다.",
+  "description": "항목 수와 선택 상태를 보여 주는 줄로, 파일 탐색기 본문 맨 아래에 쓴다.\n@sample-size width",
   "name": "ExplorerStatusBar",
   "nodeId": "439:5874",
   "propertyDefinitions": {
@@ -11,6 +11,10 @@
       ],
       "type": "VARIANT"
     },
+    "Has selection": {
+      "default": true,
+      "type": "BOOLEAN"
+    },
     "Item count": {
       "default": "항목 개수",
       "type": "TEXT"
@@ -18,10 +22,6 @@
     "Selection": {
       "default": "선택 정보",
       "type": "TEXT"
-    },
-    "Show selection": {
-      "default": true,
-      "type": "BOOLEAN"
     }
   },
   "variants": {
@@ -40,7 +40,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "item count",
             "size": {
@@ -58,17 +58,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "개수",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -78,7 +78,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "selection",
             "size": {
@@ -96,17 +96,17 @@
               "segments": [
                 {
                   "characters": "선택",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "정보",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -143,7 +143,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "text-fill/primary",
+                  "color": "color/black/89",
                   "path": "icons/ic_fluent_text_bullet_list_ltr_20_regular"
                 },
                 "component": "ic_fluent_text_bullet_list_ltr_20_regular",
@@ -163,7 +163,7 @@
             ],
             "component": "IconButton",
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -180,7 +180,7 @@
             "name": "details view",
             "properties": {
               "State": "Rest",
-              "Style": "Subtle"
+              "Variant": "Subtle"
             },
             "radius": [
               "radius/control",
@@ -202,7 +202,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "text-fill/primary",
+                  "color": "color/black/89",
                   "path": "icons/ic_fluent_grid_20_regular"
                 },
                 "component": "ic_fluent_grid_20_regular",
@@ -222,7 +222,7 @@
             ],
             "component": "IconButton",
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -239,7 +239,7 @@
             "name": "large icons view",
             "properties": {
               "State": "Rest",
-              "Style": "Subtle"
+              "Variant": "Subtle"
             },
             "radius": [
               "radius/control",
@@ -259,7 +259,7 @@
           }
         ],
         "fills": [
-          "layer-fill/default"
+          "color/white/50"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -282,8 +282,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/explorer/content-width"
+        "type": "COMPONENT"
       }
     },
     "device=mobile": {
@@ -301,7 +300,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "item count",
             "size": {
@@ -319,17 +318,17 @@
               "segments": [
                 {
                   "characters": "항목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "개수",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -339,7 +338,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "selection",
             "size": {
@@ -357,17 +356,17 @@
               "segments": [
                 {
                   "characters": "선택",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "정보",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -402,7 +401,7 @@
           }
         ],
         "fills": [
-          "layer-fill/default"
+          "color/white/50"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -425,8 +424,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/window/mobile-content-width"
+        "type": "COMPONENT"
       }
     }
   }

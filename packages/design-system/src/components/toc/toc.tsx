@@ -5,8 +5,8 @@ import { Asset } from '../asset/asset';
 import { SectionTitle } from '../section-title/section-title';
 
 type TocProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
-  /** 피그마 State 변형. 펼치면 제목과 항목 목록, 접으면 제목과 아래 꺾쇠만 보인다 */
-  state?: 'expanded' | 'collapsed';
+  /** 피그마 State=Expanded 변형. 펼치면 제목과 항목 목록, 접으면 제목과 아래 꺾쇠만 보인다 */
+  isExpanded?: boolean;
   /** 제목 글자다 */
   title?: string;
   /** 피그마 `Items` 슬롯. 펼친 상태에서 TocItem을 세로로 넣는다 */
@@ -22,15 +22,8 @@ type TocProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
  * @param props
  */
 export function Toc(props: TocProps): JSX.Element {
-  const {
-    state = 'expanded',
-    title = '목차',
-    children,
-    titleProps,
-    className,
-    ...divProps
-  } = props;
-  if (state === 'collapsed') {
+  const { isExpanded = true, title = '목차', children, titleProps, className, ...divProps } = props;
+  if (!isExpanded) {
     return (
       <div
         {...divProps}

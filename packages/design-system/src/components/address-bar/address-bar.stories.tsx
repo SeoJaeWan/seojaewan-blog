@@ -48,7 +48,7 @@ const meta = {
         aria-label="주소"
         url={args.url}
         query={args.query}
-        suggesting={args.state === 'suggesting'}
+        isSuggesting={args.state === 'suggesting'}
         onChange={handleChange}
       />
     );
