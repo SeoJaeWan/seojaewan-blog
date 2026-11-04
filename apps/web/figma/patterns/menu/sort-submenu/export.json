@@ -29,7 +29,7 @@
                                 "children": [
                                   {
                                     "fills": [
-                                      "text-fill/primary"
+                                      "color/black/89"
                                     ],
                                     "height": "size/menu-item/bullet",
                                     "name": "bullet",
@@ -72,7 +72,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
@@ -90,7 +90,7 @@
                                   "segments": [
                                     {
                                       "characters": "이름",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -100,7 +100,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -147,13 +147,13 @@
                         },
                         "name": "radio 이름",
                         "properties": {
-                          "Kind": "Radio on",
+                          "Has icon": true,
+                          "Has shortcut": false,
                           "Label": "이름",
                           "Shortcut": "Ctrl+O",
-                          "Show icon": true,
-                          "Show shortcut": false,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Radio on"
                         },
                         "size": {
                           "h": 32,
@@ -197,7 +197,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
@@ -215,17 +215,17 @@
                                   "segments": [
                                     {
                                       "characters": "항목",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     },
                                     {
                                       "characters": " ",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Body"
                                     },
                                     {
                                       "characters": "유형",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -235,7 +235,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -282,13 +282,13 @@
                         },
                         "name": "radio 항목 유형",
                         "properties": {
-                          "Kind": "Radio off",
+                          "Has icon": false,
+                          "Has shortcut": false,
                           "Label": "항목 유형",
                           "Shortcut": "Ctrl+O",
-                          "Show icon": false,
-                          "Show shortcut": false,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Radio off"
                         },
                         "size": {
                           "h": 32,
@@ -332,7 +332,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
@@ -350,17 +350,17 @@
                                   "segments": [
                                     {
                                       "characters": "수정한",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     },
                                     {
                                       "characters": " ",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Body"
                                     },
                                     {
                                       "characters": "날짜",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -370,7 +370,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -417,13 +417,13 @@
                         },
                         "name": "radio 수정한 날짜",
                         "properties": {
-                          "Kind": "Radio off",
+                          "Has icon": false,
+                          "Has shortcut": false,
                           "Label": "수정한 날짜",
                           "Shortcut": "Ctrl+O",
-                          "Show icon": false,
-                          "Show shortcut": false,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Radio off"
                         },
                         "size": {
                           "h": 32,
@@ -506,7 +506,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "surface-stroke/flyout"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": true,
                 "type": "INSTANCE"
@@ -534,8 +534,7 @@
               "h": "FIXED",
               "v": "HUG"
             },
-            "type": "INSTANCE",
-            "width": "size/menu/width"
+            "type": "INSTANCE"
           }
         ],
         "layout": {
