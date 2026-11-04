@@ -189,7 +189,7 @@ export function useWindowDrag(options: UseWindowDragOptions): WindowDragHandlers
             return;
           }
           setInteraction('drag');
-          if (startPlacement === 'normal') {
+          if (startPlacement === 'default') {
             base = { bounds: startRect, pointer: grab };
           } else {
             const detached = getDetachedBounds(startRect, floatingSize, grab, point, area);
