@@ -29,17 +29,8 @@ export type WindowBounds = {
 /** 창 크기(px) */
 type WindowSize = Pick<WindowBounds, 'width' | 'height'>;
 
-/** 창 배치. normal은 떠 있는 창, maximized는 작업 영역을 채운 창, snapped는 스냅 칸을 채운 창이다 */
-export type WindowPlacement = 'normal' | 'maximized' | 'snapped';
-
-/**
- * 창 배치를 WindowFrame의 `placement` 값으로 바꾼다. 창 상태의 `normal`(떠 있는 창)이 WindowFrame에서는 `default`다.
- * @param placement 창 상태의 배치
- * @returns WindowFrame 배치 값
- */
-export function toFramePlacement(placement: WindowPlacement): 'default' | 'maximized' | 'snapped' {
-  return placement === 'normal' ? 'default' : placement;
-}
+/** 창 배치. default는 떠 있는 창, maximized는 작업 영역을 채운 창, snapped는 스냅 칸을 채운 창이다 */
+export type WindowPlacement = 'default' | 'maximized' | 'snapped';
 
 /** 스냅 레이아웃 종류. 반반, 2:1, 반 + 4분의 1 두 칸, 4분할이다(디자인 시스템 `SnapLayoutOption`과 같은 이름) */
 export type SnapLayout = 'half' | 'two-thirds' | 'half-quarter' | 'quad';
@@ -106,7 +97,7 @@ export type OpenWindow = {
   app: WindowApp;
   /** 연 차례(1부터). 화면에 그리는 DOM 순서를 고정하는 데 쓴다 */
   serial: number;
-  /** 떠 있을 때(placement normal)의 자리. 최대화·스냅해도 지우지 않아 떠 있는 창으로 돌아갈 때 쓴다 */
+  /** 떠 있을 때(placement default)의 자리. 최대화·스냅해도 지우지 않아 떠 있는 창으로 돌아갈 때 쓴다 */
   bounds: WindowBounds;
   /** 배치 */
   placement: WindowPlacement;
@@ -298,7 +289,7 @@ export function openWindow(
     app,
     serial,
     bounds: { ...position, width, height },
-    placement: 'normal',
+    placement: 'default',
     snapZone: null,
     previous: null,
     isMinimized: false,
@@ -526,7 +517,7 @@ export function restoreFromMaximize(state: WindowState, id: string): WindowState
   if (target === undefined || target.placement !== 'maximized') {
     return state;
   }
-  const restorePoint = target.previous ?? { placement: 'normal', snapZone: null };
+  const restorePoint = target.previous ?? { placement: 'default', snapZone: null };
   return replaceWindow(state, {
     ...target,
     placement: restorePoint.placement,
@@ -724,7 +715,7 @@ export function getVisibleWindowBounds(
  */
 export function setWindowBounds(state: WindowState, id: string, bounds: WindowBounds): WindowState {
   const target = state.windows[id];
-  if (target === undefined || target.placement !== 'normal') {
+  if (target === undefined || target.placement !== 'default') {
     return state;
   }
   return replaceWindow(state, { ...target, bounds });
@@ -741,12 +732,12 @@ export function setWindowBounds(state: WindowState, id: string, bounds: WindowBo
  */
 export function detachWindow(state: WindowState, id: string, bounds: WindowBounds): WindowState {
   const target = state.windows[id];
-  if (target === undefined || target.placement === 'normal') {
+  if (target === undefined || target.placement === 'default') {
     return state;
   }
   return replaceWindow(state, {
     ...target,
-    placement: 'normal',
+    placement: 'default',
     snapZone: null,
     previous: null,
     bounds,

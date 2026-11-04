@@ -396,7 +396,7 @@ export const MaximizeAndRestore: Story = {
 
     await step('"이전 크기로 복원" 버튼을 누르면 원래 자리로 돌아간다', async () => {
       await userEvent.click(within(region).getByRole('button', { name: '이전 크기로 복원' }));
-      await expect(getStoredWindow('window-1')?.placement).toBe('normal');
+      await expect(getStoredWindow('window-1')?.placement).toBe('default');
       await expect(region.offsetLeft).toBe(FIRST_BOUNDS.x);
       await expect(region.offsetWidth).toBe(FIRST_BOUNDS.width);
       await expect(within(region).getByRole('button', { name: '최대화' })).toBeInTheDocument();
@@ -406,7 +406,7 @@ export const MaximizeAndRestore: Story = {
       await fireEvent.dblClick(title);
       await expect(getStoredWindow('window-1')?.placement).toBe('maximized');
       await fireEvent.dblClick(title);
-      await expect(getStoredWindow('window-1')?.placement).toBe('normal');
+      await expect(getStoredWindow('window-1')?.placement).toBe('default');
     });
   },
 };
@@ -774,7 +774,7 @@ export const DragToSnap: Story = {
       await fireEvent.pointerMove(title, storyPointerInit({ x: 1500, y: 500 }));
       await expect(querySnapPreview()).toBeNull();
       await fireEvent.pointerUp(title, storyPointerInit({ x: 1500, y: 500 }));
-      await expect(getStoredWindow('window-1')?.placement).toBe('normal');
+      await expect(getStoredWindow('window-1')?.placement).toBe('default');
     });
 
     await step(
@@ -871,7 +871,7 @@ export const DragOffSnapped: Story = {
         ]);
         // 작업 영역 너비의 1/4 지점을 눌렀으므로 창 너비의 1/4 지점이 포인터 아래에 온다
         await expect(getStoredWindow('window-1')).toMatchObject({
-          placement: 'normal',
+          placement: 'default',
           bounds: { x: 244, y: 30, width: 1024, height: 640 },
         });
         await waitFor(() => expect(region.offsetWidth).toBe(1024));

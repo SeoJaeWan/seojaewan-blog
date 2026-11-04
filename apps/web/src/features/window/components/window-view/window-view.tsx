@@ -18,7 +18,7 @@ import type {
   SnapZone,
   WindowWorkArea,
 } from '@/shared/utils/window-rules/window-rules';
-import { getWindowRect, toFramePlacement } from '@/shared/utils/window-rules/window-rules';
+import { getWindowRect } from '@/shared/utils/window-rules/window-rules';
 
 import { SnapLayoutMenu } from './components/snap-layout-menu/snap-layout-menu';
 import { useWindowDrag } from './hooks/use-window-drag/use-window-drag';
@@ -146,7 +146,7 @@ export function WindowView(props: WindowViewProps): JSX.Element {
     },
     rememberSnapRect,
   });
-  const isResizable = !isMobile && !isClosing && target.placement === 'normal';
+  const isResizable = !isMobile && !isClosing && target.placement === 'default';
 
   // 최소화에서 돌아오는 것인지 기억한다. 처음 나타날 때만 열기 모션이다.
   const [isRestoring, setIsRestoring] = useState(false);
@@ -266,7 +266,7 @@ export function WindowView(props: WindowViewProps): JSX.Element {
               }
             : {
                 isInactive: !isActive,
-                placement: toFramePlacement(target.placement),
+                placement: target.placement,
                 onMinimize: handleMinimize,
                 onClose: handleClose,
                 onMaximize: handleMaximize,
