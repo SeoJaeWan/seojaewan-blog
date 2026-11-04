@@ -30,7 +30,7 @@ const UNGROUPED = '묶음 밖';
 
 /**
  * 컴포넌트 페이지(숫자로 시작하는 고정 페이지와 구분선 페이지를 뺀 모든 페이지)의 컴포넌트 세트와 단독 컴포넌트를
- * 페이지 순서, 페이지 안은 캔버스 순서로 찾는다. 묶음은 페이지다.
+ * 페이지 순서, 페이지 안은 캔버스 순서로 찾는다. 묶음은 페이지이고, 그 위에 앞에 놓인 구분선 페이지의 묶음이 있다.
  * 컴포넌트 페이지를 나누기 전의 "02 · Components" 페이지도 읽고, 그 페이지의 묶음은 영역 섹션(페이지 바로 아래 섹션)이다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @codocs [[피그마 연동:플러그인 화면]]
@@ -41,7 +41,8 @@ export async function listComponents(): Promise<ComponentSummary[]> {
   for (const info of componentPages(figma.root.children, COMPONENTS_PAGE_ID)) {
     const page = await loadPage(info.id);
     const groupOf = page.id === COMPONENTS_PAGE_ID ? areaSectionName : (): string => page.name;
-    summaries.push(...(await listPageComponents(page, groupOf)));
+    const pageSummaries = await listPageComponents(page, groupOf);
+    summaries.push(...pageSummaries.map((summary) => ({ ...summary, band: info.band })));
   }
   return summaries;
 }

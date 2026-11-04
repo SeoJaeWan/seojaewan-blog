@@ -17,6 +17,8 @@ export type CatalogItem = {
   name: string;
   /** 묶음 키 */
   groupKey: string;
+  /** 구분선 묶음 이름. 없으면 null */
+  band: string | null;
   /** 변형 수. 애니메이션은 null */
   variantCount: number | null;
 };
@@ -26,8 +28,13 @@ export type CatalogGroup = {
   key: string;
   kind: ItemKind;
   title: string;
+  /** 묶음 위의 구분선 묶음 이름. 첫 구분선 앞 페이지, 조립, 애니메이션은 null */
+  band: string | null;
   items: CatalogItem[];
 };
+
+/** 구분선 묶음 하나와 그 안의 묶음(페이지). 구분선 묶음이 없는 묶음끼리는 band가 null이다 */
+export type CatalogBand = { band: string | null; key: string; groups: CatalogGroup[] };
 
 /** 대상 목록 */
 export type Catalog = { groups: CatalogGroup[]; items: CatalogItem[] };
@@ -58,7 +65,7 @@ export function buildCatalog(
   function add(item: CatalogItem, title: string): void {
     let group = groups.find((candidate) => candidate.key === item.groupKey);
     if (group === undefined) {
-      group = { key: item.groupKey, kind: item.kind, title, items: [] };
+      group = { key: item.groupKey, kind: item.kind, title, band: item.band, items: [] };
       groups.push(group);
     }
     group.items.push(item);
@@ -69,13 +76,15 @@ export function buildCatalog(
     ['pattern', patterns],
   ] as const) {
     for (const summary of list) {
+      const band = summary.band ?? null;
       add(
         {
           key: `${kind}:${summary.id}`,
           id: summary.id,
           kind,
           name: summary.name,
-          groupKey: `${kind}:${summary.group}`,
+          groupKey: band === null ? `${kind}:${summary.group}` : `${kind}:${band}:${summary.group}`,
+          band,
           variantCount: summary.variantCount,
         },
         summary.group,
@@ -90,12 +99,46 @@ export function buildCatalog(
         kind: 'motion',
         name: motion.name,
         groupKey: 'motion',
+        band: null,
         variantCount: null,
       },
       '견본',
     );
   }
   return { groups, items };
+}
+
+/**
+ * 묶음을 구분선 묶음으로 나눈다. 이어진 묶음 가운데 구분선 묶음이 같은 것끼리 모으고 순서는 바꾸지 않는다.
+ * 구분선 묶음이 없는 묶음(첫 구분선 앞 페이지, 나누기 전 02 · Components의 영역 섹션)은 band가 null인 묶음으로 모인다.
+ * @codocs [[피그마 연동:플러그인 화면]]
+ * @param groups 묶음(받은 순서)
+ * @returns 구분선 묶음
+ */
+export function bandGroups(groups: readonly CatalogGroup[]): CatalogBand[] {
+  const bands: CatalogBand[] = [];
+  for (const group of groups) {
+    const last = bands.at(-1);
+    if (last?.band === group.band && last.groups[0]?.kind === group.kind) {
+      last.groups.push(group);
+    } else {
+      bands.push({
+        band: group.band,
+        key: `band:${group.kind}:${group.band ?? ''}`,
+        groups: [group],
+      });
+    }
+  }
+  return bands;
+}
+
+/**
+ * 구분선 묶음의 펼침 키를 구한다.
+ * @param item 항목
+ * @returns 키. 구분선 묶음이 없으면 null
+ */
+export function bandKeyOf(item: CatalogItem): string | null {
+  return item.band === null ? null : `band:${item.kind}:${item.band}`;
 }
 
 /**

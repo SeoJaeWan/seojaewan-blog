@@ -12,8 +12,11 @@ import type {
 } from '../messages';
 import { matchPasteNames, parsePasteText } from './paste-selection';
 import {
+  bandGroups,
+  bandKeyOf,
   buildCatalog,
   type Catalog,
+  type CatalogBand,
   type CatalogGroup,
   type CatalogItem,
   estimatePullRequests,
@@ -219,6 +222,10 @@ function handlePasteSelectClick(): void {
   for (const item of state.catalog.items) {
     if (state.selected.has(item.key)) {
       state.expanded.add(item.groupKey);
+      const bandKey = bandKeyOf(item);
+      if (bandKey !== null) {
+        state.expanded.add(bandKey);
+      }
     }
   }
   const parts: (Node | string)[] = [`${String(match.keys.length)}개 선택`];
@@ -433,8 +440,17 @@ function renderList(): void {
       nodes.push(make('p', 'empty muted', `${KIND_TITLES[kind]} 없음`));
       continue;
     }
-    for (const { group, items } of shown) {
-      nodes.push(groupBlock(group, items, isFiltering));
+    for (const band of bandGroups(shown.map(({ group }) => group))) {
+      const blocks: HTMLElement[] = [];
+      for (const group of band.groups) {
+        const items = group.items.filter((item) => visible.has(item.key));
+        blocks.push(groupBlock(group, items, isFiltering));
+      }
+      const keys = band.groups
+        .flatMap((group) => group.items)
+        .filter((item) => visible.has(item.key))
+        .map((item) => item.key);
+      nodes.push(...(band.band === null ? blocks : [bandBlock(band, blocks, keys, isFiltering)]));
     }
   }
   if (isFiltering && nodes.length === 0) {
@@ -582,6 +598,56 @@ function groupBlock(group: CatalogGroup, items: CatalogItem[], isFiltering: bool
         items.map((item) => itemRow(item)),
       ),
     );
+  }
+  return block;
+}
+
+/**
+ * 구분선 묶음(구분선 페이지로 나뉜 페이지 묶음)을 만든다. 접고 펼칠 수 있고, 체크박스와 고른 수 / 전체 수를 둔다.
+ * @codocs [[피그마 연동:플러그인 화면]]
+ * @param band 구분선 묶음
+ * @param blocks 그 안의 묶음(페이지) 요소
+ * @param keys 체크박스로 고르는 항목 키(보이는 항목)
+ * @param isFiltering 목록 안 찾기 중인지(찾는 동안은 모두 펼친다)
+ * @returns 구분선 묶음 요소
+ */
+function bandBlock(
+  band: CatalogBand,
+  blocks: HTMLElement[],
+  keys: readonly string[],
+  isFiltering: boolean,
+): HTMLElement {
+  const title = band.band ?? '';
+  const isExpanded = isFiltering || state.expanded.has(band.key);
+  const toggle = make('button', 'toggle', '▸');
+  toggle.type = 'button';
+  toggle.setAttribute('aria-expanded', String(isExpanded));
+  toggle.setAttribute('aria-label', `${title} ${isExpanded ? '접기' : '펼치기'}`);
+  toggle.addEventListener('click', () => {
+    toggleGroup(band.key);
+  });
+
+  const all = band.groups.flatMap((group) => group.items);
+  const selection = groupSelection(all, state.selected);
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.checked = selection.state === 'all';
+  checkbox.indeterminate = selection.state === 'some';
+  checkbox.setAttribute('aria-label', `${title} 모두 고르기`);
+  checkbox.addEventListener('change', () => {
+    setSelected(keys, checkbox.checked);
+  });
+
+  const head = make('div', 'row group-head band-head', [
+    toggle,
+    make('label', '', [checkbox, make('span', 'name', title)]),
+    make('span', 'meta', [
+      make('span', 'count', `${String(selection.selected)} / ${String(selection.total)}`),
+    ]),
+  ]);
+  const block = make('div', 'band', [head]);
+  if (isExpanded) {
+    block.append(make('div', 'band-groups', blocks));
   }
   return block;
 }
