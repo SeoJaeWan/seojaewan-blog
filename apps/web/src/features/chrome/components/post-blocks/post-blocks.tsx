@@ -496,17 +496,10 @@ function toRoman(number: number): string {
  * 이미지 블록의 임시 이미지. Notion 이미지 제공([[Notion 이미지 제공]])이 9단계라 그 전까지 배경화면 Bloom을 그린다.
  * 글 본문과 이미지 크게 보기가 같은 이미지를 쓴다.
  * @param block 이미지 블록
- * @param className 이미지 클래스. 크게 보기처럼 크기를 정해야 하는 곳이 준다
  * @returns 임시 이미지
  */
-export function renderTemporaryImage(block: PostImageBlock, className?: string): ReactNode {
-  return (
-    <ImageAsset
-      name="images/wallpaper-bloom"
-      alt={getPlainText(block.caption)}
-      className={className}
-    />
-  );
+export function renderTemporaryImage(block: PostImageBlock): ReactNode {
+  return <ImageAsset name="images/wallpaper-bloom" alt={getPlainText(block.caption)} />;
 }
 
 /**

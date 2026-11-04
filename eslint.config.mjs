@@ -299,9 +299,8 @@ const storyStyleMotionFiles = [`${DESIGN_SYSTEM}/src/motion-story/*.stories.tsx`
 const MOTION_CLASS_NAME_EXCEPTION =
   ':not([name.name="motionClassName"]):not([name.name="className"][value.expression.name="motionClassName"])';
 // 규칙으로 풀리지 않아 결정을 기다리는 스토리다(임시). 이유는 임의 작업 문서의 "스토리 스타일 금지 ⑥·⑦"에 있다.
-// ImageViewer: 피그마 고정 이미지 크기와 앱의 "맞추되 키우지 않는다" 규칙이 다르다. Explorer/Content: 피그마 빈 HUG 슬롯 너비.
+// Explorer/Content: 피그마 빈 HUG 슬롯 너비.
 const storyStylePendingFiles = [
-  'apps/web/src/features/chrome/components/chrome-page-area/components/chrome-image-viewer/chrome-image-viewer.stories.tsx',
   'apps/web/src/features/file-explorer/components/explorer-body/components/explorer-content/explorer-content.stories.tsx',
 ];
 const STORY_STYLE_MESSAGE =
