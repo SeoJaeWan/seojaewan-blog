@@ -110,7 +110,8 @@ E2E: |
   - 스토리 파일(디자인 시스템과 앱)은 `className`·`style`을 직접 주지 않는다(lint가 막는다). 크기와 배치는 `@seojaewan/design-system/story`의 도우미 둘로만 준다.
     - `FigmaFrame`(`figmaFrame` 데코레이터): 스토리가 그리는 컴포넌트·조립의 피그마 `export.json`을 받아, 스토리 args에 맞는 변형의 크기 방식(HUG·FIXED·FILL)과 `export.json`의 크기 숫자대로 감싼다. 크기를 손으로 고르지 않는다. 슬롯 안 자식처럼 안쪽 노드의 크기가 필요하면 그 노드 이름 경로(`node`, 이름에 `/`가 든 노드는 이름 배열)를 준다. 피그마 원본의 견본 크기([[디자인 기반:크기 변수]])도 변수 없는 숫자라 `export.json`의 숫자로 준다. 앱 스토리는 `@figma/*` 별칭으로 `apps/web/figma`의 export.json을 가져온다.
     - `StoryStage`: 메뉴·팝업이 뜰 공간이나 화면 가장자리에 붙는 층처럼 컴포넌트 밖의 배치를 이름(`fill`, `bottom`, `bottom-end`, `bottom-center`, `top-center`, `padded`)으로 고른다. `target`을 주면 대상 자리에 `data-parity-target`을 단다. 메뉴가 뜰 공간이 필요하면 스토리 캔버스 전체(`layout: 'fullscreen'`)와 함께 쓴다.
-    - 가짜 상자나 빈 무대를 만들지 않는다. 슬롯에는 실제 컴포넌트를 넣는다. 슬롯 안 자식을 채우거나 아이콘 크기를 맞추는 것은 슬롯을 여는 컴포넌트가 하고, 쓰는 곳이 클래스로 맞추지 않는다. 스토리 전용 크기 토큰(`size/story/*`)은 두지 않는다.
+    - 가짜 상자나 빈 무대를 만들지 않는다. 슬롯에는 실제 컴포넌트를 넣는다. 슬롯 안 자식을 채우거나 아이콘 크기를 맞추는 것은 슬롯을 여는 컴포넌트가 하고, 쓰는 곳이 클래스로 맞추지 않는다.
+    - 스토리에서만 쓰는 크기 토큰은 두지 않는다([[디자인 기반:크기 변수]]). 컴포넌트 스토리는 슬롯 기본 내용 규칙(실제 컴포넌트를 넣는다)과 `@sample-size` 견본 크기의 숫자로 크기를 정한다. 조립 스토리는 피그마와 크기를 맞추지 않고, `play`에 필요한 무대(`StoryStage`)를 쓴다.
     - 예외는 lint 설정에서 경로 단위로 둔다. 모션 견본 스토리(`motion-story/*.stories.tsx`)는 모션 클래스를 컴포넌트에 거는 것 자체를 시험하므로 `motionClassName` 하나만 넘길 수 있다.
   - 뷰포트는 스토리의 `globals: { viewport: { value: 'mobile1', isRotated: false } }`로 고른다. 실제 브라우저 크기가 바뀌므로 `matchMedia`를 가짜로 두지 않는다. 기본은 `.storybook/preview.ts`의 `pc`(1600×900, PC 구간의 가장 작은 크기, 캡처 화면과 같다)이고, 노트북 값은 앱 스토리에서 `laptop`으로 본다. addon-vitest의 기본 화면은 노트북 구간이라 기본값을 두었다.
   - 끌기는 `dragStoryPointer`를 쓴다. 실제 브라우저의 `setPointerCapture`는 합성 포인터 id를 받지 않는다.
