@@ -3,7 +3,7 @@ import type { ComponentProps, JSX } from 'react';
 import { cn } from '../../cn';
 import { SnapZone } from '../snap-zone/snap-zone';
 
-export type SnapLayoutOptionLayout = 'half' | 'twothirds' | 'halfquarter' | 'quad';
+export type SnapLayoutOptionLayout = 'half' | 'two-thirds' | 'half-quarter' | 'quad';
 
 type SnapLayoutOptionProps = Omit<ComponentProps<'div'>, 'children'> & {
   /** 피그마 Layout. 칸을 나누는 방식 */
@@ -15,16 +15,16 @@ type SnapLayoutOptionProps = Omit<ComponentProps<'div'>, 'children'> & {
 // 칸마다 붙이는 접근성 이름이다(칸 번호 순서). 문서에 이름이 없어 우리가 정했다.
 const zoneLabels = {
   half: ['왼쪽 절반', '오른쪽 절반'],
-  twothirds: ['왼쪽 3분의 2', '오른쪽 3분의 1'],
-  halfquarter: ['왼쪽 절반', '오른쪽 위 4분의 1', '오른쪽 아래 4분의 1'],
+  'two-thirds': ['왼쪽 3분의 2', '오른쪽 3분의 1'],
+  'half-quarter': ['왼쪽 절반', '오른쪽 위 4분의 1', '오른쪽 아래 4분의 1'],
   quad: ['왼쪽 위 4분의 1', '왼쪽 아래 4분의 1', '오른쪽 위 4분의 1', '오른쪽 아래 4분의 1'],
 } as const satisfies Record<SnapLayoutOptionLayout, readonly string[]>;
 
 // 레이아웃마다 붙이는 접근성 이름이다. 같은 이름의 칸(예: "왼쪽 절반")이 여러 레이아웃에 있어 칸을 묶음 이름으로 구별한다.
 const layoutLabels = {
   half: '반반',
-  twothirds: '3분의 2와 3분의 1',
-  halfquarter: '절반과 4분의 1 두 칸',
+  'two-thirds': '3분의 2와 3분의 1',
+  'half-quarter': '절반과 4분의 1 두 칸',
   quad: '4분할',
 } as const satisfies Record<SnapLayoutOptionLayout, string>;
 
@@ -38,9 +38,9 @@ const ZONE_CLASS_NAME = 'h-auto min-h-size-none w-full flex-flex-fill';
  */
 export function SnapLayoutOption(props: SnapLayoutOptionProps): JSX.Element {
   const { layout = 'half', onSelectZone: handleSelectZone, className, ...divProps } = props;
-  const isTwoThirds = layout === 'twothirds';
+  const isTwoThirds = layout === 'two-thirds';
   const isLeftSplit = layout === 'quad';
-  const isRightSplit = layout === 'halfquarter' || layout === 'quad';
+  const isRightSplit = layout === 'half-quarter' || layout === 'quad';
   const labels = zoneLabels[layout];
   /**
    * 칸 번호의 SnapZone 하나를 그린다.

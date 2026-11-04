@@ -47,12 +47,12 @@ export function CaptionButtonGroup(props: CaptionButtonGroupProps): JSX.Element 
   const isMaximized = placement === 'maximized';
   return (
     <div className={cn('flex items-start', className)}>
-      <CaptionButton label="최소화" inactive={isInactive} onClick={handleMinimize} />
+      <CaptionButton label="최소화" isInactive={isInactive} onClick={handleMinimize} />
       {!isMaximizeShown ? null : isMaximized ? (
         <CaptionButton
           label="이전 크기로 복원"
           icon="icons/ic_fluent_square_multiple_20_regular.svg"
-          inactive={isInactive}
+          isInactive={isInactive}
           onClick={handleRestore}
         />
       ) : maximizeSlot !== undefined ? (
@@ -61,11 +61,11 @@ export function CaptionButtonGroup(props: CaptionButtonGroupProps): JSX.Element 
         <CaptionButton
           label="최대화"
           icon="icons/ic_fluent_maximize_20_regular.svg"
-          inactive={isInactive}
+          isInactive={isInactive}
           onClick={handleMaximize}
         />
       )}
-      <CaptionButton kind="close" label="닫기" inactive={isInactive} onClick={handleClose} />
+      <CaptionButton variant="close" label="닫기" isInactive={isInactive} onClick={handleClose} />
     </div>
   );
 }

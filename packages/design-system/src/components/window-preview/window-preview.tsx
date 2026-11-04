@@ -51,7 +51,7 @@ export function WindowPreview(props: WindowPreviewProps): JSX.Element {
     >
       <div className="flex h-size-control-height items-center gap-spacing-sm overflow-clip pl-spacing-xs">
         <WindowTitle
-          kind="preview"
+          variant="preview"
           appIcon={appIcon}
           title={title}
           className="min-w-size-none flex-flex-fill"
