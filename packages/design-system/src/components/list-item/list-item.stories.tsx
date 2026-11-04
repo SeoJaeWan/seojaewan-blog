@@ -115,7 +115,7 @@ export const Trailing: Story = {
 /** 제목과 부제 두 줄이다. hasSubtitle을 끄면 부제를 숨긴다. 여러 줄은 ListItem을 담는 ListGroup에 넣는다 */
 export const TwoLine: Story = {
   render: () => (
-    <ListGroup showHeader={false}>
+    <ListGroup hasHeader={false}>
       <ListItem size="two-line" icon={<i aria-hidden="true" />} title="보이는 부제" />
       <ListItem
         size="two-line"
@@ -136,7 +136,7 @@ export const TwoLine: Story = {
 /** aria-selected는 option 역할에만 붙인다. 다른 역할이나 역할이 없는 줄은 선택돼도 붙이지 않는다 */
 export const Selected: Story = {
   render: () => (
-    <ListGroup showHeader={false}>
+    <ListGroup hasHeader={false}>
       <div role="listbox" aria-label="선택 목록">
         <ListItem isSelected role="option" title="옵션" icon={<i aria-hidden="true" />} />
       </div>
