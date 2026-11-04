@@ -298,11 +298,6 @@ const storyStyleMotionFiles = [`${DESIGN_SYSTEM}/src/motion-story/*.stories.tsx`
 // 모션 견본 스토리에서만 허용하는 것: `motionClassName` 속성과 `className={motionClassName}`
 const MOTION_CLASS_NAME_EXCEPTION =
   ':not([name.name="motionClassName"]):not([name.name="className"][value.expression.name="motionClassName"])';
-// 규칙으로 풀리지 않아 결정을 기다리는 스토리다(임시). 이유는 임의 작업 문서의 "스토리 스타일 금지 ⑥·⑦"에 있다.
-// ImageViewer: 피그마 고정 이미지 크기와 앱의 "맞추되 키우지 않는다" 규칙이 다르다.
-const storyStylePendingFiles = [
-  'apps/web/src/features/chrome/components/chrome-page-area/components/chrome-image-viewer/chrome-image-viewer.stories.tsx',
-];
 const STORY_STYLE_MESSAGE =
   '스토리에서 className·style을 직접 주지 않는다. 크기는 FigmaFrame, 배치는 StoryStage(@seojaewan/design-system/story)로 준다.';
 
@@ -1025,7 +1020,7 @@ export default defineConfig(
   // 모션 견본 스토리는 모션 클래스를 컴포넌트에 거는 것 자체를 시험하므로 `motionClassName` 하나만 넘길 수 있다.
   {
     files: storyStyleFiles,
-    ignores: [...storyStyleMotionFiles, ...storyStylePendingFiles],
+    ignores: storyStyleMotionFiles,
     rules: {
       'no-restricted-syntax': restrictedSyntax([
         ...styleValueRestrictions,
@@ -1035,7 +1030,6 @@ export default defineConfig(
   },
   {
     files: storyStyleMotionFiles,
-    ignores: storyStylePendingFiles,
     rules: {
       'no-restricted-syntax': restrictedSyntax([
         ...styleValueRestrictions,

@@ -29,9 +29,9 @@ type ChromeAddressSuggestionsProps = Pick<
   suggestions: readonly ChromeAddressSuggestion[];
   /** 고른(Selected) 추천의 순서. 없으면 고른 추천이 없다 */
   selectedIndex?: number;
-  /** 추천 목록을 열었는지(피그마 Popover State). 닫혀 있으면 평소 주소창 모양이다. 기본은 연 모습(조립 그림)이다 */
+  /** 추천 목록을 열었는지(피그마 Popover State). 닫혀 있으면 평소 주소창 모양이다. 기본은 닫힌 모습이다 */
   open?: boolean;
-  /** 주소창과 추천 목록의 너비(px). 도구 모음에서 남는 너비를 채운 주소창 너비다. 주지 않으면 피그마 조립의 640이다 */
+  /** 주소창과 추천 목록의 너비(px). 도구 모음에서 남는 너비를 채운 주소창 너비다. 주지 않으면 바깥 배치(`className`)가 정한다 */
   width?: number;
   /** 추천 목록 요소의 id. 주소창의 `aria-controls`와 추천 줄 id에 쓴다 */
   listId?: string;
@@ -47,11 +47,8 @@ const suggestionIcons = {
   search: <Asset name="icons/ic_fluent_search_16_regular.svg" className="text-color-black-89" />,
 } as const satisfies Record<ChromeAddressSuggestion['kind'], ReactNode>;
 
-// 피그마 조립의 주소창·추천 목록 너비(size/640)다.
-const FIGMA_WIDTH_CLASS_NAME = 'w-size-address-bar-width';
-
 /**
- * Chrome 주소창에 입력하는 중 아래에 추천 목록을 연 모습(피그마 조립 `Chrome/AddressSuggestions`)을 그린다.
+ * Chrome 주소창과 입력하는 중 아래에 여는 추천 목록(피그마 조립 `Chrome/AddressSuggestions`, 피그마는 닫힌 모양)을 그린다.
  * 주소창(AddressBar, Suggesting)을 트리거로, 추천 목록(Flyout + ListItem)을 팝업으로 Popover에 붙인다.
  * 앱에서는 Chrome 도구 모음의 주소창 자리를 채우고, 열림(`open`)과 너비를 쓰는 곳이 정한다. 추천 줄을 눌러도 주소창의
  * 포커스는 그대로다(누를 때 기본 동작을 막는다).
@@ -65,34 +62,26 @@ export function ChromeAddressSuggestions(props: ChromeAddressSuggestionsProps): 
     query,
     suggestions,
     selectedIndex,
-    open: isOpen = true,
+    open: isOpen = false,
     width,
     listId,
     onSuggestionSelect,
     className,
     ...addressBarProps
   } = props;
-  const sizeClassName = width === undefined ? FIGMA_WIDTH_CLASS_NAME : 'w-full';
+  // 주소창 너비는 창 크기에 따라 실행 중에 정해지는 값이라 인라인 스타일로 준다.
+  const widthStyle = width === undefined ? undefined : { width };
   return (
     <Popover
       isOpen={isOpen}
       placement="bottom-start"
       className={className}
+      style={widthStyle}
       trigger={
-        <AddressBar
-          {...addressBarProps}
-          isSuggesting={isOpen}
-          query={query}
-          className={sizeClassName}
-        />
+        <AddressBar {...addressBarProps} isSuggesting={isOpen} query={query} className="w-full" />
       }
       popup={
-        <Flyout
-          material="solid"
-          className={width === undefined ? FIGMA_WIDTH_CLASS_NAME : undefined}
-          // 주소창 너비는 창 크기에 따라 실행 중에 정해지는 값이라 인라인 스타일로 준다.
-          style={width === undefined ? undefined : { width }}
-        >
+        <Flyout material="solid" style={widthStyle}>
           {/* 피그마 `list inset`(안쪽 여백)과 `items`(줄 사이 간격 2) 배치 프레임이다 */}
           <div className="flex w-full flex-col px-spacing-sm pt-spacing-2xs pb-spacing-sm-nudge">
             <div

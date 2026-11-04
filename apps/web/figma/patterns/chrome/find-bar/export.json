@@ -36,7 +36,7 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "label",
                             "size": {
@@ -54,7 +54,7 @@
                               "segments": [
                                 {
                                   "characters": "훅",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 }
                               ],
@@ -64,7 +64,7 @@
                           },
                           {
                             "asset": {
-                              "color": "text-fill/secondary",
+                              "color": "color/black/61",
                               "path": "icons/ic_fluent_search_16_regular"
                             },
                             "component": "ic_fluent_search_16_regular",
@@ -87,7 +87,7 @@
                               "vertical": "MAX"
                             },
                             "fills": [
-                              "accent-fill/default"
+                              "color/blue/59"
                             ],
                             "height": "stroke-width/focus-outer",
                             "name": "bottom border",
@@ -104,7 +104,7 @@
                         ],
                         "component": "SearchBox",
                         "fills": [
-                          "control-fill/input-active"
+                          "color/white"
                         ],
                         "height": "size/control/height",
                         "layout": {
@@ -121,11 +121,11 @@
                         },
                         "name": "search box",
                         "properties": {
-                          "Appearance": "Default",
                           "Filled": "True",
                           "Placeholder": "검색",
                           "State": "Focused",
-                          "Value": "훅"
+                          "Value": "훅",
+                          "Variant": "Default"
                         },
                         "radius": [
                           "radius/control",
@@ -148,14 +148,14 @@
                           "stroke-width/default"
                         ],
                         "strokes": [
-                          "control-stroke/default"
+                          "color/black/6"
                         ],
                         "strokesIncludedInLayout": false,
                         "type": "INSTANCE"
                       },
                       {
                         "fills": [
-                          "text-fill/secondary"
+                          "color/black/61"
                         ],
                         "name": "count",
                         "size": {
@@ -173,7 +173,7 @@
                           "segments": [
                             {
                               "characters": "1/3",
-                              "fill": "text-fill/secondary",
+                              "fill": "color/black/61",
                               "textStyle": "Body"
                             }
                           ],
@@ -184,7 +184,7 @@
                       {
                         "component": "Separator",
                         "fills": [
-                          "divider-stroke/default"
+                          "color/black/8"
                         ],
                         "height": "size/separator/height",
                         "name": "separator",
@@ -206,7 +206,7 @@
                         "children": [
                           {
                             "asset": {
-                              "color": "text-fill/primary",
+                              "color": "color/black/89",
                               "path": "icons/ic_fluent_chevron_up_20_regular"
                             },
                             "component": "ic_fluent_chevron_up_20_regular",
@@ -226,7 +226,7 @@
                         ],
                         "component": "IconButton",
                         "fills": [
-                          "subtle-fill/transparent"
+                          "color/white/0"
                         ],
                         "layout": {
                           "counterAlign": "CENTER",
@@ -243,7 +243,7 @@
                         "name": "IconButton",
                         "properties": {
                           "State": "Rest",
-                          "Style": "Subtle"
+                          "Variant": "Subtle"
                         },
                         "radius": [
                           "radius/control",
@@ -265,7 +265,7 @@
                         "children": [
                           {
                             "asset": {
-                              "color": "text-fill/primary",
+                              "color": "color/black/89",
                               "path": "icons/ic_fluent_chevron_down_20_regular"
                             },
                             "component": "ic_fluent_chevron_down_20_regular",
@@ -285,7 +285,7 @@
                         ],
                         "component": "IconButton",
                         "fills": [
-                          "subtle-fill/transparent"
+                          "color/white/0"
                         ],
                         "layout": {
                           "counterAlign": "CENTER",
@@ -302,7 +302,7 @@
                         "name": "IconButton",
                         "properties": {
                           "State": "Rest",
-                          "Style": "Subtle"
+                          "Variant": "Subtle"
                         },
                         "radius": [
                           "radius/control",
@@ -324,7 +324,7 @@
                         "children": [
                           {
                             "asset": {
-                              "color": "text-fill/primary",
+                              "color": "color/black/89",
                               "path": "icons/ic_fluent_dismiss_20_regular"
                             },
                             "component": "ic_fluent_dismiss_20_regular",
@@ -344,7 +344,7 @@
                         ],
                         "component": "IconButton",
                         "fills": [
-                          "subtle-fill/transparent"
+                          "color/white/0"
                         ],
                         "layout": {
                           "counterAlign": "CENTER",
@@ -361,7 +361,7 @@
                         "name": "IconButton",
                         "properties": {
                           "State": "Rest",
-                          "Style": "Subtle"
+                          "Variant": "Subtle"
                         },
                         "radius": [
                           "radius/control",
@@ -451,8 +451,7 @@
             },
             "name": "flyout",
             "properties": {
-              "Material": "Solid",
-              "Padding": "Compact"
+              "Material": "Solid"
             },
             "radius": [
               "radius/overlay",
@@ -475,11 +474,10 @@
               "stroke-width/default"
             ],
             "strokes": [
-              "surface-stroke/flyout"
+              "color/black/6"
             ],
             "strokesIncludedInLayout": true,
-            "type": "INSTANCE",
-            "width": "size/find-bar/width"
+            "type": "INSTANCE"
           }
         ],
         "layout": {
@@ -529,7 +527,7 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "label",
                             "size": {
@@ -547,7 +545,7 @@
                               "segments": [
                                 {
                                   "characters": "훅",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 }
                               ],
@@ -557,7 +555,7 @@
                           },
                           {
                             "asset": {
-                              "color": "text-fill/secondary",
+                              "color": "color/black/61",
                               "path": "icons/ic_fluent_search_16_regular"
                             },
                             "component": "ic_fluent_search_16_regular",
@@ -580,7 +578,7 @@
                               "vertical": "MAX"
                             },
                             "fills": [
-                              "accent-fill/default"
+                              "color/blue/59"
                             ],
                             "height": "stroke-width/focus-outer",
                             "name": "bottom border",
@@ -597,7 +595,7 @@
                         ],
                         "component": "SearchBox",
                         "fills": [
-                          "control-fill/input-active"
+                          "color/white"
                         ],
                         "height": "size/control/height",
                         "layout": {
@@ -614,11 +612,11 @@
                         },
                         "name": "search box",
                         "properties": {
-                          "Appearance": "Default",
                           "Filled": "True",
                           "Placeholder": "검색",
                           "State": "Focused",
-                          "Value": "훅"
+                          "Value": "훅",
+                          "Variant": "Default"
                         },
                         "radius": [
                           "radius/control",
@@ -641,14 +639,14 @@
                           "stroke-width/default"
                         ],
                         "strokes": [
-                          "control-stroke/default"
+                          "color/black/6"
                         ],
                         "strokesIncludedInLayout": false,
                         "type": "INSTANCE"
                       },
                       {
                         "fills": [
-                          "text-fill/secondary"
+                          "color/black/61"
                         ],
                         "name": "count",
                         "size": {
@@ -666,7 +664,7 @@
                           "segments": [
                             {
                               "characters": "1/3",
-                              "fill": "text-fill/secondary",
+                              "fill": "color/black/61",
                               "textStyle": "Body"
                             }
                           ],
@@ -677,7 +675,7 @@
                       {
                         "component": "Separator",
                         "fills": [
-                          "divider-stroke/default"
+                          "color/black/8"
                         ],
                         "height": "size/separator/height",
                         "name": "separator",
@@ -699,7 +697,7 @@
                         "children": [
                           {
                             "asset": {
-                              "color": "text-fill/primary",
+                              "color": "color/black/89",
                               "path": "icons/ic_fluent_chevron_up_20_regular"
                             },
                             "component": "ic_fluent_chevron_up_20_regular",
@@ -719,7 +717,7 @@
                         ],
                         "component": "IconButton",
                         "fills": [
-                          "subtle-fill/transparent"
+                          "color/white/0"
                         ],
                         "layout": {
                           "counterAlign": "CENTER",
@@ -736,7 +734,7 @@
                         "name": "IconButton",
                         "properties": {
                           "State": "Rest",
-                          "Style": "Subtle"
+                          "Variant": "Subtle"
                         },
                         "radius": [
                           "radius/control",
@@ -758,7 +756,7 @@
                         "children": [
                           {
                             "asset": {
-                              "color": "text-fill/primary",
+                              "color": "color/black/89",
                               "path": "icons/ic_fluent_chevron_down_20_regular"
                             },
                             "component": "ic_fluent_chevron_down_20_regular",
@@ -778,7 +776,7 @@
                         ],
                         "component": "IconButton",
                         "fills": [
-                          "subtle-fill/transparent"
+                          "color/white/0"
                         ],
                         "layout": {
                           "counterAlign": "CENTER",
@@ -795,7 +793,7 @@
                         "name": "IconButton",
                         "properties": {
                           "State": "Rest",
-                          "Style": "Subtle"
+                          "Variant": "Subtle"
                         },
                         "radius": [
                           "radius/control",
@@ -817,7 +815,7 @@
                         "children": [
                           {
                             "asset": {
-                              "color": "text-fill/primary",
+                              "color": "color/black/89",
                               "path": "icons/ic_fluent_dismiss_20_regular"
                             },
                             "component": "ic_fluent_dismiss_20_regular",
@@ -837,7 +835,7 @@
                         ],
                         "component": "IconButton",
                         "fills": [
-                          "subtle-fill/transparent"
+                          "color/white/0"
                         ],
                         "layout": {
                           "counterAlign": "CENTER",
@@ -854,7 +852,7 @@
                         "name": "IconButton",
                         "properties": {
                           "State": "Rest",
-                          "Style": "Subtle"
+                          "Variant": "Subtle"
                         },
                         "radius": [
                           "radius/control",
@@ -944,8 +942,7 @@
             },
             "name": "flyout",
             "properties": {
-              "Material": "Solid",
-              "Padding": "Compact"
+              "Material": "Solid"
             },
             "radius": [
               "radius/overlay",
@@ -968,7 +965,7 @@
               "stroke-width/default"
             ],
             "strokes": [
-              "surface-stroke/flyout"
+              "color/black/6"
             ],
             "strokesIncludedInLayout": true,
             "type": "INSTANCE"
@@ -995,8 +992,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/screen/mobile-width"
+        "type": "COMPONENT"
       }
     }
   }
