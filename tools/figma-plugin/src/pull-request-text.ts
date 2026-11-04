@@ -441,7 +441,7 @@ export function motionCommitSubject(name: string): string {
  */
 export function motionCommitBody(motion: MotionExport): string {
   return [
-    `피그마 Motion 섹션의 견본 ${motion.name}에서 키프레임과 토큰 짝을 내보낸다.`,
+    `피그마 Foundations / Motion 프레임의 견본 ${motion.name}에서 키프레임과 토큰 짝을 내보낸다.`,
     '',
     `- 트랙 ${String(motion.tracks.length)}개, 전체 길이 ${timeText(motion.duration)}`,
   ].join('\n');
