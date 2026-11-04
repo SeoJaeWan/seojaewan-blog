@@ -22,7 +22,7 @@
                   {
                     "component": "SnapZone",
                     "fills": [
-                      "control-alt-fill/secondary"
+                      "color/black/2"
                     ],
                     "height": "size/snap-option/height",
                     "name": "zone",
@@ -50,7 +50,7 @@
                       "stroke-width/default"
                     ],
                     "strokes": [
-                      "control-stroke/default"
+                      "color/black/6"
                     ],
                     "strokesIncludedInLayout": false,
                     "type": "INSTANCE"
@@ -84,7 +84,7 @@
                   {
                     "component": "SnapZone",
                     "fills": [
-                      "control-alt-fill/secondary"
+                      "color/black/2"
                     ],
                     "height": "size/snap-option/height",
                     "name": "zone",
@@ -112,7 +112,7 @@
                       "stroke-width/default"
                     ],
                     "strokes": [
-                      "control-stroke/default"
+                      "color/black/6"
                     ],
                     "strokesIncludedInLayout": false,
                     "type": "INSTANCE"
@@ -178,7 +178,7 @@
                   {
                     "component": "SnapZone",
                     "fills": [
-                      "control-alt-fill/secondary"
+                      "color/black/2"
                     ],
                     "height": "size/snap-option/height",
                     "name": "zone",
@@ -206,7 +206,7 @@
                       "stroke-width/default"
                     ],
                     "strokes": [
-                      "control-stroke/default"
+                      "color/black/6"
                     ],
                     "strokesIncludedInLayout": false,
                     "type": "INSTANCE"
@@ -241,7 +241,7 @@
                   {
                     "component": "SnapZone",
                     "fills": [
-                      "control-alt-fill/secondary"
+                      "color/black/2"
                     ],
                     "height": "size/snap-option/height",
                     "name": "zone",
@@ -269,7 +269,7 @@
                       "stroke-width/default"
                     ],
                     "strokes": [
-                      "control-stroke/default"
+                      "color/black/6"
                     ],
                     "strokesIncludedInLayout": false,
                     "type": "INSTANCE"
@@ -315,7 +315,7 @@
             },
             "name": "layout/2:1",
             "properties": {
-              "Layout": "TwoThirds"
+              "Layout": "Two thirds"
             },
             "size": {
               "h": 56,
@@ -335,7 +335,7 @@
                   {
                     "component": "SnapZone",
                     "fills": [
-                      "control-alt-fill/secondary"
+                      "color/black/2"
                     ],
                     "height": "size/snap-option/height",
                     "name": "zone",
@@ -363,7 +363,7 @@
                       "stroke-width/default"
                     ],
                     "strokes": [
-                      "control-stroke/default"
+                      "color/black/6"
                     ],
                     "strokesIncludedInLayout": false,
                     "type": "INSTANCE"
@@ -397,7 +397,7 @@
                   {
                     "component": "SnapZone",
                     "fills": [
-                      "control-alt-fill/secondary"
+                      "color/black/2"
                     ],
                     "name": "top zone",
                     "properties": {
@@ -424,7 +424,7 @@
                       "stroke-width/default"
                     ],
                     "strokes": [
-                      "control-stroke/default"
+                      "color/black/6"
                     ],
                     "strokesIncludedInLayout": false,
                     "type": "INSTANCE"
@@ -432,7 +432,7 @@
                   {
                     "component": "SnapZone",
                     "fills": [
-                      "control-alt-fill/secondary"
+                      "color/black/2"
                     ],
                     "name": "bottom zone",
                     "properties": {
@@ -459,7 +459,7 @@
                       "stroke-width/default"
                     ],
                     "strokes": [
-                      "control-stroke/default"
+                      "color/black/6"
                     ],
                     "strokesIncludedInLayout": false,
                     "type": "INSTANCE"
@@ -505,7 +505,7 @@
             },
             "name": "layout/반 + 4분의 1 두 칸",
             "properties": {
-              "Layout": "HalfQuarter"
+              "Layout": "Half quarter"
             },
             "size": {
               "h": 56,
@@ -525,7 +525,7 @@
                   {
                     "component": "SnapZone",
                     "fills": [
-                      "control-alt-fill/secondary"
+                      "color/black/2"
                     ],
                     "name": "top zone",
                     "properties": {
@@ -552,7 +552,7 @@
                       "stroke-width/default"
                     ],
                     "strokes": [
-                      "control-stroke/default"
+                      "color/black/6"
                     ],
                     "strokesIncludedInLayout": false,
                     "type": "INSTANCE"
@@ -560,7 +560,7 @@
                   {
                     "component": "SnapZone",
                     "fills": [
-                      "control-alt-fill/secondary"
+                      "color/black/2"
                     ],
                     "name": "bottom zone",
                     "properties": {
@@ -587,7 +587,7 @@
                       "stroke-width/default"
                     ],
                     "strokes": [
-                      "control-stroke/default"
+                      "color/black/6"
                     ],
                     "strokesIncludedInLayout": false,
                     "type": "INSTANCE"
@@ -621,7 +621,7 @@
                   {
                     "component": "SnapZone",
                     "fills": [
-                      "control-alt-fill/secondary"
+                      "color/black/2"
                     ],
                     "name": "top zone",
                     "properties": {
@@ -648,7 +648,7 @@
                       "stroke-width/default"
                     ],
                     "strokes": [
-                      "control-stroke/default"
+                      "color/black/6"
                     ],
                     "strokesIncludedInLayout": false,
                     "type": "INSTANCE"
@@ -656,7 +656,7 @@
                   {
                     "component": "SnapZone",
                     "fills": [
-                      "control-alt-fill/secondary"
+                      "color/black/2"
                     ],
                     "name": "bottom zone",
                     "properties": {
@@ -683,7 +683,7 @@
                       "stroke-width/default"
                     ],
                     "strokes": [
-                      "control-stroke/default"
+                      "color/black/6"
                     ],
                     "strokesIncludedInLayout": false,
                     "type": "INSTANCE"
@@ -779,7 +779,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "surface-stroke/flyout"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT"
