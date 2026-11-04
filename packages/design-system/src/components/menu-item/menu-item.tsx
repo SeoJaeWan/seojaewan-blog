@@ -44,9 +44,9 @@ type MenuItemProps = MenuItemCommonProps &
         /** 피그마 Variant=Toggle on/off. 켜져 있으면 확인 표시를 그린다 */
         variant: 'checkbox';
         /** 켜짐 여부(제어) */
-        checked?: boolean;
+        isChecked?: boolean;
         /** 처음 켜짐 여부(비제어) */
-        defaultChecked?: boolean;
+        isDefaultChecked?: boolean;
         /** 켜짐 여부가 바뀔 때 호출 */
         onCheckedChange?: (checked: boolean) => void;
       }
@@ -124,8 +124,8 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           className={className}
           disabled={isDisabled}
           label={props.label}
-          checked={props.checked}
-          defaultChecked={props.defaultChecked}
+          checked={props.isChecked}
+          defaultChecked={props.isDefaultChecked}
           onCheckedChange={props.onCheckedChange}
         >
           <MenuItemContent
