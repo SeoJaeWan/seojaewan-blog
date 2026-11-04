@@ -28,7 +28,7 @@ export const ADDRESS_FIELD_LABEL = '주소 및 검색창';
 export function ChromeAddressField(props: ChromeAddressFieldProps): JSX.Element {
   const { address, getSuggestions, onSuggestionOpen, onSubmit } = props;
   const rootRef = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(0);
+  const [width, setWidth] = useState<number | undefined>(undefined);
   const {
     inputProps,
     listId,
@@ -46,7 +46,7 @@ export function ChromeAddressField(props: ChromeAddressFieldProps): JSX.Element 
 
   /** 입력할 때 추천 목록 너비를 주소창 너비에 맞춘다. */
   function handleInput(): void {
-    setWidth(rootRef.current?.offsetWidth ?? 0);
+    setWidth(rootRef.current?.offsetWidth);
   }
 
   return (
