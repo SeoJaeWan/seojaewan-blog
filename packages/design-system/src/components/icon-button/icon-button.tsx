@@ -8,7 +8,7 @@ import { Asset } from '../asset/asset';
 export type IconButtonVariant = 'standard' | 'subtle' | 'chrome';
 
 type IconButtonProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'children'> & {
-  /** 피그마 Style. standard는 기본 버튼, subtle은 배경 없는 버튼, chrome은 Chrome 도구 모음용으로 아이콘 색이 chrome/text-secondary다 */
+  /** 피그마 Variant. standard는 기본 버튼, subtle은 배경 없는 버튼, chrome은 Chrome 도구 모음용으로 아이콘 색이 chrome/text-secondary다 */
   variant?: IconButtonVariant;
   /** 접근성 이름. 글자가 없는 버튼이라 aria-label로 붙인다 */
   label: string;
@@ -18,7 +18,7 @@ type IconButtonProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'ch
   className?: string;
 };
 
-// 바탕·선·글자 색은 Button의 같은 Style과 같다. 상태 색은 실제 CSS 상태(hover, active, focus-visible, disabled)로 바꾼다.
+// 바탕·선·글자 색은 Button의 같은 Variant와 같다. 상태 색은 실제 CSS 상태(hover, active, focus-visible, disabled)로 바꾼다.
 // 안쪽 선은 ::before 고리(border-gradient-*, inner-border-*)로, 키보드 포커스는 outline으로 그린다.
 const variantClassNames = {
   standard: [
