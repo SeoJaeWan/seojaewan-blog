@@ -3,17 +3,17 @@ import type { ComponentProps, JSX } from 'react';
 import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
-export type TooltipType = 'default' | 'balloon';
+export type TooltipVariant = 'default' | 'balloon';
 
 type TooltipProps = Omit<ComponentProps<'div'>, 'children'> & {
   /**
-   * 피그마 Type. default는 글자만 담는 작은 아크릴 말풍선, balloon은 위쪽 꼬리와 경고 아이콘이 있는
-   * 너비 300의 단색 말풍선이다. 재질은 Type마다 하나로 정해져 있다
+   * 피그마 Variant. default는 글자만 담는 작은 아크릴 말풍선, balloon은 위쪽 꼬리와 경고 아이콘이 있는
+   * 너비 300의 단색 말풍선이다. 재질은 Variant마다 하나로 정해져 있다
    */
-  type?: TooltipType;
-  /** 말풍선 글자(피그마 Text, Type=Default만) */
+  variant?: TooltipVariant;
+  /** 말풍선 글자(피그마 Text, Variant=Default만) */
   text?: string;
-  /** 경고 아이콘 옆 글자(피그마 Message, Type=Balloon만) */
+  /** 경고 아이콘 옆 글자(피그마 Message, Variant=Balloon만) */
   message?: string;
 };
 
@@ -28,8 +28,8 @@ const SURFACE_CLASS_NAME =
  * @param props
  */
 export function Tooltip(props: TooltipProps): JSX.Element {
-  const { type = 'default', text, message, className, ...divProps } = props;
-  if (type === 'balloon') {
+  const { variant = 'default', text, message, className, ...divProps } = props;
+  if (variant === 'balloon') {
     // 바깥 틀은 피그마 변형 노드의 자리와 그림자(효과 스타일)를 가진다. 꼬리(피그마 Shapes 자산 tooltip/Tail fill·Tail border)는
     // 노드 테두리 상자 기준 (16, -8)에 겹쳐 두고, 칠 자산이 바탕의 위 테두리를 덮는다. 테두리가 있는 바탕 안에 두면
     // 위치 기준이 테두리 안쪽으로 1px 들어가므로 바탕과 나눈다.

@@ -91,7 +91,7 @@ export function ChromeNewTabSearch(props: ChromeNewTabSearchProps): JSX.Element 
         <SearchBox
           {...searchBoxProps}
           ref={inputRef}
-          appearance="web"
+          variant="web"
           placeholder={PLACEHOLDER}
           aria-label={PLACEHOLDER}
           className="w-size-search-box-wide-width"
@@ -122,7 +122,7 @@ export function ChromeNewTabSearch(props: ChromeNewTabSearchProps): JSX.Element 
                       role="option"
                       title={suggestion.title}
                       icon={suggestionIcons[suggestion.kind]}
-                      selected={index === selectedIndex}
+                      isSelected={index === selectedIndex}
                       onMouseDown={handleSuggestionMouseDown}
                       onClick={() => {
                         onSuggestionSelect?.(index);

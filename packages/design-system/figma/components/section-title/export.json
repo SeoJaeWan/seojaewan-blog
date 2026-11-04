@@ -1,12 +1,12 @@
 {
-  "description": "목록 위 섹션 제목으로, Start 메뉴의 고정됨·모두 제목과 글 목차 제목에 쓴다.",
+  "description": "목록 위 섹션 제목으로, Start 메뉴의 고정됨·모두 제목과 글 목차 제목에 쓴다.\n@sample-size width",
   "name": "SectionTitle",
   "nodeId": "388:13925",
   "propertyDefinitions": {
     "Action": {
       "type": "SLOT"
     },
-    "Show action": {
+    "Has action": {
       "default": false,
       "type": "BOOLEAN"
     },
@@ -29,7 +29,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "heading",
             "size": {
@@ -47,17 +47,17 @@
               "segments": [
                 {
                   "characters": "섹션",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Strong"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Strong"
                 },
                 {
                   "characters": "제목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Strong"
                 }
               ],
@@ -87,8 +87,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/shell/body-width"
+        "type": "COMPONENT"
       }
     }
   }

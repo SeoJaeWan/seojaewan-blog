@@ -18,14 +18,14 @@ type FigmaArgs = {
   state: (typeof STATES)[number];
   /** 피그마 TEXT 속성 Title */
   title: string;
-  /** 피그마 TEXT 속성 Subtitle(Two-line만) */
+  /** 피그마 TEXT 속성 Subtitle(Two line만) */
   subtitle: string;
-  /** 피그마 BOOLEAN 속성 Show subtitle(Two-line만) */
-  showSubtitle: boolean;
+  /** 피그마 BOOLEAN 속성 Has subtitle(Two line만) */
+  hasSubtitle: boolean;
   /** 피그마 TEXT 속성 Trailing */
   trailing: string;
-  /** 피그마 BOOLEAN 속성 Show trailing */
-  showTrailing: boolean;
+  /** 피그마 BOOLEAN 속성 Has trailing */
+  hasTrailing: boolean;
 };
 
 const meta = {
@@ -36,33 +36,33 @@ const meta = {
     state: 'rest',
     title: '항목 이름',
     subtitle: '보조 설명',
-    showSubtitle: true,
+    hasSubtitle: true,
     trailing: '부가 정보',
-    showTrailing: false,
+    hasTrailing: false,
   },
   argTypes: {
     size: { control: 'inline-radio', options: SIZES },
     state: { control: 'inline-radio', options: STATES },
     title: { control: 'text' },
     subtitle: { control: 'text' },
-    showSubtitle: { control: 'boolean' },
+    hasSubtitle: { control: 'boolean' },
     trailing: { control: 'text' },
-    showTrailing: { control: 'boolean' },
+    hasTrailing: { control: 'boolean' },
   },
   render: (args) => {
     const common = {
-      selected: args.state === 'selected',
+      isSelected: args.state === 'selected',
       title: args.title,
       icon: <img src={documentIcon} alt="" />,
       trailing: args.trailing,
-      showTrailing: args.showTrailing,
+      hasTrailing: args.hasTrailing,
     };
     return args.size === 'two-line' ? (
       <ListItem
         {...common}
         size="two-line"
         subtitle={args.subtitle}
-        showSubtitle={args.showSubtitle}
+        hasSubtitle={args.hasSubtitle}
       />
     ) : (
       <ListItem {...common} />
@@ -83,7 +83,7 @@ export const Figma: Story = {
 };
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** 제목만 있는 한 줄이다. 오른쪽 보조 글자는 showTrailing을 켜기 전에는 없고, compact는 부제를 받지 않는다 */
+/** 제목만 있는 한 줄이다. 오른쪽 보조 글자는 hasTrailing을 켜기 전에는 없고, compact는 부제를 받지 않는다 */
 export const Default: Story = {
   render: () => (
     // @ts-expect-error subtitle은 size="two-line"에서만 받는다
@@ -102,9 +102,9 @@ export const Default: Story = {
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 // 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
-/** showTrailing을 켜면 오른쪽 보조 글자를 보인다 */
+/** hasTrailing을 켜면 오른쪽 보조 글자를 보인다 */
 export const Trailing: Story = {
-  render: () => <ListItem icon={<i aria-hidden="true" />} showTrailing trailing="오늘" />,
+  render: () => <ListItem icon={<i aria-hidden="true" />} hasTrailing trailing="오늘" />,
   parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
   play: async ({ canvas }) => {
     await expect(canvas.getByText('오늘')).toBeInTheDocument();
@@ -112,7 +112,7 @@ export const Trailing: Story = {
 };
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** 제목과 부제 두 줄이다. showSubtitle을 끄면 부제를 숨긴다. 여러 줄은 ListItem을 담는 ListGroup에 넣는다 */
+/** 제목과 부제 두 줄이다. hasSubtitle을 끄면 부제를 숨긴다. 여러 줄은 ListItem을 담는 ListGroup에 넣는다 */
 export const TwoLine: Story = {
   render: () => (
     <ListGroup showHeader={false}>
@@ -122,7 +122,7 @@ export const TwoLine: Story = {
         icon={<i aria-hidden="true" />}
         title="숨긴 부제"
         subtitle="숨겨진 설명"
-        showSubtitle={false}
+        hasSubtitle={false}
       />
     </ListGroup>
   ),
@@ -138,10 +138,16 @@ export const Selected: Story = {
   render: () => (
     <ListGroup showHeader={false}>
       <div role="listbox" aria-label="선택 목록">
-        <ListItem selected role="option" title="옵션" icon={<i aria-hidden="true" />} />
+        <ListItem isSelected role="option" title="옵션" icon={<i aria-hidden="true" />} />
       </div>
-      <ListItem selected role="button" tabIndex={0} title="버튼" icon={<i aria-hidden="true" />} />
-      <ListItem selected title="일반" icon={<i aria-hidden="true" />} />
+      <ListItem
+        isSelected
+        role="button"
+        tabIndex={0}
+        title="버튼"
+        icon={<i aria-hidden="true" />}
+      />
+      <ListItem isSelected title="일반" icon={<i aria-hidden="true" />} />
     </ListGroup>
   ),
   play: async ({ canvas }) => {

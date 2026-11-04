@@ -5,14 +5,14 @@ import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 import { useSolidSearchIcon } from './use-solid-search-icon';
 
-export type SearchBoxAppearance = 'default' | 'pill' | 'taskbar' | 'web';
+export type SearchBoxVariant = 'default' | 'pill' | 'taskbar' | 'web';
 
 type SearchBoxProps = Omit<ComponentProps<typeof Input>, 'className' | 'type'> & {
   /**
-   * 피그마 Appearance. default는 탐색기 안 검색(아이콘 오른쪽), pill은 Start·검색 패널(아이콘 왼쪽, 완전히 둥근 모서리),
+   * 피그마 Variant. default는 탐색기 안 검색(아이콘 오른쪽), pill은 Start·검색 패널(아이콘 왼쪽, 완전히 둥근 모서리),
    * taskbar는 작업 표시줄 검색칸, web은 Chrome 새 탭 검색칸(검색 아이콘 효과 없음)이다
    */
-  appearance?: SearchBoxAppearance;
+  variant?: SearchBoxVariant;
   /** 바깥 상자에 덧붙이거나 덮어쓸 클래스 */
   className?: string;
 };
@@ -28,9 +28,9 @@ type SearchBoxProps = Omit<ComponentProps<typeof Input>, 'className' | 'type'> &
  * @param props
  */
 export function SearchBox(props: SearchBoxProps): JSX.Element {
-  const { appearance = 'default', className, disabled: isDisabled = false, ...inputProps } = props;
-  const isDefault = appearance === 'default';
-  const isWindowsSearch = appearance === 'pill' || appearance === 'taskbar';
+  const { variant = 'default', className, disabled: isDisabled = false, ...inputProps } = props;
+  const isDefault = variant === 'default';
+  const isWindowsSearch = variant === 'pill' || variant === 'taskbar';
   return (
     <div
       className={cn(
@@ -40,18 +40,18 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
           : 'bg-color-white-70 focus-within:bg-color-white hover:not-focus-within:bg-color-gray-3-50',
         isDefault &&
           'inner-border-color-black-6 h-size-control-height rounded-radius-control py-spacing-sm-nudge pr-spacing-sm pl-spacing-md motion-control-state',
-        appearance === 'pill' &&
+        variant === 'pill' &&
           'inner-border-color-black-6 h-size-search-box-tall-height rounded-radius-circular px-spacing-lg py-spacing-sm motion-search-box-focus-state',
-        appearance === 'taskbar' &&
+        variant === 'taskbar' &&
           'inner-border-color-black-6 h-size-control-height rounded-radius-circular px-spacing-lg py-spacing-sm-nudge motion-search-box-focus-state',
-        appearance === 'web' &&
+        variant === 'web' &&
           'inner-border-color-black-6 h-size-search-box-tall-height rounded-radius-circular px-spacing-lg py-spacing-sm motion-control-state',
         isWindowsSearch && !isDisabled && 'active:bg-color-white',
         className,
       )}
     >
       {isWindowsSearch && <SearchIcons isDisabled={isDisabled} />}
-      {appearance === 'web' && (
+      {variant === 'web' && (
         <Asset
           name="icons/ic_fluent_search_16_regular.svg"
           className={cn(

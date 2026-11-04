@@ -154,7 +154,7 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
         <TocItem
           key={String(index) + item.label}
           label={item.label}
-          active={item.active}
+          isActive={item.active}
           {...(onTocItemSelect === undefined
             ? {}
             : getOpenableRowProps(() => {
@@ -324,7 +324,7 @@ function SearchResultsPage(
                   size="two-line"
                   title={result.title}
                   subtitle={result.date}
-                  showTrailing={isWide}
+                  hasTrailing={isWide}
                   trailing={result.url}
                   icon={<ImageAsset name="images/file-document" />}
                   className="w-full"
