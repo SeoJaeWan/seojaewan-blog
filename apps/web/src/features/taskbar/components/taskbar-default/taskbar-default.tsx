@@ -20,7 +20,7 @@ type TaskbarDefaultProps = {
   /** 검색 입력칸(search=box)에 넘기는 속성. 포커스하면 검색 패널을 여는 `onFocus` 등을 넣는다 */
   searchBoxProps?: Omit<
     ComponentProps<typeof SearchBox>,
-    'appearance' | 'placeholder' | 'aria-label' | 'className'
+    'variant' | 'placeholder' | 'aria-label' | 'className'
   >;
   /** 검색 버튼(search=button)을 눌렀을 때 부른다. 좁은 화면에서 검색 패널을 연다 */
   onSearchClick?: MouseEventHandler<HTMLButtonElement>;
@@ -56,7 +56,7 @@ export function TaskbarDefault(props: TaskbarDefaultProps): JSX.Element {
             <div data-panel-trigger className="contents">
               <SearchBox
                 {...searchBoxProps}
-                appearance="taskbar"
+                variant="taskbar"
                 placeholder="검색"
                 aria-label="검색"
                 className="w-size-search-box-taskbar-width shrink-shrink-none"
