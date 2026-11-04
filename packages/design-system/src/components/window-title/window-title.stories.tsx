@@ -6,11 +6,11 @@ import { figmaFrame } from '../../story/figma-frame';
 import { WindowTitle } from './window-title';
 
 // 피그마 WindowTitle의 변형 속성 값이다(정규화한 이름).
-const KINDS = ['window', 'preview'] as const;
+const VARIANTS = ['window', 'preview'] as const;
 const STATES = ['active', 'inactive'] as const;
 
 type FigmaArgs = {
-  kind: (typeof KINDS)[number];
+  variant: (typeof VARIANTS)[number];
   state: (typeof STATES)[number];
 };
 
@@ -19,15 +19,15 @@ const appIcon = new URL('../../assets/images/app-file-explorer.webp', import.met
 
 const meta = {
   title: 'Components/WindowTitle',
-  args: { kind: 'window', state: 'active' },
+  args: { variant: 'window', state: 'active' },
   argTypes: {
-    kind: { control: 'inline-radio', options: KINDS },
+    variant: { control: 'inline-radio', options: VARIANTS },
     state: { control: 'inline-radio', options: STATES },
   },
   render: (args) => (
     <WindowTitle
-      kind={args.kind}
-      inactive={args.state === 'inactive'}
+      variant={args.variant}
+      isInactive={args.state === 'inactive'}
       appIcon={<img src={appIcon} alt="" />}
     />
   ),
