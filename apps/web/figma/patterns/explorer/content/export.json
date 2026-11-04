@@ -10,9 +10,6 @@
         "Mobile"
       ],
       "type": "VARIANT"
-    },
-    "Items": {
-      "type": "SLOT"
     }
   },
   "variants": {
@@ -35,7 +32,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_arrow_left_20_regular"
                     },
                     "component": "ic_fluent_arrow_left_20_regular",
@@ -55,7 +52,7 @@
                 ],
                 "component": "IconButton",
                 "fills": [
-                  "subtle-fill/transparent"
+                  "color/white/0"
                 ],
                 "layout": {
                   "counterAlign": "CENTER",
@@ -72,7 +69,7 @@
                 "name": "back",
                 "properties": {
                   "State": "Rest",
-                  "Style": "Subtle"
+                  "Variant": "Subtle"
                 },
                 "radius": [
                   "radius/control",
@@ -94,7 +91,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_arrow_right_20_regular"
                     },
                     "component": "ic_fluent_arrow_right_20_regular",
@@ -114,7 +111,7 @@
                 ],
                 "component": "IconButton",
                 "fills": [
-                  "subtle-fill/transparent"
+                  "color/white/0"
                 ],
                 "layout": {
                   "counterAlign": "CENTER",
@@ -131,7 +128,7 @@
                 "name": "forward",
                 "properties": {
                   "State": "Rest",
-                  "Style": "Subtle"
+                  "Variant": "Subtle"
                 },
                 "radius": [
                   "radius/control",
@@ -153,7 +150,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_arrow_up_20_regular"
                     },
                     "component": "ic_fluent_arrow_up_20_regular",
@@ -173,7 +170,7 @@
                 ],
                 "component": "IconButton",
                 "fills": [
-                  "subtle-fill/transparent"
+                  "color/white/0"
                 ],
                 "layout": {
                   "counterAlign": "CENTER",
@@ -190,7 +187,7 @@
                 "name": "up",
                 "properties": {
                   "State": "Rest",
-                  "Style": "Subtle"
+                  "Variant": "Subtle"
                 },
                 "radius": [
                   "radius/control",
@@ -212,7 +209,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_arrow_clockwise_20_regular"
                     },
                     "component": "ic_fluent_arrow_clockwise_20_regular",
@@ -232,7 +229,7 @@
                 ],
                 "component": "IconButton",
                 "fills": [
-                  "subtle-fill/transparent"
+                  "color/white/0"
                 ],
                 "layout": {
                   "counterAlign": "CENTER",
@@ -249,7 +246,7 @@
                 "name": "refresh",
                 "properties": {
                   "State": "Rest",
-                  "Style": "Subtle"
+                  "Variant": "Subtle"
                 },
                 "radius": [
                   "radius/control",
@@ -292,7 +289,7 @@
                   },
                   {
                     "asset": {
-                      "color": "text-fill/secondary",
+                      "color": "color/black/61",
                       "path": "icons/ic_fluent_chevron_right_16_regular"
                     },
                     "component": "ic_fluent_chevron_right_16_regular",
@@ -336,7 +333,7 @@
                 ],
                 "component": "Breadcrumb",
                 "fills": [
-                  "control-fill/default"
+                  "color/white/70"
                 ],
                 "height": "size/control/height",
                 "layout": {
@@ -374,7 +371,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "control-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": true,
                 "type": "INSTANCE"
@@ -383,7 +380,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-fill/secondary"
+                      "color/black/61"
                     ],
                     "name": "label",
                     "size": {
@@ -401,7 +398,7 @@
                       "segments": [
                         {
                           "characters": "검색",
-                          "fill": "text-fill/secondary",
+                          "fill": "color/black/61",
                           "textStyle": "Hangul/Body"
                         }
                       ],
@@ -411,7 +408,7 @@
                   },
                   {
                     "asset": {
-                      "color": "text-fill/secondary",
+                      "color": "color/black/61",
                       "path": "icons/ic_fluent_search_16_regular"
                     },
                     "component": "ic_fluent_search_16_regular",
@@ -431,7 +428,7 @@
                 ],
                 "component": "SearchBox",
                 "fills": [
-                  "control-fill/default"
+                  "color/white/70"
                 ],
                 "height": "size/control/height",
                 "layout": {
@@ -448,11 +445,11 @@
                 },
                 "name": "search box",
                 "properties": {
-                  "Appearance": "Default",
                   "Filled": "False",
                   "Placeholder": "검색",
                   "State": "Rest",
-                  "Value": "리액트"
+                  "Value": "리액트",
+                  "Variant": "Default"
                 },
                 "radius": [
                   "radius/control",
@@ -566,89 +563,114 @@
               {
                 "children": [
                   {
+                    "children": [
+                      {
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": "spacing/none",
+                          "mode": "VERTICAL",
+                          "padding": [
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none"
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "Items",
+                        "size": {
+                          "h": 192,
+                          "w": 240
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "type": "SLOT"
+                      }
+                    ],
+                    "component": "NavigationPane",
                     "layout": {
                       "counterAlign": "MIN",
-                      "gap": "spacing/none",
+                      "gap": 0,
                       "mode": "VERTICAL",
                       "padding": [
-                        "spacing/none",
-                        "spacing/none",
-                        "spacing/none",
-                        "spacing/none"
+                        "spacing/sm",
+                        "spacing/xs",
+                        "spacing/sm",
+                        "spacing/xs"
                       ],
                       "primaryAlign": "MIN"
                     },
-                    "name": "items",
+                    "name": "navigation pane",
+                    "properties": {},
                     "size": {
-                      "h": 192,
-                      "w": 240
+                      "h": 329,
+                      "w": 248
                     },
                     "sizing": {
                       "h": "HUG",
-                      "v": "HUG"
+                      "v": "FILL"
                     },
-                    "type": "SLOT"
+                    "type": "INSTANCE"
+                  },
+                  {
+                    "fills": [
+                      "color/black/8"
+                    ],
+                    "name": "splitter",
+                    "size": {
+                      "h": 329,
+                      "w": 1
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FILL"
+                    },
+                    "type": "RECTANGLE"
+                  },
+                  {
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/xs",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/sm",
+                        "spacing/md",
+                        "spacing/sm",
+                        "spacing/md"
+                      ],
+                      "primaryAlign": "MIN",
+                      "wrap": true
+                    },
+                    "name": "items",
+                    "size": {
+                      "h": 329,
+                      "w": 549
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "FILL"
+                    },
+                    "type": "FRAME"
                   }
                 ],
-                "component": "NavigationPane",
                 "layout": {
                   "counterAlign": "MIN",
-                  "gap": 0,
-                  "mode": "VERTICAL",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
                   "padding": [
-                    "spacing/sm",
-                    "spacing/xs",
-                    "spacing/sm",
-                    "spacing/xs"
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
                   ],
                   "primaryAlign": "MIN"
                 },
-                "name": "navigation pane",
-                "properties": {},
+                "name": "Content",
                 "size": {
                   "h": 329,
-                  "w": 248
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "FILL"
-                },
-                "type": "INSTANCE"
-              },
-              {
-                "fills": [
-                  "divider-stroke/default"
-                ],
-                "name": "splitter",
-                "size": {
-                  "h": 329,
-                  "w": 1
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FILL"
-                },
-                "type": "RECTANGLE",
-                "width": "size/explorer/splitter-width"
-              },
-              {
-                "layout": {
-                  "counterAlign": "MIN",
-                  "gap": "spacing/xs",
-                  "mode": "HORIZONTAL",
-                  "padding": [
-                    "spacing/sm",
-                    "spacing/md",
-                    "spacing/sm",
-                    "spacing/md"
-                  ],
-                  "primaryAlign": "MIN",
-                  "wrap": true
-                },
-                "name": "Items",
-                "size": {
-                  "h": 329,
-                  "w": 549
+                  "w": 798
                 },
                 "sizing": {
                   "h": "FILL",
@@ -657,22 +679,24 @@
                 "type": "SLOT"
               }
             ],
+            "component": "LayerSurface",
             "fills": [
-              "layer-fill/default"
+              "color/white/50"
             ],
             "layout": {
               "counterAlign": "MIN",
-              "gap": 0,
+              "gap": "spacing/none",
               "mode": "HORIZONTAL",
               "padding": [
-                0,
-                0,
-                0,
-                0
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
               ],
               "primaryAlign": "MIN"
             },
             "name": "body",
+            "properties": {},
             "size": {
               "h": 330,
               "w": 798
@@ -688,16 +712,16 @@
               0
             ],
             "strokes": [
-              "card-stroke/default"
+              "color/black/6"
             ],
             "strokesIncludedInLayout": true,
-            "type": "FRAME"
+            "type": "INSTANCE"
           },
           {
             "children": [
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "item count",
                 "size": {
@@ -715,17 +739,17 @@
                   "segments": [
                     {
                       "characters": "항목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Caption"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Caption"
                     },
                     {
                       "characters": "개수",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -735,7 +759,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "selection",
                 "size": {
@@ -753,17 +777,17 @@
                   "segments": [
                     {
                       "characters": "선택",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Caption"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Caption"
                     },
                     {
                       "characters": "정보",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -800,7 +824,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_text_bullet_list_ltr_20_regular"
                     },
                     "component": "ic_fluent_text_bullet_list_ltr_20_regular",
@@ -820,7 +844,7 @@
                 ],
                 "component": "IconButton",
                 "fills": [
-                  "subtle-fill/transparent"
+                  "color/white/0"
                 ],
                 "layout": {
                   "counterAlign": "CENTER",
@@ -837,7 +861,7 @@
                 "name": "details view",
                 "properties": {
                   "State": "Rest",
-                  "Style": "Subtle"
+                  "Variant": "Subtle"
                 },
                 "radius": [
                   "radius/control",
@@ -859,7 +883,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_grid_20_regular"
                     },
                     "component": "ic_fluent_grid_20_regular",
@@ -879,7 +903,7 @@
                 ],
                 "component": "IconButton",
                 "fills": [
-                  "subtle-fill/transparent"
+                  "color/white/0"
                 ],
                 "layout": {
                   "counterAlign": "CENTER",
@@ -896,7 +920,7 @@
                 "name": "large icons view",
                 "properties": {
                   "State": "Rest",
-                  "Style": "Subtle"
+                  "Variant": "Subtle"
                 },
                 "radius": [
                   "radius/control",
@@ -917,7 +941,7 @@
             ],
             "component": "ExplorerStatusBar",
             "fills": [
-              "layer-fill/default"
+              "color/white/50"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -934,9 +958,9 @@
             "name": "status bar",
             "properties": {
               "Device": "Desktop",
+              "Has selection": true,
               "Item count": "항목 개수",
-              "Selection": "선택 정보",
-              "Show selection": true
+              "Selection": "선택 정보"
             },
             "size": {
               "h": 36,
@@ -946,14 +970,12 @@
               "h": "FILL",
               "v": "HUG"
             },
-            "type": "INSTANCE",
-            "width": "size/explorer/content-width"
+            "type": "INSTANCE"
           }
         ],
         "fills": [
-          "layer-on-mica-base-alt-fill/default"
+          "color/white/70"
         ],
-        "height": "size/explorer/content-height",
         "layout": {
           "counterAlign": "MIN",
           "gap": 0,
@@ -975,8 +997,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/explorer/content-width"
+        "type": "COMPONENT"
       }
     },
     "device=mobile": {
@@ -998,7 +1019,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_arrow_left_20_regular"
                     },
                     "component": "ic_fluent_arrow_left_20_regular",
@@ -1018,7 +1039,7 @@
                 ],
                 "component": "IconButton",
                 "fills": [
-                  "subtle-fill/transparent"
+                  "color/white/0"
                 ],
                 "layout": {
                   "counterAlign": "CENTER",
@@ -1035,7 +1056,7 @@
                 "name": "back",
                 "properties": {
                   "State": "Rest",
-                  "Style": "Subtle"
+                  "Variant": "Subtle"
                 },
                 "radius": [
                   "radius/control",
@@ -1078,7 +1099,7 @@
                   },
                   {
                     "asset": {
-                      "color": "text-fill/secondary",
+                      "color": "color/black/61",
                       "path": "icons/ic_fluent_chevron_right_16_regular"
                     },
                     "component": "ic_fluent_chevron_right_16_regular",
@@ -1122,7 +1143,7 @@
                 ],
                 "component": "Breadcrumb",
                 "fills": [
-                  "control-fill/default"
+                  "color/white/70"
                 ],
                 "height": "size/control/height",
                 "layout": {
@@ -1160,7 +1181,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "control-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": true,
                 "type": "INSTANCE"
@@ -1169,7 +1190,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_search_20_regular"
                     },
                     "component": "ic_fluent_search_20_regular",
@@ -1189,7 +1210,7 @@
                 ],
                 "component": "IconButton",
                 "fills": [
-                  "subtle-fill/transparent"
+                  "color/white/0"
                 ],
                 "layout": {
                   "counterAlign": "CENTER",
@@ -1206,7 +1227,7 @@
                 "name": "search",
                 "properties": {
                   "State": "Rest",
-                  "Style": "Subtle"
+                  "Variant": "Subtle"
                 },
                 "radius": [
                   "radius/control",
@@ -1309,20 +1330,46 @@
           {
             "children": [
               {
+                "children": [
+                  {
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/xs",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/sm",
+                        "spacing/md",
+                        "spacing/sm",
+                        "spacing/md"
+                      ],
+                      "primaryAlign": "MIN",
+                      "wrap": true
+                    },
+                    "name": "items",
+                    "size": {
+                      "h": 603,
+                      "w": 388
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "FILL"
+                    },
+                    "type": "FRAME"
+                  }
+                ],
                 "layout": {
                   "counterAlign": "MIN",
-                  "gap": "spacing/xs",
+                  "gap": "spacing/none",
                   "mode": "HORIZONTAL",
                   "padding": [
-                    "spacing/sm",
-                    "spacing/md",
-                    "spacing/sm",
-                    "spacing/md"
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
                   ],
-                  "primaryAlign": "MIN",
-                  "wrap": true
+                  "primaryAlign": "MIN"
                 },
-                "name": "Items",
+                "name": "Content",
                 "size": {
                   "h": 603,
                   "w": 388
@@ -1334,22 +1381,24 @@
                 "type": "SLOT"
               }
             ],
+            "component": "LayerSurface",
             "fills": [
-              "layer-fill/default"
+              "color/white/50"
             ],
             "layout": {
               "counterAlign": "MIN",
-              "gap": 0,
+              "gap": "spacing/none",
               "mode": "HORIZONTAL",
               "padding": [
-                0,
-                0,
-                0,
-                0
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
               ],
               "primaryAlign": "MIN"
             },
             "name": "body",
+            "properties": {},
             "size": {
               "h": 604,
               "w": 388
@@ -1365,16 +1414,16 @@
               0
             ],
             "strokes": [
-              "card-stroke/default"
+              "color/black/6"
             ],
             "strokesIncludedInLayout": true,
-            "type": "FRAME"
+            "type": "INSTANCE"
           },
           {
             "children": [
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "item count",
                 "size": {
@@ -1392,17 +1441,17 @@
                   "segments": [
                     {
                       "characters": "항목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Caption"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Caption"
                     },
                     {
                       "characters": "개수",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -1412,7 +1461,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "selection",
                 "size": {
@@ -1430,17 +1479,17 @@
                   "segments": [
                     {
                       "characters": "선택",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Caption"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Caption"
                     },
                     {
                       "characters": "정보",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -1476,7 +1525,7 @@
             ],
             "component": "ExplorerStatusBar",
             "fills": [
-              "layer-fill/default"
+              "color/white/50"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -1493,9 +1542,9 @@
             "name": "ExplorerStatusBar",
             "properties": {
               "Device": "Mobile",
+              "Has selection": true,
               "Item count": "항목 개수",
-              "Selection": "선택 정보",
-              "Show selection": true
+              "Selection": "선택 정보"
             },
             "size": {
               "h": 20,
@@ -1505,14 +1554,12 @@
               "h": "FILL",
               "v": "HUG"
             },
-            "type": "INSTANCE",
-            "width": "size/window/mobile-content-width"
+            "type": "INSTANCE"
           }
         ],
         "fills": [
-          "layer-on-mica-base-alt-fill/default"
+          "color/white/70"
         ],
-        "height": "size/explorer/mobile-content-height",
         "layout": {
           "counterAlign": "MIN",
           "gap": 0,
@@ -1534,8 +1581,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/window/mobile-content-width"
+        "type": "COMPONENT"
       }
     }
   }
