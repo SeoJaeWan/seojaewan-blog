@@ -9,7 +9,7 @@
     "Favicon": {
       "type": "INSTANCE_SWAP"
     },
-    "Show separator": {
+    "Has separator": {
       "default": true,
       "type": "BOOLEAN"
     },
@@ -64,7 +64,7 @@
           },
           {
             "fills": [
-              "chrome/text-primary"
+              "color/gray/88"
             ],
             "name": "title",
             "size": {
@@ -82,17 +82,17 @@
               "segments": [
                 {
                   "characters": "페이지",
-                  "fill": "chrome/text-primary",
+                  "fill": "color/gray/88",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "chrome/text-primary",
+                  "fill": "color/gray/88",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "제목",
-                  "fill": "chrome/text-primary",
+                  "fill": "color/gray/88",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -102,7 +102,7 @@
           },
           {
             "asset": {
-              "color": "chrome/text-secondary",
+              "color": "color/gray/70",
               "path": "icons/ic_fluent_dismiss_20_regular"
             },
             "component": "ic_fluent_dismiss_20_regular",
@@ -121,7 +121,7 @@
           }
         ],
         "fills": [
-          "chrome/toolbar-fill"
+          "color/white"
         ],
         "height": "size/browser-tab/height",
         "layout": {
@@ -191,7 +191,7 @@
           },
           {
             "fills": [
-              "chrome/text-primary"
+              "color/gray/88"
             ],
             "name": "title",
             "size": {
@@ -209,17 +209,17 @@
               "segments": [
                 {
                   "characters": "페이지",
-                  "fill": "chrome/text-primary",
+                  "fill": "color/gray/88",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "chrome/text-primary",
+                  "fill": "color/gray/88",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "제목",
-                  "fill": "chrome/text-primary",
+                  "fill": "color/gray/88",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -229,7 +229,7 @@
           },
           {
             "asset": {
-              "color": "chrome/text-secondary",
+              "color": "color/gray/70",
               "path": "icons/ic_fluent_dismiss_20_regular"
             },
             "component": "ic_fluent_dismiss_20_regular",
@@ -248,7 +248,7 @@
           }
         ],
         "fills": [
-          "chrome/tab-fill-hover"
+          "color/white/50"
         ],
         "height": "size/browser-tab/height",
         "layout": {
@@ -318,7 +318,7 @@
           },
           {
             "fills": [
-              "chrome/text-primary"
+              "color/gray/88"
             ],
             "name": "title",
             "size": {
@@ -336,17 +336,17 @@
               "segments": [
                 {
                   "characters": "페이지",
-                  "fill": "chrome/text-primary",
+                  "fill": "color/gray/88",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "chrome/text-primary",
+                  "fill": "color/gray/88",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "제목",
-                  "fill": "chrome/text-primary",
+                  "fill": "color/gray/88",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -356,7 +356,7 @@
           },
           {
             "asset": {
-              "color": "chrome/text-secondary",
+              "color": "color/gray/70",
               "path": "icons/ic_fluent_dismiss_20_regular"
             },
             "component": "ic_fluent_dismiss_20_regular",
@@ -379,7 +379,7 @@
               "vertical": "CENTER"
             },
             "fills": [
-              "chrome/tab-separator"
+              "color/black/22"
             ],
             "height": "size/separator/height",
             "name": "separator",

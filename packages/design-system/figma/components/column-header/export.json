@@ -1,5 +1,5 @@
 {
-  "description": "눌러서 정렬하는 열 제목 하나로, DetailsHeader에 쓴다.",
+  "description": "눌러서 정렬하는 열 제목 하나로, DetailsHeader에 쓴다.\n@sample-size width",
   "name": "ColumnHeader",
   "nodeId": "31:359",
   "propertyDefinitions": {
@@ -42,7 +42,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "label",
             "size": {
@@ -60,17 +60,17 @@
               "segments": [
                 {
                   "characters": "열",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -80,7 +80,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_down_16_regular"
             },
             "component": "ic_fluent_chevron_down_16_regular",
@@ -103,7 +103,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/control/height",
         "layout": {
@@ -134,11 +134,10 @@
           0
         ],
         "strokes": [
-          "divider-stroke/default"
+          "color/black/8"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/details-header/wide-width"
+        "type": "COMPONENT"
       }
     },
     "sort=ascending,state=rest": {
@@ -157,7 +156,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "label",
             "size": {
@@ -175,17 +174,17 @@
               "segments": [
                 {
                   "characters": "열",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -195,7 +194,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_down_16_regular"
             },
             "component": "ic_fluent_chevron_down_16_regular",
@@ -264,11 +263,10 @@
           0
         ],
         "strokes": [
-          "divider-stroke/default"
+          "color/black/8"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/details-header/wide-width"
+        "type": "COMPONENT"
       }
     },
     "sort=descending,state=hover": {
@@ -287,7 +285,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "label",
             "size": {
@@ -305,17 +303,17 @@
               "segments": [
                 {
                   "characters": "열",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -325,7 +323,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_down_16_regular"
             },
             "component": "ic_fluent_chevron_down_16_regular",
@@ -344,7 +342,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/control/height",
         "layout": {
@@ -375,11 +373,10 @@
           0
         ],
         "strokes": [
-          "divider-stroke/default"
+          "color/black/8"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/details-header/wide-width"
+        "type": "COMPONENT"
       }
     },
     "sort=descending,state=rest": {
@@ -398,7 +395,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "label",
             "size": {
@@ -416,17 +413,17 @@
               "segments": [
                 {
                   "characters": "열",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -436,7 +433,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_down_16_regular"
             },
             "component": "ic_fluent_chevron_down_16_regular",
@@ -501,11 +498,10 @@
           0
         ],
         "strokes": [
-          "divider-stroke/default"
+          "color/black/8"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/details-header/wide-width"
+        "type": "COMPONENT"
       }
     },
     "sort=none,state=hover": {
@@ -524,7 +520,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "label",
             "size": {
@@ -542,17 +538,17 @@
               "segments": [
                 {
                   "characters": "열",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -562,7 +558,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/control/height",
         "layout": {
@@ -593,11 +589,10 @@
           0
         ],
         "strokes": [
-          "divider-stroke/default"
+          "color/black/8"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/details-header/wide-width"
+        "type": "COMPONENT"
       }
     },
     "sort=none,state=rest": {
@@ -616,7 +611,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "label",
             "size": {
@@ -634,17 +629,17 @@
               "segments": [
                 {
                   "characters": "열",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -700,11 +695,10 @@
           0
         ],
         "strokes": [
-          "divider-stroke/default"
+          "color/black/8"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/details-header/wide-width"
+        "type": "COMPONENT"
       }
     }
   }
