@@ -67,7 +67,7 @@
               "vertical": "MAX"
             },
             "fills": [
-              "accent-fill/default"
+              "color/blue/59"
             ],
             "height": "stroke-width/indicator",
             "name": "indicator",
@@ -90,7 +90,7 @@
           }
         ],
         "fills": [
-          "control-fill/default"
+          "color/white/70"
         ],
         "height": "size/taskbar/item",
         "layout": {
@@ -145,7 +145,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT",
@@ -193,7 +193,7 @@
               "vertical": "MAX"
             },
             "fills": [
-              "accent-fill/default"
+              "color/blue/59"
             ],
             "height": "stroke-width/indicator",
             "name": "indicator",
@@ -216,7 +216,7 @@
           }
         ],
         "fills": [
-          "control-fill/tertiary"
+          "color/gray/2/30"
         ],
         "height": "size/taskbar/item",
         "layout": {
@@ -253,7 +253,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT",
@@ -301,7 +301,7 @@
               "vertical": "MAX"
             },
             "fills": [
-              "accent-fill/default"
+              "color/blue/59"
             ],
             "height": "stroke-width/indicator",
             "name": "indicator",
@@ -324,7 +324,7 @@
           }
         ],
         "fills": [
-          "control-fill/default"
+          "color/white/70"
         ],
         "height": "size/taskbar/item",
         "layout": {
@@ -379,7 +379,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT",
@@ -423,7 +423,7 @@
           }
         ],
         "fills": [
-          "control-fill/default"
+          "color/white/70"
         ],
         "height": "size/taskbar/item",
         "layout": {
@@ -478,7 +478,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT",
@@ -522,7 +522,7 @@
           }
         ],
         "fills": [
-          "control-fill/tertiary"
+          "color/gray/2/30"
         ],
         "height": "size/taskbar/item",
         "layout": {
@@ -559,7 +559,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT",
@@ -693,7 +693,7 @@
               "vertical": "MAX"
             },
             "fills": [
-              "control-strong-fill/default"
+              "color/black/45"
             ],
             "height": "stroke-width/indicator",
             "name": "indicator",
@@ -716,7 +716,7 @@
           }
         ],
         "fills": [
-          "control-fill/default"
+          "color/white/70"
         ],
         "height": "size/taskbar/item",
         "layout": {
@@ -771,7 +771,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT",
@@ -819,7 +819,7 @@
               "vertical": "MAX"
             },
             "fills": [
-              "control-strong-fill/default"
+              "color/black/45"
             ],
             "height": "stroke-width/indicator",
             "name": "indicator",
@@ -842,7 +842,7 @@
           }
         ],
         "fills": [
-          "control-fill/tertiary"
+          "color/gray/2/30"
         ],
         "height": "size/taskbar/item",
         "layout": {
@@ -879,7 +879,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT",
@@ -927,7 +927,7 @@
               "vertical": "MAX"
             },
             "fills": [
-              "control-strong-fill/default"
+              "color/black/45"
             ],
             "height": "stroke-width/indicator",
             "name": "indicator",
