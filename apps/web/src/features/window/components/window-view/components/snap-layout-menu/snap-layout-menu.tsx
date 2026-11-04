@@ -17,7 +17,7 @@ type SnapLayoutMenuProps = {
    */
   open?: boolean;
   /** 피그마 State=Inactive. 창이 활성 상태가 아니면 최대화 버튼 아이콘을 흐리게 그린다 */
-  inactive?: boolean;
+  isInactive?: boolean;
   /** 최대화 버튼을 눌렀을 때 */
   onMaximize?: () => void;
   /** 스냅 칸을 골랐을 때(레이아웃과 칸 번호) */
@@ -46,7 +46,7 @@ const OPEN_TRIGGER_CLASS_NAME = 'aria-expanded:bg-color-black-4 aria-expanded:te
 export function SnapLayoutMenu(props: SnapLayoutMenuProps): JSX.Element {
   const {
     open: isFixedOpen,
-    inactive: isInactive = false,
+    isInactive = false,
     onMaximize: handleMaximize,
     onSelectZone: handleZoneChoice,
     className,

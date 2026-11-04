@@ -73,8 +73,8 @@ function ChromeLayerHost(props: ChromeLayerHostProps): JSX.Element {
               content={target.content}
               device={device}
               controls={{
-                inactive: false,
-                placement: 'normal',
+                isInactive: false,
+                placement: 'default',
                 onMinimize: ignoreMinimize,
                 onClose: handleClose,
               }}

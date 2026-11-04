@@ -9,7 +9,11 @@ import type {
   SnapZone,
   WindowWorkArea,
 } from '@/shared/utils/window-rules/window-rules';
-import { getSnapZoneRect, getWindowRect } from '@/shared/utils/window-rules/window-rules';
+import {
+  getSnapZoneRect,
+  getWindowRect,
+  toFramePlacement,
+} from '@/shared/utils/window-rules/window-rules';
 
 import { SnapAssist } from './components/snap-assist/snap-assist';
 
@@ -144,8 +148,8 @@ export function WindowSnapAssist(props: WindowSnapAssistProps): JSX.Element {
                   scale={getThumbnailScale(size, THUMBNAIL_BOX)}
                 >
                   {renderWindow(target, {
-                    inactive: false,
-                    placement: target.placement,
+                    isInactive: false,
+                    placement: toFramePlacement(target.placement),
                     onMinimize: ignoreControl,
                     onClose: ignoreControl,
                   })}

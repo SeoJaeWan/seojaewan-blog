@@ -18,6 +18,7 @@ import {
   getTaskbarAppAction,
   getTaskbarAppIndicator,
   getWindowRect,
+  toFramePlacement,
 } from '@/shared/utils/window-rules/window-rules';
 
 import type { TaskbarAppMenuAction } from './app-menu/app-menu-entries';
@@ -347,8 +348,8 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
     return (
       <WindowThumbnail width={size.width} height={size.height} scale={getThumbnailScale(size, box)}>
         {renderWindow(target, {
-          inactive: false,
-          placement: device === 'mobile' ? 'maximized' : target.placement,
+          isInactive: false,
+          placement: device === 'mobile' ? 'maximized' : toFramePlacement(target.placement),
           onMinimize: ignoreControl,
           onClose: ignoreControl,
         })}

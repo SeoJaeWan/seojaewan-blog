@@ -37,7 +37,7 @@ export type ChromeWindowTab = {
 // 창 층이 넘기는 창 동작 속성이다. WindowFrame에 그대로 넘긴다.
 type WindowFrameControlProps = Pick<
   ComponentProps<typeof WindowFrame>,
-  | 'inactive'
+  | 'isInactive'
   | 'placement'
   | 'onMinimize'
   | 'onMaximize'
@@ -235,7 +235,7 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
         onTitleBarPointerDown={handleFrameTitleBarPointerDown}
         material="chrome"
         placement="maximized"
-        showMaximize={false}
+        hasMaximize={false}
         appIcon={chromeAppIcon}
         title={activeTab?.title}
         className={frameClassName}
