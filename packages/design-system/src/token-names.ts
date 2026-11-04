@@ -188,6 +188,7 @@ export const TOKEN_NAMES = {
 
 /** 피그마 `breakpoint/*` 경계값(px) */
 export const BREAKPOINTS = {
+  chromePageWidth: 1020,
   laptopHeight: 900,
   laptopWidth: 1600,
   mobileWidth: 768,

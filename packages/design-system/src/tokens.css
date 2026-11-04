@@ -3,7 +3,7 @@
  * 다시 만들기: pnpm --filter @seojaewan/design-system generate:tokens
  *
  * CSS 이름은 `--` + 피그마 경로를 `-`로 이은 것이다(스타일은 스타일 이름 경로).
- * 유틸리티가 읽는 변수는 @theme static에, 나머지(Primitive 색, 글자 스타일이 쓰는 서체 값, motion.css가 쓰는 모션 값 등)는 :root에 둔다.
+ * 유틸리티가 읽는 변수는 @theme static에, 나머지(경로 이름 변수, 글자 스타일이 쓰는 서체 값, motion.css가 쓰는 모션 값 등)는 :root에 둔다.
  *
  * | 클래스 | CSS | 변수 |
  * |---|---|---|
@@ -23,6 +23,7 @@
  * | `flex-*` | flex | `--flex-*` |
  * | `h-*` | height | `--size-*` |
  * | `h-stroke-*` | height | `--stroke-width-*` |
+ * | `inner-border-*` | 안쪽 선 고리(색) | `--color-*` |
  * | `inner-border-<색 묶음>-*` | 안쪽 선 고리(색) | `--<색 묶음>-*` |
  * | `inner-border-w-*` | 안쪽 선 고리 두께 | `--stroke-width-*` |
  * | `max-h-*` | max-height | `--size-*` |
@@ -46,6 +47,7 @@
  * | `type-<글자 스타일>` | 서체, 크기, 굵기, 줄 높이, 자간 | 글자 스타일 |
  * | `<효과 스타일>`(배경 흐림이 있는 것) | box-shadow, backdrop-filter | `--<효과 스타일>-shadow`, `-backdrop-blur` |
  * | `material-<재질>` | background-color, backdrop-filter | `Material/*` 칠·효과 스타일 |
+ * | 유틸리티 + `color` 경로 전체 | Tailwind 기본 유틸리티 | `--color-<경로 전체>` |
  * | 유틸리티 + `spacing` 경로 전체 | Tailwind 기본 유틸리티 | `--spacing-<경로 전체>` |
  * | 유틸리티 + `size` 경로 전체 | Tailwind 기본 유틸리티 | `--size-<경로 전체>` |
  * | 유틸리티 + `radius` 경로 전체 | Tailwind 기본 유틸리티 | `--radius-<경로 전체>` |
@@ -89,6 +91,7 @@
   --blur-acrylic: 60px;
   --blur-mica: 240px;
   --border-spacing-none: 0px;
+  --breakpoint-chrome-page-width: 1020px;
   --breakpoint-laptop-height: 900px;
   --breakpoint-laptop-width: 1600px;
   --breakpoint-mobile-width: 768px;
@@ -340,6 +343,56 @@
   --blur-blur-acrylic: var(--blur-acrylic);
   --blur-blur-mica: var(--blur-mica);
   --border-spacing-border-spacing-none: var(--border-spacing-none);
+  --color-color-black: var(--color-black);
+  --color-color-black-2: var(--color-black-2);
+  --color-color-black-4: var(--color-black-4);
+  --color-color-black-6: var(--color-black-6);
+  --color-color-black-8: var(--color-black-8);
+  --color-color-black-9: var(--color-black-9);
+  --color-color-black-16: var(--color-black-16);
+  --color-color-black-22: var(--color-black-22);
+  --color-color-black-36: var(--color-black-36);
+  --color-color-black-40: var(--color-black-40);
+  --color-color-black-45: var(--color-black-45);
+  --color-color-black-56: var(--color-black-56);
+  --color-color-black-61: var(--color-black-61);
+  --color-color-black-80: var(--color-black-80);
+  --color-color-black-89: var(--color-black-89);
+  --color-color-blue-5: var(--color-blue-5);
+  --color-color-blue-9: var(--color-blue-9);
+  --color-color-blue-18: var(--color-blue-18);
+  --color-color-blue-50: var(--color-blue-50);
+  --color-color-blue-58: var(--color-blue-58);
+  --color-color-blue-59: var(--color-blue-59);
+  --color-color-blue-59-80: var(--color-blue-59-80);
+  --color-color-blue-59-90: var(--color-blue-59-90);
+  --color-color-blue-60: var(--color-blue-60);
+  --color-color-blue-72: var(--color-blue-72);
+  --color-color-cyan-15: var(--color-cyan-15);
+  --color-color-gray-1-85: var(--color-gray-1-85);
+  --color-color-gray-2: var(--color-gray-2);
+  --color-color-gray-2-30: var(--color-gray-2-30);
+  --color-color-gray-3-50: var(--color-gray-3-50);
+  --color-color-gray-4: var(--color-gray-4);
+  --color-color-gray-4-90: var(--color-gray-4-90);
+  --color-color-gray-4-95: var(--color-gray-4-95);
+  --color-color-gray-9: var(--color-gray-9);
+  --color-color-gray-13: var(--color-gray-13);
+  --color-color-gray-51-40: var(--color-gray-51-40);
+  --color-color-gray-70: var(--color-gray-70);
+  --color-color-gray-88: var(--color-gray-88);
+  --color-color-orange-28: var(--color-orange-28);
+  --color-color-red-56: var(--color-red-56);
+  --color-color-red-56-90: var(--color-red-56-90);
+  --color-color-white: var(--color-white);
+  --color-color-white-0: var(--color-white-0);
+  --color-color-white-8: var(--color-white-8);
+  --color-color-white-15: var(--color-white-15);
+  --color-color-white-25: var(--color-white-25);
+  --color-color-white-50: var(--color-white-50);
+  --color-color-white-70: var(--color-white-70);
+  --color-color-yellow-3: var(--color-yellow-3);
+  --color-color-yellow-54: var(--color-yellow-54);
   --elevation-accent-control-border: linear-gradient(to bottom, var(--color-white-8) 90.67%, #cccccc24 92.536%, #99999935 94.402%, #66666645 96.268%, #33333356 98.134%, var(--color-black-40) 100%);
   --elevation-control-border: linear-gradient(to bottom, var(--color-black-6) 90.58%, var(--color-black-16) 100%);
   --elevation-desktop-label: 0px 1px 2px 0px #00000099;
@@ -627,6 +680,22 @@
 
 @utility h-stroke-* {
   height: --value(--stroke-width-*);
+}
+
+@utility inner-border-* {
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    padding: var(--inner-border-width);
+    border-radius: inherit;
+    background: --value(--color-*);
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    pointer-events: none;
+  }
 }
 
 @utility inner-border-material-* {
