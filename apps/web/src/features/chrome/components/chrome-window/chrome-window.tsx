@@ -208,8 +208,8 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
     <BrowserToolbar
       url={url}
       addressBar={addressBar}
-      showForward={isDesktop}
-      showRefresh={isDesktop}
+      hasForward={isDesktop}
+      hasRefresh={isDesktop}
       canGoBack={canGoBack}
       canGoForward={canGoForward}
       onBack={handleBack}
