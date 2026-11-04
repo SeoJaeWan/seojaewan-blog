@@ -28,6 +28,7 @@ _codocs:
   초기값의 모양으로 정의해야 lint가 설정 값과 계산 결과를 구분할 수 있다. 함수 호출 결과 같은 계산 값(`const store = createStore()`)은 camelCase이며, 계산 값에 UPPER_SNAKE_CASE를 쓰는 것도 lint가 막는다. `as const`가 아닌 타입 단언(`x as Foo`)은 상수로 보지 않는다.
   함수 안의 `const`는 초기값과 상관없이 camelCase다.
 
+  접두어는 뜻에 따라 고른다. 지금 상태는 `is`, 가진 것·켜진 부분은 `has`, 할 수 있는지(능력)는 `can`, 해야 하는지는 `should`다. 뒤로·앞으로·위로 이동 버튼처럼 "갈 수 있는지"를 나타내는 prop은 `canGoBack`·`canGoForward`·`canGoUp`이다(`isBackDisabled`처럼 뒤집어 넘기지 않는다).
   우리 Props 타입에 선언하는 boolean 속성도 모두 `is`·`has`·`can`·`should`로 시작한다(`isSelected`, `isActive`, `isOpen`, `isExpanded`, `isCurrent`). lint(`naming-convention`)가 Props 타입의 boolean 속성도 검사한다. Toc·Scrollbar의 펼침도 `state` 문자열이 아니라 `isExpanded` boolean으로 받는다. 피그마 불리언 속성 `Has …`는 `has…` prop이 된다([[컴포넌트 목록:속성 이름]]).
   `ComponentProps<...>`로 받아 `...rest`로 그대로 흘려보내는 HTML·Base UI 표준 이름(`disabled`, `type` 등)만 그대로 쓴다.
   우리 Props 타입에 직접 선언한 boolean은 표준 이름과 같아도 접두어를 붙이고(`checked` → `isChecked`), 안쪽 요소나 Base UI에 넘길 때만 표준 이름으로 바꿔 넘긴다(Checkbox `isChecked` → `aria-checked={isChecked}`).

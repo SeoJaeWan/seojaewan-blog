@@ -21,10 +21,10 @@ export const Figma: Story = {
   render: () => (
     <Table aria-label="훅 비교">
       <tr>
-        <TableCell type="header" scope="col">
+        <TableCell variant="header" scope="col">
           훅
         </TableCell>
-        <TableCell type="header" scope="col">
+        <TableCell variant="header" scope="col">
           하는 일
         </TableCell>
       </tr>

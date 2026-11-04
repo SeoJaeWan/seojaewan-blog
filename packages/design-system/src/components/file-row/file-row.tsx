@@ -12,10 +12,10 @@ type FileRowProps = Omit<ComponentProps<'div'>, 'children'> & {
   date?: string;
   /** 피그마 TEXT 속성 Type. 파일 유형이다 */
   type?: string;
-  /** 피그마 TEXT 속성 Location. showLocation이 켜져 있을 때 보이는 위치다 */
+  /** 피그마 TEXT 속성 Location. hasLocation이 켜져 있을 때 보이는 위치다 */
   location?: string;
-  /** 피그마 BOOLEAN 속성 Show location. 위치 칸을 보인다(View=Default에만 있다) */
-  showLocation?: boolean;
+  /** 피그마 BOOLEAN 속성 Has location. 위치 칸을 보인다(View=Default에만 있다) */
+  hasLocation?: boolean;
   /** 피그마 TEXT 속성 Original location. View=Recycle bin에서 지우기 전 위치다 */
   originalLocation?: string;
   /** 피그마 TEXT 속성 Deleted date. View=Recycle bin에서 지운 날짜다 */
@@ -23,14 +23,14 @@ type FileRowProps = Omit<ComponentProps<'div'>, 'children'> & {
   /** 피그마 INSTANCE_SWAP 속성 Icon. 이름 앞 16px 아이콘이다. 파일·폴더 아이콘은 쓰는 곳마다 달라 꼭 넘긴다 */
   icon: ReactNode;
   /** 피그마 State=Selected. 선택된 줄이면 바탕을 깐다 */
-  selected?: boolean;
+  isSelected?: boolean;
   /** 피그마 State=Cut·Cut selected. 잘라낸 줄이면 아이콘과 이름을 흐리게 그린다 */
-  cut?: boolean;
+  isCut?: boolean;
   /** 피그마 State=Rename. 이름 대신 이름 바꾸기 입력 상자를 그리고 선택 바탕을 깐다 */
-  renaming?: boolean;
+  isRenaming?: boolean;
   /**
    * 이름 바꾸기 입력창(RenameField)에 넘길 값·동작·접근성 속성(`value`, `onValueChange`, `onKeyDown`, `onBlur`, `aria-label` 등).
-   * 생김새는 바꾸지 않는다. `renaming`일 때만 쓴다
+   * 생김새는 바꾸지 않는다. `isRenaming`일 때만 쓴다
    */
   renameFieldProps?: Omit<ComponentProps<typeof RenameField>, 'text' | 'className'>;
 };
@@ -72,13 +72,13 @@ export function FileRow(props: FileRowProps): JSX.Element {
     date = '수정한 날짜',
     type = '유형',
     location = '위치',
-    showLocation: isLocationShown = false,
+    hasLocation = false,
     originalLocation = '원래 위치',
     deletedDate = '삭제한 날짜',
     icon,
-    selected: isSelected = false,
-    cut: isCut = false,
-    renaming: isRenaming = false,
+    isSelected = false,
+    isCut = false,
+    isRenaming = false,
     renameFieldProps,
     className,
     ...divProps
@@ -135,7 +135,7 @@ export function FileRow(props: FileRowProps): JSX.Element {
           <span className="w-size-file-row-narrow-cell-width shrink-shrink-none truncate type-caption text-color-black-61">
             {type}
           </span>
-          {isLocationShown && (
+          {hasLocation && (
             <span className="w-size-file-row-wide-cell-width shrink-shrink-none truncate type-caption text-color-black-61">
               {location}
             </span>

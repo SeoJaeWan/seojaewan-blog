@@ -1,5 +1,5 @@
 {
-  "description": "글 본문의 아이콘과 글을 담은 강조 상자로, 글 페이지에 쓴다.",
+  "description": "글 본문의 아이콘과 글을 담은 강조 상자로, 글 페이지에 쓴다.\n@sample-size width",
   "name": "Callout",
   "nodeId": "1380:1131",
   "propertyDefinitions": {
@@ -26,7 +26,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "text-fill/primary",
+                  "color": "color/black/89",
                   "path": "icons/ic_fluent_info_24_regular"
                 },
                 "component": "ic_fluent_info_24_regular",
@@ -72,7 +72,7 @@
             "children": [
               {
                 "fills": [
-                  "SOLID"
+                  "color/black/89"
                 ],
                 "name": "text",
                 "size": {
@@ -90,147 +90,147 @@
                   "segments": [
                     {
                       "characters": "콜아웃은",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "아이콘과",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "함께",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "눈에",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "띄게",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "보여",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "줄",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "글을",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "담는다",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": ". ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "글자",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large Strong"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large Strong"
                     },
                     {
                       "characters": "서식",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large Strong"
                     },
                     {
                       "characters": "도",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "쓸",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "수",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "있다",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": ".",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     }
                   ],
@@ -264,7 +264,7 @@
           }
         ],
         "fills": [
-          "card-background-fill/secondary"
+          "color/gray/3/50"
         ],
         "layout": {
           "counterAlign": "MIN",
@@ -300,11 +300,10 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "card-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/post/width"
+        "type": "COMPONENT"
       }
     }
   }

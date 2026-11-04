@@ -1,5 +1,5 @@
 {
-  "description": "글 본문의 표로, 글 페이지에 쓴다.",
+  "description": "글 본문의 표로, 글 페이지에 쓴다.\n@sample-size width",
   "name": "Table",
   "nodeId": "1380:6863",
   "propertyDefinitions": {
@@ -27,7 +27,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "text",
                         "size": {
@@ -45,7 +45,7 @@
                           "segments": [
                             {
                               "characters": "훅",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body Strong"
                             }
                           ],
@@ -56,7 +56,7 @@
                     ],
                     "component": "TableCell",
                     "fills": [
-                      "subtle-fill/secondary"
+                      "color/black/4"
                     ],
                     "layout": {
                       "counterAlign": "MIN",
@@ -72,9 +72,9 @@
                     },
                     "name": "cell",
                     "properties": {
-                      "Body Text": "칸 내용",
+                      "Body text": "칸 내용",
                       "Text": "훅",
-                      "Type": "Header"
+                      "Variant": "Header"
                     },
                     "size": {
                       "h": 37,
@@ -91,7 +91,7 @@
                       0
                     ],
                     "strokes": [
-                      "divider-stroke/default"
+                      "color/black/8"
                     ],
                     "strokesIncludedInLayout": true,
                     "type": "INSTANCE"
@@ -100,7 +100,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "text",
                         "size": {
@@ -118,17 +118,17 @@
                           "segments": [
                             {
                               "characters": "하는",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body Strong"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body Strong"
                             },
                             {
                               "characters": "일",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body Strong"
                             }
                           ],
@@ -139,7 +139,7 @@
                     ],
                     "component": "TableCell",
                     "fills": [
-                      "subtle-fill/secondary"
+                      "color/black/4"
                     ],
                     "layout": {
                       "counterAlign": "MIN",
@@ -155,9 +155,9 @@
                     },
                     "name": "cell",
                     "properties": {
-                      "Body Text": "칸 내용",
+                      "Body text": "칸 내용",
                       "Text": "하는 일",
-                      "Type": "Header"
+                      "Variant": "Header"
                     },
                     "size": {
                       "h": 37,
@@ -174,7 +174,7 @@
                       0
                     ],
                     "strokes": [
-                      "divider-stroke/default"
+                      "color/black/8"
                     ],
                     "strokesIncludedInLayout": true,
                     "type": "INSTANCE"
@@ -209,7 +209,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "text",
                         "size": {
@@ -227,7 +227,7 @@
                           "segments": [
                             {
                               "characters": "use",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             }
                           ],
@@ -251,9 +251,9 @@
                     },
                     "name": "cell",
                     "properties": {
-                      "Body Text": "use",
+                      "Body text": "use",
                       "Text": "use",
-                      "Type": "Body"
+                      "Variant": "Body"
                     },
                     "size": {
                       "h": 37,
@@ -270,7 +270,7 @@
                       0
                     ],
                     "strokes": [
-                      "divider-stroke/default"
+                      "color/black/8"
                     ],
                     "strokesIncludedInLayout": true,
                     "type": "INSTANCE"
@@ -279,7 +279,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "text",
                         "size": {
@@ -297,52 +297,52 @@
                           "segments": [
                             {
                               "characters": "Promise",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "와",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " Context",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "를",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "렌더링",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "중에",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "읽는다",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -366,9 +366,9 @@
                     },
                     "name": "cell",
                     "properties": {
-                      "Body Text": "Promise와 Context를 렌더링 중에 읽는다",
+                      "Body text": "Promise와 Context를 렌더링 중에 읽는다",
                       "Text": "Promise와 Context를 렌더링 중에 읽는다",
-                      "Type": "Body"
+                      "Variant": "Body"
                     },
                     "size": {
                       "h": 37,
@@ -385,7 +385,7 @@
                       0
                     ],
                     "strokes": [
-                      "divider-stroke/default"
+                      "color/black/8"
                     ],
                     "strokesIncludedInLayout": true,
                     "type": "INSTANCE"
@@ -420,7 +420,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "text",
                         "size": {
@@ -438,7 +438,7 @@
                           "segments": [
                             {
                               "characters": "useActionState",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             }
                           ],
@@ -462,9 +462,9 @@
                     },
                     "name": "cell",
                     "properties": {
-                      "Body Text": "useActionState",
+                      "Body text": "useActionState",
                       "Text": "useActionState",
-                      "Type": "Body"
+                      "Variant": "Body"
                     },
                     "size": {
                       "h": 37,
@@ -481,7 +481,7 @@
                       0
                     ],
                     "strokes": [
-                      "divider-stroke/default"
+                      "color/black/8"
                     ],
                     "strokesIncludedInLayout": true,
                     "type": "INSTANCE"
@@ -490,7 +490,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "text",
                         "size": {
@@ -508,57 +508,57 @@
                           "segments": [
                             {
                               "characters": "폼",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "제출",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "결과와",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "대기",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "상태를",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "다룬다",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -582,9 +582,9 @@
                     },
                     "name": "cell",
                     "properties": {
-                      "Body Text": "폼 제출 결과와 대기 상태를 다룬다",
+                      "Body text": "폼 제출 결과와 대기 상태를 다룬다",
                       "Text": "폼 제출 결과와 대기 상태를 다룬다",
-                      "Type": "Body"
+                      "Variant": "Body"
                     },
                     "size": {
                       "h": 37,
@@ -601,7 +601,7 @@
                       0
                     ],
                     "strokes": [
-                      "divider-stroke/default"
+                      "color/black/8"
                     ],
                     "strokesIncludedInLayout": true,
                     "type": "INSTANCE"
@@ -683,11 +683,10 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "divider-stroke/default"
+          "color/black/8"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/post/width"
+        "type": "COMPONENT"
       }
     }
   }
