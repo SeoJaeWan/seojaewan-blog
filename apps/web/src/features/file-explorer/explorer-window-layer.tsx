@@ -407,7 +407,7 @@ function NavigationTreeItem(props: NavigationTreeItemProps): JSX.Element {
     <NavigationItem
       level={row.level}
       expand={row.expand}
-      selected={row.selected || isDropTarget}
+      isSelected={row.selected || isDropTarget}
       {...{ [DROP_TARGET_ATTRIBUTE]: row.key, [DROP_TARGET_NAME_ATTRIBUTE]: row.label }}
       label={row.label}
       icon={icon}

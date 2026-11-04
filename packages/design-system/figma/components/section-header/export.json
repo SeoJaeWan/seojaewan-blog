@@ -22,7 +22,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -40,7 +40,7 @@
               "segments": [
                 {
                   "characters": "머리글",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Strong"
                 }
               ],
