@@ -1,5 +1,6 @@
 import { tokensJsonText } from './core/export-tokens';
 import { isMotionApiAvailable, listMotionSamples } from './core/read-motion';
+import { describeError } from './error-text';
 import { runExport } from './export-flow';
 import { listComponents, listPatterns, sortByCanvasOrder } from './figma-reader';
 import { getBranchHead, getFileText, listTreeFiles, readRepository } from './github-client';
@@ -252,7 +253,7 @@ function reportFailure(error: unknown): void {
  * @returns 오류 문장
  */
 function errorText(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
+  return describeError(error);
 }
 
 /**

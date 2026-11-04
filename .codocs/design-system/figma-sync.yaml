@@ -170,6 +170,7 @@ _codocs:
   - Variables는 플러그인 API로 읽는다. Figma REST API의 Variables 엔드포인트는 Enterprise 플랜 전용이지만, 플러그인 API는 플랜과 상관없이 읽을 수 있다. 글자·효과·칠 스타일도 따로 읽어 같은 `tokens.json`에 넣는다.
   - 토큰은 다른 대상을 내보낼 때도 매번 읽어 `main`의 `tokens.json`과 비교하고, 다르면 컴포넌트·조립·애니메이션 PR에 넣지 않고 토큰 PR(`feat/figma-tokens`)을 열거나 갱신한다. 토큰 PR에는 바뀐 토큰을 쓰는 컴포넌트의 변형 PNG도 다시 내보내 넣는다. 같은 내보내기에 포함된 컴포넌트의 PNG는 그 컴포넌트 PR에만 넣는다.
   - 컴포넌트 하나마다 PR 하나(`feat/figma-<컴포넌트>`), 조립은 영역마다 PR 하나(`feat/figma-patterns-<영역>`), 애니메이션은 견본마다 PR 하나(`feat/figma-motion-<견본 이름에서 motion-을 밴 이름>`, 예: `motion-progress-ring` → `feat/figma-motion-progress-ring`)를 연다. 같은 대상을 다시 내보내면 열린 PR의 브랜치에 이어서 커밋하고, 열린 PR이 없으면 `main`에서 새로 만든다.
+  - GitHub 요청은 한 함수로 보낸다. 5xx, 429, 한도 초과 403, 네트워크 실패는 1초·2초·4초 간격으로 최대 세 번 다시 시도하고 4xx는 다시 시도하지 않는다. PR을 만드는 요청이 실패하면 같은 head로 열린 PR이 이미 있는지 보고, 있으면 그 PR을 쓰고 다음 대상으로 넘어간다. Error가 아닌 오류도 message·status·type 또는 JSON 요약으로 보여 준다.
   - 컴포넌트 PR은 `figma/components/<컴포넌트>/`와 쓰는 자산만, 조립 PR은 `apps/web/figma/patterns/<영역>/`과 쓰는 자산만, 애니메이션 PR은 `figma/motions/<이름>.json`만 바꾼다. 같은 자산을 두 PR이 더해도 같은 바이트라 충돌하지 않는다.
   - 컴포넌트·조립 PR 본문은 맨 위 `## 변경`에 대상별 바뀐 변형 수 표를 두고, 그 아래 대상마다 바뀐 변형의 피그마 이미지를 두 개씩 나란히 놓는다. 각 이미지 바로 아래에 변형 이름을 표시한다. 변형 이름은 `export.json`의 변형 `nodeId`와 `figma.json`의 `fileKey`로 만든 해당 Figma 노드 링크다. 바뀐 변형이 4개를 넘는 대상은 `<details>`로 접는다. 현재 구현 이미지는 조회하거나 본문에 넣지 않는다.
   - 본문의 확인 안내: 컴포넌트 PR은 코드와의 비교를 CI 댓글의 [[피그마 연동:캡처 표]](피그마 그림과 비교)에서 한다. 조립 PR은 사람이 이 본문의 피그마 그림과 코드(Storybook 조립 스토리)를 비교하고, CI 캡처 표로는 이전 코드 그림과 달라진 곳을 본다. 조립 PR의 `export.json`은 구현할 때 참고하는 자료다.
