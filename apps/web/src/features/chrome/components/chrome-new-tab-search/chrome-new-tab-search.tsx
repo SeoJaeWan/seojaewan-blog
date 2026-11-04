@@ -84,7 +84,7 @@ export function ChromeNewTabSearch(props: ChromeNewTabSearchProps): JSX.Element 
 
   return (
     <Popover
-      open={isOpen}
+      isOpen={isOpen}
       placement="bottom-start"
       className={className}
       trigger={
