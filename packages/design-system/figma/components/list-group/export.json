@@ -1,13 +1,13 @@
 {
-  "description": "머리글과 항목으로 된 목록 묶음으로, Start 목록·검색 결과·주소창 추천에 쓴다.",
+  "description": "머리글과 항목으로 된 목록 묶음으로, Start 목록·검색 결과·주소창 추천에 쓴다.\n@sample-size width",
   "name": "ListGroup",
   "nodeId": "426:5228",
   "propertyDefinitions": {
-    "Show header": {
+    "Has header": {
       "default": true,
       "type": "BOOLEAN"
     },
-    "items": {
+    "Items": {
       "type": "SLOT"
     }
   },
@@ -27,7 +27,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -45,7 +45,7 @@
                   "segments": [
                     {
                       "characters": "머리글",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Strong"
                     }
                   ],
@@ -110,7 +110,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -128,37 +128,37 @@
                           "segments": [
                             {
                               "characters": "리액트",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "서버",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "컴포넌트",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "이해하기",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -207,8 +207,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "2026-10-20",
@@ -258,7 +258,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "title",
                         "size": {
@@ -276,37 +276,37 @@
                           "segments": [
                             {
                               "characters": "리액트",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "쿼리",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "캐시",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "전략",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -355,8 +355,8 @@
                 },
                 "name": "ListItem",
                 "properties": {
-                  "Show subtitle": true,
-                  "Show trailing": false,
+                  "Has subtitle": true,
+                  "Has trailing": false,
                   "Size": "Compact",
                   "State": "Rest",
                   "Subtitle": "2026-10-20",
@@ -392,7 +392,7 @@
               ],
               "primaryAlign": "MIN"
             },
-            "name": "items",
+            "name": "Items",
             "size": {
               "h": 74,
               "w": 574
@@ -425,8 +425,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/shell/body-width"
+        "type": "COMPONENT"
       }
     }
   }
