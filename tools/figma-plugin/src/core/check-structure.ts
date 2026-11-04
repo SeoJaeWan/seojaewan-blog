@@ -913,6 +913,8 @@ function checkSizes(
 /**
  * 내용 맞춤(HUG) 축의 크기를 정하는 자식이 있는지 검사한다. 자식이 모두 그 축에서 부모 채움(FILL)이거나 절대 위치이면
  * 그 축의 크기가 어떤 변수에도 묶이지 않은 채 피그마에 저장된 값으로 정해진다.
+ * 다만 그 축의 최대 크기가 변수에 연결돼 있고 그 축에서 부모 채움인 글자 자식이 있으면, 글자 내용이 크기를 정하고 최대 크기에서 멈추므로 막지 않는다.
+ * @codocs [[피그마 연동:구조 검사]]
  * @param node 노드
  * @param horizontal 가로 크기 방식
  * @param vertical 세로 크기 방식
@@ -922,11 +924,20 @@ function checkHugSizes(node: NodeData, horizontal: string, vertical: string, add
   if (node.text !== null || node.asset !== null || node.children.length === 0) {
     return;
   }
-  for (const [axis, sizing, label, bound] of [
-    ['horizontal', horizontal, '너비', node.minWidth],
-    ['vertical', vertical, '높이', node.minHeight],
+  for (const [axis, sizing, label, bound, maxBound] of [
+    ['horizontal', horizontal, '너비', node.minWidth, node.maxWidth],
+    ['vertical', vertical, '높이', node.minHeight, node.maxHeight],
   ] as const) {
-    if (sizing === 'HUG' && bound?.variable === undefined && !isChildrenSized(node, axis, sizing)) {
+    // 최대 크기가 변수에 연결돼 있고 그 축에서 부모 채움인 글자가 있으면 글자 내용이 크기를 정하고 최대 크기에서 멈춘다(CSS `fit-content`와 `max-*`).
+    const isTextFilled =
+      maxBound?.variable !== undefined &&
+      node.children.some((child) => child.text !== null && sizingOf(child, false)[axis] === 'FILL');
+    if (
+      sizing === 'HUG' &&
+      bound?.variable === undefined &&
+      !isTextFilled &&
+      !isChildrenSized(node, axis, sizing)
+    ) {
       add(
         node,
         `내용 맞춤 ${label}를 정하는 자식이 없어 ${label}가 변수 없이 정해진다(자식이 모두 ${label}에서 부모 채움이거나 절대 위치)`,

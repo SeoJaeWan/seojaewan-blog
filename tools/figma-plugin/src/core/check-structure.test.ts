@@ -139,6 +139,32 @@ describe('구조 검사: 변수·스타일에 연결되지 않은 시각 값', (
       ).toEqual([]);
     });
 
+    it('최대 너비가 변수에 연결돼 있고 부모 채움 글자가 있으면 글자 내용이 너비를 정하므로 막지 않는다', () => {
+      expect(
+        reasonsAfter((root) => {
+          fillLabel(root);
+          root.maxWidth = { value: 318, variable: 'size/tooltip/max-width' };
+        }),
+      ).toEqual([]);
+    });
+
+    it('최대 너비가 변수에 연결되지 않았으면 부모 채움 글자가 있어도 막는다', () => {
+      const reasons = reasonsAfter((root) => {
+        fillLabel(root);
+        root.maxWidth = { value: 318 };
+      });
+      expect(reasons).toContain(widthReason);
+    });
+
+    it('최대 너비가 없으면 부모 채움 글자가 있어도 막는다', () => {
+      expect(
+        reasonsAfter((root) => {
+          fillLabel(root);
+          root.maxWidth = null;
+        }),
+      ).toEqual([widthReason]);
+    });
+
     it('쌓는 방향은 자식이 하나라도 정하지 못하면 막고, 고정 크기 자식만으로는 정해졌다고 보지 않는다', () => {
       expect(
         reasonsAfter((root) => {
