@@ -43,7 +43,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "profile name",
             "size": {
@@ -61,17 +61,17 @@
               "segments": [
                 {
                   "characters": "사용자",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body"
                 }
               ],
