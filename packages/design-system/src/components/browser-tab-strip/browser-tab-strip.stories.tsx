@@ -23,7 +23,7 @@ const meta = {
           <Tabs.List aria-label="탭">
             <BrowserTab
               value={0}
-              active
+              isActive
               title="React 19 훅 정리"
               favicon={<ImageAsset name="images/file-document" />}
             />

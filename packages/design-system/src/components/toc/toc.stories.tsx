@@ -5,6 +5,7 @@ import { figmaFrame } from '../../story/figma-frame';
 import { TocItem } from '../toc-item/toc-item';
 import { Toc } from './toc';
 
+// 피그마 Toc의 State 값이다. 캡처 도구가 State를 state arg로 넘기면 render가 isExpanded로 바꿔 Toc에 준다.
 type FigmaArgs = {
   state: 'expanded' | 'collapsed';
 };
@@ -19,7 +20,7 @@ const meta = {
   // Items 슬롯에는 피그마 슬롯 기본 내용(TocItem 4개)을 그대로 넣는다.
   decorators: [figmaFrame(tocExport)],
   render: (args) => (
-    <Toc state={args.state}>
+    <Toc isExpanded={args.state === 'expanded'}>
       <TocItem isActive label="use 훅" />
       <TocItem label="useActionState" />
       <TocItem label="useOptimistic" />

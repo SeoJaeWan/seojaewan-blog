@@ -3,12 +3,12 @@
   "name": "ExplorerTab",
   "nodeId": "18:367",
   "propertyDefinitions": {
-    "Icon": {
-      "type": "INSTANCE_SWAP"
-    },
-    "Show separator": {
+    "Has separator": {
       "default": true,
       "type": "BOOLEAN"
+    },
+    "Icon": {
+      "type": "INSTANCE_SWAP"
     },
     "State": {
       "default": "Selected",
@@ -61,7 +61,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "title",
             "size": {
@@ -79,17 +79,17 @@
               "segments": [
                 {
                   "characters": "폴더",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -99,7 +99,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_dismiss_20_regular"
             },
             "component": "ic_fluent_dismiss_20_regular",
@@ -118,7 +118,7 @@
           }
         ],
         "fills": [
-          "layer-on-mica-base-alt-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/control/height",
         "layout": {
@@ -188,7 +188,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "title",
             "size": {
@@ -206,17 +206,17 @@
               "segments": [
                 {
                   "characters": "폴더",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -226,7 +226,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_dismiss_20_regular"
             },
             "component": "ic_fluent_dismiss_20_regular",
@@ -249,7 +249,7 @@
               "vertical": "CENTER"
             },
             "fills": [
-              "divider-stroke/default"
+              "color/black/8"
             ],
             "height": "size/separator/height",
             "name": "separator",
@@ -351,7 +351,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "title",
             "size": {
@@ -369,17 +369,17 @@
               "segments": [
                 {
                   "characters": "폴더",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -389,7 +389,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_dismiss_20_regular"
             },
             "component": "ic_fluent_dismiss_20_regular",
@@ -408,7 +408,7 @@
           }
         ],
         "fills": [
-          "layer-on-mica-base-alt-fill/default"
+          "color/white/70"
         ],
         "height": "size/control/height",
         "layout": {
