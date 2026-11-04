@@ -238,30 +238,30 @@ describe('스냅', () => {
   });
 
   it('2:1은 왼쪽 3분의 2와 오른쪽 3분의 1이다', () => {
-    expect(getSnapZoneRect({ layout: 'twothirds', index: 0 }, area)).toMatchObject({
+    expect(getSnapZoneRect({ layout: 'two-thirds', index: 0 }, area)).toMatchObject({
       x: 0,
       width: 1280,
     });
-    expect(getSnapZoneRect({ layout: 'twothirds', index: 1 }, area)).toMatchObject({
+    expect(getSnapZoneRect({ layout: 'two-thirds', index: 1 }, area)).toMatchObject({
       x: 1280,
       width: 640,
     });
   });
 
   it('반 + 4분의 1 두 칸은 왼쪽 절반과 오른쪽 위·아래다', () => {
-    expect(getSnapZoneRect({ layout: 'halfquarter', index: 0 }, area)).toEqual({
+    expect(getSnapZoneRect({ layout: 'half-quarter', index: 0 }, area)).toEqual({
       x: 0,
       y: 0,
       width: 960,
       height: 1032,
     });
-    expect(getSnapZoneRect({ layout: 'halfquarter', index: 1 }, area)).toEqual({
+    expect(getSnapZoneRect({ layout: 'half-quarter', index: 1 }, area)).toEqual({
       x: 960,
       y: 0,
       width: 960,
       height: 516,
     });
-    expect(getSnapZoneRect({ layout: 'halfquarter', index: 2 }, area)).toEqual({
+    expect(getSnapZoneRect({ layout: 'half-quarter', index: 2 }, area)).toEqual({
       x: 960,
       y: 516,
       width: 960,

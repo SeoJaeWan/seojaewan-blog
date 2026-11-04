@@ -31,12 +31,12 @@ export function SnapLayoutFlyout(props: SnapLayoutFlyoutProps): JSX.Element {
     >
       <SnapLayoutOption layout="half" onSelectZone={(index) => handleSelectZone?.('half', index)} />
       <SnapLayoutOption
-        layout="twothirds"
-        onSelectZone={(index) => handleSelectZone?.('twothirds', index)}
+        layout="two-thirds"
+        onSelectZone={(index) => handleSelectZone?.('two-thirds', index)}
       />
       <SnapLayoutOption
-        layout="halfquarter"
-        onSelectZone={(index) => handleSelectZone?.('halfquarter', index)}
+        layout="half-quarter"
+        onSelectZone={(index) => handleSelectZone?.('half-quarter', index)}
       />
       <SnapLayoutOption layout="quad" onSelectZone={(index) => handleSelectZone?.('quad', index)} />
     </div>

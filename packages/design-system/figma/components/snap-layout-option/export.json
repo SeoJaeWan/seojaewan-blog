@@ -7,9 +7,9 @@
       "default": "Half",
       "options": [
         "Half",
-        "TwoThirds",
-        "HalfQuarter",
-        "Quad"
+        "Quad",
+        "Two thirds",
+        "Half quarter"
       ],
       "type": "VARIANT"
     }
@@ -33,7 +33,7 @@
               {
                 "component": "SnapZone",
                 "fills": [
-                  "control-alt-fill/secondary"
+                  "color/black/2"
                 ],
                 "height": "size/snap-option/height",
                 "name": "zone",
@@ -61,7 +61,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "control-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": false,
                 "type": "INSTANCE"
@@ -95,7 +95,7 @@
               {
                 "component": "SnapZone",
                 "fills": [
-                  "control-alt-fill/secondary"
+                  "color/black/2"
                 ],
                 "height": "size/snap-option/height",
                 "name": "zone",
@@ -123,7 +123,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "control-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": false,
                 "type": "INSTANCE"
@@ -179,7 +179,7 @@
         "width": "size/snap-option/width"
       }
     },
-    "layout=halfquarter": {
+    "layout=half-quarter": {
       "node": {
         "height": 56,
         "width": 88,
@@ -188,7 +188,7 @@
       },
       "nodeId": "396:15863",
       "properties": {
-        "Layout": "HalfQuarter"
+        "Layout": "Half quarter"
       },
       "tree": {
         "children": [
@@ -197,7 +197,7 @@
               {
                 "component": "SnapZone",
                 "fills": [
-                  "control-alt-fill/secondary"
+                  "color/black/2"
                 ],
                 "height": "size/snap-option/height",
                 "name": "zone",
@@ -225,7 +225,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "control-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": false,
                 "type": "INSTANCE"
@@ -259,7 +259,7 @@
               {
                 "component": "SnapZone",
                 "fills": [
-                  "control-alt-fill/secondary"
+                  "color/black/2"
                 ],
                 "name": "top zone",
                 "properties": {
@@ -286,7 +286,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "control-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": false,
                 "type": "INSTANCE"
@@ -294,7 +294,7 @@
               {
                 "component": "SnapZone",
                 "fills": [
-                  "control-alt-fill/secondary"
+                  "color/black/2"
                 ],
                 "name": "bottom zone",
                 "properties": {
@@ -321,7 +321,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "control-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": false,
                 "type": "INSTANCE"
@@ -364,7 +364,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Layout=HalfQuarter",
+        "name": "Layout=Half quarter",
         "size": {
           "h": 56,
           "w": 88
@@ -395,7 +395,7 @@
               {
                 "component": "SnapZone",
                 "fills": [
-                  "control-alt-fill/secondary"
+                  "color/black/2"
                 ],
                 "name": "top zone",
                 "properties": {
@@ -422,7 +422,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "control-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": false,
                 "type": "INSTANCE"
@@ -430,7 +430,7 @@
               {
                 "component": "SnapZone",
                 "fills": [
-                  "control-alt-fill/secondary"
+                  "color/black/2"
                 ],
                 "name": "bottom zone",
                 "properties": {
@@ -457,7 +457,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "control-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": false,
                 "type": "INSTANCE"
@@ -491,7 +491,7 @@
               {
                 "component": "SnapZone",
                 "fills": [
-                  "control-alt-fill/secondary"
+                  "color/black/2"
                 ],
                 "name": "top zone",
                 "properties": {
@@ -518,7 +518,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "control-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": false,
                 "type": "INSTANCE"
@@ -526,7 +526,7 @@
               {
                 "component": "SnapZone",
                 "fills": [
-                  "control-alt-fill/secondary"
+                  "color/black/2"
                 ],
                 "name": "bottom zone",
                 "properties": {
@@ -553,7 +553,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "control-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": false,
                 "type": "INSTANCE"
@@ -609,7 +609,7 @@
         "width": "size/snap-option/width"
       }
     },
-    "layout=twothirds": {
+    "layout=two-thirds": {
       "node": {
         "height": 56,
         "width": 88,
@@ -618,7 +618,7 @@
       },
       "nodeId": "396:15856",
       "properties": {
-        "Layout": "TwoThirds"
+        "Layout": "Two thirds"
       },
       "tree": {
         "children": [
@@ -627,7 +627,7 @@
               {
                 "component": "SnapZone",
                 "fills": [
-                  "control-alt-fill/secondary"
+                  "color/black/2"
                 ],
                 "height": "size/snap-option/height",
                 "name": "zone",
@@ -655,7 +655,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "control-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": false,
                 "type": "INSTANCE"
@@ -690,7 +690,7 @@
               {
                 "component": "SnapZone",
                 "fills": [
-                  "control-alt-fill/secondary"
+                  "color/black/2"
                 ],
                 "height": "size/snap-option/height",
                 "name": "zone",
@@ -718,7 +718,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "control-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": false,
                 "type": "INSTANCE"
@@ -761,7 +761,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Layout=TwoThirds",
+        "name": "Layout=Two thirds",
         "size": {
           "h": 56,
           "w": 88

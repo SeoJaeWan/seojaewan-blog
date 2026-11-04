@@ -33,7 +33,7 @@ type WindowSize = Pick<WindowBounds, 'width' | 'height'>;
 export type WindowPlacement = 'normal' | 'maximized' | 'snapped';
 
 /** 스냅 레이아웃 종류. 반반, 2:1, 반 + 4분의 1 두 칸, 4분할이다(디자인 시스템 `SnapLayoutOption`과 같은 이름) */
-export type SnapLayout = 'half' | 'twothirds' | 'halfquarter' | 'quad';
+export type SnapLayout = 'half' | 'two-thirds' | 'half-quarter' | 'quad';
 
 /**
  * 스냅 칸 하나. 칸 번호는 왼쪽 열 위에서 아래, 오른쪽 열 위에서 아래 순서의 0부터다
@@ -568,8 +568,8 @@ export function snapWindow(state: WindowState, id: string, zone: SnapZone): Wind
 // 레이아웃마다 왼쪽 열이 차지하는 너비 비율이다.
 const snapLeftColumnRatios = {
   half: 1 / 2,
-  twothirds: 2 / 3,
-  halfquarter: 1 / 2,
+  'two-thirds': 2 / 3,
+  'half-quarter': 1 / 2,
   quad: 1 / 2,
 } as const satisfies Record<SnapLayout, number>;
 
@@ -582,11 +582,11 @@ const snapCells = {
     { column: 0, row: 0, rows: 1 },
     { column: 1, row: 0, rows: 1 },
   ],
-  twothirds: [
+  'two-thirds': [
     { column: 0, row: 0, rows: 1 },
     { column: 1, row: 0, rows: 1 },
   ],
-  halfquarter: [
+  'half-quarter': [
     { column: 0, row: 0, rows: 1 },
     { column: 1, row: 0, rows: 2 },
     { column: 1, row: 1, rows: 2 },
