@@ -55,9 +55,12 @@ type ExplorerContentProps = Pick<
     path?: ReactNode;
     /** 명령 막대의 Commands 자리. `ExplorerCommands`를 넣는다 */
     commands?: ReactNode;
-    /** 탐색 창의 items 자리. 폴더 트리의 NavigationItem을 넣는다. desktop만 보인다 */
+    /** 본문 바탕(LayerSurface) 안 탐색 창(NavigationPane)의 Items 자리. 폴더 트리의 NavigationItem을 넣는다. desktop만 보인다 */
     navigation?: ReactNode;
-    /** 피그마 `Items` 슬롯. 현재 폴더의 항목(FileItem, 또는 DetailsHeader와 FileRow)을 넣는다 */
+    /**
+     * 본문 바탕(LayerSurface) 안 `items` 영역의 내용. 현재 폴더의 항목(FileItem, 또는 DetailsHeader와 FileRow)을 넣는다.
+     * 피그마는 슬롯 안에 슬롯 속성을 둘 수 없어 이 영역을 `Window/Explorer`가 LayerSurface 슬롯을 통해 직접 채운다
+     */
     children?: ReactNode;
     /**
      * 항목 자리 요소에 넘길 속성(역할·접근성 이름, 선택·우클릭·키보드 동작, ref). 바깥 배치 클래스를 더할 수 있다.
