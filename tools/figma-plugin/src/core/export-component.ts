@@ -9,6 +9,7 @@ import {
   type AncestorData,
   checkClippingAncestors,
   type CheckContext,
+  type CheckTargetKind,
   checkVariant,
   type Violation,
 } from './check-structure';
@@ -41,12 +42,14 @@ export type TargetOutcome =
  * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
  * @param scale PNG 배율
  * @param context 구조 검사에 쓰는 파일 정보
+ * @param kind 대상 종류(컴포넌트, 조립). 조립은 배치 프레임 모양과 루트 크기를 다르게 검사한다
  * @returns 내보낸 대상, 또는 위반 목록
  */
 export async function exportTargetCore(
   nodeId: string,
   scale: number,
   context: CheckContext,
+  kind: CheckTargetKind,
 ): Promise<TargetOutcome> {
   const node = await findComponent(nodeId);
   if (node === null) {
@@ -62,7 +65,7 @@ export async function exportTargetCore(
     const tree = await readNodeTree(variant, names);
     const where = `${node.name} / ${variant.name}`;
     const { directives, problems } = parseDirectiveTexts([node.description, variant.description]);
-    violations.push(...checkVariant(tree, where, context, directives));
+    violations.push(...checkVariant(tree, where, context, directives, kind));
     for (const problem of problems) {
       violations.push({
         where,
