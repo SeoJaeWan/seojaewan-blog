@@ -23,6 +23,8 @@ export const FIGMA_STORY_NAME = 'Figma';
 export const PATTERN_TITLE_PREFIX = 'Patterns/';
 // 상호작용으로 재현하는 상태 속성 이름(정규화한 이름)이다.
 const STATE_PROPERTY = 'state';
+// boolean prop 이름이 시작하는 낱말이다. 이미 이 낱말로 시작하는 참/거짓 속성은 접두어를 더 붙이지 않는다.
+const booleanPrefixes = new Set(['is', 'has', 'can', 'should']);
 
 // 상태 값마다 브라우저에서 재현할 상호작용이다. 여기에 없는 값(rest, disabled, selected, active 등)은 args로만 넘긴다.
 // Active는 누르는 중이 아니라 활성 창·지금 고른 탭이라 args로 재현한다(@codocs [[컴포넌트 목록:상태]]).
@@ -47,9 +49,12 @@ export function storyTarget(properties: readonly (readonly [string, string])[]):
   const args: Record<string, StoryArgValue> = {};
   let interaction: Interaction = 'none';
   for (const [name, value] of properties) {
-    const argName = camelCase(name);
     const argValue = normalizeName(value);
-    args[argName] = argValue === 'true' ? true : argValue === 'false' ? false : argValue;
+    if (argValue === 'true' || argValue === 'false') {
+      args[booleanArgName(name)] = argValue === 'true';
+    } else {
+      args[camelCase(name)] = argValue;
+    }
     if (normalizeName(name) === STATE_PROPERTY) {
       interaction = interactionByState.get(argValue) ?? 'none';
     }
@@ -146,6 +151,17 @@ export function storyEntries(index: unknown): IndexEntry[] {
         : [];
     },
   );
+}
+
+/**
+ * 참/거짓 피그마 속성 이름을 boolean arg 이름으로 바꾼다(`Active` → `isActive`, `Has separator` → `hasSeparator`).
+ * @codocs [[피그마 연동:스토리 규칙]]
+ * @param name 피그마 속성 이름
+ * @returns `is`·`has`·`can`·`should`로 시작하는 camelCase 이름
+ */
+export function booleanArgName(name: string): string {
+  const [first = ''] = normalizeName(name).split('-');
+  return booleanPrefixes.has(first) ? camelCase(name) : camelCase(`is ${name}`);
 }
 
 /**

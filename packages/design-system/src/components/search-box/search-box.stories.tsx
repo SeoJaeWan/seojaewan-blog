@@ -11,7 +11,7 @@ const STATES = ['rest', 'hover', 'focused', 'pressed', 'disabled'] as const;
 
 type FigmaArgs = {
   appearance: (typeof APPEARANCES)[number];
-  filled: boolean;
+  isFilled: boolean;
   state: (typeof STATES)[number];
   /** 동작 스토리에서 입력을 확인하는 핸들러 */
   onChange?: () => void;
@@ -19,10 +19,10 @@ type FigmaArgs = {
 
 const meta = {
   title: 'Components/SearchBox',
-  args: { appearance: 'default', filled: false, state: 'rest' },
+  args: { appearance: 'default', isFilled: false, state: 'rest' },
   argTypes: {
     appearance: { control: 'inline-radio', options: APPEARANCES },
-    filled: { control: 'boolean' },
+    isFilled: { control: 'boolean' },
     state: { control: 'inline-radio', options: STATES },
   },
   // SearchBox는 너비를 갖지 않고 쓰는 곳이 정한다. FigmaFrame이 피그마 원본의 미리보기 너비를 모양별로 감싼다.
@@ -30,11 +30,11 @@ const meta = {
   render: (args) => (
     <SearchBox
       // 입력값을 바꾸면 처음 값부터 다시 그리도록 key를 바꾼다.
-      key={String(args.filled)}
+      key={String(args.isFilled)}
       appearance={args.appearance}
       aria-label="검색"
       placeholder="검색"
-      defaultValue={args.filled ? '검색어' : undefined}
+      defaultValue={args.isFilled ? '검색어' : undefined}
       disabled={args.state === 'disabled'}
       // Tab으로 들어오면 브라우저가 입력값 전체를 선택한다. 피그마 Focused는 선택 없이 입력 중인 모양이라
       // 커서를 끝으로 옮겨 선택을 푼다(캡처 도구는 커서를 숨기고 찍는다).

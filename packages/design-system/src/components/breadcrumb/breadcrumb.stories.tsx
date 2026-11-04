@@ -16,7 +16,7 @@ const meta = {
     <Breadcrumb locationIcon={<img src={folderIcon} alt="" />}>
       {/* 피그마 Items 슬롯의 기본 내용이다. */}
       <BreadcrumbItem label="바탕 화면" />
-      <BreadcrumbItem label="Blog" current showSeparator={false} />
+      <BreadcrumbItem label="Blog" isCurrent showSeparator={false} />
     </Breadcrumb>
   ),
 } satisfies Meta;
