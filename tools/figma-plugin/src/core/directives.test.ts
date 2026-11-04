@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseDirectives, parseDirectiveTexts, sampleSizeAxes } from './directives';
+import {
+  parseDirectives,
+  parseDirectiveTexts,
+  parseVariantDirectives,
+  sampleSizeAxes,
+} from './directives';
 
 // @codocs [[피그마 연동:구조 검사]]
 describe('@ 줄', () => {
@@ -46,5 +51,21 @@ describe('@ 줄', () => {
       repeat: ['1'],
       trigger: ['open'],
     });
+  });
+
+  it('단독 컴포넌트의 description은 한 번만 읽어 @sample-size가 겹치지 않는다', () => {
+    const standalone = { id: '1:1', description: '@sample-size width' };
+    const { directives, problems } = parseVariantDirectives(standalone, standalone);
+    expect(problems).toEqual([]);
+    expect(directives).toEqual({ 'sample-size': ['width'] });
+  });
+
+  it('세트는 세트와 변형의 description을 이어 읽는다', () => {
+    const { directives, problems } = parseVariantDirectives(
+      { id: '1:1', description: '@sample-size width' },
+      { id: '1:2', description: '@trigger hover' },
+    );
+    expect(problems).toEqual([]);
+    expect(directives).toEqual({ 'sample-size': ['width'], trigger: ['hover'] });
   });
 });

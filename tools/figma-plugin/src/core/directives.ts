@@ -139,3 +139,24 @@ export function sampleSizeAxes(directives: Directives): Set<SampleAxis> {
 export function parseDirectiveTexts(texts: readonly (string | undefined)[]): ParsedDirectives {
   return parseDirectives(texts.filter((text) => text !== undefined).join('\n'));
 }
+
+/**
+ * 컴포넌트 세트나 단독 컴포넌트와 변형의 description에서 `@` 줄을 읽는다. 단독 컴포넌트는 변형이 자기 자신이라
+ * 같은 description을 두 번 읽지 않도록 한 번만 읽는다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param node 컴포넌트 세트나 단독 컴포넌트
+ * @param node.id 노드 ID
+ * @param node.description 노드 description
+ * @param variant 변형(단독 컴포넌트면 node와 같은 노드)
+ * @param variant.id 변형 ID
+ * @param variant.description 변형 description
+ * @returns 키와 값, 고칠 줄
+ */
+export function parseVariantDirectives(
+  node: { readonly id: string; readonly description: string },
+  variant: { readonly id: string; readonly description: string },
+): ParsedDirectives {
+  return parseDirectiveTexts(
+    node.id === variant.id ? [node.description] : [node.description, variant.description],
+  );
+}

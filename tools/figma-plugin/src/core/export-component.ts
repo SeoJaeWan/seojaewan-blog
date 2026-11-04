@@ -14,7 +14,7 @@ import {
   type Violation,
 } from './check-structure';
 import { noCodeVariables } from './code-variables';
-import { parseDirectiveTexts } from './directives';
+import { parseVariantDirectives } from './directives';
 import { layerTree } from './layer-tree';
 import type { AssetData, NodeData } from './node-data';
 import { isMotionApiError } from './read-motion';
@@ -64,7 +64,7 @@ export async function exportTargetCore(
   for (const variant of variantsOf(node)) {
     const tree = await readNodeTree(variant, names);
     const where = `${node.name} / ${variant.name}`;
-    const { directives, problems } = parseDirectiveTexts([node.description, variant.description]);
+    const { directives, problems } = parseVariantDirectives(node, variant);
     violations.push(...checkVariant(tree, where, context, directives, kind));
     for (const problem of problems) {
       violations.push({
