@@ -20,7 +20,7 @@ const meta = {
   decorators: [figmaFrame(tocExport)],
   render: (args) => (
     <Toc state={args.state}>
-      <TocItem active label="use 훅" />
+      <TocItem isActive label="use 훅" />
       <TocItem label="useActionState" />
       <TocItem label="useOptimistic" />
       <TocItem label="마이그레이션" />
