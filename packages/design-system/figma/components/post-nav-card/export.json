@@ -1,5 +1,5 @@
 {
-  "description": "글 끝의 이전 글·다음 글 이동 카드로, 글 페이지 아래에 쓴다.",
+  "description": "글 끝의 이전 글·다음 글 이동 카드로, 글 페이지 아래에 쓴다.\n@sample-size width",
   "name": "PostNavCard",
   "nodeId": "399:5487",
   "propertyDefinitions": {
@@ -41,7 +41,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "label",
             "size": {
@@ -59,17 +59,17 @@
               "segments": [
                 {
                   "characters": "다음",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "글",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -79,7 +79,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "post title",
             "size": {
@@ -97,17 +97,17 @@
               "segments": [
                 {
                   "characters": "글",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Strong"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Strong"
                 },
                 {
                   "characters": "제목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Strong"
                 }
               ],
@@ -117,7 +117,7 @@
           }
         ],
         "fills": [
-          "card-background-fill/secondary"
+          "color/gray/3/50"
         ],
         "layout": {
           "counterAlign": "MAX",
@@ -153,11 +153,10 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "card-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/post-nav-card/width"
+        "type": "COMPONENT"
       }
     },
     "direction=next,device=mobile": {
@@ -176,7 +175,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "label",
             "size": {
@@ -194,17 +193,17 @@
               "segments": [
                 {
                   "characters": "다음",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "글",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -214,7 +213,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "post title",
             "size": {
@@ -232,17 +231,17 @@
               "segments": [
                 {
                   "characters": "글",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Strong"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Strong"
                 },
                 {
                   "characters": "제목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Strong"
                 }
               ],
@@ -252,7 +251,7 @@
           }
         ],
         "fills": [
-          "card-background-fill/secondary"
+          "color/gray/3/50"
         ],
         "layout": {
           "counterAlign": "MIN",
@@ -288,11 +287,10 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "card-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/post-nav-card/width"
+        "type": "COMPONENT"
       }
     },
     "direction=prev,device=desktop": {
@@ -311,7 +309,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "label",
             "size": {
@@ -329,17 +327,17 @@
               "segments": [
                 {
                   "characters": "이전",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "글",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -349,7 +347,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "post title",
             "size": {
@@ -367,17 +365,17 @@
               "segments": [
                 {
                   "characters": "글",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Strong"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Strong"
                 },
                 {
                   "characters": "제목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Strong"
                 }
               ],
@@ -387,7 +385,7 @@
           }
         ],
         "fills": [
-          "card-background-fill/secondary"
+          "color/gray/3/50"
         ],
         "layout": {
           "counterAlign": "MIN",
@@ -423,11 +421,10 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "card-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/post-nav-card/width"
+        "type": "COMPONENT"
       }
     },
     "direction=prev,device=mobile": {
@@ -446,7 +443,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "label",
             "size": {
@@ -464,17 +461,17 @@
               "segments": [
                 {
                   "characters": "이전",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "글",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -484,7 +481,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "post title",
             "size": {
@@ -502,17 +499,17 @@
               "segments": [
                 {
                   "characters": "글",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Strong"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Strong"
                 },
                 {
                   "characters": "제목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Strong"
                 }
               ],
@@ -522,7 +519,7 @@
           }
         ],
         "fills": [
-          "card-background-fill/secondary"
+          "color/gray/3/50"
         ],
         "layout": {
           "counterAlign": "MIN",
@@ -558,11 +555,10 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "card-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/post-nav-card/width"
+        "type": "COMPONENT"
       }
     }
   }
