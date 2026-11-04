@@ -32,6 +32,7 @@ export * from './components/flyout/flyout';
 export * from './components/icon-button/icon-button';
 export * from './components/image-asset/image-asset';
 export * from './components/jump-list-letter/jump-list-letter';
+export * from './components/layer-surface/layer-surface';
 export * from './components/list-group/list-group';
 export * from './components/list-item/list-item';
 export * from './components/menu/menu';
