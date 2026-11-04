@@ -3,12 +3,7 @@
 // Notion 블록 견본 조립(Chrome/PostBlocks) 스토리의 고정 데이터다. 피그마 조립과 같은 글자와 블록을 둔다.
 
 import { renderEquationHtml } from '@/content/equation-render/equation-render';
-import type {
-  CodeSyntax,
-  CodeToken,
-  PostBlock,
-  RichText,
-} from '@/shared/utils/post-body/post-body';
+import type { PostBlock, RichText } from '@/shared/utils/post-body/post-body';
 
 /**
  * 서식 없는 글자 조각을 만든다.
@@ -20,128 +15,20 @@ function text(text: string, annotations?: RichText['annotations']): RichText {
   return annotations === undefined ? { text, link: null } : { text, link: null, annotations };
 }
 
-/**
- * 강조된 코드 글자 조각을 만든다.
- * @param value 글자
- * @param syntax 강조 색. 없으면 기본 코드 글자색
- * @returns 코드 글자 조각
- */
-function token(value: string, syntax: CodeSyntax | null = null): CodeToken {
-  return { text: value, syntax };
-}
-
-/**
- * 피그마 `code block`의 견본 코드를 실제 강조기(`highlightCode`, tsx)로 강조한 결과(`code-syntax` 색).
- * 손으로 칠하지 않는다. 강조기 단위 테스트가 이 코드를 다시 강조해 같은지 확인한다.
- */
-const sampleCodeLines: CodeToken[][] = [
-  [token('// 글을 읽어 제목을 그린다', 'comment')],
-  [
-    token('import', 'keyword-control'),
-    token(' '),
-    token('{', 'punctuation'),
-    token(' '),
-    token('use', 'variable'),
-    token(' '),
-    token('}', 'punctuation'),
-    token(' '),
-    token('from', 'keyword-control'),
-    token(' '),
-    token("'react'", 'string'),
-    token(';', 'punctuation'),
-  ],
-  [],
-  [
-    token('export', 'keyword-control'),
-    token(' '),
-    token('function', 'keyword'),
-    token(' '),
-    token('PostTitle', 'function'),
-    token('({', 'punctuation'),
-    token(' '),
-    token('post', 'parameter'),
-    token(' '),
-    token('}:', 'punctuation'),
-    token(' '),
-    token('{', 'punctuation'),
-    token(' '),
-    token('post', 'variable'),
-    token(':', 'punctuation'),
-    token(' '),
-    token('Post', 'type'),
-    token(' '),
-    token('})', 'punctuation'),
-    token(' '),
-    token('{', 'punctuation'),
-  ],
-  [
-    token('  '),
-    token('const', 'keyword'),
-    token(' '),
-    token('count', 'variable-constant'),
-    token(' '),
-    token('=', 'punctuation'),
-    token(' '),
-    token('3', 'constant'),
-    token(';', 'punctuation'),
-  ],
-  [
-    token('  '),
-    token('return', 'keyword-control'),
-    token(' '),
-    token('<h1', 'tag'),
-    token(' '),
-    token('className', 'attribute'),
-    token('=', 'punctuation'),
-    token('"title"', 'string'),
-    token('>', 'tag'),
-    token('{', 'keyword'),
-    token('post', 'variable'),
-    token('.', 'punctuation'),
-    token('title', 'variable'),
-    token('}', 'keyword'),
-    token('</h1>', 'tag'),
-    token(';', 'punctuation'),
-  ],
-  [token('}', 'punctuation')],
-  [],
-  [
-    token('const', 'keyword'),
-    token(' '),
-    token('SLUG', 'variable-constant'),
-    token(' '),
-    token('=', 'punctuation'),
-    token(' ', 'regexp'),
-    token('/', 'string'),
-    token('^', 'escape'),
-    token('(', 'regexp-group'),
-    token('post', 'regexp'),
-    token('|', 'escape'),
-    token('page', 'regexp'),
-    token(')', 'regexp-group'),
-    token('\\n', 'regexp'),
-    token('$', 'escape'),
-    token('/', 'string'),
-    token(';', 'punctuation'),
-  ],
-  [
-    token('const', 'keyword'),
-    token(' '),
-    token('META', 'variable-constant'),
-    token(' '),
-    token('=', 'punctuation'),
-    token(' '),
-    token('{', 'punctuation'),
-    token(' '),
-    token('"slug"', 'string'),
-    token(':', 'punctuation'),
-    token(' '),
-    token('$slug', 'variable'),
-    token(',', 'punctuation'),
-    token(' @ '),
-    token('};', 'punctuation'),
-  ],
-];
+// 피그마 `code block`의 견본 코드(tsx). 캡처용 견본이라 색 없이 그린다(`highlighted`를 두지 않는다).
+// 강조 색은 앱 단위 테스트가 실제 강조기로 확인한다.
+const sampleCode = [
+  '// 글을 읽어 제목을 그린다',
+  "import { use } from 'react';",
+  '',
+  'export function PostTitle({ post }: { post: Post }) {',
+  '  const count = 3;',
+  '  return <h1 className="title">{post.title}</h1>;',
+  '}',
+  '',
+  'const SLUG = /^(post|page)\\n$/;',
+  'const META = { "slug": $slug, @ };',
+].join('\n');
 
 /** 피그마 Chrome/PostBlocks: Notion 블록을 한 번씩 담은 견본 */
 export const sampleBlocks: PostBlock[] = [
@@ -197,8 +84,7 @@ export const sampleBlocks: PostBlock[] = [
   {
     type: 'code',
     language: 'tsx',
-    code: sampleCodeLines.map((line) => line.map((part) => part.text).join('')).join('\n'),
-    highlighted: sampleCodeLines,
+    code: sampleCode,
   },
   {
     type: 'image',

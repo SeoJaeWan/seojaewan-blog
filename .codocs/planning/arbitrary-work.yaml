@@ -7,6 +7,12 @@ _codocs:
   사람에게 묻지 않고 작업 중에 정한 것과, 작업하며 바꾼 문서를 모아 둔다. 사람이 검토해 그대로 둘지, 되돌릴지, 원래 문서로 옮길지 고른다.
   검토가 끝난 항목은 원래 문서에 반영하거나 되돌리고 여기서 지운다.
   이어서 할 일은 [[남은 작업]]에 있다.
+"코드 강조 light-plus 전환 (결정 B7, 코드 쪽)": |
+  - 강조 색을 Shiki 내장 `light-plus`로 바꿨다. 직접 만든 테마(`code-highlight-theme.ts`)와 `CODE_SYNTAXES`·`CodeSyntax`를 지웠고, 글자 조각(`CodeToken`·`CodeBlockToken`)은 `syntax` 갈래 이름 대신 `color`(hex 또는 null)를 가진다. 테마 기본 글자색(`#000000`)인 조각은 null로 보낸다.
+  - CodeBlock이 조각의 색을 `style={{ color }}`로 칠한다. 이 값은 실행 중에 받는 값이라 기존 style 값 lint가 막지 않아 lint 예외를 따로 두지 않았다(규칙 예외 경로 없음).
+  - 코드 글자 기본색은 `text-code-syntax-text` 대신 `text-text-fill-primary`로 했다. `code-syntax/*`와 `color/vscode/*` 토큰은 지우지 않았고 코드가 더 이상 쓰지 않는다.
+  - 캡처용 스토리(CodeBlock `Figma`·`Copy`, Chrome/PostBlocks, Chrome/Page)는 색 없는 코드로 그린다. PostBlocks·Chrome/Page 견본 데이터는 `highlighted`를 두지 않고(손으로 칠한 조각 삭제), 단위 테스트가 실제 강조 결과의 색과 코드 일치를 본다. CodeBlock 견본은 색 있는 `lines`(실제 강조 결과와 같은지 테스트)와 색 없는 `plainLines`를 함께 둔다.
+  - 열린 문제: Light+ 원색 중 `#267f99`(타입 이름)가 CodeBlock 바탕 `#f9f9f9`에서 대비 4.35:1이라 [[접근성:색 대비]]의 4.5:1에 못 미친다. 색 있는 코드를 그리는 스토리에서 axe 위반이 나서 `Copy` 스토리도 색 없는 코드로 그렸다. 실제 앱 글에서는 이 색이 보인다. 대비를 고칠지, 이 색만 예외로 둘지는 정하지 않았다.
 "BreadcrumbItem PR #515: 글자 label HUG와 말줄임 동작 스토리": |
   - 피그마 `label`이 내용 맞춤(HUG)이 되어 이름 전체가 보인다. 코드는 이미 "이름만큼 넓어지다 최대 너비(`size/breadcrumb-item/max-width`)에서 …로 줄임"이라 컴포넌트는 바꾸지 않았다. `Figma` 스토리 여섯 변형 캡처의 차이 그림에는 글자 가장자리 차이만 남았다.
   - 줄임 동작을 보는 스토리가 없어 `Truncated` 동작 스토리를 더했다. 피그마에는 줄임 변형이 없어 캡처가 맡지 못하므로 [[테스트 작성 규칙:테스트 지침]] 5번(`play`)으로 두었다. 최대 너비를 넘는 긴 이름에서 글자 상자가 넘치고 `text-overflow: ellipsis`인지 본다. 새 크기 토큰이나 감싸는 상자는 쓰지 않았다.

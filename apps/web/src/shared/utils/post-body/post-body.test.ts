@@ -63,8 +63,8 @@ describe('Notion 블록', () => {
           code: 'const a',
           highlighted: [
             [
-              { text: 'const', syntax: 'keyword' },
-              { text: ' a', syntax: null },
+              { text: 'const', color: '#0000ff' },
+              { text: ' a', color: null },
             ],
           ],
         },

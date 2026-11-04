@@ -3,7 +3,7 @@
 // Chrome 페이지 조립 스토리가 함께 쓰는 고정 데이터다. 피그마 조립과 같은 값을 둔다.
 // 글 하나(React 19 훅 정리)는 Chrome 창(Window/Chrome)과 그 창을 줄여 넣는 창 축소 화면(Window/SnapAssist 등) 스토리도 그린다.
 
-import type { CodeSyntax, CodeToken, PostBlock } from '@/shared/utils/post-body/post-body';
+import type { PostBlock } from '@/shared/utils/post-body/post-body';
 
 /** 피그마 `file/Document` 인스턴스(글 아이콘)의 자산 */
 export const POST_ICON = 'images/file-document';
@@ -74,53 +74,6 @@ export const POST_BODY = {
     '폼 제출 결과와 대기 상태를 한 번에 다룬다. 이전의 useFormState가 이름을 바꿔 react 패키지로 옮겨 왔다.',
 } as const;
 
-/**
- * 강조된 코드 글자 조각을 만든다.
- * @param text 글자
- * @param syntax 강조 색. 없으면 기본 코드 글자색
- * @returns 코드 글자 조각
- */
-function token(text: string, syntax: CodeSyntax | null = null): CodeToken {
-  return { text, syntax };
-}
-
-/**
- * 피그마 Chrome/Page `Page=Post` 코드 블록의 코드를 실제 강조기(`highlightCode`, tsx)로 강조한 결과(`code-syntax` 색).
- * 손으로 칠하지 않는다. 강조기 단위 테스트가 이 코드를 다시 강조해 같은지 확인한다.
- */
-const postCodeLines: CodeToken[][] = [
-  [
-    token('const', 'keyword'),
-    token(' '),
-    token('post', 'variable-constant'),
-    token(' '),
-    token('=', 'punctuation'),
-    token(' '),
-    token('use', 'function'),
-    token('('),
-    token('fetchPost', 'function'),
-    token('('),
-    token('slug', 'variable'),
-    token('))'),
-    token(';', 'punctuation'),
-  ],
-  [
-    token('return', 'keyword-control'),
-    token(' '),
-    token('<', 'tag'),
-    token('Article', 'type'),
-    token(' '),
-    token('post', 'attribute'),
-    token('=', 'punctuation'),
-    token('{', 'keyword'),
-    token('post', 'variable'),
-    token('}', 'keyword'),
-    token(' '),
-    token('/>', 'tag'),
-    token(';', 'punctuation'),
-  ],
-];
-
 const postIntro: PostBlock = {
   type: 'paragraph',
   richText: [{ text: POST_BODY.intro, link: null }],
@@ -144,7 +97,6 @@ const postCode: PostBlock = {
   type: 'code',
   language: POST_BODY.code.language,
   code: POST_BODY.code.code,
-  highlighted: postCodeLines,
 };
 
 const postFigure: PostBlock = {

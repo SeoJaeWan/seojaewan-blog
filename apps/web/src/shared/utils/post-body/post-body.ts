@@ -36,39 +36,15 @@ export const richTextSchema = z.object({
 /** 글자 조각 하나 */
 export type RichText = z.infer<typeof richTextSchema>;
 
-/** 코드 강조 색의 이름. 디자인 시스템 `code-syntax/*` 토큰 이름과 같다 */
-export const CODE_SYNTAXES = [
-  'attribute',
-  'comment',
-  'constant',
-  'escape',
-  'function',
-  'invalid',
-  'key-value',
-  'keyword',
-  'keyword-control',
-  'parameter',
-  'punctuation',
-  'regexp',
-  'regexp-group',
-  'string',
-  'tag',
-  'text',
-  'type',
-  'variable',
-  'variable-constant',
-  'variable-navy',
-] as const;
-
-/** 코드 강조 색의 이름 */
-export type CodeSyntax = (typeof CODE_SYNTAXES)[number];
-
 /** 강조된 코드의 글자 조각 하나. 색이 없으면 기본 코드 글자색이다 */
 export const codeTokenSchema = z.object({
   /** 글자 */
   text: z.string(),
-  /** 강조 색. 없으면 null */
-  syntax: z.enum(CODE_SYNTAXES).nullable(),
+  /** 강조기가 준 글자 색(hex). 없으면 null */
+  color: z
+    .string()
+    .regex(/^#[0-9a-f]{6}(?:[0-9a-f]{2})?$/iu)
+    .nullable(),
 });
 
 /** 강조된 코드의 글자 조각 하나 */
