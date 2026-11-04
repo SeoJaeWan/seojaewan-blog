@@ -292,7 +292,7 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
                 key={`${String(index)}-${entry.location ?? 'desktop'}`}
                 label={entry.name}
                 isCurrent={isCurrent}
-                showSeparator={!isCurrent}
+                hasSeparator={!isCurrent}
                 onLabelClick={() => {
                   handleNavigate(entry.location);
                 }}

@@ -174,7 +174,7 @@ export function getExplorerWindowParts(variant: ExplorerWindowVariant): Explorer
             key={label}
             label={label}
             isCurrent={isCurrent}
-            showSeparator={!isCurrent}
+            hasSeparator={!isCurrent}
             className="shrink-shrink-none"
           />
         );
