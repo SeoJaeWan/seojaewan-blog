@@ -21,7 +21,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "title",
                     "size": {
@@ -39,7 +39,7 @@
                       "segments": [
                         {
                           "characters": "휴지통에 있는 글",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Subtitle"
                         }
                       ],
@@ -49,7 +49,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "message",
                     "size": {
@@ -67,62 +67,62 @@
                       "segments": [
                         {
                           "characters": "이",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body"
                         },
                         {
                           "characters": "글은",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body"
                         },
                         {
                           "characters": "휴지통에",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body"
                         },
                         {
                           "characters": "있어요",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body"
                         },
                         {
                           "characters": ". ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body"
                         },
                         {
                           "characters": "복원하고",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body"
                         },
                         {
                           "characters": "열까요",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body"
                         },
                         {
                           "characters": "?",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body"
                         }
                       ],
@@ -132,7 +132,7 @@
                   }
                 ],
                 "fills": [
-                  "layer-fill/alt"
+                  "color/white"
                 ],
                 "layout": {
                   "counterAlign": "MIN",
@@ -163,7 +163,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-on-accent-fill/primary"
+                          "color/white"
                         ],
                         "name": "label",
                         "size": {
@@ -181,7 +181,7 @@
                           "segments": [
                             {
                               "characters": "복원",
-                              "fill": "text-on-accent-fill/primary",
+                              "fill": "color/white",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -192,7 +192,7 @@
                     ],
                     "component": "Button",
                     "fills": [
-                      "accent-fill/default"
+                      "color/blue/59"
                     ],
                     "layout": {
                       "counterAlign": "CENTER",
@@ -209,10 +209,10 @@
                     "minWidth": "size/button/min-width",
                     "name": "primary button",
                     "properties": {
+                      "Has icon": false,
                       "Label": "복원",
-                      "Show icon": false,
                       "State": "Rest",
-                      "Style": "Accent"
+                      "Variant": "Accent"
                     },
                     "radius": [
                       "radius/control",
@@ -242,7 +242,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "label",
                         "size": {
@@ -260,7 +260,7 @@
                           "segments": [
                             {
                               "characters": "취소",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -271,7 +271,7 @@
                     ],
                     "component": "Button",
                     "fills": [
-                      "control-fill/default"
+                      "color/white/70"
                     ],
                     "layout": {
                       "counterAlign": "CENTER",
@@ -288,10 +288,10 @@
                     "minWidth": "size/button/min-width",
                     "name": "secondary button",
                     "properties": {
+                      "Has icon": false,
                       "Label": "취소",
-                      "Show icon": false,
                       "State": "Rest",
-                      "Style": "Standard"
+                      "Variant": "Standard"
                     },
                     "radius": [
                       "radius/control",
@@ -319,7 +319,7 @@
                   }
                 ],
                 "fills": [
-                  "solid-background-fill/base"
+                  "color/gray/4"
                 ],
                 "layout": {
                   "counterAlign": "MIN",
@@ -349,7 +349,7 @@
                   0
                 ],
                 "strokes": [
-                  "card-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": true,
                 "type": "FRAME"
@@ -358,7 +358,7 @@
             "component": "MessageBox",
             "effectStyle": "Elevation/Dialog",
             "fills": [
-              "solid-background-fill/base"
+              "color/gray/4"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -399,11 +399,10 @@
               "stroke-width/default"
             ],
             "strokes": [
-              "surface-stroke/default"
+              "color/gray/51/40"
             ],
             "strokesIncludedInLayout": false,
-            "type": "INSTANCE",
-            "width": "size/message-box/width"
+            "type": "INSTANCE"
           }
         ],
         "layout": {
