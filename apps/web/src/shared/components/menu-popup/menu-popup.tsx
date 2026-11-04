@@ -5,7 +5,7 @@ import { Menu, MenuItem, MenuSeparator, Popover } from '@seojaewan/design-system
 
 type MenuItemIcon = ComponentProps<typeof MenuItem>['icon'];
 
-/** 고르면 바로 실행하는 항목(피그마 MenuItem `Kind=Default`) */
+/** 고르면 바로 실행하는 항목(피그마 MenuItem `Variant=Default`) */
 export type MenuPopupCommand = {
   kind?: 'command';
   /** 항목 이름 */
@@ -20,7 +20,7 @@ export type MenuPopupCommand = {
   onClick?: () => void;
 };
 
-/** 하위 메뉴를 여는 항목(피그마 MenuItem `Kind=Submenu`) */
+/** 하위 메뉴를 여는 항목(피그마 MenuItem `Variant=Submenu`) */
 export type MenuPopupSubmenu = {
   kind: 'submenu';
   /** 항목 이름 */
@@ -38,7 +38,7 @@ export type MenuPopupSubmenu = {
   entries?: readonly MenuPopupEntry[];
 };
 
-/** 켜고 끄는 항목(피그마 MenuItem `Kind=Toggle on/off`) */
+/** 켜고 끄는 항목(피그마 MenuItem `Variant=Toggle on/off`) */
 export type MenuPopupCheckbox = {
   kind: 'checkbox';
   /** 항목 이름 */
@@ -60,7 +60,7 @@ export type MenuPopupRadioOption = {
 };
 
 /**
- * 여럿 중 하나를 고르는 라디오 항목 묶음(피그마 MenuItem `Kind=Radio on/off`가 이어진 줄들).
+ * 여럿 중 하나를 고르는 라디오 항목 묶음(피그마 MenuItem `Variant=Radio on/off`가 이어진 줄들).
  * 고른 값은 묶음 하나가 가지므로, 골라진 항목(`Radio on`)은 언제나 하나다.
  */
 export type MenuPopupRadioGroup = {
@@ -73,7 +73,7 @@ export type MenuPopupRadioGroup = {
   onValueChange?: (value: string) => void;
 };
 
-/** 확대/축소 조절 줄(피그마 MenuItem `Kind=Zoom`). −·+ 버튼은 메뉴 항목이지만 눌러도 메뉴가 닫히지 않는다 */
+/** 확대/축소 조절 줄(피그마 MenuItem `Variant=Zoom`). −·+ 버튼은 메뉴 항목이지만 눌러도 메뉴가 닫히지 않는다 */
 export type MenuPopupZoom = {
   kind: 'zoom';
   /** 지금 배율 글자(예: `100%`) */
@@ -199,7 +199,7 @@ function MenuEntry(props: { entry: MenuPopupEntry }): JSX.Element {
       const { onZoomOut: handleZoomOut, onZoomIn: handleZoomIn } = entry;
       return (
         <MenuItem
-          kind="zoom"
+          variant="zoom"
           label="확대/축소"
           value={entry.value}
           onZoomOut={handleZoomOut}
@@ -213,7 +213,7 @@ function MenuEntry(props: { entry: MenuPopupEntry }): JSX.Element {
       const { onCheckedChange: handleCheckedChange } = entry;
       return (
         <MenuItem
-          kind="checkbox"
+          variant="checkbox"
           label={entry.label}
           checked={entry.checked}
           disabled={entry.disabled}
@@ -233,7 +233,12 @@ function MenuEntry(props: { entry: MenuPopupEntry }): JSX.Element {
              * @returns 라디오 항목
              */
             (option) => (
-              <MenuItem key={option.value} kind="radio" label={option.label} value={option.value} />
+              <MenuItem
+                key={option.value}
+                variant="radio"
+                label={option.label}
+                value={option.value}
+              />
             ),
           )}
         </BaseMenu.RadioGroup>
@@ -268,7 +273,12 @@ function SubmenuEntry(props: { entry: MenuPopupSubmenu }): JSX.Element {
     return (
       // 실제 하위 메뉴다. Base UI가 마우스·키보드로 여닫고, 피그마 Popover `Right-Start`처럼 항목 오른쪽에 위를 맞춰 간격(spacing/4)을 두고 붙인다.
       <BaseMenu.SubmenuRoot>
-        <MenuItem kind="submenu" label={entry.label} icon={entry.icon} disabled={entry.disabled} />
+        <MenuItem
+          variant="submenu"
+          label={entry.label}
+          icon={entry.icon}
+          disabled={entry.disabled}
+        />
         <BaseMenu.Portal>
           <BaseMenu.Positioner side="inline-end" align="start" sideOffset={SUBMENU_OFFSET}>
             <MenuPopup items={entry.entries} />
@@ -281,7 +291,7 @@ function SubmenuEntry(props: { entry: MenuPopupSubmenu }): JSX.Element {
   const trigger = (
     // 하위 메뉴를 연 상태면 Base UI가 항목에 data-popup-open을 달아 MenuItem이 강조 색을 칠한다.
     <BaseMenu.SubmenuRoot open={isExpanded}>
-      <MenuItem kind="submenu" label={entry.label} icon={entry.icon} disabled={entry.disabled} />
+      <MenuItem variant="submenu" label={entry.label} icon={entry.icon} disabled={entry.disabled} />
     </BaseMenu.SubmenuRoot>
   );
   if (entry.submenu === undefined) {
