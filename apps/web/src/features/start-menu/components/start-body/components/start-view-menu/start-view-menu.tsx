@@ -8,7 +8,7 @@ import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 type StartViewMenuProps = {
   /** 지금 고른 보기의 값 글자다(예: `간단히`). 버튼에는 `보기: 간단히`로 보인다 */
   label: string;
-  /** 피그마 State. true면 보기 메뉴(`Menu/ViewOptions`)를 연 모습(Open), false면 버튼만 보인다(Closed) */
+  /** 보기 메뉴(`Menu/ViewOptions`)가 열렸는지. 피그마 조립은 닫은 모양만 그리고 열림은 `@runtime`이다 */
   open?: boolean;
   /** 보기 메뉴를 열거나 닫으려 할 때 부른다. 쓰는 곳이 `open`을 바꾼다. 주지 않으면 `open`에 고정된다 */
   onOpenChange?: (isOpen: boolean) => void;
