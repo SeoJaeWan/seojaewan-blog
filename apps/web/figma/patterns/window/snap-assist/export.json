@@ -45,7 +45,7 @@
               "stroke-width/default"
             ],
             "strokes": [
-              "surface-stroke/flyout"
+              "color/black/6"
             ],
             "strokesIncludedInLayout": false,
             "type": "INSTANCE"
@@ -81,7 +81,7 @@
                           },
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
@@ -99,27 +99,27 @@
                               "segments": [
                                 {
                                   "characters": "React 19 ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Caption"
                                 },
                                 {
                                   "characters": "훅",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Caption"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Caption"
                                 },
                                 {
                                   "characters": "정리",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Caption"
                                 },
                                 {
                                   "characters": " - Chrome",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Caption"
                                 }
                               ],
@@ -143,9 +143,9 @@
                         },
                         "name": "icon + title",
                         "properties": {
-                          "Kind": "Preview",
                           "State": "Active",
-                          "Title": "React 19 훅 정리 - Chrome"
+                          "Title": "React 19 훅 정리 - Chrome",
+                          "Variant": "Preview"
                         },
                         "size": {
                           "h": 16,
@@ -222,7 +222,7 @@
                                                       },
                                                       {
                                                         "fills": [
-                                                          "chrome/text-primary"
+                                                          "color/gray/88"
                                                         ],
                                                         "name": "title",
                                                         "size": {
@@ -240,22 +240,22 @@
                                                           "segments": [
                                                             {
                                                               "characters": "React 19 ",
-                                                              "fill": "chrome/text-primary",
+                                                              "fill": "color/gray/88",
                                                               "textStyle": null
                                                             },
                                                             {
                                                               "characters": "훅",
-                                                              "fill": "chrome/text-primary",
+                                                              "fill": "color/gray/88",
                                                               "textStyle": null
                                                             },
                                                             {
                                                               "characters": " ",
-                                                              "fill": "chrome/text-primary",
+                                                              "fill": "color/gray/88",
                                                               "textStyle": null
                                                             },
                                                             {
                                                               "characters": "정리",
-                                                              "fill": "chrome/text-primary",
+                                                              "fill": "color/gray/88",
                                                               "textStyle": null
                                                             }
                                                           ],
@@ -265,7 +265,7 @@
                                                       },
                                                       {
                                                         "asset": {
-                                                          "color": "text-fill/primary",
+                                                          "color": "color/black/89",
                                                           "path": "icons/ic_fluent_dismiss_20_regular"
                                                         },
                                                         "component": "ic_fluent_dismiss_20_regular",
@@ -284,7 +284,7 @@
                                                     ],
                                                     "component": "BrowserTab",
                                                     "fills": [
-                                                      "chrome/toolbar-fill"
+                                                      "color/white"
                                                     ],
                                                     "height": "size/browser-tab/height",
                                                     "layout": {
@@ -301,7 +301,7 @@
                                                     },
                                                     "name": "tab",
                                                     "properties": {
-                                                      "Show separator": true,
+                                                      "Has separator": true,
                                                       "State": "Active",
                                                       "Title": "React 19 훅 정리"
                                                     },
@@ -353,7 +353,7 @@
                                                     "children": [
                                                       {
                                                         "asset": {
-                                                          "color": "chrome/text-secondary",
+                                                          "color": "color/gray/70",
                                                           "path": "icons/ic_fluent_add_20_regular"
                                                         },
                                                         "component": "ic_fluent_add_20_regular",
@@ -374,7 +374,7 @@
                                                     ],
                                                     "component": "IconButton",
                                                     "fills": [
-                                                      "subtle-fill/transparent"
+                                                      "color/white/0"
                                                     ],
                                                     "layout": {
                                                       "counterAlign": "CENTER",
@@ -391,7 +391,7 @@
                                                     "name": "new tab",
                                                     "properties": {
                                                       "State": "Rest",
-                                                      "Style": "Chrome"
+                                                      "Variant": "Chrome"
                                                     },
                                                     "radius": [
                                                       "radius/control",
@@ -491,7 +491,7 @@
                                             "children": [
                                               {
                                                 "asset": {
-                                                  "color": "text-fill/primary",
+                                                  "color": "color/black/89",
                                                   "path": "icons/ic_fluent_subtract_20_regular"
                                                 },
                                                 "component": "ic_fluent_subtract_20_regular",
@@ -526,8 +526,8 @@
                                             },
                                             "name": "minimize button",
                                             "properties": {
-                                              "Kind": "Default",
-                                              "State": "Rest"
+                                              "State": "Rest",
+                                              "Variant": "Default"
                                             },
                                             "scaleFactor": 0.13499999046325684,
                                             "size": {
@@ -545,7 +545,7 @@
                                             "children": [
                                               {
                                                 "asset": {
-                                                  "color": "text-fill/primary",
+                                                  "color": "color/black/89",
                                                   "path": "icons/ic_fluent_maximize_20_regular"
                                                 },
                                                 "component": "ic_fluent_maximize_20_regular",
@@ -580,8 +580,8 @@
                                             },
                                             "name": "maximize button",
                                             "properties": {
-                                              "Kind": "Default",
-                                              "State": "Rest"
+                                              "State": "Rest",
+                                              "Variant": "Default"
                                             },
                                             "scaleFactor": 0.13499999046325684,
                                             "size": {
@@ -599,7 +599,7 @@
                                             "children": [
                                               {
                                                 "asset": {
-                                                  "color": "text-fill/primary",
+                                                  "color": "color/black/89",
                                                   "path": "icons/ic_fluent_dismiss_20_regular"
                                                 },
                                                 "component": "ic_fluent_dismiss_20_regular",
@@ -634,8 +634,8 @@
                                             },
                                             "name": "close button",
                                             "properties": {
-                                              "Kind": "Close",
-                                              "State": "Rest"
+                                              "State": "Rest",
+                                              "Variant": "Close"
                                             },
                                             "scaleFactor": 0.13499999046325684,
                                             "size": {
@@ -665,7 +665,7 @@
                                         },
                                         "name": "caption buttons",
                                         "properties": {
-                                          "Placement": "Normal",
+                                          "Placement": "Default",
                                           "State": "Active"
                                         },
                                         "scaleFactor": 0.13499999046325684,
@@ -712,7 +712,7 @@
                                             "children": [
                                               {
                                                 "asset": {
-                                                  "color": "chrome/text-secondary",
+                                                  "color": "color/gray/70",
                                                   "path": "icons/ic_fluent_arrow_left_20_regular"
                                                 },
                                                 "component": "ic_fluent_arrow_left_20_regular",
@@ -733,7 +733,7 @@
                                             ],
                                             "component": "IconButton",
                                             "fills": [
-                                              "subtle-fill/transparent"
+                                              "color/white/0"
                                             ],
                                             "layout": {
                                               "counterAlign": "CENTER",
@@ -750,7 +750,7 @@
                                             "name": "back",
                                             "properties": {
                                               "State": "Rest",
-                                              "Style": "Chrome"
+                                              "Variant": "Chrome"
                                             },
                                             "radius": [
                                               "radius/control",
@@ -773,7 +773,7 @@
                                             "children": [
                                               {
                                                 "asset": {
-                                                  "color": "chrome/text-secondary",
+                                                  "color": "color/gray/70",
                                                   "path": "icons/ic_fluent_arrow_right_20_regular"
                                                 },
                                                 "component": "ic_fluent_arrow_right_20_regular",
@@ -794,7 +794,7 @@
                                             ],
                                             "component": "IconButton",
                                             "fills": [
-                                              "subtle-fill/transparent"
+                                              "color/white/0"
                                             ],
                                             "layout": {
                                               "counterAlign": "CENTER",
@@ -811,7 +811,7 @@
                                             "name": "forward",
                                             "properties": {
                                               "State": "Rest",
-                                              "Style": "Chrome"
+                                              "Variant": "Chrome"
                                             },
                                             "radius": [
                                               "radius/control",
@@ -834,7 +834,7 @@
                                             "children": [
                                               {
                                                 "asset": {
-                                                  "color": "chrome/text-secondary",
+                                                  "color": "color/gray/70",
                                                   "path": "icons/ic_fluent_arrow_clockwise_20_regular"
                                                 },
                                                 "component": "ic_fluent_arrow_clockwise_20_regular",
@@ -855,7 +855,7 @@
                                             ],
                                             "component": "IconButton",
                                             "fills": [
-                                              "subtle-fill/transparent"
+                                              "color/white/0"
                                             ],
                                             "layout": {
                                               "counterAlign": "CENTER",
@@ -872,7 +872,7 @@
                                             "name": "refresh",
                                             "properties": {
                                               "State": "Rest",
-                                              "Style": "Chrome"
+                                              "Variant": "Chrome"
                                             },
                                             "radius": [
                                               "radius/control",
@@ -897,7 +897,7 @@
                                                 "children": [
                                                   {
                                                     "asset": {
-                                                      "color": "chrome/text-secondary",
+                                                      "color": "color/gray/70",
                                                       "path": "icons/ic_fluent_info_24_regular"
                                                     },
                                                     "component": "ic_fluent_info_24_regular",
@@ -917,7 +917,7 @@
                                                   },
                                                   {
                                                     "fills": [
-                                                      "chrome/text-primary"
+                                                      "color/gray/88"
                                                     ],
                                                     "name": "url",
                                                     "size": {
@@ -935,7 +935,7 @@
                                                       "segments": [
                                                         {
                                                           "characters": "seojaewan.com/posts/react-19-hooks",
-                                                          "fill": "chrome/text-primary",
+                                                          "fill": "color/gray/88",
                                                           "textStyle": null
                                                         }
                                                       ],
@@ -971,7 +971,7 @@
                                             ],
                                             "component": "AddressBar",
                                             "fills": [
-                                              "chrome/omnibox-fill"
+                                              "color/blue/5"
                                             ],
                                             "layout": {
                                               "counterAlign": "MIN",
@@ -1012,7 +1012,7 @@
                                             "children": [
                                               {
                                                 "asset": {
-                                                  "color": "chrome/text-secondary",
+                                                  "color": "color/gray/70",
                                                   "path": "icons/ic_fluent_more_vertical_20_regular"
                                                 },
                                                 "component": "ic_fluent_more_vertical_20_regular",
@@ -1033,7 +1033,7 @@
                                             ],
                                             "component": "IconButton",
                                             "fills": [
-                                              "subtle-fill/transparent"
+                                              "color/white/0"
                                             ],
                                             "layout": {
                                               "counterAlign": "CENTER",
@@ -1050,7 +1050,7 @@
                                             "name": "menu (⋮)",
                                             "properties": {
                                               "State": "Rest",
-                                              "Style": "Chrome"
+                                              "Variant": "Chrome"
                                             },
                                             "radius": [
                                               "radius/control",
@@ -1072,7 +1072,7 @@
                                         ],
                                         "component": "BrowserToolbar",
                                         "fills": [
-                                          "chrome/toolbar-fill"
+                                          "color/white"
                                         ],
                                         "height": "size/browser-toolbar/height",
                                         "layout": {
@@ -1133,7 +1133,6 @@
                                                   }
                                                 ],
                                                 "component": "PostCover",
-                                                "height": "size/post-cover/height",
                                                 "layout": {
                                                   "counterAlign": "MIN",
                                                   "gap": 0,
@@ -1160,7 +1159,7 @@
                                               },
                                               {
                                                 "fills": [
-                                                  "text-fill/secondary"
+                                                  "color/black/61"
                                                 ],
                                                 "name": "meta",
                                                 "size": {
@@ -1178,7 +1177,7 @@
                                                   "segments": [
                                                     {
                                                       "characters": "Blog › React · 2026-10-20",
-                                                      "fill": "text-fill/secondary",
+                                                      "fill": "color/black/61",
                                                       "textStyle": null
                                                     }
                                                   ],
@@ -1188,7 +1187,7 @@
                                               },
                                               {
                                                 "fills": [
-                                                  "text-fill/primary"
+                                                  "color/black/89"
                                                 ],
                                                 "name": "title",
                                                 "size": {
@@ -1206,52 +1205,52 @@
                                                   "segments": [
                                                     {
                                                       "characters": "React 19",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "의",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "새",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "훅",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "완전",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "정리",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     }
                                                   ],
@@ -1261,7 +1260,7 @@
                                               },
                                               {
                                                 "fills": [
-                                                  "text-fill/primary"
+                                                  "color/black/89"
                                                 ],
                                                 "name": "paragraph 1",
                                                 "size": {
@@ -1279,157 +1278,157 @@
                                                   "segments": [
                                                     {
                                                       "characters": "React 19",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "에는",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "폼과",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "비동기",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "상태를",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "다루는",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "새",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "훅이",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "여럿",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "들어왔다",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": ". ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "이",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "글은",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " use, useActionState, useOptimistic",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "을",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "예제와",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "함께",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "정리한다",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": ".",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     }
                                                   ],
@@ -1439,7 +1438,7 @@
                                               },
                                               {
                                                 "fills": [
-                                                  "text-fill/primary"
+                                                  "color/black/89"
                                                 ],
                                                 "name": "heading 1",
                                                 "size": {
@@ -1457,12 +1456,12 @@
                                                   "segments": [
                                                     {
                                                       "characters": "use ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "훅",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     }
                                                   ],
@@ -1487,147 +1486,147 @@
                                                   "segments": [
                                                     {
                                                       "characters": "use",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "는",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " Promise",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "와",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " Context",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "를",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "렌더링",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "중에",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "읽는",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "새",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " API",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "다",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": ". ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "자세한",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "내용은",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "React ",
-                                                      "fill": "accent-text-fill/primary",
+                                                      "fill": "color/blue/72",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "공식",
-                                                      "fill": "accent-text-fill/primary",
+                                                      "fill": "color/blue/72",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "accent-text-fill/primary",
+                                                      "fill": "color/blue/72",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "문서",
-                                                      "fill": "accent-text-fill/primary",
+                                                      "fill": "color/blue/72",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "를",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "참고한다",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": ".",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     }
                                                   ],
@@ -1641,7 +1640,7 @@
                                                     "children": [
                                                       {
                                                         "fills": [
-                                                          "text-fill/secondary"
+                                                          "color/black/61"
                                                         ],
                                                         "name": "language",
                                                         "size": {
@@ -1659,7 +1658,7 @@
                                                           "segments": [
                                                             {
                                                               "characters": "tsx",
-                                                              "fill": "text-fill/secondary",
+                                                              "fill": "color/black/61",
                                                               "textStyle": null
                                                             }
                                                           ],
@@ -1671,7 +1670,7 @@
                                                         "children": [
                                                           {
                                                             "asset": {
-                                                              "color": "text-fill/primary",
+                                                              "color": "color/black/89",
                                                               "path": "icons/ic_fluent_copy_20_regular"
                                                             },
                                                             "component": "ic_fluent_copy_20_regular",
@@ -1692,7 +1691,7 @@
                                                         ],
                                                         "component": "IconButton",
                                                         "fills": [
-                                                          "subtle-fill/transparent"
+                                                          "color/white/0"
                                                         ],
                                                         "layout": {
                                                           "counterAlign": "CENTER",
@@ -1709,7 +1708,7 @@
                                                         "name": "copy",
                                                         "properties": {
                                                           "State": "Rest",
-                                                          "Style": "Subtle"
+                                                          "Variant": "Subtle"
                                                         },
                                                         "radius": [
                                                           "radius/control",
@@ -1755,6 +1754,9 @@
                                                   {
                                                     "children": [
                                                       {
+                                                        "fills": [
+                                                          "color/black"
+                                                        ],
                                                         "name": "code",
                                                         "size": {
                                                           "h": 6,
@@ -1770,123 +1772,8 @@
                                                           "maxLinesVariable": null,
                                                           "segments": [
                                                             {
-                                                              "characters": "const",
-                                                              "fill": "code-syntax/keyword",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": " ",
-                                                              "fill": "code-syntax/text",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": "post",
-                                                              "fill": "code-syntax/variable",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": " ",
-                                                              "fill": "code-syntax/text",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": "=",
-                                                              "fill": "code-syntax/punctuation",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": " ",
-                                                              "fill": "code-syntax/text",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": "use",
-                                                              "fill": "code-syntax/function",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": "(",
-                                                              "fill": "code-syntax/punctuation",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": "fetchPost",
-                                                              "fill": "code-syntax/function",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": "(",
-                                                              "fill": "code-syntax/punctuation",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": "slug",
-                                                              "fill": "code-syntax/variable",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": "));\n",
-                                                              "fill": "code-syntax/punctuation",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": "return",
-                                                              "fill": "code-syntax/keyword-control",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": " ",
-                                                              "fill": "code-syntax/text",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": "<",
-                                                              "fill": "code-syntax/tag",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": "Article",
-                                                              "fill": "code-syntax/type",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": " ",
-                                                              "fill": "code-syntax/text",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": "post",
-                                                              "fill": "code-syntax/attribute",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": "={",
-                                                              "fill": "code-syntax/punctuation",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": "post",
-                                                              "fill": "code-syntax/variable",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": "}",
-                                                              "fill": "code-syntax/punctuation",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": " ",
-                                                              "fill": "code-syntax/text",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": "/>",
-                                                              "fill": "code-syntax/tag",
-                                                              "textStyle": null
-                                                            },
-                                                            {
-                                                              "characters": ";",
-                                                              "fill": "code-syntax/punctuation",
+                                                              "characters": "const post = use(fetchPost(slug));\nreturn <Article post={post} />;",
+                                                              "fill": "color/black",
                                                               "textStyle": null
                                                             }
                                                           ],
@@ -1921,7 +1808,7 @@
                                                 ],
                                                 "component": "CodeBlock",
                                                 "fills": [
-                                                  "solid-background-fill/tertiary"
+                                                  "color/gray/2"
                                                 ],
                                                 "layout": {
                                                   "counterAlign": "MIN",
@@ -1961,14 +1848,14 @@
                                                   "stroke-width/default"
                                                 ],
                                                 "strokes": [
-                                                  "card-stroke/default"
+                                                  "color/black/6"
                                                 ],
                                                 "strokesIncludedInLayout": true,
                                                 "type": "INSTANCE"
                                               },
                                               {
                                                 "fills": [
-                                                  "text-fill/primary"
+                                                  "color/black/89"
                                                 ],
                                                 "name": "heading 2",
                                                 "size": {
@@ -1986,7 +1873,7 @@
                                                   "segments": [
                                                     {
                                                       "characters": "useActionState",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     }
                                                   ],
@@ -1996,7 +1883,7 @@
                                               },
                                               {
                                                 "fills": [
-                                                  "text-fill/primary"
+                                                  "color/black/89"
                                                 ],
                                                 "name": "paragraph 2",
                                                 "size": {
@@ -2014,152 +1901,152 @@
                                                   "segments": [
                                                     {
                                                       "characters": "폼",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "제출",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "결과와",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "대기",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "상태를",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "한",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "번에",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "다룬다",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": ". ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "이전의",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " useFormState",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "가",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "이름을",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "바꿔",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " react ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "패키지로",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "옮겨",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": "왔다",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     },
                                                     {
                                                       "characters": ".",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": null
                                                     }
                                                   ],
@@ -2227,7 +2114,7 @@
                                                   },
                                                   {
                                                     "fills": [
-                                                      "text-fill/secondary"
+                                                      "color/black/61"
                                                     ],
                                                     "name": "caption",
                                                     "size": {
@@ -2245,12 +2132,12 @@
                                                       "segments": [
                                                         {
                                                           "characters": "Bloom ",
-                                                          "fill": "text-fill/secondary",
+                                                          "fill": "color/black/61",
                                                           "textStyle": "Body"
                                                         },
                                                         {
                                                           "characters": "배경화면",
-                                                          "fill": "text-fill/secondary",
+                                                          "fill": "color/black/61",
                                                           "textStyle": null
                                                         }
                                                       ],
@@ -2275,7 +2162,7 @@
                                                 "name": "figure",
                                                 "properties": {
                                                   "Caption": "Bloom 배경화면",
-                                                  "Show caption": true
+                                                  "Has caption": true
                                                 },
                                                 "scaleFactor": 0.01822499744594097,
                                                 "size": {
@@ -2291,9 +2178,8 @@
                                               {
                                                 "component": "Separator",
                                                 "fills": [
-                                                  "divider-stroke/default"
+                                                  "color/black/8"
                                                 ],
-                                                "height": "stroke-width/default",
                                                 "name": "divider",
                                                 "properties": {
                                                   "Orientation": "Horizontal"
@@ -2315,7 +2201,7 @@
                                                     "children": [
                                                       {
                                                         "fills": [
-                                                          "text-fill/secondary"
+                                                          "color/black/61"
                                                         ],
                                                         "name": "label",
                                                         "size": {
@@ -2333,17 +2219,17 @@
                                                           "segments": [
                                                             {
                                                               "characters": "이전",
-                                                              "fill": "text-fill/secondary",
+                                                              "fill": "color/black/61",
                                                               "textStyle": null
                                                             },
                                                             {
                                                               "characters": " ",
-                                                              "fill": "text-fill/secondary",
+                                                              "fill": "color/black/61",
                                                               "textStyle": null
                                                             },
                                                             {
                                                               "characters": "글",
-                                                              "fill": "text-fill/secondary",
+                                                              "fill": "color/black/61",
                                                               "textStyle": null
                                                             }
                                                           ],
@@ -2353,7 +2239,7 @@
                                                       },
                                                       {
                                                         "fills": [
-                                                          "text-fill/primary"
+                                                          "color/black/89"
                                                         ],
                                                         "name": "post title",
                                                         "size": {
@@ -2371,37 +2257,37 @@
                                                           "segments": [
                                                             {
                                                               "characters": "리액트",
-                                                              "fill": "text-fill/primary",
+                                                              "fill": "color/black/89",
                                                               "textStyle": null
                                                             },
                                                             {
                                                               "characters": " ",
-                                                              "fill": "text-fill/primary",
+                                                              "fill": "color/black/89",
                                                               "textStyle": null
                                                             },
                                                             {
                                                               "characters": "서버",
-                                                              "fill": "text-fill/primary",
+                                                              "fill": "color/black/89",
                                                               "textStyle": null
                                                             },
                                                             {
                                                               "characters": " ",
-                                                              "fill": "text-fill/primary",
+                                                              "fill": "color/black/89",
                                                               "textStyle": null
                                                             },
                                                             {
                                                               "characters": "컴포넌트",
-                                                              "fill": "text-fill/primary",
+                                                              "fill": "color/black/89",
                                                               "textStyle": null
                                                             },
                                                             {
                                                               "characters": " ",
-                                                              "fill": "text-fill/primary",
+                                                              "fill": "color/black/89",
                                                               "textStyle": null
                                                             },
                                                             {
                                                               "characters": "이해하기",
-                                                              "fill": "text-fill/primary",
+                                                              "fill": "color/black/89",
                                                               "textStyle": null
                                                             }
                                                           ],
@@ -2412,7 +2298,7 @@
                                                     ],
                                                     "component": "PostNavCard",
                                                     "fills": [
-                                                      "card-background-fill/secondary"
+                                                      "color/gray/3/50"
                                                     ],
                                                     "layout": {
                                                       "counterAlign": "MIN",
@@ -2454,7 +2340,7 @@
                                                       "stroke-width/default"
                                                     ],
                                                     "strokes": [
-                                                      "card-stroke/default"
+                                                      "color/black/6"
                                                     ],
                                                     "strokesIncludedInLayout": true,
                                                     "type": "INSTANCE"
@@ -2463,7 +2349,7 @@
                                                     "children": [
                                                       {
                                                         "fills": [
-                                                          "text-fill/secondary"
+                                                          "color/black/61"
                                                         ],
                                                         "name": "label",
                                                         "size": {
@@ -2481,17 +2367,17 @@
                                                           "segments": [
                                                             {
                                                               "characters": "다음",
-                                                              "fill": "text-fill/secondary",
+                                                              "fill": "color/black/61",
                                                               "textStyle": null
                                                             },
                                                             {
                                                               "characters": " ",
-                                                              "fill": "text-fill/secondary",
+                                                              "fill": "color/black/61",
                                                               "textStyle": null
                                                             },
                                                             {
                                                               "characters": "글",
-                                                              "fill": "text-fill/secondary",
+                                                              "fill": "color/black/61",
                                                               "textStyle": null
                                                             }
                                                           ],
@@ -2501,7 +2387,7 @@
                                                       },
                                                       {
                                                         "fills": [
-                                                          "text-fill/primary"
+                                                          "color/black/89"
                                                         ],
                                                         "name": "post title",
                                                         "size": {
@@ -2519,12 +2405,12 @@
                                                           "segments": [
                                                             {
                                                               "characters": "React Compiler ",
-                                                              "fill": "text-fill/primary",
+                                                              "fill": "color/black/89",
                                                               "textStyle": null
                                                             },
                                                             {
                                                               "characters": "도입기",
-                                                              "fill": "text-fill/primary",
+                                                              "fill": "color/black/89",
                                                               "textStyle": null
                                                             }
                                                           ],
@@ -2535,7 +2421,7 @@
                                                     ],
                                                     "component": "PostNavCard",
                                                     "fills": [
-                                                      "card-background-fill/secondary"
+                                                      "color/gray/3/50"
                                                     ],
                                                     "layout": {
                                                       "counterAlign": "MAX",
@@ -2577,7 +2463,7 @@
                                                       "stroke-width/default"
                                                     ],
                                                     "strokes": [
-                                                      "card-stroke/default"
+                                                      "color/black/6"
                                                     ],
                                                     "strokesIncludedInLayout": true,
                                                     "type": "INSTANCE"
@@ -2628,8 +2514,7 @@
                                               "h": "FIXED",
                                               "v": "HUG"
                                             },
-                                            "type": "FRAME",
-                                            "width": "size/post/width"
+                                            "type": "FRAME"
                                           },
                                           {
                                             "children": [
@@ -2637,7 +2522,7 @@
                                                 "children": [
                                                   {
                                                     "fills": [
-                                                      "text-fill/primary"
+                                                      "color/black/89"
                                                     ],
                                                     "name": "heading",
                                                     "size": {
@@ -2655,7 +2540,7 @@
                                                       "segments": [
                                                         {
                                                           "characters": "목차",
-                                                          "fill": "text-fill/primary",
+                                                          "fill": "color/black/89",
                                                           "textStyle": null
                                                         }
                                                       ],
@@ -2679,7 +2564,7 @@
                                                 },
                                                 "name": "title",
                                                 "properties": {
-                                                  "Show action": false,
+                                                  "Has action": false,
                                                   "Title": "목차"
                                                 },
                                                 "scaleFactor": 0.01822499744594097,
@@ -2699,7 +2584,7 @@
                                                     "children": [
                                                       {
                                                         "fills": [
-                                                          "accent-fill/default"
+                                                          "color/blue/59"
                                                         ],
                                                         "name": "indicator",
                                                         "size": {
@@ -2715,7 +2600,7 @@
                                                       },
                                                       {
                                                         "fills": [
-                                                          "accent-text-fill/primary"
+                                                          "color/blue/72"
                                                         ],
                                                         "name": "label",
                                                         "size": {
@@ -2733,12 +2618,12 @@
                                                           "segments": [
                                                             {
                                                               "characters": "use ",
-                                                              "fill": "accent-text-fill/primary",
+                                                              "fill": "color/blue/72",
                                                               "textStyle": null
                                                             },
                                                             {
                                                               "characters": "훅",
-                                                              "fill": "accent-text-fill/primary",
+                                                              "fill": "color/blue/72",
                                                               "textStyle": null
                                                             }
                                                           ],
@@ -2780,7 +2665,7 @@
                                                     "children": [
                                                       {
                                                         "fills": [
-                                                          "divider-stroke/default"
+                                                          "color/black/8"
                                                         ],
                                                         "name": "indicator",
                                                         "size": {
@@ -2796,7 +2681,7 @@
                                                       },
                                                       {
                                                         "fills": [
-                                                          "text-fill/secondary"
+                                                          "color/black/61"
                                                         ],
                                                         "name": "label",
                                                         "size": {
@@ -2814,7 +2699,7 @@
                                                           "segments": [
                                                             {
                                                               "characters": "useActionState",
-                                                              "fill": "text-fill/secondary",
+                                                              "fill": "color/black/61",
                                                               "textStyle": null
                                                             }
                                                           ],
@@ -2856,7 +2741,7 @@
                                                     "children": [
                                                       {
                                                         "fills": [
-                                                          "divider-stroke/default"
+                                                          "color/black/8"
                                                         ],
                                                         "name": "indicator",
                                                         "size": {
@@ -2872,7 +2757,7 @@
                                                       },
                                                       {
                                                         "fills": [
-                                                          "text-fill/secondary"
+                                                          "color/black/61"
                                                         ],
                                                         "name": "label",
                                                         "size": {
@@ -2890,7 +2775,7 @@
                                                           "segments": [
                                                             {
                                                               "characters": "useOptimistic",
-                                                              "fill": "text-fill/secondary",
+                                                              "fill": "color/black/61",
                                                               "textStyle": null
                                                             }
                                                           ],
@@ -2932,7 +2817,7 @@
                                                     "children": [
                                                       {
                                                         "fills": [
-                                                          "divider-stroke/default"
+                                                          "color/black/8"
                                                         ],
                                                         "name": "indicator",
                                                         "size": {
@@ -2948,7 +2833,7 @@
                                                       },
                                                       {
                                                         "fills": [
-                                                          "text-fill/secondary"
+                                                          "color/black/61"
                                                         ],
                                                         "name": "label",
                                                         "size": {
@@ -2966,7 +2851,7 @@
                                                           "segments": [
                                                             {
                                                               "characters": "마이그레이션",
-                                                              "fill": "text-fill/secondary",
+                                                              "fill": "color/black/61",
                                                               "textStyle": null
                                                             }
                                                           ],
@@ -3055,13 +2940,12 @@
                                               "h": "FIXED",
                                               "v": "HUG"
                                             },
-                                            "type": "INSTANCE",
-                                            "width": "size/toc/width"
+                                            "type": "INSTANCE"
                                           }
                                         ],
                                         "component": "Chrome/Page",
                                         "fills": [
-                                          "chrome/page-fill"
+                                          "color/white"
                                         ],
                                         "layout": {
                                           "counterAlign": "MIN",
@@ -3118,7 +3002,7 @@
                                 ],
                                 "component": "WindowFrame",
                                 "fills": [
-                                  "chrome/frame-fill"
+                                  "color/gray/13"
                                 ],
                                 "layout": {
                                   "counterAlign": "MIN",
@@ -3135,7 +3019,7 @@
                                 "name": "window",
                                 "properties": {
                                   "Material": "Chrome",
-                                  "Placement": "Normal",
+                                  "Placement": "Default",
                                   "State": "Active",
                                   "Title bar": "Custom"
                                 },
@@ -3161,14 +3045,13 @@
                                   "stroke-width/default"
                                 ],
                                 "strokes": [
-                                  "surface-stroke/default"
+                                  "color/gray/51/40"
                                 ],
                                 "strokesIncludedInLayout": true,
                                 "type": "INSTANCE"
                               }
                             ],
                             "component": "Window/Chrome",
-                            "height": "size/window/chrome-height",
                             "layout": {
                               "counterAlign": "MIN",
                               "gap": 0,
@@ -3195,8 +3078,7 @@
                               "h": "FIXED",
                               "v": "FIXED"
                             },
-                            "type": "INSTANCE",
-                            "width": "size/window/chrome-width"
+                            "type": "INSTANCE"
                           }
                         ],
                         "layout": {
@@ -3224,7 +3106,7 @@
                       }
                     ],
                     "fills": [
-                      "solid-background-fill/base"
+                      "color/gray/4"
                     ],
                     "height": "size/window-preview/thumbnail-height",
                     "layout": {
@@ -3261,7 +3143,7 @@
                       "stroke-width/default"
                     ],
                     "strokes": [
-                      "card-stroke/default"
+                      "color/black/6"
                     ],
                     "strokesIncludedInLayout": false,
                     "type": "FRAME"
@@ -3269,7 +3151,7 @@
                 ],
                 "component": "WindowPreview",
                 "fills": [
-                  "subtle-fill/transparent"
+                  "color/white/0"
                 ],
                 "layout": {
                   "counterAlign": "MIN",
@@ -3301,8 +3183,7 @@
                   "h": "FIXED",
                   "v": "HUG"
                 },
-                "type": "INSTANCE",
-                "width": "size/window-preview/width"
+                "type": "INSTANCE"
               }
             ],
             "layout": {
@@ -3329,7 +3210,6 @@
             "type": "FRAME"
           }
         ],
-        "height": "size/snap-preview/height",
         "layout": {
           "counterAlign": "CENTER",
           "gap": "spacing/none",
@@ -3351,8 +3231,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/snap-preview/width"
+        "type": "COMPONENT"
       }
     }
   }
