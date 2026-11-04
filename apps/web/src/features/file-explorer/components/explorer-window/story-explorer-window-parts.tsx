@@ -51,7 +51,7 @@ type ExplorerWindowParts = {
   /** 상태 줄 선택 글자 */
   selection: string;
   /** 상태 줄 선택 글자를 보일지 */
-  showSelection: boolean;
+  hasSelection: boolean;
   /** 항목 자리 내용. 폴더는 항목(FileItem)들, 휴지통은 자세히 보기(DetailsHeader와 FileRow) 하나다 */
   items: ReactNode[];
 };
@@ -100,10 +100,10 @@ function renderFolderItems(folder: 'blog' | 'react', isSelected: boolean): React
       <FileItem
         key={item.name}
         surface="explorer"
-        view="medium"
+        size="medium"
         name={item.name}
         icon={ITEM_ICONS[item.kind]}
-        selected={isSelected && index === 0}
+        isSelected={isSelected && index === 0}
       />
     ),
   );
@@ -174,7 +174,7 @@ export function getExplorerWindowParts(variant: ExplorerWindowVariant): Explorer
             key={label}
             label={label}
             isCurrent={isCurrent}
-            showSeparator={!isCurrent}
+            hasSeparator={!isCurrent}
             className="shrink-shrink-none"
           />
         );
@@ -191,7 +191,7 @@ export function getExplorerWindowParts(variant: ExplorerWindowVariant): Explorer
           key={item.label}
           level={item.level}
           expand={item.expand}
-          selected={'selected' in item}
+          isSelected={'selected' in item}
           label={item.label}
           icon={NAVIGATION_ICONS[item.icon]}
           className="w-size-navigation-item-width"
@@ -200,7 +200,7 @@ export function getExplorerWindowParts(variant: ExplorerWindowVariant): Explorer
     ),
     itemCount: WINDOW_STATUS_TEXT.itemCount[folder],
     selection: WINDOW_STATUS_TEXT.selection,
-    showSelection: isSelected,
+    hasSelection: isSelected,
     items:
       folder === 'recycle-bin' ? renderRecycleBinDetails() : renderFolderItems(folder, isSelected),
   };

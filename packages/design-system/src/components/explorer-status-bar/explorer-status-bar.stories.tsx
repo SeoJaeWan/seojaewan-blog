@@ -14,7 +14,7 @@ type FigmaArgs = {
   /** 동작 스토리가 쓴다. 주지 않으면 피그마 기본 글자다 */
   itemCount?: string;
   selection?: string;
-  showSelection?: boolean;
+  hasSelection?: boolean;
   onDetailsView?: ComponentProps<typeof ExplorerStatusBar>['onDetailsView'];
   onLargeIconsView?: ComponentProps<typeof ExplorerStatusBar>['onLargeIconsView'];
 };
@@ -34,7 +34,7 @@ const meta = {
         device={args.device}
         itemCount={args.itemCount}
         selection={args.selection}
-        showSelection={args.showSelection}
+        hasSelection={args.hasSelection}
         onDetailsView={handleDetailsView}
         onLargeIconsView={handleLargeIconsView}
       />
@@ -79,10 +79,10 @@ export const Default: Story = {
 
 // @codocs [[컴포넌트 목록:Windows 화면 요소]]
 export const WithoutSelection: Story = {
-  args: { selection: '1개 선택', showSelection: false },
+  args: { selection: '1개 선택', hasSelection: false },
   play: async ({ canvasElement, step }) => {
     // @codocs [[컴포넌트 목록:Windows 화면 요소]]
-    await step('showSelection이 false면 선택 정보를 그리지 않는다', async () => {
+    await step('hasSelection이 false면 선택 정보를 그리지 않는다', async () => {
       await expect(within(canvasElement).queryByText('1개 선택')).not.toBeInTheDocument();
     });
   },
