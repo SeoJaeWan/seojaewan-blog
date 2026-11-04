@@ -1152,7 +1152,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
           <div className="flex w-full flex-col items-start">
             <DetailsHeader
               view={isRecycleBin && !isSearching ? 'recycle-bin' : 'default'}
-              showLocation={isSearching}
+              hasLocation={isSearching}
               sortColumn={getSortColumn(view.sortBy, isRecycleBin && !isSearching)}
               sortDirection={view.sortDirection === 'desc' ? 'descending' : 'ascending'}
               onSort={handleColumnSort}
