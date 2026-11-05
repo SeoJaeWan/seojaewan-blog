@@ -31,7 +31,7 @@ export type ChromeWindowTab = {
   /** 탭에 보일 페이지 제목 */
   title: string;
   /** 지금 고른 탭인지. 모바일은 고른 탭의 제목을 창 제목으로 쓴다 */
-  active?: boolean;
+  isActive?: boolean;
 };
 
 // 창 층이 넘기는 창 동작 속성이다. WindowFrame에 그대로 넘긴다.
@@ -132,7 +132,7 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
     ...frameProps
   } = props;
   const isDesktop = device === 'desktop';
-  const activeIndex = tabs.findIndex((tab) => tab.active === true);
+  const activeIndex = tabs.findIndex((tab) => tab.isActive === true);
   const {
     tabListRef,
     startTabDrag,
@@ -278,9 +278,9 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
                     <BrowserTab
                       key={tab.id ?? `${String(index)}-${tab.title}`}
                       value={index}
-                      isActive={tab.active}
+                      isActive={tab.isActive}
                       // 선택된 탭 바로 왼쪽 탭은 구분선을 그리지 않는다.
-                      hasSeparator={tabs[index + 1]?.active !== true}
+                      hasSeparator={tabs[index + 1]?.isActive !== true}
                       favicon={tabFavicon}
                       title={tab.title}
                       onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {

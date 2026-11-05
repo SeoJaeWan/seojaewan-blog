@@ -329,14 +329,14 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
         effectStyles: [
           {
             name: 'Material/Blur',
-            effects: [{ type: 'LAYER_BLUR', visible: true, radius: 4, boundVariables: {} }],
+            effects: [{ type: 'LAYER_BLUR', isVisible: true, radius: 4, boundVariables: {} }],
           },
           {
             name: 'Inner',
             effects: [
               {
                 type: 'INNER_SHADOW',
-                visible: true,
+                isVisible: true,
                 color: { r: 0, g: 0, b: 0, a: 1 },
                 offsetX: 0,
                 offsetY: 1,
@@ -522,7 +522,7 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
           name: 'Video',
           paints: [
             ...fallbackPaintStyle.paints,
-            { type: 'UNSUPPORTED', description: 'VIDEO', visible: true },
+            { type: 'UNSUPPORTED', description: 'VIDEO', isVisible: true },
           ],
         },
       ],
@@ -542,7 +542,7 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
             name: 'Hidden',
             paints: [
               solid,
-              { type: 'UNSUPPORTED', description: 'GRADIENT_LINEAR', visible: false },
+              { type: 'UNSUPPORTED', description: 'GRADIENT_LINEAR', isVisible: false },
             ],
           },
         ],

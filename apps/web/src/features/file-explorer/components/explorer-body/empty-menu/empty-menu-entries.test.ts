@@ -42,7 +42,7 @@ describe('파일 탐색기:우클릭 메뉴', () => {
   it('붙여넣을 수 없으면 붙여넣기를 고를 수 없다', () => {
     const entries = getEmptyMenuEntries({ ...emptyOptions, canPaste: false });
     expect(entries.find((entry) => 'label' in entry && entry.label === '붙여넣기')).toMatchObject({
-      disabled: true,
+      isDisabled: true,
     });
   });
 
@@ -87,6 +87,6 @@ describe('파일 탐색기:우클릭 메뉴', () => {
     });
     expect(
       entries.find((entry) => 'label' in entry && entry.label === '휴지통 비우기'),
-    ).toMatchObject({ disabled: true });
+    ).toMatchObject({ isDisabled: true });
   });
 });

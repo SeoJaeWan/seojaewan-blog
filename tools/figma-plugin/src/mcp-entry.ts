@@ -34,7 +34,7 @@ export type McpExportOptions = {
   /** 내보낼 애니메이션 견본 이름(`motion-progress-ring`) */
   motions?: string[];
   /** true면 검사만 하고 파일 내용은 돌려주지 않는다 */
-  checkOnly?: boolean;
+  shouldCheckOnly?: boolean;
 };
 
 export type McpExportResult = {
@@ -111,7 +111,7 @@ export async function runMcpExport(options: McpExportOptions): Promise<McpExport
   if (options.components.length > 0) {
     files.push(textFile(SETTINGS_PATH, settingsText({ fileKey: FILE_KEY, scale: SCALE })));
   }
-  if (result.violations.length === 0 && options.checkOnly !== true) {
+  if (result.violations.length === 0 && options.shouldCheckOnly !== true) {
     result.files = files;
   }
   return result;

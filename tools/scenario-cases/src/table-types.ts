@@ -19,7 +19,7 @@ export type DocRef = {
   doc: string;
   section: string;
   /** 그 문서와 섹션이 .codocs에 있는지 */
-  found: boolean;
+  isFound: boolean;
 };
 
 /** 문서 섹션 하나와 그 섹션을 구현한 코드. */
@@ -33,8 +33,8 @@ export type DocSection = {
   code: CodeRef[];
 };
 
-/** 줄의 조건 칸 하나. 기준과 다르면 `changed`다. */
-export type Cell = { key: string; value: string; changed: boolean };
+/** 줄의 조건 칸 하나. 기준과 다르면 `isChanged`다. */
+export type Cell = { key: string; value: string; isChanged: boolean };
 
 /** 결과 상태 */
 export type ResultStatus = 'passed' | 'failed' | 'timedOut' | 'skipped' | 'interrupted' | 'flaky';

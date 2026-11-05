@@ -9,14 +9,14 @@ import { packageRoot } from './package-paths.ts';
 const repositoryRoot = path.resolve(packageRoot, '..', '..');
 const componentFile = path.join(packageRoot, 'src', 'components', 'button', 'button.tsx');
 const RESTRICTED_SYNTAX_RULE = 'no-restricted-syntax';
-const PROPS_BOOLEAN_MESSAGE = 'Props 타입에 선언한 boolean 속성은';
+const TYPE_BOOLEAN_MESSAGE = '타입에 선언한 boolean 속성은';
 
 /**
- * 타입 선언을 검사해 Props boolean 이름 오류를 모은다.
+ * 타입 선언을 검사해 타입 boolean 이름 오류를 모은다.
  * @param declarations 검사할 타입 선언 코드
- * @returns Props boolean 이름 오류 메시지
+ * @returns 타입 boolean 이름 오류 메시지
  */
-async function lintPropsBooleanErrors(declarations: string): Promise<string[]> {
+async function lintTypeBooleanErrors(declarations: string): Promise<string[]> {
   const eslint = new ESLint({ cwd: repositoryRoot });
   const source = [
     "import type { ComponentProps } from 'react';",
@@ -36,22 +36,22 @@ async function lintPropsBooleanErrors(declarations: string): Promise<string[]> {
     .filter(
       (message) =>
         message.ruleId === RESTRICTED_SYNTAX_RULE &&
-        message.message.startsWith(PROPS_BOOLEAN_MESSAGE),
+        message.message.startsWith(TYPE_BOOLEAN_MESSAGE),
     )
     .map((message) => `${message.line}`);
 }
 
 // @codocs [[코드 작성 규칙:식별자 이름]]
-describe('Props 타입의 boolean 속성 이름 lint', () => {
+describe('타입의 boolean 속성 이름 lint', () => {
   it('접두어가 없는 boolean 속성을 막는다', async () => {
     await expect(
-      lintPropsBooleanErrors(['export type FooProps = {', '  open?: boolean;', '};'].join('\n')),
+      lintTypeBooleanErrors(['export type FooProps = {', '  open?: boolean;', '};'].join('\n')),
     ).resolves.toEqual(['4']);
   }, 60_000);
 
   it('is·has·can·should로 시작하는 boolean 속성은 통과한다', async () => {
     await expect(
-      lintPropsBooleanErrors(
+      lintTypeBooleanErrors(
         [
           'export type FooProps = {',
           '  isOpen?: boolean;',
@@ -66,13 +66,13 @@ describe('Props 타입의 boolean 속성 이름 lint', () => {
 
   it('접두어 뒤가 소문자로 이어지는 이름(island)은 접두어로 보지 않는다', async () => {
     await expect(
-      lintPropsBooleanErrors(['export type FooProps = {', '  island: boolean;', '};'].join('\n')),
+      lintTypeBooleanErrors(['export type FooProps = {', '  island: boolean;', '};'].join('\n')),
     ).resolves.toEqual(['4']);
   }, 60_000);
 
   it('boolean | undefined도 boolean으로 본다', async () => {
     await expect(
-      lintPropsBooleanErrors(
+      lintTypeBooleanErrors(
         [
           'export type FooProps = {',
           '  active: boolean | undefined;',
@@ -85,7 +85,7 @@ describe('Props 타입의 boolean 속성 이름 lint', () => {
 
   it('교차 타입 안에 직접 선언한 속성도 막고, 이어받은 HTML 속성은 막지 않는다', async () => {
     await expect(
-      lintPropsBooleanErrors(
+      lintTypeBooleanErrors(
         [
           "export type FooProps = ComponentProps<'button'> & {",
           '  disabled: boolean;',
@@ -100,17 +100,23 @@ describe('Props 타입의 boolean 속성 이름 lint', () => {
 
   it('boolean이 아닌 속성은 이름을 따지지 않는다', async () => {
     await expect(
-      lintPropsBooleanErrors(
+      lintTypeBooleanErrors(
         ['export type FooProps = {', '  open?: string;', '  selected: number;', '};'].join('\n'),
       ),
     ).resolves.toEqual([]);
   }, 60_000);
 
-  it('이름이 Props로 끝나지 않는 데이터 타입은 검사하지 않는다', async () => {
+  it('이름이 Props로 끝나지 않는 데이터 타입의 boolean 속성도 막는다', async () => {
     await expect(
-      lintPropsBooleanErrors(
-        ['export type Item = {', '  selected: boolean;', '  ok: boolean;', '};'].join('\n'),
+      lintTypeBooleanErrors(
+        ['export type Item = {', '  selected: boolean;', '  isOk: boolean;', '};'].join('\n'),
       ),
-    ).resolves.toEqual([]);
+    ).resolves.toEqual(['4']);
+  }, 60_000);
+
+  it('객체 값의 키는 바깥 API 이름이라 검사하지 않는다', async () => {
+    await expect(lintTypeBooleanErrors('export const paint = { visible: true };')).resolves.toEqual(
+      [],
+    );
   }, 60_000);
 });

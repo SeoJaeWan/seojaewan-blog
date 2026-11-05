@@ -179,7 +179,7 @@ export function WindowView(props: WindowViewProps): JSX.Element {
   );
 
   const presence = usePresence(ref, !isClosing && !isMinimized, {
-    keepMounted: true,
+    shouldKeepMounted: true,
     onExitComplete: isClosing
       ? () => {
           onExitComplete(id);

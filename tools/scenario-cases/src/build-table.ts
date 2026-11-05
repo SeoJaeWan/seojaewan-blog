@@ -96,7 +96,7 @@ export function grepToken(behaviorId: string, number: number): string {
 function resolveDoc(link: string, docs: TableInputs['docs']): DocRef {
   const { doc, section } = splitDocLink(link);
   const isFound = section !== '' && docs.get(doc)?.sections.has(section) === true;
-  return { link, doc, section, found: isFound };
+  return { link, doc, section, isFound };
 }
 
 /**
@@ -177,7 +177,7 @@ export function resolveValues(
 function cellsOf(behavior: BehaviorSource, values: Record<string, string>): Cell[] {
   return Object.entries(behavior.conditions).map(([key, condition]) => {
     const value = values[key] ?? condition.base;
-    return { key, value, changed: value !== condition.base };
+    return { key, value, isChanged: value !== condition.base };
   });
 }
 
@@ -306,7 +306,7 @@ export function buildBehaviorTable(behavior: BehaviorSource, inputs: TableInputs
       });
       const docs = source.docs.map((link) => resolveDoc(link, inputs.docs));
       for (const doc of docs) {
-        if (!doc.found) {
+        if (!doc.isFound) {
           problems.push(`${where}: 문서에 없는 링크 ${doc.link}`);
         }
       }
@@ -364,7 +364,7 @@ export function buildBehaviorTable(behavior: BehaviorSource, inputs: TableInputs
         counts.reason += 1;
         const docs = reason.docs.map((link) => resolveDoc(link, inputs.docs));
         for (const doc of docs) {
-          if (!doc.found) {
+          if (!doc.isFound) {
             problems.push(`${condition.label} '${value}'의 이유: 문서에 없는 링크 ${doc.link}`);
           }
         }

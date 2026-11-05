@@ -729,7 +729,7 @@ export const DragRejected: Story = {
     await step('자동 정렬을 끈 채 옮길 수 없는 곳에 놓으면 아이콘이 제자리다', async () => {
       useWorkspaceStore.getState().setDesktopAutoArrange(false);
       await waitFor(async () => {
-        await expect(useWorkspaceStore.getState().desktop.autoArrange).toBe(false);
+        await expect(useWorkspaceStore.getState().desktop.isAutoArrange).toBe(false);
       });
       const before = { left: blog.offsetLeft, top: blog.offsetTop };
       await dragStoryPointer(blog, [centerOf(blog), centerOf(icon('새 폴더'))]);
@@ -760,7 +760,7 @@ export const DragToEmptyCell: Story = {
     await step('꺼져 있으면 놓은 칸으로 옮긴다', async () => {
       useWorkspaceStore.getState().setDesktopAutoArrange(false);
       await waitFor(async () => {
-        await expect(useWorkspaceStore.getState().desktop.autoArrange).toBe(false);
+        await expect(useWorkspaceStore.getState().desktop.isAutoArrange).toBe(false);
       });
       await dragGithubRight();
       await expect(useWorkspaceStore.getState().desktop.positions['link:github']).toEqual({
@@ -794,7 +794,7 @@ export const DesktopMenu: Story = {
       await expect(useWorkspaceStore.getState().desktop.iconSize).toBe('large');
 
       await chooseSubmenuItem(user, '보기', 'menuitemcheckbox', '아이콘 자동 정렬');
-      await expect(useWorkspaceStore.getState().desktop.autoArrange).toBe(false);
+      await expect(useWorkspaceStore.getState().desktop.isAutoArrange).toBe(false);
       // 끄는 순간의 자리를 저장해 아이콘이 움직이지 않는다.
       await expect(useWorkspaceStore.getState().desktop.positions[BLOG_FOLDER_ID]).toEqual({
         column: 0,
@@ -961,16 +961,16 @@ export const Mobile: Story = {
     });
 
     await step('늘 자동 정렬이라 자동 정렬 항목을 고를 수 없고, 눌러도 바뀌지 않는다', async () => {
-      const autoArrange = await findSubmenuItem(
+      const isAutoArrange = await findSubmenuItem(
         user,
         '보기',
         'menuitemcheckbox',
         '아이콘 자동 정렬',
       );
-      await expect(autoArrange).toHaveAttribute('aria-disabled', 'true');
-      await user.click(autoArrange);
-      await expect(useWorkspaceStore.getState().desktop.autoArrange).toBe(true);
-      await fireEvent.keyDown(autoArrange, { key: 'Escape' });
+      await expect(isAutoArrange).toHaveAttribute('aria-disabled', 'true');
+      await user.click(isAutoArrange);
+      await expect(useWorkspaceStore.getState().desktop.isAutoArrange).toBe(true);
+      await fireEvent.keyDown(isAutoArrange, { key: 'Escape' });
       await waitForMenuClosed();
     });
 

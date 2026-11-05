@@ -60,9 +60,9 @@ describe('레이어 트리', () => {
           path: 'a',
           type: 'FRAME',
           strokes: [
-            { type: 'SOLID', visible: true, blendMode: 'NORMAL', variable: 'card-stroke/x' },
+            { type: 'SOLID', isVisible: true, blendMode: 'NORMAL', variable: 'card-stroke/x' },
           ],
-          strokesIncludedInLayout: true,
+          isStrokeIncludedInLayout: true,
         }),
         node({
           path: 'b',

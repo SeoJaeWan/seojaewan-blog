@@ -92,13 +92,13 @@ export const flyoutEffectStyle: EffectStyleInput = {
   effects: [
     {
       type: 'BACKGROUND_BLUR',
-      visible: true,
+      isVisible: true,
       radius: 60,
       boundVariables: { radius: aliasTo('blur/acrylic') },
     },
     {
       type: 'DROP_SHADOW',
-      visible: true,
+      isVisible: true,
       color: { r: 0, g: 0, b: 0, a: 0.14000000059604645 },
       offsetX: 0,
       offsetY: 8,
@@ -114,7 +114,7 @@ export const acrylicPaintStyle: PaintStyleInput = {
   paints: [
     {
       type: 'SOLID',
-      visible: true,
+      isVisible: true,
       opacity: 0.8500000238418579,
       blendMode: 'NORMAL',
       color: { r: 0.976, g: 0.976, b: 0.976 },
@@ -122,7 +122,7 @@ export const acrylicPaintStyle: PaintStyleInput = {
     },
     {
       type: 'IMAGE',
-      visible: true,
+      isVisible: true,
       opacity: 0.019999999552965164,
       blendMode: 'NORMAL',
       imageHash: 'a563f96d0f0af894df83be986ec4e7a84096fd54',
@@ -137,7 +137,7 @@ export const fallbackPaintStyle: PaintStyleInput = {
   paints: [
     {
       type: 'SOLID',
-      visible: true,
+      isVisible: true,
       opacity: 1,
       blendMode: 'NORMAL',
       color: { r: 0.976, g: 0.976, b: 0.976 },
@@ -151,7 +151,7 @@ export const controlBorderPaintStyle: PaintStyleInput = {
   paints: [
     {
       type: 'GRADIENT_LINEAR',
-      visible: true,
+      isVisible: true,
       opacity: 1,
       blendMode: 'NORMAL',
       gradientStops: [
@@ -179,7 +179,7 @@ export const wallpaperPaintStyle: PaintStyleInput = {
   paints: [
     {
       type: 'IMAGE',
-      visible: true,
+      isVisible: true,
       opacity: 1,
       blendMode: 'NORMAL',
       imageHash: '32a4f2aead9726b13a6b06d1170070a036adac8e',

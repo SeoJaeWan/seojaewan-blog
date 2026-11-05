@@ -45,7 +45,7 @@ export function PreviewListStory(props: PreviewListStoryProps): JSX.Element {
             >
               <ExplorerWindow
                 device="desktop"
-                tabs={[{ title: item.tabTitle, icon: parts.tabIcon, selected: true }]}
+                tabs={[{ title: item.tabTitle, icon: parts.tabIcon, isSelected: true }]}
               >
                 <ExplorerContent
                   device="desktop"

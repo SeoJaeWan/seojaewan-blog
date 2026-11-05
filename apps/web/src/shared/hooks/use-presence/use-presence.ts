@@ -5,7 +5,7 @@ import { type RefObject, useEffectEvent, useLayoutEffect, useState } from 'react
  * - `entering`: 나타나는 중. 들어가는 모션 클래스(`motion-*-enter`, `motion-window-open` 등)를 붙인다.
  * - `entered`: 들어가는 애니메이션이 끝났다(동작 줄이기·jsdom에서는 바로). 정지 모습으로 바꿀 때 쓴다.
  * - `exiting`: 사라지는 중. 나가는 모션 클래스를 붙이고, 애니메이션이 끝날 때까지 화면에 남는다.
- * - `exited`: 사라졌다. `keepMounted`가 아니면 빠지고, `keepMounted`면 남은 채 `isHidden`이 된다.
+ * - `exited`: 사라졌다. `shouldKeepMounted`가 아니면 빠지고, `shouldKeepMounted`면 남은 채 `isHidden`이 된다.
  */
 export type PresenceStatus = 'entering' | 'entered' | 'exiting' | 'exited';
 
@@ -15,12 +15,12 @@ export type PresenceOptions = {
    * 사라진 뒤에도 요소를 빼지 않고 `isHidden`으로 알린다. 쓰는 곳이 `hidden`·`inert`로 숨긴다.
    * 최소화한 창처럼 안의 상태와 스크롤을 지켜야 할 때 쓴다.
    */
-  keepMounted?: boolean;
+  shouldKeepMounted?: boolean;
   /**
    * 요소 자신뿐 아니라 안쪽 요소의 애니메이션도 기다린다.
    * 모션 클래스가 안쪽을 움직일 때만 켠다(글자 목록 `motion-start-jump-list-*`의 `[data-jump-list]`).
    */
-  subtree?: boolean;
+  shouldIncludeSubtree?: boolean;
   /** 사라지는 애니메이션이 끝났을 때 부른다. 저장소에서 지운 항목을 화면에서도 놓을 때 쓴다 */
   onExitComplete?: () => void;
 };
@@ -29,7 +29,7 @@ export type PresenceOptions = {
 export type Presence = {
   /** 요소를 그려야 하는지. false면 쓰는 곳이 요소를 빼고 그린다 */
   isMounted: boolean;
-  /** 사라진 뒤 남겨 둔 상태인지(`keepMounted`일 때만 그려진 채 true가 된다) */
+  /** 사라진 뒤 남겨 둔 상태인지(`shouldKeepMounted`일 때만 그려진 채 true가 된다) */
   isHidden: boolean;
   /** 지금 단계. 들어가는·나가는 모션 클래스를 고를 때 쓴다 */
   status: PresenceStatus;
@@ -44,7 +44,7 @@ export type Presence = {
  * - `isOpen`이 true가 되면 `entering`이 되고, 첫 프레임까지만 `data-starting-style`을 단다. 들어가는 애니메이션이 끝나면
  *   `entered`가 된다.
  * - `isOpen`이 false가 되면 바로 `exiting`이 되고 `data-ending-style`을 단다. 커밋한 뒤 `ref` 요소의 애니메이션
- *   (`subtree`면 안쪽까지)이 모두 끝나면 `exited`가 되고 `onExitComplete`를 부른다.
+ *   (`shouldIncludeSubtree`면 안쪽까지)이 모두 끝나면 `exited`가 되고 `onExitComplete`를 부른다.
  * - 무한 반복 애니메이션(ProgressRing)과 CSS transition(`motion-control-state` 같은 hover 전환)은 기다리지 않는다.
  *   끝나지 않거나 단계와 상관없는 움직임이라서다.
  * - 기다릴 애니메이션이 없거나 `getAnimations`가 없으면(동작 줄이기, jsdom) 칠하기 전에 바로 다음 단계로 간다.
@@ -78,8 +78,8 @@ export function usePresence(
   isOpen: boolean,
   options: PresenceOptions = {},
 ): Presence {
-  const shouldKeepMounted = options.keepMounted ?? false;
-  const shouldIncludeSubtree = options.subtree ?? false;
+  const shouldKeepMounted = options.shouldKeepMounted ?? false;
+  const shouldIncludeSubtree = options.shouldIncludeSubtree ?? false;
   const { onExitComplete } = options;
   const [status, setStatus] = useState<PresenceStatus>(isOpen ? 'entering' : 'exited');
   const [isStarting, setIsStarting] = useState(isOpen);

@@ -156,8 +156,8 @@ describe('usePresence', () => {
     expect(result.current.isMounted).toBe(false);
   });
 
-  it('subtree를 켜면 안쪽 요소의 애니메이션까지 묻는다', () => {
-    const options = { subtree: true };
+  it('shouldIncludeSubtree를 켜면 안쪽 요소의 애니메이션까지 묻는다', () => {
+    const options = { shouldIncludeSubtree: true };
     const { rerender } = renderPresence({ isOpen: true, options });
     const getAnimations = stubGetAnimations([]);
 
@@ -184,8 +184,8 @@ describe('usePresence', () => {
     expect(handleExitComplete).not.toHaveBeenCalled();
   });
 
-  it('keepMounted면 사라진 뒤에도 빼지 않고 isHidden으로 알린다', () => {
-    const options = { keepMounted: true };
+  it('shouldKeepMounted면 사라진 뒤에도 빼지 않고 isHidden으로 알린다', () => {
+    const options = { shouldKeepMounted: true };
     const { result, rerender } = renderPresence({ isOpen: true, options });
 
     rerender({ isOpen: false, options });

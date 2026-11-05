@@ -249,7 +249,7 @@ describe('파일 탐색기:구성', () => {
 
   it('탐색 창은 현재 위치를 고른 칸으로 표시한다', () => {
     const rows = getNavigationRows(visit(REACT), workspace);
-    expect(rows.filter((row) => row.selected).map((row) => row.label)).toEqual(['React']);
+    expect(rows.filter((row) => row.isSelected).map((row) => row.label)).toEqual(['React']);
   });
 
   it('하위 폴더가 있는 접힌 폴더를 펼치면 하위 폴더가 보인다', () => {
@@ -319,7 +319,7 @@ describe('파일 탐색기:탐색 창 키보드', () => {
     ...row,
     location: row.key,
     label: row.key,
-    selected: false,
+    isSelected: false,
     icon: 'folder',
   })) as NavigationRow[];
 

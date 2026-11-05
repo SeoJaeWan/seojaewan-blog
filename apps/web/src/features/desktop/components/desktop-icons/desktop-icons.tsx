@@ -21,13 +21,13 @@ export type DesktopIcon = {
   /** 아이콘 종류 */
   kind: DesktopIconKind;
   /** 휴지통에 항목이 있으면 찬 모양으로 그린다. 휴지통에만 쓴다 */
-  full?: boolean;
+  isFull?: boolean;
   /** 선택된 아이콘이면 선택 바탕을 깐다. 끌어 올린 놓을 곳(폴더·휴지통)의 강조도 이 모양이다 */
-  selected?: boolean;
+  isSelected?: boolean;
   /** 이름 바꾸기 중이면 이름 대신 입력창을 그린다(피그마 FileItem `State=Rename`) */
-  renaming?: boolean;
+  isRenaming?: boolean;
   /** 잘라낸 아이콘이면 흐리게 그린다(피그마 FileItem `cut`) */
-  cut?: boolean;
+  isCut?: boolean;
   /** 격자 칸. 모든 아이콘에 있으면 아이콘을 그 칸에 놓는다. 없으면 격자 순서대로 흘려 놓는다 */
   cell?: GridCell;
 };
@@ -116,14 +116,14 @@ export function DesktopIcons(props: DesktopIconsProps): JSX.Element {
               surface="desktop"
               size={iconView}
               name={icon.name}
-              icon={<DesktopIconImage kind={icon.kind} isFull={icon.full} />}
-              isSelected={icon.selected}
-              isRenaming={icon.renaming}
-              isCut={icon.cut}
+              icon={<DesktopIconImage kind={icon.kind} isFull={icon.isFull} />}
+              isSelected={icon.isSelected}
+              isRenaming={icon.isRenaming}
+              isCut={icon.isCut}
               className={
                 origin === null
                   ? undefined
-                  : icon.selected === true
+                  : icon.isSelected === true
                     ? 'absolute z-layer-selected-item'
                     : 'absolute'
               }

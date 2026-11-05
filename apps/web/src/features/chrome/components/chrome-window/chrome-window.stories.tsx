@@ -21,10 +21,10 @@ const PAGE_LAYOUTS = { desktop: 'wide', mobile: 'narrow' } as const;
 
 // 탭 수 변형마다 탭 목록이다. 지금 글 탭이 활성이다.
 const TAB_LISTS = {
-  single: [{ title: POST_WINDOW.tabTitle, active: true }],
+  single: [{ title: POST_WINDOW.tabTitle, isActive: true }],
   multiple: MULTIPLE_TAB_TITLES.map((title) => ({
     title,
-    active: title === POST_WINDOW.tabTitle,
+    isActive: title === POST_WINDOW.tabTitle,
   })),
 } as const;
 

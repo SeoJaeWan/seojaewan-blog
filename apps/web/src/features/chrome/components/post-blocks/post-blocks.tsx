@@ -155,7 +155,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
             <ListBlock
               key={index}
               variant="to-do"
-              isChecked={item.checked}
+              isChecked={item.isChecked}
               label={getPlainText(item.richText)}
               text={renderRichText(item.richText)}
               hasChildren={hasChildren}

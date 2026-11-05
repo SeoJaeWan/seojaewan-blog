@@ -37,7 +37,7 @@ export type CaptureRegion = {
 export type Extents = { left: number; right: number; top: number; bottom: number };
 
 /** box-shadow 층 하나(CSS px) */
-export type ShadowLayer = { x: number; y: number; blur: number; spread: number; inset: boolean };
+export type ShadowLayer = { x: number; y: number; blur: number; spread: number; isInset: boolean };
 
 export const noExtents: Extents = { left: 0, right: 0, top: 0, bottom: 0 };
 
@@ -80,7 +80,7 @@ export function parseBoxShadow(value: string): ShadowLayer[] {
         Number.parseFloat(match[0]),
       );
       const [x = 0, y = 0, blur = 0, spread = 0] = lengths;
-      return { x, y, blur, spread, inset: /\binset\b/u.test(withoutColor) };
+      return { x, y, blur, spread, isInset: /\binset\b/u.test(withoutColor) };
     },
   );
 }
@@ -92,7 +92,7 @@ export function parseBoxShadow(value: string): ShadowLayer[] {
  */
 export function shadowExtents(layers: readonly ShadowLayer[]): Extents {
   const extents = { ...noExtents };
-  for (const layer of layers.filter((item) => !item.inset)) {
+  for (const layer of layers.filter((item) => !item.isInset)) {
     const reach = layer.blur + layer.spread;
     extents.left = Math.max(extents.left, reach - layer.x);
     extents.right = Math.max(extents.right, reach + layer.x);
@@ -363,8 +363,8 @@ export async function readOverflowExtents(target: Locator): Promise<Extents> {
             const style = getComputedStyle(ancestor);
             clips.push({
               ...edges(ancestor.getBoundingClientRect()),
-              x: style.overflowX !== 'visible',
-              y: style.overflowY !== 'visible',
+              isClippedX: style.overflowX !== 'visible',
+              isClippedY: style.overflowY !== 'visible',
             });
           }
         }
@@ -380,7 +380,7 @@ export async function readOverflowExtents(target: Locator): Promise<Extents> {
 export type Edges = { left: number; right: number; top: number; bottom: number };
 
 /** 안쪽 그림을 잘라 내는 `<svg>` 상자. `x`·`y`는 그 방향의 `overflow`가 `visible`이 아니라 잘라 낸다는 뜻이다 */
-export type ClipBox = Edges & { x: boolean; y: boolean };
+export type ClipBox = Edges & { isClippedX: boolean; isClippedY: boolean };
 
 /** 대상 자손 하나의 테두리 상자와, 그것을 잘라 내는 바깥 `<svg>` 상자들 */
 export type DescendantBox = { box: Edges; clips: readonly ClipBox[] };
@@ -402,11 +402,11 @@ const NEGLIGIBLE_BOX_SIZE = 1;
 export function paintedBox(descendant: DescendantBox): Edges | undefined {
   let { left, right, top, bottom } = descendant.box;
   for (const clip of descendant.clips) {
-    if (clip.x) {
+    if (clip.isClippedX) {
       left = Math.max(left, clip.left);
       right = Math.min(right, clip.right);
     }
-    if (clip.y) {
+    if (clip.isClippedY) {
       top = Math.max(top, clip.top);
       bottom = Math.min(bottom, clip.bottom);
     }

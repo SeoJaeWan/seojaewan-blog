@@ -7,7 +7,7 @@ export const GITHUB_LINK = {
   url: 'https://github.com/SeoJaeWan',
   icon: 'illustrations/file-link.svg',
   initialParentId: null,
-  pinnedToStart: true,
+  isPinnedToStart: true,
 } as const;
 
 /** 규칙 테스트의 글 색인과 외부 링크 설정 */
@@ -36,7 +36,7 @@ export const testCatalog = {
       url: 'https://example.com/side',
       icon: 'illustrations/file-link.svg',
       initialParentId: 'blog',
-      pinnedToStart: false,
+      isPinnedToStart: false,
     },
   ],
 } as const satisfies WorkspaceCatalog;

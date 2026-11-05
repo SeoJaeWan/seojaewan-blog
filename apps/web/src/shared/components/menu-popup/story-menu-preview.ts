@@ -23,7 +23,7 @@ export function previewMenu(entries: readonly MenuPopupEntry[]): MenuPopupEntry[
      */
     (entry) =>
       entry.kind === 'submenu'
-        ? { kind: 'submenu', label: entry.label, icon: entry.icon, disabled: entry.disabled }
+        ? { kind: 'submenu', label: entry.label, icon: entry.icon, isDisabled: entry.isDisabled }
         : entry,
   );
 }

@@ -6,7 +6,7 @@ export type Bound<T = number> = { value: T; variable?: string };
 
 export type PaintData = {
   type: string;
-  visible: boolean;
+  isVisible: boolean;
   blendMode: string;
   /** 단색 칠에 연결한 색 변수 이름 */
   variable?: string;
@@ -16,11 +16,11 @@ export type PaintData = {
 
 export type EffectData = {
   type: string;
-  visible: boolean;
+  isVisible: boolean;
   blendMode: string;
   /** 배경·레이어 흐림의 종류(NORMAL, PROGRESSIVE) */
   blurType?: string;
-  showShadowBehindNode?: boolean;
+  isShadowShownBehindNode?: boolean;
 };
 
 export type Sides<T> = { top: T; right: T; bottom: T; left: T };
@@ -160,15 +160,15 @@ export type NodeData = {
   strokeStyle?: string;
   strokeWeight?: Sides<Bound>;
   dashPattern: readonly number[];
-  variableWidthStroke: boolean;
-  complexStroke: boolean;
+  hasVariableWidthStroke: boolean;
+  hasComplexStroke: boolean;
   radius?: Corners<Bound>;
   cornerSmoothing: number;
   effects: EffectData[] | null;
   effectStyle?: string;
   layout: LayoutData | null;
   /** 선이 레이아웃에 들어가는지(strokes included in layout) */
-  strokesIncludedInLayout: boolean;
+  isStrokeIncludedInLayout: boolean;
   /** 잠긴 비율(너비 ÷ 높이). 잠기지 않았으면 null */
   aspectRatio: number | null;
   /** 주석 글 */

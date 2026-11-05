@@ -30,7 +30,7 @@ export function getViewMenuEntries(
     (option): MenuPopupEntry => ({
       kind: 'checkbox',
       label: option.label,
-      checked: option.view === view,
+      isChecked: option.view === view,
       onCheckedChange: () => {
         onViewSelect(option.view);
       },

@@ -31,7 +31,7 @@ export type NavigationRow = {
   /** 꺾쇠. 하위 폴더가 없으면 none이다 */
   expand: 'none' | 'collapsed' | 'expanded';
   /** 현재 위치인지 */
-  selected: boolean;
+  isSelected: boolean;
   /** 아이콘 종류 */
   icon: 'desktop' | 'folder' | 'recycle-bin';
 };
@@ -396,7 +396,7 @@ export function getNavigationRows(
       label: DESKTOP_NAME,
       level: 0,
       expand: getExpand(content, workspace, DESKTOP_LOCATION_KEY, tree.length > 0),
-      selected: location === null,
+      isSelected: location === null,
       icon: 'desktop',
     },
   ];
@@ -409,7 +409,7 @@ export function getNavigationRows(
     label: RECYCLE_BIN_NAME,
     level: 0,
     expand: 'none',
-    selected: location === RECYCLE_BIN_ID,
+    isSelected: location === RECYCLE_BIN_ID,
     icon: 'recycle-bin',
   });
   return rows;
@@ -429,7 +429,7 @@ export function getFocusableTreeKey(
   content: ExplorerWindowContent,
   workspace: ExplorerWorkspace,
 ): string | undefined {
-  const selected = rows.find((row) => row.selected);
+  const selected = rows.find((row) => row.isSelected);
   if (selected !== undefined) {
     return selected.key;
   }
@@ -505,7 +505,7 @@ function appendFolderRows(
       label: node.folder.name,
       level: toTreeLevel(depth),
       expand,
-      selected: location === node.folder.id,
+      isSelected: location === node.folder.id,
       icon: 'folder',
     });
     if (expand === 'expanded') {

@@ -63,7 +63,7 @@ export const DESKTOP_LOCATION_KEY = 'desktop';
 /** 바탕화면 설정의 처음 값. 보통 아이콘, 자동 정렬 켜짐, 이름순이다 */
 export const DEFAULT_DESKTOP_SETTINGS = {
   iconSize: 'medium',
-  autoArrange: true,
+  isAutoArrange: true,
   sortBy: 'name',
   positions: {},
 } as const;
@@ -232,7 +232,7 @@ export type ExternalLinkConfig = {
   /** 처음 놓일 위치(상위 폴더 id). 바탕화면이면 null */
   initialParentId: string | null;
   /** 처음부터 Start 고정됨에 있는지 */
-  pinnedToStart: boolean;
+  isPinnedToStart: boolean;
 };
 
 /** 작업 공간을 만드는 원본. Notion 글 색인과 외부 링크 설정이다 */
@@ -248,7 +248,7 @@ export type DesktopSettings = {
   /** 아이콘 크기 */
   iconSize: DesktopIconSize;
   /** 아이콘 자동 정렬 */
-  autoArrange: boolean;
+  isAutoArrange: boolean;
   /** 정렬 기준 */
   sortBy: DesktopSortKey;
   /** 자동 정렬을 끄고 옮긴 아이콘의 격자 칸. 항목 id로 찾는다 */
@@ -433,7 +433,7 @@ export function createInitialWorkspace(catalog: WorkspaceCatalog): WorkspaceStat
       APP_ITEM_IDS.chrome,
       BLOG_FOLDER_ID,
       ...getVisibleLinks(catalog)
-        .filter((link) => link.pinnedToStart)
+        .filter((link) => link.isPinnedToStart)
         .map((link) => getLinkItemId(link.id)),
     ],
     startAllView: 'category',

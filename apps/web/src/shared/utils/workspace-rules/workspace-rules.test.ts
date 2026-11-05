@@ -108,7 +108,7 @@ describe('작업 공간 맞추기:초기 구조', () => {
   it('주소가 없는 외부 링크는 항목으로 만들지 않고 Start 고정에도 넣지 않는다', () => {
     const state = createInitialWorkspace({
       posts: [],
-      links: [{ ...GITHUB_LINK, id: 'resume', url: '', pinnedToStart: true }],
+      links: [{ ...GITHUB_LINK, id: 'resume', url: '', isPinnedToStart: true }],
     });
     expect(state.items['link:resume']).toBeUndefined();
     expect(state.startPins).not.toContain('link:resume');

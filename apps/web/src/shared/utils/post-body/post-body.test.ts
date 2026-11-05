@@ -54,7 +54,7 @@ describe('Notion 블록', () => {
           children: [{ type: 'bulleted_list_item', richText: [text('하위')] }],
         },
         { type: 'numbered_list_item', richText: [text('번호')] },
-        { type: 'to_do', richText: [text('할 일')], checked: true },
+        { type: 'to_do', richText: [text('할 일')], isChecked: true },
         { type: 'quote', richText: [text('인용')] },
         { type: 'callout', richText: [text('콜아웃')] },
         {

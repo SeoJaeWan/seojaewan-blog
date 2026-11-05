@@ -421,7 +421,7 @@ export function ChromeWindowLayer(props: ChromeWindowLayerProps): JSX.Element {
         (tab, index) => ({
           id: tab.id,
           title: getChromeTabTitle(workspace, getChromeTabPage(tab)),
-          active: index === content.activeTabIndex,
+          isActive: index === content.activeTabIndex,
         }),
       )}
       url={getPageAddress(page)}

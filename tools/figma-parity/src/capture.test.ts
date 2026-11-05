@@ -72,16 +72,16 @@ describe('캡처 영역', () => {
     expect(
       parseBoxShadow('rgba(0, 0, 0, 0.14) 0px 8px 16px 0px, rgb(0, 0, 0) 0px 0px 2px 0px inset'),
     ).toEqual([
-      { x: 0, y: 8, blur: 16, spread: 0, inset: false },
-      { x: 0, y: 0, blur: 2, spread: 0, inset: true },
+      { x: 0, y: 8, blur: 16, spread: 0, isInset: false },
+      { x: 0, y: 0, blur: 2, spread: 0, isInset: true },
     ]);
     expect(parseBoxShadow('none')).toEqual([]);
   });
 
   it('바깥 그림자가 나가는 폭을 방향마다 구하고, 여백은 24px 이상이며 그림자보다 좁지 않게 한다', () => {
     const extents = shadowExtents([
-      { x: 0, y: 8, blur: 16, spread: 0, inset: false },
-      { x: 0, y: 0, blur: 40, spread: 0, inset: true },
+      { x: 0, y: 8, blur: 16, spread: 0, isInset: false },
+      { x: 0, y: 0, blur: 40, spread: 0, isInset: true },
     ]);
     expect(extents).toEqual({ left: 16, right: 16, top: 8, bottom: 24 });
     expect(captureMargin(extents)).toBe(24);
@@ -171,19 +171,40 @@ describe('대상 밖으로 나간 자손', () => {
 
   it('<svg> 상자 밖으로 잘린 도형 부분은 뺀다', () => {
     const path = { left: 100, right: 8826, top: 110, bottom: 120 };
-    const svg = { left: 100, right: 140, top: 100, bottom: 140, x: true, y: true };
+    const svg = {
+      left: 100,
+      right: 140,
+      top: 100,
+      bottom: 140,
+      isClippedX: true,
+      isClippedY: true,
+    };
     expect(overflowExtents(root, [{ box: path, clips: [svg] }]).right).toBe(0);
   });
 
   it('overflow가 visible인 방향은 자르지 않는다', () => {
     const path = { left: 100, right: 260, top: 110, bottom: 120 };
-    const svg = { left: 100, right: 140, top: 100, bottom: 140, x: false, y: true };
+    const svg = {
+      left: 100,
+      right: 140,
+      top: 100,
+      bottom: 140,
+      isClippedX: false,
+      isClippedY: true,
+    };
     expect(overflowExtents(root, [{ box: path, clips: [svg] }]).right).toBe(60);
   });
 
   it('모두 잘려 나가면 건너뛴다', () => {
     const path = { left: 300, right: 400, top: 110, bottom: 120 };
-    const svg = { left: 100, right: 140, top: 100, bottom: 140, x: true, y: true };
+    const svg = {
+      left: 100,
+      right: 140,
+      top: 100,
+      bottom: 140,
+      isClippedX: true,
+      isClippedY: true,
+    };
     expect(paintedBox({ box: path, clips: [svg] })).toBeUndefined();
   });
 

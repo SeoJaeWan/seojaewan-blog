@@ -226,7 +226,7 @@ function StartListView(props: StartListViewProps): JSX.Element {
   const startPointerDrag = usePointerDrag();
   // 격자가 열리거나 닫힌 뒤 포커스를 옮길 글자. 연 머리글의 글자 칸, 닫으면 고른(뒤로면 연) 글자의 머리글로 옮긴다.
   const pendingFocusLetterRef = useRef<string | null>(null);
-  const jumpList = usePresence(bodyRef, isGridOpen, { subtree: true });
+  const jumpList = usePresence(bodyRef, isGridOpen, { shouldIncludeSubtree: true });
   const pinnedRovingProps = useRovingFocus(pinnedGridRef, { orientation: 'grid' });
   const pinnedTitleId = useId();
   const allTitleId = useId();

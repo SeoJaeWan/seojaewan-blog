@@ -59,14 +59,14 @@ describe('CI 결과', () => {
       durationMs: 900,
       tracePath: 'C:/r/trace.zip',
       error: null,
-      steps: [{ title: '폴더가 열린다', failed: false }],
+      steps: [{ title: '폴더가 열린다', isFailed: false }],
     });
     expect(cases.get('[desktop-open-item#2]')).toEqual({
       status: 'failed',
       durationMs: 10000,
       tracePath: 'C:/r/first.zip',
       error: '다시 못 찾음\n자세히',
-      steps: [{ title: '휴지통이 열린다', failed: true }],
+      steps: [{ title: '휴지통이 열린다', isFailed: true }],
     });
     expect(cases.size).toBe(2);
   });
@@ -99,8 +99,8 @@ describe('CI 결과', () => {
       checksOf(
         ['메뉴가 뜬다', '옮겨진다', '창이 닫힌다'],
         [
-          { title: '메뉴가 뜬다', failed: false },
-          { title: '옮겨진다', failed: true },
+          { title: '메뉴가 뜬다', isFailed: false },
+          { title: '옮겨진다', isFailed: true },
         ],
       ),
     ).toEqual([

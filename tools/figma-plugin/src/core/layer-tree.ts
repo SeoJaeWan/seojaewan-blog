@@ -120,11 +120,11 @@ function putAppearance(tree: JsonObject, node: NodeData, codeVariables: CodeVari
   if (node.fillStyle !== undefined) {
     tree.fillStyle = node.fillStyle;
   } else if (Array.isArray(node.fills) && node.fills.length > 0) {
-    tree.fills = node.fills.filter((paint) => paint.visible).map(paintJson);
+    tree.fills = node.fills.filter((paint) => paint.isVisible).map(paintJson);
   }
-  if (node.strokes !== null && node.strokes.some((paint) => paint.visible)) {
+  if (node.strokes !== null && node.strokes.some((paint) => paint.isVisible)) {
     if (node.strokeStyle === undefined) {
-      tree.strokes = node.strokes.filter((paint) => paint.visible).map(paintJson);
+      tree.strokes = node.strokes.filter((paint) => paint.isVisible).map(paintJson);
     } else {
       tree.strokeStyle = node.strokeStyle;
     }
@@ -132,7 +132,7 @@ function putAppearance(tree: JsonObject, node: NodeData, codeVariables: CodeVari
       const { top, right, bottom, left } = node.strokeWeight;
       tree.strokeWeight = [top, right, bottom, left].map(boundJson);
     }
-    tree.strokesIncludedInLayout = node.strokesIncludedInLayout;
+    tree.strokesIncludedInLayout = node.isStrokeIncludedInLayout;
   }
   if (node.radius !== undefined) {
     const { topLeft, topRight, bottomRight, bottomLeft } = node.radius;

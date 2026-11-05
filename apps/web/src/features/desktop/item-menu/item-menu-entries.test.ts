@@ -94,7 +94,7 @@ describe('바탕화면 우클릭 메뉴:아이콘', () => {
 
   it('휴지통으로 보낼 수 없으면 삭제를 고를 수 없다', () => {
     const entries = getItemMenuEntries({ ...ITEM_OPTIONS, kind: null, canTrash: false });
-    expect(findEntry(entries, '삭제')).toMatchObject({ disabled: true });
+    expect(findEntry(entries, '삭제')).toMatchObject({ isDisabled: true });
   });
 
   it('휴지통이 비었으면 휴지통 비우기를 고를 수 없다', () => {
@@ -103,6 +103,6 @@ describe('바탕화면 우클릭 메뉴:아이콘', () => {
       kind: 'recycle-bin',
       isRecycleBinEmpty: true,
     });
-    expect(findEntry(entries, '휴지통 비우기')).toMatchObject({ disabled: true });
+    expect(findEntry(entries, '휴지통 비우기')).toMatchObject({ isDisabled: true });
   });
 });

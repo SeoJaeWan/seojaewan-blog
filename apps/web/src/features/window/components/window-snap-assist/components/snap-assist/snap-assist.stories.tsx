@@ -34,7 +34,7 @@ const meta = {
               scale={SNAP_ASSIST_CHROME.thumbnailScale}
             >
               <ChromeWindow
-                tabs={[{ title: POST_WINDOW.tabTitle, active: true }]}
+                tabs={[{ title: POST_WINDOW.tabTitle, isActive: true }]}
                 url={POST_WINDOW.url}
               >
                 <ChromePage

@@ -57,7 +57,7 @@ export type TextStyleInput = {
 
 export type ShadowEffectInput = {
   type: 'DROP_SHADOW' | 'INNER_SHADOW';
-  visible: boolean;
+  isVisible: boolean;
   color: FigmaColor;
   offsetX: number;
   offsetY: number;
@@ -70,13 +70,13 @@ export type ShadowEffectInput = {
 
 export type BlurEffectInput = {
   type: 'BACKGROUND_BLUR' | 'LAYER_BLUR';
-  visible: boolean;
+  isVisible: boolean;
   radius: number;
   boundVariables: Partial<Record<'radius', VariableAlias>>;
 };
 
 export type EffectInput =
-  ShadowEffectInput | BlurEffectInput | (UnsupportedValue & { visible: boolean });
+  ShadowEffectInput | BlurEffectInput | (UnsupportedValue & { isVisible: boolean });
 
 export type EffectStyleInput = {
   name: string;
@@ -87,7 +87,7 @@ export type EffectStyleInput = {
 
 export type SolidPaintInput = {
   type: 'SOLID';
-  visible: boolean;
+  isVisible: boolean;
   opacity: number;
   blendMode: string;
   color: FigmaColor;
@@ -96,7 +96,7 @@ export type SolidPaintInput = {
 
 export type ImagePaintInput = {
   type: 'IMAGE';
-  visible: boolean;
+  isVisible: boolean;
   opacity: number;
   blendMode: string;
   imageHash: string | null;
@@ -112,7 +112,7 @@ export type GradientStopInput = {
 
 export type GradientPaintInput = {
   type: 'GRADIENT_LINEAR' | 'GRADIENT_RADIAL' | 'GRADIENT_ANGULAR' | 'GRADIENT_DIAMOND';
-  visible: boolean;
+  isVisible: boolean;
   opacity: number;
   blendMode: string;
   gradientStops: readonly GradientStopInput[];
@@ -124,7 +124,7 @@ export type PaintInput =
   | SolidPaintInput
   | ImagePaintInput
   | GradientPaintInput
-  | (UnsupportedValue & { visible: boolean });
+  | (UnsupportedValue & { isVisible: boolean });
 
 export type PaintStyleInput = {
   name: string;
@@ -620,7 +620,7 @@ function effectStyleToken(style: EffectStyleInput, context: ConversionContext): 
   const blurs: JsonObject = {};
 
   for (const effect of style.effects) {
-    if (!effect.visible) {
+    if (!effect.isVisible) {
       continue;
     }
     if (effect.type === 'UNSUPPORTED') {
@@ -681,7 +681,7 @@ function shadowValue(
  */
 function paintStyleToken(style: PaintStyleInput, context: ConversionContext): JsonObject | null {
   const label = `칠 스타일 ${style.name}`;
-  const visible = style.paints.filter((paint) => paint.visible);
+  const visible = style.paints.filter((paint) => paint.isVisible);
   // 칠 층은 일반(NORMAL) 섞기만 코드로 옮긴다. 블렌드 층이 있는 칠 스타일은 토큰에 넣지 않고 알린다.
   // 이 칠 스타일을 쓰는 컴포넌트는 구조 검사가 막는다.
   const blended = visible.find(

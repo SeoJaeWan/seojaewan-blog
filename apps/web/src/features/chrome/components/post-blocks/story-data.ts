@@ -65,12 +65,12 @@ export const sampleBlocks: PostBlock[] = [
   },
   { type: 'numbered_list_item', richText: [text('번호 목록 두 번째 항목')] },
   { type: 'heading_3', richText: [text('할 일 목록')] },
-  { type: 'to_do', richText: [text('끝낸 할 일')], checked: true },
+  { type: 'to_do', richText: [text('끝낸 할 일')], isChecked: true },
   {
     type: 'to_do',
     richText: [text('남은 할 일')],
-    checked: false,
-    children: [{ type: 'to_do', richText: [text('한 단계 들여쓴 할 일')], checked: false }],
+    isChecked: false,
+    children: [{ type: 'to_do', richText: [text('한 단계 들여쓴 할 일')], isChecked: false }],
   },
   { type: 'quote', richText: [text('인용 블록의 글이다. 출처나 강조할 문장을 담는다.')] },
   {

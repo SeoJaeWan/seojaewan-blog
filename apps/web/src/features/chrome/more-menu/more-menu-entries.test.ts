@@ -43,7 +43,7 @@ describe('Chrome:구성', () => {
 
   it('글을 보고 있지 않으면 링크 복사를 고를 수 없다', () => {
     const [copyLink] = getChromeMoreMenuEntries({ ...options, canCopyLink: false });
-    expect(copyLink).toMatchObject({ label: '링크 복사', disabled: true });
+    expect(copyLink).toMatchObject({ label: '링크 복사', isDisabled: true });
   });
 });
 

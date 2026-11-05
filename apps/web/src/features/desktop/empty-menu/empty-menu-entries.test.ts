@@ -43,7 +43,7 @@ describe('바탕화면 우클릭 메뉴:빈 곳', () => {
   it('붙여넣을 것이 없으면 붙여넣기를 고를 수 없다', () => {
     const entries = getDesktopMenuEntries({ ...MENU_OPTIONS, canPaste: false });
     expect(entries.find((entry) => 'label' in entry && entry.label === '붙여넣기')).toMatchObject({
-      disabled: true,
+      isDisabled: true,
     });
   });
 });

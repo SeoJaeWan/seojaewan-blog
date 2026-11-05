@@ -213,7 +213,7 @@ async function exportFromUi(message: ExportMessage): Promise<void> {
     throw new Error('GitHub 토큰을 입력해야 한다.');
   }
   const hasTarget =
-    message.tokens ||
+    message.isTokensSelected ||
     message.componentIds.length > 0 ||
     message.patternIds.length > 0 ||
     message.motionIds.length > 0;
@@ -295,13 +295,13 @@ function isUiMessage(message: unknown): message is UiMessage {
  */
 function isExportMessage(message: object): boolean {
   const token: unknown = Reflect.get(message, 'token');
-  const tokens: unknown = Reflect.get(message, 'tokens');
+  const isTokensSelected: unknown = Reflect.get(message, 'isTokensSelected');
   const componentIds: unknown = Reflect.get(message, 'componentIds');
   const patternIds: unknown = Reflect.get(message, 'patternIds');
   const motionIds: unknown = Reflect.get(message, 'motionIds');
   return (
     typeof token === 'string' &&
-    typeof tokens === 'boolean' &&
+    typeof isTokensSelected === 'boolean' &&
     isIdList(componentIds) &&
     isIdList(patternIds) &&
     isIdList(motionIds)

@@ -62,7 +62,7 @@ export function getChromeMoreMenuEntries(options: ChromeMoreMenuOptions): MenuPo
     {
       label: '앞으로',
       icon: MENU_ICONS.arrowRight,
-      disabled: !options.canGoForward,
+      isDisabled: !options.canGoForward,
       onClick: options.onForward,
     },
     { label: '새로고침', icon: MENU_ICONS.refresh, onClick: options.onRefresh },
