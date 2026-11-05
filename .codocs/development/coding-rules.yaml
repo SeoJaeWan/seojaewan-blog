@@ -60,7 +60,6 @@ JSDoc: |
   - 테스트·fixture·스토리 파일은 제외한다. 테스트 이름과 스토리 이름이 설명 역할을 한다.
 
   `eslint-plugin-jsdoc`이 강제한다. `jsdoc/require-param`의 `checkDestructured`로 빠진 `@param props.이름`을 잡고, `jsdoc/no-restricted-syntax`로 타입 속성의 JSDoc과 구조 분해하지 않은 `props` 매개변수를 막는다. 함수 선언은 모두 JSDoc이 있어야 하므로 이 검사가 모든 함수 선언에 걸린다.
-  이 규칙은 경로별로 옮기는 중이다. 걸리는 경로는 `eslint.config.mjs`의 `jsdocFunctionOnlyFiles`이고, 아직 옮기지 않은 경로는 옛 규칙(Props 타입 속성마다 설명, 컴포넌트에는 `@param props` 한 줄)을 따른다.
 
   ```ts
   type WindowFrameProps = {
