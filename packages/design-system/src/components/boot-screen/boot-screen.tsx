@@ -7,7 +7,6 @@ import { ProgressRing } from '../progress-ring/progress-ring';
 export type BootScreenDevice = 'desktop' | 'mobile';
 
 type BootScreenProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 Device. 화면 크기와 로고 크기, 로고와 링 사이 간격을 고른다 */
   device?: BootScreenDevice;
 };
 
@@ -30,10 +29,15 @@ const deviceClassNames = {
  * 재부팅할 때 보이는 검은 화면(피그마 BootScreen)을 그린다. Windows 로고와 진행 링이 가운데에 쌓인다.
  * 접근성 이름은 쓰는 곳이 `aria-label`로 붙인다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.device 피그마 Device. 화면 크기와 로고 크기, 로고와 링 사이 간격을 고른다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function BootScreen(props: BootScreenProps): JSX.Element {
-  const { device = 'desktop', className, ...divProps } = props;
+export function BootScreen({
+  device = 'desktop',
+  className,
+  ...divProps
+}: BootScreenProps): JSX.Element {
   const classNames = deviceClassNames[device];
   return (
     <div

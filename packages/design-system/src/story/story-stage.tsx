@@ -19,11 +19,8 @@ const STAGE_CLASS_NAMES = {
 export type StoryStagePlacement = keyof typeof STAGE_CLASS_NAMES;
 
 type StoryStageProps = {
-  /** 배치 이름 */
   placement: StoryStagePlacement;
-  /** 캡처 대상(피그마 변형 노드 자리)을 감싸 `data-parity-target`을 단다 */
   isTarget?: boolean;
-  /** 무대에 놓을 내용 */
   children: ReactNode;
 };
 
@@ -31,13 +28,19 @@ type StoryStageProps = {
  * 스토리의 무대. 팝업·메뉴가 뜰 공간, 화면 가장자리에 붙는 층처럼 컴포넌트 밖의 배치를 이름으로 고른다.
  * 크기는 주지 않는다(크기는 FigmaFrame이 피그마에서 읽는다).
  * @codocs [[테스트 작성 규칙:스토리 테스트]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.placement 배치 이름
+ * @param props.isTarget 캡처 대상(피그마 변형 노드 자리)을 감싸 `data-parity-target`을 단다
+ * @param props.children 무대에 놓을 내용
  */
-export function StoryStage(props: StoryStageProps): JSX.Element {
-  const { placement, children } = props;
+export function StoryStage({
+  placement,
+  isTarget = false,
+  children,
+}: StoryStageProps): JSX.Element {
   return (
     <div data-story-stage={placement} className={STAGE_CLASS_NAMES[placement]}>
-      {props.isTarget === true ? (
+      {isTarget ? (
         <div data-parity-target className="inline-flex">
           {children}
         </div>

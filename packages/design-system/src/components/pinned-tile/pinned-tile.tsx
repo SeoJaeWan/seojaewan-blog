@@ -4,11 +4,8 @@ import type { ComponentProps, JSX, ReactNode } from 'react';
 import { cn } from '../../cn';
 
 type PinnedTileProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'children'> & {
-  /** 피그마 인스턴스 교체 속성 Item icon. 쓰는 곳마다 다른 앱·파일·폴더 아이콘이라 꼭 넘긴다. 32px 자리에 맞춰 그린다 */
   icon: ReactNode;
-  /** 피그마 TEXT 속성 Label. 아이콘 아래에 보일 이름이다 */
   label?: string;
-  /** 덧붙이거나 덮어쓸 클래스 */
   className?: string;
 };
 
@@ -18,10 +15,17 @@ type PinnedTileProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'ch
  * 테두리는 안쪽 선 고리로 그려 자리를 차지하지 않는다. 글자 폭이 피그마와 같은 87px로 늘 같아, 상태가 바뀌어도
  * 아이콘과 글자가 움직이지 않고 글자가 먼저 잘리지도 않는다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.icon 피그마 인스턴스 교체 속성 Item icon. 쓰는 곳마다 다른 앱·파일·폴더 아이콘이라 꼭 넘긴다. 32px 자리에 맞춰 그린다
+ * @param props.label 피그마 TEXT 속성 Label. 아이콘 아래에 보일 이름이다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function PinnedTile(props: PinnedTileProps): JSX.Element {
-  const { icon, label = '앱 이름', className, ...buttonProps } = props;
+export function PinnedTile({
+  icon,
+  label = '앱 이름',
+  className,
+  ...buttonProps
+}: PinnedTileProps): JSX.Element {
   return (
     <BaseButton
       {...buttonProps}

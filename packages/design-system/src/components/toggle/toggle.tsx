@@ -4,15 +4,10 @@ import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
 type ToggleProps = Omit<ComponentProps<'div'>, 'children' | 'title' | 'defaultValue'> & {
-  /** 피그마 `title` 글자. 꺾쇠 옆에 보이는 토글 제목이다 */
   title?: ReactNode;
-  /** 피그마 `Content` 슬롯. 펼쳤을 때만 그려지는 내용 블록을 넣는다 */
   children?: ReactNode;
-  /** 피그마 State(Expanded/Collapsed). 주면 제어 모드이고, 상태는 쓰는 곳이 정한다 */
   isExpanded?: boolean;
-  /** 비제어 모드의 처음 펼침 상태. `isExpanded`를 주면 무시한다 */
   isDefaultExpanded?: boolean;
-  /** 제목을 눌러 펼침 상태가 바뀔 때 새 상태와 함께 부른다 */
   onExpandedChange?: (isExpanded: boolean) => void;
 };
 
@@ -23,18 +18,23 @@ type ToggleProps = Omit<ComponentProps<'div'>, 'children' | 'title' | 'defaultVa
  * 너비는 쓰는 곳이 정한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
  * 꺾쇠는 쓰는 곳마다 바뀌지 않는 기능 아이콘이라 속성으로 열지 않고 고정한다(@codocs [[디자인 시스템:아이콘 자리]]).
  * @codocs [[Notion 블록:모양]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.title 피그마 `title` 글자. 꺾쇠 옆에 보이는 토글 제목이다
+ * @param props.children 피그마 `Content` 슬롯. 펼쳤을 때만 그려지는 내용 블록을 넣는다
+ * @param props.isExpanded 피그마 State(Expanded/Collapsed). 주면 제어 모드이고, 상태는 쓰는 곳이 정한다
+ * @param props.isDefaultExpanded 비제어 모드의 처음 펼침 상태. `isExpanded`를 주면 무시한다
+ * @param props.onExpandedChange 제목을 눌러 펼침 상태가 바뀔 때 새 상태와 함께 부른다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function Toggle(props: ToggleProps): JSX.Element {
-  const {
-    title = '제목',
-    children,
-    isExpanded: isControlledExpanded,
-    isDefaultExpanded = false,
-    onExpandedChange,
-    className,
-    ...divProps
-  } = props;
+export function Toggle({
+  title = '제목',
+  children,
+  isExpanded: isControlledExpanded,
+  isDefaultExpanded = false,
+  onExpandedChange,
+  className,
+  ...divProps
+}: ToggleProps): JSX.Element {
   const [isUncontrolledExpanded, setIsUncontrolledExpanded] = useState(isDefaultExpanded);
   const contentId = useId();
   const isExpanded = isControlledExpanded ?? isUncontrolledExpanded;

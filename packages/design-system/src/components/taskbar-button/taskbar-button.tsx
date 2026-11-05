@@ -6,13 +6,9 @@ import { cn } from '../../cn';
 export type TaskbarButtonIndicator = 'none' | 'running' | 'active';
 
 type TaskbarButtonProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'children'> & {
-  /** 피그마 Indicator. none은 표시 없음, running은 실행 중인 앱, active는 지금 고른 앱이다 */
   indicator?: TaskbarButtonIndicator;
-  /** 피그마 인스턴스 교체 속성 icon. 앱마다 다르므로 필수다. 24px(누르는 중 20px) 자리에 맞춰 그린다 */
   icon: ReactNode;
-  /** 접근성 이름. 글자가 없는 버튼이라 aria-label로 붙인다 */
   label: string;
-  /** 덧붙이거나 덮어쓸 클래스 */
   className?: string;
 };
 
@@ -34,10 +30,19 @@ const indicatorClassNames = {
  * 크기는 Windows가 정한 40×40으로 고정한다. Rest·Hover·Pressed는 CSS hover·active로 바꾼다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
  * @codocs [[디자인 시스템:아이콘 자리]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.indicator 피그마 Indicator. none은 표시 없음, running은 실행 중인 앱, active는 지금 고른 앱이다
+ * @param props.icon 피그마 인스턴스 교체 속성 icon. 앱마다 다르므로 필수다. 24px(누르는 중 20px) 자리에 맞춰 그린다
+ * @param props.label 접근성 이름. 글자가 없는 버튼이라 aria-label로 붙인다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function TaskbarButton(props: TaskbarButtonProps): JSX.Element {
-  const { indicator = 'none', icon, label, className, ...buttonProps } = props;
+export function TaskbarButton({
+  indicator = 'none',
+  icon,
+  label,
+  className,
+  ...buttonProps
+}: TaskbarButtonProps): JSX.Element {
   return (
     <BaseButton
       {...buttonProps}

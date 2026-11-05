@@ -6,14 +6,8 @@ import { Asset } from '../asset/asset';
 export type TooltipVariant = 'default' | 'balloon';
 
 type TooltipProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /**
-   * 피그마 Variant. default는 글자만 담는 작은 아크릴 말풍선, balloon은 위쪽 꼬리와 경고 아이콘이 있는
-   * 너비 300의 단색 말풍선이다. 재질은 Variant마다 하나로 정해져 있다
-   */
   variant?: TooltipVariant;
-  /** 말풍선 글자(피그마 Text, Variant=Default만) */
   text?: string;
-  /** 경고 아이콘 옆 글자(피그마 Message, Variant=Balloon만) */
   message?: string;
 };
 
@@ -25,10 +19,20 @@ const SURFACE_CLASS_NAME =
  * 짧은 안내 말풍선(피그마 Tooltip)을 그린다. 띄우는 위치는 쓰는 곳(Popover)이 정한다.
  * 스스로 뜨는 오류 안내는 쓰는 곳이 `role="alert"`를 넘겨 스크린 리더가 바로 읽게 한다.
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.variant 피그마 Variant. default는 글자만 담는 작은 아크릴 말풍선, balloon은 위쪽 꼬리와 경고 아이콘이 있는
+ *   너비 300의 단색 말풍선이다. 재질은 Variant마다 하나로 정해져 있다
+ * @param props.text 말풍선 글자(피그마 Text, Variant=Default만)
+ * @param props.message 경고 아이콘 옆 글자(피그마 Message, Variant=Balloon만)
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function Tooltip(props: TooltipProps): JSX.Element {
-  const { variant = 'default', text, message, className, ...divProps } = props;
+export function Tooltip({
+  variant = 'default',
+  text,
+  message,
+  className,
+  ...divProps
+}: TooltipProps): JSX.Element {
   if (variant === 'balloon') {
     // 바깥 틀은 피그마 변형 노드의 자리와 그림자(효과 스타일)를 가진다. 꼬리(피그마 Shapes 자산 tooltip/Tail fill·Tail border)는
     // 노드 테두리 상자 기준 (16, -8)에 겹쳐 두고, 칠 자산이 바탕의 위 테두리를 덮는다. 테두리가 있는 바탕 안에 두면

@@ -5,15 +5,10 @@ import { IconButton } from '../icon-button/icon-button';
 import { WindowTitle } from '../window-title/window-title';
 
 type WindowPreviewProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
-  /** 피그마 WindowTitle의 노출 속성 App icon. 앱마다 다른 아이콘이라 꼭 넘긴다 */
   appIcon: ReactNode;
-  /** 피그마 WindowTitle의 노출 속성 Title. 창 제목 글자다 */
   title?: string;
-  /** 피그마 Thumbnail 슬롯. 실제 창 컴포넌트를 CSS scale로 줄여 넣는다 */
   thumbnail?: ReactNode;
-  /** 닫기 버튼의 이름. 버튼은 마우스 전용이라 보조 기술에는 드러나지 않는다 */
   closeLabel?: string;
-  /** 닫기 버튼을 눌렀을 때 부른다. 카드 자체의 onClick은 부르지 않는다 */
   onClose?: (event: MouseEvent<HTMLButtonElement>) => void;
 };
 
@@ -27,18 +22,23 @@ type WindowPreviewProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[디자인 시스템:아이콘 자리]]
  * @codocs [[접근성:Tab]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.appIcon 피그마 WindowTitle의 노출 속성 App icon. 앱마다 다른 아이콘이라 꼭 넘긴다
+ * @param props.title 피그마 WindowTitle의 노출 속성 Title. 창 제목 글자다
+ * @param props.thumbnail 피그마 Thumbnail 슬롯. 실제 창 컴포넌트를 CSS scale로 줄여 넣는다
+ * @param props.closeLabel 닫기 버튼의 이름. 버튼은 마우스 전용이라 보조 기술에는 드러나지 않는다
+ * @param props.onClose 닫기 버튼을 눌렀을 때 부른다. 카드 자체의 onClick은 부르지 않는다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function WindowPreview(props: WindowPreviewProps): JSX.Element {
-  const {
-    appIcon,
-    title,
-    thumbnail,
-    closeLabel = '창 닫기',
-    onClose,
-    className,
-    ...divProps
-  } = props;
+export function WindowPreview({
+  appIcon,
+  title,
+  thumbnail,
+  closeLabel = '창 닫기',
+  onClose,
+  className,
+  ...divProps
+}: WindowPreviewProps): JSX.Element {
   return (
     <div
       {...divProps}

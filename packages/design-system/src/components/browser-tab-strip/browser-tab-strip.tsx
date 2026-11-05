@@ -4,9 +4,7 @@ import { cn } from '../../cn';
 import { IconButton } from '../icon-button/icon-button';
 
 type BrowserTabStripProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 `Tabs` 슬롯. BrowserTab을 넣는 자리다 */
   children?: ReactNode;
-  /** 새 탭 버튼을 눌렀을 때 */
   onNewTab?: () => void;
 };
 
@@ -14,10 +12,17 @@ type BrowserTabStripProps = Omit<ComponentProps<'div'>, 'children'> & {
  * Chrome 창 맨 위의 탭 줄(피그마 BrowserTabStrip)을 그린다. 탭 슬롯 옆에 새 탭 버튼이 붙는다.
  * 바탕과 창 버튼은 갖지 않고, 조립이 WindowFrame의 Title bar content 슬롯에 넣는다.
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.children 피그마 `Tabs` 슬롯. BrowserTab을 넣는 자리다
+ * @param props.onNewTab 새 탭 버튼을 눌렀을 때
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function BrowserTabStrip(props: BrowserTabStripProps): JSX.Element {
-  const { children, onNewTab: handleNewTab, className, ...divProps } = props;
+export function BrowserTabStrip({
+  children,
+  onNewTab: handleNewTab,
+  className,
+  ...divProps
+}: BrowserTabStripProps): JSX.Element {
   return (
     <div {...divProps} className={cn('flex items-end gap-spacing-xs', className)}>
       <div className="flex min-w-size-none">{children}</div>

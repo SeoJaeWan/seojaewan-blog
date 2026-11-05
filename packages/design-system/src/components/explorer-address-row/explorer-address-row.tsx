@@ -10,40 +10,21 @@ export type ExplorerAddressRowDevice = 'desktop' | 'mobile';
 export type ExplorerAddressRowSearch = 'closed' | 'open';
 
 type ExplorerAddressRowProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 Device. desktop은 뒤로·앞으로·위로·새로고침과 검색 상자, mobile은 뒤로 버튼과 검색 버튼만 보인다 */
   device?: ExplorerAddressRowDevice;
-  /**
-   * 피그마 Search. mobile에서 open이면 줄 전체가 ← 버튼과 나머지 폭을 채우는 검색 상자(검색 줄)로 바뀌고,
-   * 나타날 때 검색 상자에 포커스를 준다. desktop은 늘 검색 상자를 보이므로 이 값을 쓰지 않는다
-   */
   search?: ExplorerAddressRowSearch;
-  /** 피그마 Breadcrumb의 Items 슬롯. 경로 칸(BreadcrumbItem)을 채운다 */
   children?: ReactNode;
-  /** 피그마 Breadcrumb의 `Location icon` 인스턴스 교체 속성. 경로 앞 위치 아이콘이다. 쓰는 곳마다 다르므로 꼭 넘긴다 */
   locationIcon: ReactNode;
-  /** 뒤로 버튼을 눌렀을 때 */
   onBack?: () => void;
-  /** 뒤로 갈 수 있는지. false면 뒤로 버튼을 비활성(IconButton disabled)으로 둔다 */
   canGoBack?: boolean;
-  /** 앞으로 갈 수 있는지. false면 앞으로 버튼을 비활성으로 둔다. desktop만 보인다 */
   canGoForward?: boolean;
-  /** 상위 위치로 갈 수 있는지. false면 위로 버튼을 비활성으로 둔다. desktop만 보인다 */
   canGoUp?: boolean;
-  /** 앞으로 버튼을 눌렀을 때. desktop만 보인다 */
   onForward?: () => void;
-  /** 위로 버튼을 눌렀을 때. desktop만 보인다 */
   onUp?: () => void;
-  /** 새로고침 버튼을 눌렀을 때. desktop만 보인다 */
   onRefresh?: () => void;
-  /** 검색 상자의 안내 글자. desktop과 mobile 검색 줄에 보인다. 탐색기 창은 `<현재 폴더> 검색`처럼 덮어쓴다 */
   searchPlaceholder?: string;
-  /** 검색 상자의 입력값. 주면 쓰는 곳이 값을 정한다(위치를 옮기면 비우는 등). desktop과 mobile 검색 줄에 보인다 */
   searchValue?: string;
-  /** 검색 상자에 입력할 때. desktop과 mobile 검색 줄에 보인다 */
   onSearchChange?: (value: string) => void;
-  /** 검색 버튼을 눌렀을 때. mobile 주소 줄(search closed)만 보인다 */
   onSearch?: () => void;
-  /** 검색 줄의 ← 버튼을 눌렀을 때. mobile 검색 줄(search open)만 보인다 */
   onSearchClose?: () => void;
 };
 
@@ -51,29 +32,46 @@ type ExplorerAddressRowProps = Omit<ComponentProps<'div'>, 'children'> & {
  * 탐색기 본문 맨 위의 이동 버튼·경로·검색 줄(피그마 ExplorerAddressRow)을 그린다.
  * Breadcrumb, IconButton, SearchBox를 조립한다. 너비는 갖지 않고 쓰는 곳이 정한다.
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.device 피그마 Device. desktop은 뒤로·앞으로·위로·새로고침과 검색 상자, mobile은 뒤로 버튼과 검색 버튼만 보인다
+ * @param props.search 피그마 Search. mobile에서 open이면 줄 전체가 ← 버튼과 나머지 폭을 채우는 검색 상자(검색 줄)로 바뀌고,
+ *   나타날 때 검색 상자에 포커스를 준다. desktop은 늘 검색 상자를 보이므로 이 값을 쓰지 않는다
+ * @param props.children 피그마 Breadcrumb의 Items 슬롯. 경로 칸(BreadcrumbItem)을 채운다
+ * @param props.locationIcon 피그마 Breadcrumb의 `Location icon` 인스턴스 교체 속성. 경로 앞 위치 아이콘이다. 쓰는 곳마다 다르므로 꼭 넘긴다
+ * @param props.onBack 뒤로 버튼을 눌렀을 때
+ * @param props.canGoBack 뒤로 갈 수 있는지. false면 뒤로 버튼을 비활성(IconButton disabled)으로 둔다
+ * @param props.canGoForward 앞으로 갈 수 있는지. false면 앞으로 버튼을 비활성으로 둔다. desktop만 보인다
+ * @param props.canGoUp 상위 위치로 갈 수 있는지. false면 위로 버튼을 비활성으로 둔다. desktop만 보인다
+ * @param props.onForward 앞으로 버튼을 눌렀을 때. desktop만 보인다
+ * @param props.onUp 위로 버튼을 눌렀을 때. desktop만 보인다
+ * @param props.onRefresh 새로고침 버튼을 눌렀을 때. desktop만 보인다
+ * @param props.searchPlaceholder 검색 상자의 안내 글자. desktop과 mobile 검색 줄에 보인다. 탐색기 창은 `<현재 폴더> 검색`처럼 덮어쓴다
+ * @param props.searchValue 검색 상자의 입력값. 주면 쓰는 곳이 값을 정한다(위치를 옮기면 비우는 등). desktop과 mobile 검색 줄에 보인다
+ * @param props.onSearchChange 검색 상자에 입력할 때. desktop과 mobile 검색 줄에 보인다
+ * @param props.onSearch 검색 버튼을 눌렀을 때. mobile 주소 줄(search closed)만 보인다
+ * @param props.onSearchClose 검색 줄의 ← 버튼을 눌렀을 때. mobile 검색 줄(search open)만 보인다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function ExplorerAddressRow(props: ExplorerAddressRowProps): JSX.Element {
-  const {
-    device = 'desktop',
-    search = 'closed',
-    children,
-    locationIcon,
-    onBack: handleBack,
-    canGoBack = true,
-    canGoForward = true,
-    canGoUp = true,
-    onForward: handleForward,
-    onUp: handleUp,
-    onRefresh: handleRefresh,
-    searchPlaceholder = '검색',
-    searchValue,
-    onSearchChange: handleSearchChange,
-    onSearch: handleSearch,
-    onSearchClose: handleSearchClose,
-    className,
-    ...divProps
-  } = props;
+export function ExplorerAddressRow({
+  device = 'desktop',
+  search = 'closed',
+  children,
+  locationIcon,
+  onBack: handleBack,
+  canGoBack = true,
+  canGoForward = true,
+  canGoUp = true,
+  onForward: handleForward,
+  onUp: handleUp,
+  onRefresh: handleRefresh,
+  searchPlaceholder = '검색',
+  searchValue,
+  onSearchChange: handleSearchChange,
+  onSearch: handleSearch,
+  onSearchClose: handleSearchClose,
+  className,
+  ...divProps
+}: ExplorerAddressRowProps): JSX.Element {
   const isDesktop = device === 'desktop';
   const rowClassName = cn(
     'flex items-center gap-spacing-xs overflow-clip px-spacing-sm py-spacing-sm-nudge',

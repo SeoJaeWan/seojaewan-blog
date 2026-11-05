@@ -5,17 +5,16 @@
  * 만든다. Tailwind 기본 유틸리티와 tokens.css의 `@utility`가 그대로 읽으므로 음수, `laptop:` 같은 변형, lint가 추가 작업 없이 된다.
  */
 
-/** 경로 규칙의 묶음 하나 */
+/**
+ * 경로 규칙의 묶음 하나. prefix는 피그마 경로 앞부분, namespaces는 클래스가 읽는 테마 이름공간(여럿이면 쓰는 유틸리티가
+ * 여럿이다), unit은 숫자 변수의 CSS 단위(없으면 단위 없는 숫자)다. isCodeOnly는 노드에 연결하지 않는 코드 전용 묶음,
+ * utility는 Tailwind 기본 유틸리티가 테마를 읽지 않아 `@utility`로 만드는 경우다.
+ */
 export type PathGroup = {
-  /** 피그마 경로 앞부분 */
   prefix: string;
-  /** 클래스가 읽는 테마 이름공간. 여럿이면 쓰는 유틸리티가 여럿이다 */
   namespaces: readonly string[];
-  /** 숫자 변수의 CSS 단위. 없으면 단위 없는 숫자다 */
   unit?: string;
-  /** 노드에 연결하지 않는 코드 전용 묶음인지 */
   isCodeOnly?: boolean;
-  /** Tailwind 기본 유틸리티가 테마를 읽지 않아 `@utility`로 만드는 경우 */
   utility?: { prefix: string; property: string };
 };
 

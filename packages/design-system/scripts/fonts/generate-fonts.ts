@@ -8,19 +8,18 @@ import { fontFacesToCss, parseFontFaces } from './font-face-css.ts';
 // --check는 파일을 쓰지 않고, src/의 생성 CSS가 패키지 CSS에서 만든 결과와 다르면 실패한다.
 const CHECK_FLAG = '--check';
 
-/** woff2만 가리키는 CSS를 만드는 웹 폰트 하나 */
+/**
+ * woff2만 가리키는 CSS를 만드는 웹 폰트 하나. output은 src/ 아래 생성 파일 이름, packageName은 원본 CSS가 있는 패키지,
+ * cssDir은 패키지 안 CSS 폴더, woff2Dir은 그 CSS 기준 woff2 폴더, files는 쓰는 굵기의 CSS 파일이다.
+ * family는 `@font-face`의 family 이름이다. 패키지 이름과 피그마 서체 이름이 다를 때 피그마 이름(토큰 값)으로 바꾸며,
+ * 없으면 패키지 이름을 그대로 쓴다.
+ */
 export type FontSource = {
-  /** src/ 아래 생성 파일 이름 */
   output: string;
-  /** 원본 CSS가 있는 패키지 이름 */
   packageName: string;
-  /** 패키지 안 CSS 폴더 */
   cssDir: string;
-  /** 그 CSS 기준 woff2 폴더 */
   woff2Dir: string;
-  /** 쓰는 굵기의 CSS 파일 */
   files: readonly string[];
-  /** `@font-face`의 family 이름. 패키지 이름과 피그마 서체 이름이 다를 때 피그마 이름(토큰 값)으로 바꾼다. 없으면 패키지 이름을 그대로 쓴다 */
   family?: string;
 };
 

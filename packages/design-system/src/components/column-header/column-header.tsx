@@ -5,11 +5,8 @@ import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
 type ColumnHeaderProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'children'> & {
-  /** 피그마 Label 속성. 열 제목 글자다 */
   label?: string;
-  /** 피그마 Sort 변형. 현재 정렬 방향이다 */
   sort?: 'none' | 'ascending' | 'descending';
-  /** 바깥 배치(너비 등)에만 쓰는 클래스 */
   className?: string;
 };
 
@@ -18,10 +15,17 @@ type ColumnHeaderProps = Omit<ComponentProps<typeof BaseButton>, 'className' | '
  * 너비는 부모가 정한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]). Hover는 실제 CSS hover로 그린다.
  * 오른쪽 구분선은 피그마에서 레이아웃에 들어가므로 실제 border로 그린다.
  * @codocs [[컴포넌트 목록:상태]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.label 피그마 Label 속성. 열 제목 글자다
+ * @param props.sort 피그마 Sort 변형. 현재 정렬 방향이다
+ * @param props.className 바깥 배치(너비 등)에만 쓰는 클래스
  */
-export function ColumnHeader(props: ColumnHeaderProps): JSX.Element {
-  const { label = '열 이름', sort = 'none', className, ...buttonProps } = props;
+export function ColumnHeader({
+  label = '열 이름',
+  sort = 'none',
+  className,
+  ...buttonProps
+}: ColumnHeaderProps): JSX.Element {
   return (
     <BaseButton
       {...buttonProps}

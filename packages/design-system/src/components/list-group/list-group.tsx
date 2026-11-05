@@ -4,13 +4,9 @@ import { cn } from '../../cn';
 import { SectionHeader } from '../section-header/section-header';
 
 type ListGroupProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 Has header 속성. 위쪽 머리글을 보일지 정한다 */
   hasHeader?: boolean;
-  /** 머리글(피그마 `header` SectionHeader 인스턴스)의 Label. 쓰는 곳마다 묶음 이름이 다르다 */
   label?: string;
-  /** 머리글을 눌렀을 때. 넘기면 머리글이 버튼이 된다(SectionHeader에 넘긴다) */
   onHeaderClick?: () => void;
-  /** 피그마 `Items` 슬롯. 목록 항목을 세로로 넣는다 */
   children?: ReactNode;
 };
 
@@ -18,17 +14,21 @@ type ListGroupProps = Omit<ComponentProps<'div'>, 'children'> & {
  * 머리글과 항목으로 된 목록 묶음(피그마 ListGroup)을 그린다. Start 목록·검색 결과·주소창 추천에 쓴다.
  * 머리글은 SectionHeader를 쓰고(글자는 `label`), 항목은 `children` 슬롯으로 채운다. 항목 사이 간격은 2다.
  * 너비는 갖지 않는다. 피그마 원본 너비(`size/shell/body-width`)는 미리보기 크기로만 두고, 쓰는 곳이 `className`으로 정한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.hasHeader 피그마 Has header 속성. 위쪽 머리글을 보일지 정한다
+ * @param props.label 머리글(피그마 `header` SectionHeader 인스턴스)의 Label. 쓰는 곳마다 묶음 이름이 다르다
+ * @param props.onHeaderClick 머리글을 눌렀을 때. 넘기면 머리글이 버튼이 된다(SectionHeader에 넘긴다)
+ * @param props.children 피그마 `Items` 슬롯. 목록 항목을 세로로 넣는다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function ListGroup(props: ListGroupProps): JSX.Element {
-  const {
-    hasHeader = true,
-    label,
-    onHeaderClick: handleHeaderClick,
-    children,
-    className,
-    ...divProps
-  } = props;
+export function ListGroup({
+  hasHeader = true,
+  label,
+  onHeaderClick: handleHeaderClick,
+  children,
+  className,
+  ...divProps
+}: ListGroupProps): JSX.Element {
   return (
     <div {...divProps} className={cn('flex flex-col items-start gap-spacing-2xs', className)}>
       {hasHeader && (

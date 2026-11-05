@@ -6,13 +6,9 @@ export type PopoverPlacement =
   'bottom-start' | 'bottom-center' | 'bottom-end' | 'top-center' | 'top-end' | 'right-start';
 
 type PopoverProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 팝업을 여는 요소(피그마 Trigger 슬롯). 버튼, 메뉴 항목, 입력창 등을 넣는다 */
   trigger: ReactNode;
-  /** 트리거 옆에 뜨는 팝업(피그마 Popup 슬롯). 메뉴, 툴팁, 플라이아웃 등을 넣는다 */
   popup?: ReactNode;
-  /** 피그마 Placement. 팝업이 트리거의 어느 쪽에 어느 끝을 맞춰 붙는지다 */
   placement?: PopoverPlacement;
-  /** 피그마 State. true면 팝업을 보이고(Open), false면 트리거만 보인다(Closed) */
   isOpen?: boolean;
 };
 
@@ -32,17 +28,21 @@ const placementClassNames = {
  * 열린 팝업은 떠 있는 요소라 절대 위치로 두어, 트리거를 담은 부모의 크기와 배치를 바꾸지 않는다.
  * 절대 위치 상자는 너비가 트리거 너비로 줄지 않도록 내용 너비(w-max)를 쓴다.
  * @codocs [[디자인 시스템:팝업]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.trigger 팝업을 여는 요소(피그마 Trigger 슬롯). 버튼, 메뉴 항목, 입력창 등을 넣는다
+ * @param props.popup 트리거 옆에 뜨는 팝업(피그마 Popup 슬롯). 메뉴, 툴팁, 플라이아웃 등을 넣는다
+ * @param props.placement 피그마 Placement. 팝업이 트리거의 어느 쪽에 어느 끝을 맞춰 붙는지다
+ * @param props.isOpen 피그마 State. true면 팝업을 보이고(Open), false면 트리거만 보인다(Closed)
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function Popover(props: PopoverProps): JSX.Element {
-  const {
-    trigger,
-    popup,
-    placement = 'bottom-start',
-    isOpen = false,
-    className,
-    ...divProps
-  } = props;
+export function Popover({
+  trigger,
+  popup,
+  placement = 'bottom-start',
+  isOpen = false,
+  className,
+  ...divProps
+}: PopoverProps): JSX.Element {
   return (
     <div {...divProps} className={cn('relative inline-flex', className)}>
       {trigger}

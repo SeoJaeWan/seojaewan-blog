@@ -3,12 +3,12 @@
  * 파일을 읽거나 쓰지 않는 순수 변환이다. 파일 입출력은 generate-fonts.ts가 맡는다.
  */
 
+/** `@font-face` 규칙 하나. file은 woff2 파일 이름이다 */
 export type FontFace = {
   family: string;
   weight: string;
   style: string;
   display: string;
-  /** woff2 파일 이름 */
   file: string;
   unicodeRange: string;
 };

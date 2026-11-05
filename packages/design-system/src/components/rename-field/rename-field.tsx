@@ -4,7 +4,6 @@ import { type ComponentProps, type JSX, type RefCallback, useEffect, useRef } fr
 import { cn } from '../../cn';
 
 type RenameFieldProps = Omit<ComponentProps<typeof Input>, 'defaultValue' | 'type'> & {
-  /** 피그마 TEXT 속성 text. 입력창의 처음 값이다(`value`를 주면 쓰지 않는다) */
   text?: string;
 };
 
@@ -15,10 +14,19 @@ type RenameFieldProps = Omit<ComponentProps<typeof Input>, 'defaultValue' | 'typ
  * 너비는 글자 길이에 맞춰 늘고(`field-sizing: content`), 선은 여백 바깥에서 크기에 더해진다(31×22).
  * Enter 확정·Esc 취소 같은 동작은 쓰는 곳이 `onKeyDown` 등으로 붙인다.
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.text 피그마 TEXT 속성 text. 입력창의 처음 값이다(`value`를 주면 쓰지 않는다)
+ * @param props.value 입력창 값(제어). 주면 text를 처음 값으로 쓰지 않는다
+ * @param props.ref 입력창(input)에 걸 ref
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function RenameField(props: RenameFieldProps): JSX.Element {
-  const { text = '이름', value, ref, className, ...inputProps } = props;
+export function RenameField({
+  text = '이름',
+  value,
+  ref,
+  className,
+  ...inputProps
+}: RenameFieldProps): JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(

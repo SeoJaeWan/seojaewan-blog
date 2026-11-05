@@ -6,13 +6,9 @@ import { Asset } from '../asset/asset';
 export type ScrollbarMaterial = 'acrylic' | 'solid';
 
 type ScrollbarProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 State=Expanded. false(Rest)는 얇은 막대만, true는 바탕과 양 끝 화살표를 함께 그리고 막대가 두꺼워진다 */
   isExpanded?: boolean;
-  /** 피그마 Material(State=Expanded의 바탕). acrylic은 뒤가 흐리게 비치는 재질, solid는 재질 효과를 뺀 단색이다 */
   material?: ScrollbarMaterial;
-  /** 막대(thumb)가 트랙 위쪽에서 떨어진 거리(px). 쓰는 곳(ScrollArea)이 실행 중에 정한다. 없으면 피그마 기본값 10이다 */
   thumbOffset?: number;
-  /** 막대(thumb) 길이(px). 쓰는 곳(ScrollArea)이 실행 중에 정한다. 없으면 피그마 기본값 size/scrollbar/thumb-length(약 119.44)다 */
   thumbLength?: number;
 };
 
@@ -20,17 +16,21 @@ type ScrollbarProps = Omit<ComponentProps<'div'>, 'children'> & {
  * 얇은 세로 스크롤 막대(피그마 Scrollbar)를 그린다. ScrollArea 안에서 넘치는 내용의 위치를 보여 줄 때 쓴다.
  * 막대의 위치와 길이는 쓰는 곳이 실행 중에 정한다(@codocs [[디자인 기반:겹쳐 놓기]]).
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.isExpanded 피그마 State=Expanded. false(Rest)는 얇은 막대만, true는 바탕과 양 끝 화살표를 함께 그리고 막대가 두꺼워진다
+ * @param props.material 피그마 Material(State=Expanded의 바탕). acrylic은 뒤가 흐리게 비치는 재질, solid는 재질 효과를 뺀 단색이다
+ * @param props.thumbOffset 막대(thumb)가 트랙 위쪽에서 떨어진 거리(px). 쓰는 곳(ScrollArea)이 실행 중에 정한다. 없으면 피그마 기본값 10이다
+ * @param props.thumbLength 막대(thumb) 길이(px). 쓰는 곳(ScrollArea)이 실행 중에 정한다. 없으면 피그마 기본값 size/scrollbar/thumb-length(약 119.44)다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function Scrollbar(props: ScrollbarProps): JSX.Element {
-  const {
-    isExpanded = false,
-    material = 'acrylic',
-    thumbOffset,
-    thumbLength,
-    className,
-    ...divProps
-  } = props;
+export function Scrollbar({
+  isExpanded = false,
+  material = 'acrylic',
+  thumbOffset,
+  thumbLength,
+  className,
+  ...divProps
+}: ScrollbarProps): JSX.Element {
   const thumbStyle: CSSProperties = { top: thumbOffset, height: thumbLength };
   return (
     <div

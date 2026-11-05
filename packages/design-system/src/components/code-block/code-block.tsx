@@ -4,20 +4,15 @@ import { Fragment, useRef } from 'react';
 import { cn } from '../../cn';
 import { IconButton } from '../icon-button/icon-button';
 
-/** 강조된 코드의 글자 조각 하나 */
+/** 강조된 코드의 글자 조각 하나. color는 강조기가 준 글자 색(hex)이며 null이면 기본 코드 글자색이다 */
 export type CodeBlockToken = {
-  /** 글자 */
   text: string;
-  /** 강조기가 준 글자 색(hex). null이면 기본 코드 글자색이다 */
   color: string | null;
 };
 
 type CodeBlockProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 코드(피그마 Code 슬롯). 줄마다의 글자 조각이고, 강조하지 않은 코드는 색 없는 조각이다 */
   lines: readonly (readonly CodeBlockToken[])[];
-  /** 머리에 보이는 언어 이름(피그마 Language) */
   language: string;
-  /** 복사 단추 접근성 이름 */
   copyLabel?: string;
 };
 
@@ -26,10 +21,19 @@ type CodeBlockProps = Omit<ComponentProps<'div'>, 'children'> & {
  * (@codocs [[디자인 시스템:컴포넌트 조립 규칙]]). 코드는 강조기가 만든 줄마다의 글자 조각을 받아
  * 조각마다 강조기가 준 색으로 칠한다(@codocs [[기술 스택:글 본문 처리]]). 복사 단추는 그려진 코드의 글자를 복사한다.
  * 복사 단추는 IconButton(Style=Subtle) 인스턴스다.
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.lines 코드(피그마 Code 슬롯). 줄마다의 글자 조각이고, 강조하지 않은 코드는 색 없는 조각이다
+ * @param props.language 머리에 보이는 언어 이름(피그마 Language)
+ * @param props.copyLabel 복사 단추 접근성 이름
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function CodeBlock(props: CodeBlockProps): JSX.Element {
-  const { lines, language, copyLabel = '코드 복사', className, ...divProps } = props;
+export function CodeBlock({
+  lines,
+  language,
+  copyLabel = '코드 복사',
+  className,
+  ...divProps
+}: CodeBlockProps): JSX.Element {
   const codeRef = useRef<HTMLElement>(null);
   /** 그려진 코드의 글자를 클립보드에 쓴다. */
   function handleCopy(): void {

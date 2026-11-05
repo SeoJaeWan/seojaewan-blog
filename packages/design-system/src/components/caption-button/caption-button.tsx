@@ -8,15 +8,10 @@ import { Asset } from '../asset/asset';
 export type CaptionButtonVariant = 'default' | 'close';
 
 type CaptionButtonProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'children'> & {
-  /** 피그마 Variant. default는 최소화·최대화 버튼, close는 닫기 버튼이다 */
   variant?: CaptionButtonVariant;
-  /** 피그마 State=Inactive. 창이 활성 상태가 아니면 아이콘을 흐리게 그린다 */
   isInactive?: boolean;
-  /** 접근성 이름. 글자가 없는 버튼이라 aria-label로 붙인다 */
   label: string;
-  /** 가운데 그릴 16px 아이콘. variant가 default일 때만 쓰고 기본은 최소화 아이콘이다. close는 닫기 아이콘으로 고정이다 */
   icon?: SvgAssetName;
-  /** 덧붙이거나 덮어쓸 클래스 */
   className?: string;
 };
 
@@ -38,17 +33,21 @@ const variantClassNames = {
  * 창 제목 표시줄의 최소화·최대화·닫기 버튼 하나(피그마 CaptionButton)를 그린다. 동작과 접근성은 Base UI Button이 맡는다.
  * 크기는 Windows가 정한 46×32로 고정한다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.variant 피그마 Variant. default는 최소화·최대화 버튼, close는 닫기 버튼이다
+ * @param props.isInactive 피그마 State=Inactive. 창이 활성 상태가 아니면 아이콘을 흐리게 그린다
+ * @param props.label 접근성 이름. 글자가 없는 버튼이라 aria-label로 붙인다
+ * @param props.icon 가운데 그릴 16px 아이콘. variant가 default일 때만 쓰고 기본은 최소화 아이콘이다. close는 닫기 아이콘으로 고정이다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function CaptionButton(props: CaptionButtonProps): JSX.Element {
-  const {
-    variant = 'default',
-    isInactive = false,
-    label,
-    icon = 'icons/ic_fluent_subtract_20_regular.svg',
-    className,
-    ...buttonProps
-  } = props;
+export function CaptionButton({
+  variant = 'default',
+  isInactive = false,
+  label,
+  icon = 'icons/ic_fluent_subtract_20_regular.svg',
+  className,
+  ...buttonProps
+}: CaptionButtonProps): JSX.Element {
   return (
     <BaseButton
       {...buttonProps}

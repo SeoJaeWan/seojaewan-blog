@@ -6,19 +6,12 @@ import { Button } from '../button/button';
 export type MessageBoxButtons = 'one' | 'two';
 
 type MessageBoxProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
-  /** 피그마 Buttons. one은 확인 버튼 하나, two는 확인과 취소 버튼이다 */
   buttons?: MessageBoxButtons;
-  /** 피그마 Title. 대화 상자 제목이자 접근성 이름이다 */
   title: string;
-  /** 피그마 Message. 제목 아래 본문이다 */
   message: string;
-  /** 강조 버튼(피그마 primary button) 글자 */
   primaryLabel?: string;
-  /** 기본 버튼(피그마 secondary button, Buttons=Two만) 글자 */
   secondaryLabel?: string;
-  /** 강조 버튼을 누르면 부른다 */
   onPrimaryClick?: MouseEventHandler<HTMLElement>;
-  /** 기본 버튼을 누르면 부른다 */
   onSecondaryClick?: MouseEventHandler<HTMLElement>;
 };
 
@@ -28,20 +21,27 @@ type MessageBoxProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
  * 버튼 줄의 위 구분선은 레이아웃에 들어가므로 CSS border로 그린다.
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.buttons 피그마 Buttons. one은 확인 버튼 하나, two는 확인과 취소 버튼이다
+ * @param props.title 피그마 Title. 대화 상자 제목이자 접근성 이름이다
+ * @param props.message 피그마 Message. 제목 아래 본문이다
+ * @param props.primaryLabel 강조 버튼(피그마 primary button) 글자
+ * @param props.secondaryLabel 기본 버튼(피그마 secondary button, Buttons=Two만) 글자
+ * @param props.onPrimaryClick 강조 버튼을 누르면 부른다
+ * @param props.onSecondaryClick 기본 버튼을 누르면 부른다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function MessageBox(props: MessageBoxProps): JSX.Element {
-  const {
-    buttons = 'one',
-    title,
-    message,
-    primaryLabel = '확인',
-    secondaryLabel = '취소',
-    onPrimaryClick: handlePrimaryClick,
-    onSecondaryClick: handleSecondaryClick,
-    className,
-    ...divProps
-  } = props;
+export function MessageBox({
+  buttons = 'one',
+  title,
+  message,
+  primaryLabel = '확인',
+  secondaryLabel = '취소',
+  onPrimaryClick: handlePrimaryClick,
+  onSecondaryClick: handleSecondaryClick,
+  className,
+  ...divProps
+}: MessageBoxProps): JSX.Element {
   const id = useId();
   const titleId = `${id}-title`;
   const messageId = `${id}-message`;

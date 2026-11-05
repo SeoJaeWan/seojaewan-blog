@@ -6,9 +6,7 @@ import { SnapZone } from '../snap-zone/snap-zone';
 export type SnapLayoutOptionLayout = 'half' | 'two-thirds' | 'half-quarter' | 'quad';
 
 type SnapLayoutOptionProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 Layout. 칸을 나누는 방식 */
   layout?: SnapLayoutOptionLayout;
-  /** 칸을 골랐을 때. 칸 번호는 왼쪽 열 위에서 아래, 오른쪽 열 위에서 아래 순서의 0부터다(half는 0 왼쪽, 1 오른쪽) */
   onSelectZone?: (index: number) => void;
 };
 
@@ -34,10 +32,17 @@ const ZONE_CLASS_NAME = 'h-auto min-h-size-none w-full flex-flex-fill';
 /**
  * 스냅 레이아웃 선택지 안의 레이아웃 하나(피그마 SnapLayoutOption)를 그린다. SnapLayoutFlyout에 쓴다.
  * 칸은 SnapZone 인스턴스로 조립한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.layout 피그마 Layout. 칸을 나누는 방식
+ * @param props.onSelectZone 칸을 골랐을 때. 칸 번호는 왼쪽 열 위에서 아래, 오른쪽 열 위에서 아래 순서의 0부터다(half는 0 왼쪽, 1 오른쪽)
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function SnapLayoutOption(props: SnapLayoutOptionProps): JSX.Element {
-  const { layout = 'half', onSelectZone: handleSelectZone, className, ...divProps } = props;
+export function SnapLayoutOption({
+  layout = 'half',
+  onSelectZone: handleSelectZone,
+  className,
+  ...divProps
+}: SnapLayoutOptionProps): JSX.Element {
   const isTwoThirds = layout === 'two-thirds';
   const isLeftSplit = layout === 'quad';
   const isRightSplit = layout === 'half-quarter' || layout === 'quad';

@@ -8,12 +8,7 @@ import { useSolidSearchIcon } from './use-solid-search-icon';
 export type SearchBoxVariant = 'default' | 'pill' | 'taskbar' | 'web';
 
 type SearchBoxProps = Omit<ComponentProps<typeof Input>, 'className' | 'type'> & {
-  /**
-   * 피그마 Variant. default는 탐색기 안 검색(아이콘 오른쪽), pill은 Start·검색 패널(아이콘 왼쪽, 완전히 둥근 모서리),
-   * taskbar는 작업 표시줄 검색칸, web은 Chrome 새 탭 검색칸(검색 아이콘 효과 없음)이다
-   */
   variant?: SearchBoxVariant;
-  /** 바깥 상자에 덧붙이거나 덮어쓸 클래스 */
   className?: string;
 };
 
@@ -25,10 +20,18 @@ type SearchBoxProps = Omit<ComponentProps<typeof Input>, 'className' | 'type'> &
  * (border-gradient-*, inner-border-*)로 그린다. 상태 전환은 피그마 프로토타입 전환과 같은 모션 클래스를 쓴다:
  * default·web은 Rest→Hover(motion-control-state), pill·taskbar는 Rest→Focused(motion-search-box-focus-state)다.
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.variant 피그마 Variant. default는 탐색기 안 검색(아이콘 오른쪽), pill은 Start·검색 패널(아이콘 왼쪽, 완전히 둥근 모서리),
+ *   taskbar는 작업 표시줄 검색칸, web은 Chrome 새 탭 검색칸(검색 아이콘 효과 없음)이다
+ * @param props.className 바깥 상자에 덧붙이거나 덮어쓸 클래스
+ * @param props.disabled 입력할 수 없게 한다
  */
-export function SearchBox(props: SearchBoxProps): JSX.Element {
-  const { variant = 'default', className, disabled: isDisabled = false, ...inputProps } = props;
+export function SearchBox({
+  variant = 'default',
+  className,
+  disabled: isDisabled = false,
+  ...inputProps
+}: SearchBoxProps): JSX.Element {
   const isDefault = variant === 'default';
   const isWindowsSearch = variant === 'pill' || variant === 'taskbar';
   return (

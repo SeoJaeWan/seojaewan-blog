@@ -5,21 +5,13 @@ import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
 type BrowserTabProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
-  /** 피그마 State=Active. 지금 고른 탭이면 툴바색 바탕을 깐다 */
   isActive?: boolean;
-  /** 탭 앞 16px 파비콘이다. 탭마다 다르므로 필수다(피그마 `Favicon` 인스턴스 교체 속성) */
   favicon: ReactNode;
-  /** 피그마 TEXT 속성 Title. 탭에 보일 페이지 제목이다 */
   title?: string;
-  /** 피그마 인스턴스 교체 속성 Close icon. 기본은 피그마 기본 인스턴스(닫기)다 */
   closeIcon?: ReactNode;
-  /** 피그마 불리언 속성 Has separator. 선택되지 않은 탭 오른쪽의 구분선을 그린다 */
   hasSeparator?: boolean;
-  /** Base UI 탭 값. 탭 줄(`Tabs.Root`)의 값과 같으면 선택된 탭으로 알린다 */
   value: number;
-  /** 닫기 버튼의 이름. 버튼은 마우스 전용이라 보조 기술에는 드러나지 않는다 */
   closeLabel?: string;
-  /** 닫기 버튼을 눌렀을 때 부른다. 탭 자체의 onClick은 부르지 않는다 */
   onClose?: (event: MouseEvent<HTMLButtonElement>) => void;
 };
 
@@ -33,21 +25,29 @@ type BrowserTabProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
  * @codocs [[접근성:역할]]
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
  * @codocs [[디자인 시스템:아이콘 자리]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.isActive 피그마 State=Active. 지금 고른 탭이면 툴바색 바탕을 깐다
+ * @param props.favicon 탭 앞 16px 파비콘이다. 탭마다 다르므로 필수다(피그마 `Favicon` 인스턴스 교체 속성)
+ * @param props.title 피그마 TEXT 속성 Title. 탭에 보일 페이지 제목이다
+ * @param props.closeIcon 피그마 인스턴스 교체 속성 Close icon. 기본은 피그마 기본 인스턴스(닫기)다
+ * @param props.hasSeparator 피그마 불리언 속성 Has separator. 선택되지 않은 탭 오른쪽의 구분선을 그린다
+ * @param props.closeLabel 닫기 버튼의 이름. 버튼은 마우스 전용이라 보조 기술에는 드러나지 않는다
+ * @param props.onClose 닫기 버튼을 눌렀을 때 부른다. 탭 자체의 onClick은 부르지 않는다
+ * @param props.value Base UI 탭 값. 탭 줄(`Tabs.Root`)의 값과 같으면 선택된 탭으로 알린다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function BrowserTab(props: BrowserTabProps): JSX.Element {
-  const {
-    isActive = false,
-    favicon,
-    title = '페이지 제목',
-    closeIcon = <Asset name="icons/ic_fluent_dismiss_20_regular.svg" />,
-    hasSeparator = true,
-    closeLabel = '탭 닫기',
-    onClose,
-    value,
-    className,
-    ...divProps
-  } = props;
+export function BrowserTab({
+  isActive = false,
+  favicon,
+  title = '페이지 제목',
+  closeIcon = <Asset name="icons/ic_fluent_dismiss_20_regular.svg" />,
+  hasSeparator = true,
+  closeLabel = '탭 닫기',
+  onClose,
+  value,
+  className,
+  ...divProps
+}: BrowserTabProps): JSX.Element {
   return (
     <div
       {...divProps}

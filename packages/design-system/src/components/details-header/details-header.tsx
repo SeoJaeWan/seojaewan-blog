@@ -7,17 +7,11 @@ type DetailsHeaderColumn =
   'name' | 'modified' | 'type' | 'location' | 'originalLocation' | 'deletedDate';
 
 type DetailsHeaderProps = {
-  /** 피그마 View. 휴지통(recycle-bin)이면 날짜·유형·위치 대신 원래 위치·삭제한 날짜 열을 그린다 */
   view?: 'default' | 'recycle-bin';
-  /** 피그마 Has location 속성. 위치 열을 보인다(View=Default에만 있다) */
   hasLocation?: boolean;
-  /** 정렬 기준 열이다. 피그마 기본은 이름 열 */
   sortColumn?: DetailsHeaderColumn;
-  /** 정렬 방향이다. 피그마 기본은 ascending */
   sortDirection?: 'ascending' | 'descending';
-  /** 열 제목을 눌렀을 때 그 열을 알려 준다 */
   onSort?: (column: DetailsHeaderColumn) => void;
-  /** 바깥 배치에만 쓰는 클래스 */
   className?: string;
 };
 
@@ -43,17 +37,22 @@ function sortOf(
  * 열 제목은 ColumnHeader를 조립한다. 휴지통 보기(view='recycle-bin')는 이름·원래 위치·삭제한 날짜 열을 가진다.
  * 열 너비는 FileRow 칸과 맞춘다.
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.view 피그마 View. 휴지통(recycle-bin)이면 날짜·유형·위치 대신 원래 위치·삭제한 날짜 열을 그린다
+ * @param props.hasLocation 피그마 Has location 속성. 위치 열을 보인다(View=Default에만 있다)
+ * @param props.sortColumn 정렬 기준 열이다. 피그마 기본은 이름 열
+ * @param props.sortDirection 정렬 방향이다. 피그마 기본은 ascending
+ * @param props.onSort 열 제목을 눌렀을 때 그 열을 알려 준다
+ * @param props.className 바깥 배치에만 쓰는 클래스
  */
-export function DetailsHeader(props: DetailsHeaderProps): JSX.Element {
-  const {
-    view = 'default',
-    hasLocation = false,
-    sortColumn = 'name',
-    sortDirection = 'ascending',
-    onSort,
-    className,
-  } = props;
+export function DetailsHeader({
+  view = 'default',
+  hasLocation = false,
+  sortColumn = 'name',
+  sortDirection = 'ascending',
+  onSort,
+  className,
+}: DetailsHeaderProps): JSX.Element {
   return (
     <div className={cn('flex items-start', className)}>
       <ColumnHeader

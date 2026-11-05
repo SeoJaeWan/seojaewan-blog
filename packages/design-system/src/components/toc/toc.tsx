@@ -5,13 +5,9 @@ import { Asset } from '../asset/asset';
 import { SectionTitle } from '../section-title/section-title';
 
 type TocProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
-  /** 피그마 State=Expanded 변형. 펼치면 제목과 항목 목록, 접으면 제목과 아래 꺾쇠만 보인다 */
   isExpanded?: boolean;
-  /** 제목 글자다 */
   title?: string;
-  /** 피그마 `Items` 슬롯. 펼친 상태에서 TocItem을 세로로 넣는다 */
   children?: ReactNode;
-  /** 펼친 상태의 제목(SectionTitle)에 넘길 동작·접근성 속성. 제목을 눌러 접는 버튼으로 쓸 때 준다. 생김새는 그대로다 */
   titleProps?: Omit<ComponentProps<'div'>, 'children' | 'className'>;
 };
 
@@ -19,10 +15,21 @@ type TocProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
  * 글 페이지의 목차(피그마 Toc)를 그린다. 넓은 창에서는 펼치고 좁은 창에서는 접어 쓴다.
  * 항목은 `children` 슬롯으로 채우고, 너비는 쓰는 곳이 정한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
  * @codocs [[컴포넌트 목록:상태]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.isExpanded 피그마 State=Expanded 변형. 펼치면 제목과 항목 목록, 접으면 제목과 아래 꺾쇠만 보인다
+ * @param props.title 제목 글자다
+ * @param props.children 피그마 `Items` 슬롯. 펼친 상태에서 TocItem을 세로로 넣는다
+ * @param props.titleProps 펼친 상태의 제목(SectionTitle)에 넘길 동작·접근성 속성. 제목을 눌러 접는 버튼으로 쓸 때 준다. 생김새는 그대로다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function Toc(props: TocProps): JSX.Element {
-  const { isExpanded = true, title = '목차', children, titleProps, className, ...divProps } = props;
+export function Toc({
+  isExpanded = true,
+  title = '목차',
+  children,
+  titleProps,
+  className,
+  ...divProps
+}: TocProps): JSX.Element {
   if (!isExpanded) {
     return (
       <div

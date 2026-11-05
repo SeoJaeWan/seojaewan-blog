@@ -44,11 +44,10 @@ function reactAttributeName(name: string): string | undefined {
   return name.replace(/-([a-z])/gu, (_, letter: string) => letter.toUpperCase());
 }
 
-/** SVG 요소 하나 */
+/** SVG 요소 하나. children은 자식 요소(defs, 그라데이션의 stop)다 */
 export type SvgElementData = {
   tag: string;
   attributes: Record<string, string>;
-  /** 자식 요소(defs, 그라데이션의 stop) */
   children?: SvgElementData[];
 };
 
