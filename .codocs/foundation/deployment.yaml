@@ -4,19 +4,68 @@ _codocs:
   parent:
     - seojaewan 블로그
 개요: |
-  블로그를 어디에 배포하는지에 대한 결정이다.
+  블로그를 어디에 어떻게 배포하고, 어떻게 공개하는지에 대한 결정이다. 서버, 배포 파이프라인(CI·CD), 도메인과 캐시, 감시, 환경 변수, 공개 절차를 다룬다.
+  이 문서는 AI 에이전트가 이 문서만 보고 인프라 작업을 이어갈 수 있게, 무엇을 어디서 하고 무엇은 사람이 직접 하는지도 적는다.
 결정: |
-  Vercel에 배포한다.
-  [[콘텐츠 원천]]에서 정한 ISR과 웹훅 기반 즉시 갱신에는 서버 런타임이 필요하며, Vercel은 이를 별도 서버 운영 없이 제공한다.
-검토한 대안: |
-  - Cloudflare(OpenNext): ISR을 쓰려면 추가 설정이 필요하다.
-  - 직접 운영하는 서버: 운영 부담이 생긴다.
-Vercel 프로젝트 설정: |
-  Vercel 프로젝트는 저장소 주인의 계정으로 직접 연결한다. 연결할 때 다음 값을 쓴다.
+  Vercel이 아니라 집의 리눅스 미니 PC에 직접 배포한다. 미니 PC는 AMD 미니 PC(7845 계열)에 RAM 32GB다.
+  [[콘텐츠 원천]]에서 정한 ISR과 웹훅 기반 즉시 갱신에는 서버 런타임이 필요하고, 블로그는 Next.js standalone 출력을 Docker 컨테이너로 돌려 이를 제공한다.
 
-  - Root Directory: `apps/web`
-  - Framework: Next.js
-  - Node: 24.x
-  - Include files outside the root directory: 켠다. 앱이 워크스페이스의 `packages/design-system`을 쓰기 때문이다.
-  - 설치·빌드 명령: 기본값(`next build`)
-  - Turborepo 원격 캐시는 선택으로 연결한다.
+  배포 흐름과 구성 요소는 아래 섹션에서 정한다. 블로그(`apps/web`)와 알림 프로세스(`apps/notify`, [[알림 프로세스]])가 앱마다 Dockerfile과 Jenkinsfile을 갖는다([[저장소 구성:구성]]).
+검토한 대안: |
+  - Vercel: 서버 운영이 필요 없고 ISR과 미리보기 배포를 기본으로 제공하지만 고르지 않았다. 이유는 둘이다. 이미지를 내려주는 Firebat이 꺼지면 이미지가 깨져 어차피 글을 읽는 데 문제가 되므로, Vercel을 써도 가용성이 크게 나아지지 않는다. 또 배포 파이프라인을 직접 만들어 보며 공부하려는 목적이 있다. Vercel을 쓰지 않으므로 미리보기 배포는 없고, 로컬과 CI로 확인한다.
+  - Cloudflare(OpenNext): ISR을 쓰려면 추가 설정이 필요하다.
+  - 서버에서 이미지를 GHCR에 올렸다 받기: 서버에서 직접 빌드하므로 레지스트리를 두지 않는다.
+  - 공개 전에 Cloudflare Access로 사이트를 막아 두기: 준비 전에는 `seojaewan.com`을 터널에 연결하지 않으면 되어 필요 없다([[배포 환경:공개 절차]]).
+배포(CD): |
+  `main`에 병합하면 GitHub 웹훅이 젠킨스(미니 PC)를 깨우고, 젠킨스가 해당 앱의 Jenkinsfile을 실행한다.
+
+  1. checkout
+  2. `docker build`(블로그는 Next.js standalone). 미니 PC에서 빌드하며 이미지를 레지스트리에 올리지 않는다.
+  3. 새 컨테이너를 띄워 health check
+  4. 통과하면 옛 컨테이너를 새것으로 교체하고, 실패하면 옛 컨테이너를 그대로 둔다.
+  5. 결과를 [[알림 프로세스]]로 보내 카카오톡으로 받는다.
+
+  - 젠킨스 작업은 앱마다 하나씩 둔다(블로그, 알림 프로세스). 바뀐 앱만 배포한다.
+  - 이미지 서버 Firebat은 local-server 저장소의 것이라 이 파이프라인에 들어 있지 않다.
+CI: |
+  CI는 GitHub Actions 그대로다. PR 검사이고 병합 전에 통과해야 하는 조건도 같다([[Git 작업 규칙:CI]]).
+
+  - 저장소를 비공개로 전환한다. 그 뒤에 미니 PC에 GitHub Actions self-hosted runner를 2~3개 단다. 반드시 비공개로 바꾼 뒤에 단다.
+  - 워크플로의 `runs-on`은 `[self-hosted, linux]`로 바꾼다. 워크플로, PR 검사, 병합 조건은 바뀌지 않는다.
+  - 비공개 저장소에서는 시나리오 케이스 보고서를 GitHub Pages로 올리지 못한다(무료 계정). 보고서는 미니 PC로 옮겨 Cloudflare 터널과 Access 뒤에서 연다([[테스트 작성 규칙:E2E]]). 캡처 표 댓글의 그림(`parity-report`, `parity-captures` 브랜치)이 비공개 저장소에서도 보이는지는 전환 직후 PR로 시험한다([[피그마 연동:CI]]).
+도메인과 캐시: |
+  - Cloudflare 터널은 Cloudflare DNS를 쓰는 도메인에서만 쓸 수 있으므로 `seojaewan.com`은 Cloudflare DNS에 둔다.
+  - `seojaewan.com`은 터널을 거쳐 블로그 컨테이너로 간다(프록시 켬). `www`는 `seojaewan.com`으로 영구 이동한다.
+  - Cloudflare는 `/_next/static/*`와 이미지만 캐시하고 HTML은 캐시하지 않는다. 웹훅으로 고친 글이 바로 보여야 하고 ISR이 충분히 빠르기 때문이다.
+  - 서버가 다운되면 사이트도 다운이다. 집 서버라 받아들인다.
+  - 이미지 서버의 도메인과 캐시는 [[Notion 이미지 제공]]에서 정한다.
+감시: |
+  GitHub 호스티드 러너(`ubuntu-latest`)에서 1시간마다 `curl -fsS --max-time 20 https://seojaewan.com/`을 실행한다(`.github/workflows/uptime.yml`). 실패하면 GitHub의 실패 메일과 앱 푸시로 알게 된다. 미니 PC 밖의 호스티드 러너에서 확인한다. 한 달에 약 720분을 써서 비공개 저장소 무료 한도(2,000분) 안이다.
+환경 변수: |
+  환경 변수의 값은 저장소에 두지 않는다. 저장소에는 값이 빈 `apps/web/.env.example`만 둔다. 값은 사용자가 직접 넣고 AI 에이전트에게 주지 않는다.
+
+  | 대상 | 변수 |
+  |---|---|
+  | 블로그 | `CONTENT_SOURCE`(`notion`·`fixture`, 기본 `notion`), `NOTION_TOKEN`, `NOTION_WEBHOOK_SECRET`(없으면 웹훅 라우트가 모두 거절), `ALERT_URL`, `ALERT_SECRET` |
+  | 알림 프로세스 | `KAKAO_REST_API_KEY`, `KAKAO_CLIENT_SECRET`, `ALERT_SECRET`, 토큰 파일 경로 |
+  | 이미지 서버 Firebat | `seojaewan-images` 연동 토큰 |
+
+  - `CONTENT_SOURCE`가 `notion`이면 `NOTION_TOKEN`이 필수다(Zod `refine`). 환경 변수는 검증 모듈 하나에서만 읽는다([[코드 작성 규칙:React와 Next.js]]). 이미지 서버 주소와 Notion 데이터베이스 ID 세 개는 환경 변수가 아니라 코드 상수다.
+  - 미니 PC: systemd `EnvironmentFile` 또는 컨테이너 env 파일에 두고 파일 권한을 600으로 한다. 이것이 운영의 기준이다.
+  - 로컬: `apps/web/.env.local`에 직접 둔다(Vercel이 없으므로 `vercel env pull`은 없다).
+  - 토큰의 종류와 권한은 [[콘텐츠 원천:연동 토큰]]에서 정한다.
+접근 제한: |
+  Cloudflare Access(로그인으로 막는 기능)는 두 곳에만 쓴다. 젠킨스 관리 화면과 시나리오 케이스 보고서다.
+  젠킨스는 GitHub 웹훅을 받는 `/github-webhook/` 경로만 Cloudflare 터널로 외부에 열고, 관리 화면은 Access 뒤에 둔다. 블로그 `seojaewan.com`에는 Access를 쓰지 않는다.
+인프라 설정의 위치: |
+  터널, Access, self-hosted runner, 젠킨스 설치와 같은 인프라 설정은 코드가 아니라 서버와 Cloudflare·GitHub 설정이다. 그 절차와 결과(주소, 서비스 이름, 설정 파일 위치)는 이 문서에 적는다. 값(토큰, 비밀번호)은 적지 않는다. 설정이 끝나면 적을 자리가 이 섹션이다.
+공개 절차: |
+  준비되기 전에는 `seojaewan.com`을 터널에 연결하지 않는다. 연결하지 않으면 접속 자체가 되지 않아 막아 둘 필요가 없다. 준비 기간에는 젠킨스가 배포한 컨테이너를 집 안 주소(`http://<미니 PC>:3000`)로 확인한다.
+
+  공개는 `seojaewan.com`을 처음 터널에 연결하는 일이다.
+  1. 터널에 연결한다.
+  2. 확인한다: 사이트 접속, Notion 웹훅 구독(초안 수정과 `공개` 체크에 반응하는지), 웹훅 실패 때 카카오톡 알림, 카카오톡으로 링크를 공유했을 때의 미리보기([[SEO와 공유 미리보기:공유 미리보기 이미지]]).
+  3. 문제가 있으면 고치거나 터널 연결을 끊는다.
+  4. 확인되면 Google Search Console과 네이버 서치어드바이저에 등록한다([[SEO와 공유 미리보기:검색 엔진 등록]]).
+
+  Notion 웹훅 구독은 사람이 Notion에서 한다.
