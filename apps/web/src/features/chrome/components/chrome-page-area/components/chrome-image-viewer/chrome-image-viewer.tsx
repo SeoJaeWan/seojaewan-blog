@@ -68,7 +68,7 @@ export function ChromeImageViewer(props: ChromeImageViewerProps): JSX.Element {
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
       className={cn(
-        'flex flex-col items-start gap-spacing-lg bg-color-black-80 p-spacing-lg outline-none',
+        'flex min-h-size-none flex-col items-start gap-spacing-lg bg-color-black-80 p-spacing-lg outline-none',
         className,
       )}
     >

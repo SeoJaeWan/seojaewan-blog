@@ -15,6 +15,7 @@ describe('ImageAsset', () => {
       'images/app-file-explorer',
       'images/avatar-profile-placeholder',
       'images/avatar-profile',
+      'images/chart-bar-ranking',
       'images/equation-quadratic-formula',
       'images/file-document',
       'images/file-folder',

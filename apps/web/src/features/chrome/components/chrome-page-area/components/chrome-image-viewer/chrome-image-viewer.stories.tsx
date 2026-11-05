@@ -17,9 +17,10 @@ type FigmaArgs = {
 const IMAGE_CAPTION = 'Bloom 배경화면';
 
 // 동작 스토리가 쓰는 이미지다. 비율이 다른 자산으로 맞춤 규칙을 확인한다.
-// 가로로 긴 것(수식, 약 3.9:1), 영역보다 큰 배경화면(3840×2400), 영역보다 작은 것(앱 아이콘 256×256)이다.
+// 가로로 긴 것(수식, 약 3.9:1), 영역보다 큰 배경화면(3840×2400), 세로로 긴 것(막대 차트 105×2000), 영역보다 작은 것(앱 아이콘 256×256)이다.
 const WIDE_IMAGE: ImageAssetName = 'images/equation-quadratic-formula';
 const LARGE_IMAGE: ImageAssetName = 'images/wallpaper-bloom';
+const TALL_IMAGE: ImageAssetName = 'images/chart-bar-ranking';
 const SMALL_IMAGE: ImageAssetName = 'images/app-chrome';
 
 // @codocs [[피그마 연동:스토리 규칙]]
@@ -77,6 +78,27 @@ export const LargeImageFitsHeight: Story = {
     await expect(image.height).toBeLessThanOrEqual(stage.height);
     await expect(image.height).toBeLessThan(original.height);
     await expect(image.width).toBeLessThanOrEqual(stage.width);
+  },
+};
+
+// @codocs [[Chrome:글 화면]]
+/** 세로로 긴 이미지가 영역 높이를 넘으면 높이에 맞추고 비율을 지키며 원본보다 작아진다 */
+export const TallImageFitsHeight: Story = {
+  render: (args) => (
+    <ChromeImageViewer
+      layout={args.layout}
+      caption={IMAGE_CAPTION}
+      image={<ImageAsset name={TALL_IMAGE} alt={IMAGE_CAPTION} />}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const { image, stage } = await getImageAndStage(canvasElement);
+    const original = getImageAsset(TALL_IMAGE);
+    await expect(image.height).toBeLessThanOrEqual(stage.height);
+    await expect(image.height).toBeLessThan(original.height);
+    // 이미지 요소의 너비는 원본 속성을 따라가고 그림은 object-fit: contain으로 비율을 지켜 그려진다. 그려진 너비를 잰다.
+    const drawnWidth = Math.min(image.width, image.height * (original.width / original.height));
+    await expect(drawnWidth).toBeLessThan(original.width);
   },
 };
 

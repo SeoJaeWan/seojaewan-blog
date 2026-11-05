@@ -23,6 +23,11 @@ export const imageAssets = {
     width: 48,
     height: 48,
   },
+  'images/chart-bar-ranking': {
+    src: new URL('./images/chart-bar-ranking.webp', import.meta.url).href,
+    width: 105,
+    height: 2000,
+  },
   'images/equation-quadratic-formula': {
     src: new URL('./images/equation-quadratic-formula.webp', import.meta.url).href,
     width: 390,
