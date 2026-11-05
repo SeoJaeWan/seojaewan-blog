@@ -18,10 +18,6 @@
       "default": false,
       "type": "BOOLEAN"
     },
-    "Marker": {
-      "default": "1.",
-      "type": "TEXT"
-    },
     "Text": {
       "default": "목록 항목",
       "type": "TEXT"
@@ -62,7 +58,7 @@
                     "name": "marker text",
                     "size": {
                       "h": 24,
-                      "w": 16
+                      "w": 7
                     },
                     "sizing": {
                       "h": "HUG",
@@ -74,7 +70,7 @@
                       "maxLinesVariable": null,
                       "segments": [
                         {
-                          "characters": "1.",
+                          "characters": "•",
                           "fill": "color/black/89",
                           "textStyle": "Body Large"
                         }
