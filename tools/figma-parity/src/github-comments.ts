@@ -5,15 +5,16 @@ import { markerIndex } from './pr-comment.ts';
 // 숨은 표시로 찾은 PR 댓글을 만들거나 고치고, 쓰지 않게 된 댓글은 지운다. 캡처 표 댓글(post-pr-comment.ts)과
 // 모션 검사 댓글(motion-post-comment.ts)이 함께 쓴다. gh CLI가 GH_TOKEN으로 GitHub API를 부른다.
 
-/** 댓글을 남기는 명령의 인자 */
+/**
+ * 댓글을 남기는 명령의 인자.
+ * - repository: `owner/repo`
+ * - server: `https://github.com`
+ * - runId: Actions 실행 ID
+ */
 export type CommentArgs = {
-  /** `owner/repo` */
   repository: string;
-  /** `https://github.com` */
   server: string;
-  /** Actions 실행 ID */
   runId: string;
-  /** PR 번호 */
   pr: string;
 };
 

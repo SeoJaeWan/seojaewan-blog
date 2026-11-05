@@ -23,13 +23,15 @@ export type Rect = { x: number; y: number; width: number; height: number };
 /** CSS px 크기 */
 export type Size = { width: number; height: number };
 
-/** 캡처할 영역 */
+/**
+ * 캡처할 영역.
+ * - canvas: 여백을 더한 전체 영역의 크기(CSS px, 정수)
+ * - clip: 화면 안에서 실제로 찍을 영역(CSS px, 정수)
+ * - offset: 찍은 영역을 전체 영역 안에 놓을 위치
+ */
 export type CaptureRegion = {
-  /** 여백을 더한 전체 영역의 크기(CSS px, 정수) */
   canvas: Size;
-  /** 화면 안에서 실제로 찍을 영역(CSS px, 정수) */
   clip: Rect;
-  /** 찍은 영역을 전체 영역 안에 놓을 위치 */
   offset: { x: number; y: number };
 };
 

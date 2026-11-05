@@ -5,63 +5,68 @@ import { type JsonObject, type JsonValue, stableStringify } from './stable-json'
 // 모션 시간 검사(tools/figma-parity)는 패키지가 달라 이 타입을 가져다 쓰지 않고, 읽을 때 필요한 값만 다시 검증한다
 // (export.json과 같은 방식). 계약은 [[피그마 연동:모션]]에 있다.
 
-/** 시간 값(ms)과 그 값과 같은 모션 변수. 같은 변수가 없으면 token이 null이다 */
+/** 시간 값(ms)과 그 값과 같은 모션 변수. 같은 변수가 없으면 token이 null이다. token: `motion/duration/*`·`motion/delay/*` 변수 이름. */
 export type MotionTime = {
   ms: number;
-  /** `motion/duration/*`·`motion/delay/*` 변수 이름 */
   token: string | null;
 };
 
-/** 키프레임 하나 */
+/**
+ * 키프레임 하나.
+ * - time: 타임라인 위치(ms)
+ * - offset: 트랙 안 위치(0~1). CSS `@keyframes`의 퍼센트로 옮긴다
+ * - easing: 이전 키프레임에서 이 키프레임까지의 이징 변수 이름(`motion/easing/*`). 첫 키프레임은 쓰이지 않아 null이다
+ * - valueToken: 값과 같은 `motion/*` 변수(배율·투명도·회전 등). 이동과 짝이 없는 값은 null이다
+ */
 export type MotionKeyframe = {
-  /** 타임라인 위치(ms) */
   time: number;
-  /** 트랙 안 위치(0~1). CSS `@keyframes`의 퍼센트로 옮긴다 */
   offset: number;
   value: MotionValue;
-  /** 이전 키프레임에서 이 키프레임까지의 이징 변수 이름(`motion/easing/*`). 첫 키프레임은 쓰이지 않아 null이다 */
   easing: string | null;
-  /** 값과 같은 `motion/*` 변수(배율·투명도·회전 등). 이동과 짝이 없는 값은 null이다 */
   valueToken: string | null;
 };
 
-/** 노드 하나의 항목 하나 */
+/**
+ * 노드 하나의 항목 하나.
+ * - node: 노드 이름. 견본 안 인스턴스는 컴포넌트 이름, 자산 원본에서 이어진 것은 자산 이름(`progress-ring/Arc`)
+ * - path: 견본 기준 레이어 경로
+ * - property: 피그마 항목 이름(`ROTATION`, `SCALE_XY`, `OPACITY`, `PATH_TRIM_END` 등)
+ * - operation: 피그마 트랙 연산(`SET`, `OFFSET`, `SCALE`)
+ * - duration: 트랙 길이(첫 키프레임 → 끝 키프레임)와 그 `motion/duration/*` 변수
+ * - delay: 시작 지연(첫 키프레임 위치)과 그 `motion/delay/*` 변수. 0이면 token이 null이다
+ * - isTruncated: 견본 길이에서 잘린 트랙이면 true. 견본 안 컴포넌트가 가진 움직임이라 검사 대상이 아니다
+ */
 export type MotionTrack = {
-  /** 노드 이름. 견본 안 인스턴스는 컴포넌트 이름, 자산 원본에서 이어진 것은 자산 이름(`progress-ring/Arc`) */
   node: string;
   nodeKind: MotionNodeKind;
-  /** 견본 기준 레이어 경로 */
   path: string;
-  /** 피그마 항목 이름(`ROTATION`, `SCALE_XY`, `OPACITY`, `PATH_TRIM_END` 등) */
   property: string;
-  /** 피그마 트랙 연산(`SET`, `OFFSET`, `SCALE`) */
   operation: string;
-  /** 트랙 길이(첫 키프레임 → 끝 키프레임)와 그 `motion/duration/*` 변수 */
   duration: MotionTime;
-  /** 시작 지연(첫 키프레임 위치)과 그 `motion/delay/*` 변수. 0이면 token이 null이다 */
   delay: MotionTime;
   keyframes: MotionKeyframe[];
-  /** 견본 길이에서 잘린 트랙이면 true. 견본 안 컴포넌트가 가진 움직임이라 검사 대상이 아니다 */
   isTruncated?: boolean;
 };
 
-/** `figma/motions/<이름>.json` */
+/**
+ * `figma/motions/<이름>.json`.
+ * - name: 견본 이름(모션 클래스 이름, `motion-progress-ring`)
+ * - nodeId: 견본 프레임 노드 ID
+ * - url: 피그마 견본 링크(figma.json의 파일 키)
+ * - duration: 애니메이션 전체 길이(가장 이른 첫 키프레임 → 가장 늦은 끝 키프레임)와 같은 변수
+ * - delay: 애니메이션 시작 지연(가장 이른 첫 키프레임)과 같은 변수
+ * - iterations: 반복 횟수. 플러그인 API로 읽을 수 없어 견본 주석의 `@repeat`에서 온다. 옛 내보내기는 null이다
+ * - directives: 견본 주석의 `@` 줄
+ * - tracks: 노드 경로·항목 순으로 정렬한 트랙
+ */
 export type MotionExport = {
-  /** 견본 이름(모션 클래스 이름, `motion-progress-ring`) */
   name: string;
-  /** 견본 프레임 노드 ID */
   nodeId: string;
-  /** 피그마 견본 링크(figma.json의 파일 키) */
   url: string;
-  /** 애니메이션 전체 길이(가장 이른 첫 키프레임 → 가장 늦은 끝 키프레임)와 같은 변수 */
   duration: MotionTime;
-  /** 애니메이션 시작 지연(가장 이른 첫 키프레임)과 같은 변수 */
   delay: MotionTime;
-  /** 반복 횟수. 플러그인 API로 읽을 수 없어 견본 주석의 `@repeat`에서 온다. 옛 내보내기는 null이다 */
   iterations: number | 'infinite' | null;
-  /** 견본 주석의 `@` 줄 */
   directives: Directives;
-  /** 노드 경로·항목 순으로 정렬한 트랙 */
   tracks: MotionTrack[];
 };
 

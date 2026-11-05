@@ -11,11 +11,13 @@ const BACKTICKS = /^`+|`+$/gu;
 /** 영역 전체(`영역/*`) */
 const AREA_WILDCARD = /^(.+?)\s*\/\s*\*$/u;
 
-/** 붙여넣기 선택 결과 */
+/**
+ * 붙여넣기 선택 결과.
+ * - keys: 고를 키(토큰은 TOKENS_KEY). 붙여넣은 순서이고 겹치지 않는다
+ * - notFound: 찾지 못한 이름(붙여넣은 그대로)
+ */
 export type PasteMatch = {
-  /** 고를 키(토큰은 TOKENS_KEY). 붙여넣은 순서이고 겹치지 않는다 */
   keys: string[];
-  /** 찾지 못한 이름(붙여넣은 그대로) */
   notFound: string[];
 };
 

@@ -16,11 +16,13 @@ export const DEFAULT_PREVIOUS_REF = `origin/${CAPTURES_BRANCH}`;
 const CAPTURE_SUBJECT_PREFIX = 'chore: update parity captures for ';
 const CAPTURE_SUBJECT_PATTERN = /^chore: update parity captures for ([0-9a-f]{7,40})$/u;
 
-/** parity-captures 이력의 커밋 하나 */
+/**
+ * parity-captures 이력의 커밋 하나.
+ * - commit: parity-captures 커밋 SHA
+ * - subject: 커밋 메시지 첫 줄
+ */
 export type CaptureHistoryEntry = {
-  /** parity-captures 커밋 SHA */
   commit: string;
-  /** 커밋 메시지 첫 줄 */
   subject: string;
 };
 
@@ -61,11 +63,13 @@ export function selectPreviousCapture(
   })?.commit;
 }
 
-/** parity-captures에 쓸 것 */
+/**
+ * parity-captures에 쓸 것.
+ * - files: 브랜치 기준 경로(`button/style=accent,state=rest.png`) → 결과 폴더 기준 코드 캡처 경로
+ * - replaced: 폴더를 비우고 다시 쓰는 대상. 모든 변형을 캡처했을 때만 비워, 사라진 변형의 캡처를 지운다
+ */
 export type CapturePublishPlan = {
-  /** 브랜치 기준 경로(`button/style=accent,state=rest.png`) → 결과 폴더 기준 코드 캡처 경로 */
   files: Map<string, string>;
-  /** 폴더를 비우고 다시 쓰는 대상. 모든 변형을 캡처했을 때만 비워, 사라진 변형의 캡처를 지운다 */
   replaced: string[];
 };
 

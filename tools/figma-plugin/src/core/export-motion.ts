@@ -7,13 +7,15 @@ import { readMotionSample } from './read-motion';
 // 모션 견본 하나를 검사하고 `figma/motions/<이름>.json` 내용을 만든다.
 // 플러그인 UI와 피그마 MCP(use_figma)가 같은 함수를 쓴다. GitHub와 UI는 모르고, 파일을 바꾸지 않는다.
 
-/** 내보낸 모션 */
+/**
+ * 내보낸 모션.
+ * - name: 견본 이름(파일 이름)
+ * - text: json 내용
+ * - result: 검사·내보내기 결과 자료
+ */
 export type MotionFileExport = {
-  /** 견본 이름(파일 이름) */
   name: string;
-  /** json 내용 */
   text: string;
-  /** 검사·내보내기 결과 자료 */
   result: Extract<MotionCheckResult, { ok: true }>;
 };
 

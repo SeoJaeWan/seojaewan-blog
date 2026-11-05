@@ -26,15 +26,15 @@ import type { Bound, NodeData, PaintData, ReactionData } from './node-data';
 // 4번(모션 변수 값이 아닌 키프레임 시간·지연, 변수에 연결되지 않은 키프레임 이징)은 모션 견본을 보는 check-motion.ts에 있다.
 // 나머지 작성 규칙은 리뷰와 캡처 표로 지킨다.
 
-/** 위반 하나 */
+/**
+ * 위반 하나.
+ * - where: 컴포넌트·변형·레이어 경로
+ * - nodeId: 고칠 레이어의 피그마 노드 ID. 플러그인 화면의 "피그마에서 보기"가 쓴다. 가리킬 노드가 없으면(토큰 변환 실패 등) null
+ */
 export type Violation = {
-  /** 컴포넌트·변형·레이어 경로 */
   where: string;
-  /** 무엇이 문제인지 */
   reason: string;
-  /** 어떻게 고치는지 */
   fix: string;
-  /** 고칠 레이어의 피그마 노드 ID. 플러그인 화면의 "피그마에서 보기"가 쓴다. 가리킬 노드가 없으면(토큰 변환 실패 등) null */
   nodeId: string | null;
 };
 
@@ -43,21 +43,25 @@ type Add = (node: NodeData, reason: string, fix: string) => void;
 /** 검사하는 대상 종류. 조립(03 · Patterns)은 배치 프레임의 모양과 크기를 컴포넌트와 다르게 본다 */
 export type CheckTargetKind = 'component' | 'pattern';
 
-/** 크기 검사 방식 */
+/**
+ * 크기 검사 방식.
+ * - shouldCheckSizes: 크기(고정·내용 맞춤·최소·최대)의 변수 연결을 검사하는지. 조립 안의 크기는 변수 없는 숫자를 허용한다
+ * - sampleAxes: 변수 없는 고정 크기를 허용하는 루트 축(`@sample-size`로 표시한 견본 크기)
+ */
 type SizeRule = {
-  /** 크기(고정·내용 맞춤·최소·최대)의 변수 연결을 검사하는지. 조립 안의 크기는 변수 없는 숫자를 허용한다 */
   shouldCheckSizes: boolean;
-  /** 변수 없는 고정 크기를 허용하는 루트 축(`@sample-size`로 표시한 견본 크기) */
   sampleAxes: ReadonlySet<SampleAxis>;
 };
 
-/** 검사에 쓰는 파일 정보 */
+/**
+ * 검사에 쓰는 파일 정보.
+ * - imageHashes: 이름 있는 이미지 자산(Foundations `group/Images`)의 이미지 해시
+ * - codeVariables: 회전·최대 줄 수·비율과 짝짓는 코드 전용 변수
+ * - motionVariables: 변형 전환과 대조하는 `motion/*` 변수. 없으면 전환 시간·이징을 대조하지 않는다
+ */
 export type CheckContext = {
-  /** 이름 있는 이미지 자산(Foundations `group/Images`)의 이미지 해시 */
   imageHashes: ReadonlySet<string>;
-  /** 회전·최대 줄 수·비율과 짝짓는 코드 전용 변수 */
   codeVariables?: CodeVariables;
-  /** 변형 전환과 대조하는 `motion/*` 변수. 없으면 전환 시간·이징을 대조하지 않는다 */
   motionVariables?: readonly MotionVariable[];
 };
 
@@ -247,14 +251,16 @@ function checkTransitionValues(
   }
 }
 
-/** 내보내는 변형의 조상 하나. 컴포넌트 세트의 변형이면 세트가 가장 가까운 조상이다 */
+/**
+ * 내보내는 변형의 조상 하나. 컴포넌트 세트의 변형이면 세트가 가장 가까운 조상이다.
+ * - id: 피그마 노드 ID
+ * - type: 피그마 노드 종류(`FRAME`, `COMPONENT_SET` 등)
+ * - isClippingContent: 내용 자르기(Clip content). 이 속성이 없는 노드(그룹·섹션)는 false
+ */
 export type AncestorData = {
-  /** 피그마 노드 ID */
   id: string;
   name: string;
-  /** 피그마 노드 종류(`FRAME`, `COMPONENT_SET` 등) */
   type: string;
-  /** 내용 자르기(Clip content). 이 속성이 없는 노드(그룹·섹션)는 false */
   isClippingContent: boolean;
 };
 
@@ -356,10 +362,9 @@ function isInsideAsset(id: string, assetIds: ReadonlySet<string>): boolean {
   return false;
 }
 
-/** 덮어쓰기를 검사할 수 있는 레이어 */
+/** 덮어쓰기를 검사할 수 있는 레이어. component: 이 레이어를 정의한 원본 컴포넌트(자신이나 가장 가까운 바깥 인스턴스의 원본). */
 type OverrideTarget = {
   node: NodeData;
-  /** 이 레이어를 정의한 원본 컴포넌트(자신이나 가장 가까운 바깥 인스턴스의 원본) */
   component: string;
 };
 

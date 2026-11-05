@@ -9,28 +9,32 @@ import type { ValueKeyframe, ValueTrack } from './motion-values.ts';
 /** run-motion-check.ts가 Playwright Test에 검사할 견본 목록(JSON 배열)을 넘기는 환경 변수 */
 export const MOTION_SELECTION_ENV = 'MOTION_CHECK_SELECTION';
 
-/** 트랙 하나에서 검사하는 값 */
+/**
+ * 트랙 하나에서 검사하는 값.
+ * - label: 메시지에 쓰는 이름(`progress-ring/Arc ROTATION`)
+ * - duration: 트랙 길이(ms)와 그 `motion/duration/*` 토큰
+ * - delay: 시작 지연(ms)과 그 `motion/delay/*` 토큰. 지연이 없으면 token이 null이다
+ * - easings: 첫 키프레임 뒤 키프레임마다의 이징 토큰(`motion/easing/*`)
+ */
 export type MotionSpecTrack = {
-  /** 메시지에 쓰는 이름(`progress-ring/Arc ROTATION`) */
   label: string;
-  /** 트랙 길이(ms)와 그 `motion/duration/*` 토큰 */
   duration: { ms: number; token: string };
-  /** 시작 지연(ms)과 그 `motion/delay/*` 토큰. 지연이 없으면 token이 null이다 */
   delay: { ms: number; token: string | null };
-  /** 첫 키프레임 뒤 키프레임마다의 이징 토큰(`motion/easing/*`) */
   easings: string[];
 };
 
-/** 모션 시간 검사에 쓰는 json 값 */
+/**
+ * 모션 시간 검사에 쓰는 json 값.
+ * - name: 견본 이름(모션 클래스 이름)
+ * - url: 견본 링크
+ * - iterations: 반복 횟수(견본의 `@repeat`). 옛 내보내기는 null이다
+ * - hasTruncatedTracks: 견본 길이에서 잘린 트랙이 있었는지. 그 움직임은 견본 안 컴포넌트의 것이라 견본 클래스의 애니메이션만 본다
+ */
 export type MotionSpec = {
-  /** 견본 이름(모션 클래스 이름) */
   name: string;
-  /** 견본 링크 */
   url: string;
-  /** 반복 횟수(견본의 `@repeat`). 옛 내보내기는 null이다 */
   iterations: number | 'infinite' | null;
   tracks: MotionSpecTrack[];
-  /** 견본 길이에서 잘린 트랙이 있었는지. 그 움직임은 견본 안 컴포넌트의 것이라 견본 클래스의 애니메이션만 본다 */
   hasTruncatedTracks: boolean;
 };
 

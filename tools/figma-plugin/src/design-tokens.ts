@@ -11,10 +11,9 @@ export type VariableAlias = { type: 'VARIABLE_ALIAS'; id: string };
 /** 계약에 없는 피그마 값. 변환하면 중단 사유로 보고한다. */
 export type UnsupportedValue = { type: 'UNSUPPORTED'; description: string };
 
-/** 피그마 `EASING` 변수 값. 곡선(`CUSTOM_CUBIC_BEZIER`)이면 제어점 네 숫자를 함께 담는다. */
+/** 피그마 `EASING` 변수 값. 곡선(`CUSTOM_CUBIC_BEZIER`)이면 제어점 네 숫자를 함께 담는다. easingType: 피그마 이징 종류(`LINEAR`, `CUSTOM_CUBIC_BEZIER`, 스프링 등). */
 export type EasingValue = {
   type: 'EASING';
-  /** 피그마 이징 종류(`LINEAR`, `CUSTOM_CUBIC_BEZIER`, 스프링 등) */
   easingType: string;
   cubicBezier?: { x1: number; y1: number; x2: number; y2: number };
 };
@@ -22,36 +21,42 @@ export type EasingValue = {
 export type VariableValueInput =
   boolean | number | string | FigmaColor | VariableAlias | EasingValue | UnsupportedValue;
 
+/**
+ * 변환에 넘기는 피그마 변수 하나.
+ * - resolvedType: 피그마 변수 타입. COLOR·FLOAT·STRING·EASING 밖의 타입(BOOLEAN 등)은 계약에 없다
+ * - value: 컬렉션 기본 모드의 값
+ * - modes: 기본 값과 다른 다른 모드의 값(모드 이름 → 값)
+ * - description: 변수 description. `@` 줄만 토큰에 담는다
+ */
 export type VariableInput = {
   id: string;
   name: string;
   collection: string;
-  /** 피그마 변수 타입. COLOR·FLOAT·STRING·EASING 밖의 타입(BOOLEAN 등)은 계약에 없다. */
   resolvedType: string;
   scopes: readonly string[];
-  /** 컬렉션 기본 모드의 값 */
   value: VariableValueInput;
-  /** 기본 값과 다른 다른 모드의 값(모드 이름 → 값) */
   modes?: Readonly<Record<string, VariableValueInput>>;
-  /** 변수 description. `@` 줄만 토큰에 담는다 */
   description?: string;
 };
 
 export type TextStyleField =
   'fontFamily' | 'fontStyle' | 'fontWeight' | 'fontSize' | 'lineHeight' | 'letterSpacing';
 
+/**
+ * 변환에 넘기는 글자 스타일 하나.
+ * - fontStyle: 피그마 글꼴 스타일 이름(예: `Regular`, `SemiBold`, `Italic`, `SemiBold Italic`)
+ * - textDecoration: 피그마 글자 장식(`NONE`, `UNDERLINE`, `STRIKETHROUGH`)
+ * - description: 스타일 description. `@` 줄만 토큰에 담는다
+ */
 export type TextStyleInput = {
   name: string;
   fontFamily: string;
-  /** 피그마 글꼴 스타일 이름(예: `Regular`, `SemiBold`, `Italic`, `SemiBold Italic`) */
   fontStyle: string;
   fontSize: number;
   lineHeight: { unit: 'PIXELS' | 'PERCENT'; value: number } | { unit: 'AUTO' };
   letterSpacing: { unit: 'PIXELS' | 'PERCENT'; value: number };
-  /** 피그마 글자 장식(`NONE`, `UNDERLINE`, `STRIKETHROUGH`) */
   textDecoration: string;
   boundVariables: Partial<Record<TextStyleField, VariableAlias>>;
-  /** 스타일 description. `@` 줄만 토큰에 담는다 */
   description?: string;
 };
 
@@ -78,10 +83,10 @@ export type BlurEffectInput = {
 export type EffectInput =
   ShadowEffectInput | BlurEffectInput | (UnsupportedValue & { isVisible: boolean });
 
+/** 변환에 넘기는 효과 스타일 하나. description: 스타일 description. `@` 줄만 토큰에 담는다. */
 export type EffectStyleInput = {
   name: string;
   effects: readonly EffectInput[];
-  /** 스타일 description. `@` 줄만 토큰에 담는다 */
   description?: string;
 };
 
@@ -110,13 +115,13 @@ export type GradientStopInput = {
   boundVariables: Partial<Record<'color', VariableAlias>>;
 };
 
+/** 변환에 넘기는 그라데이션 칠. gradientTransform: 2×3 아핀 변환 행렬 `[[a, b, c], [d, e, f]]`. */
 export type GradientPaintInput = {
   type: 'GRADIENT_LINEAR' | 'GRADIENT_RADIAL' | 'GRADIENT_ANGULAR' | 'GRADIENT_DIAMOND';
   isVisible: boolean;
   opacity: number;
   blendMode: string;
   gradientStops: readonly GradientStopInput[];
-  /** 2×3 아핀 변환 행렬 `[[a, b, c], [d, e, f]]` */
   gradientTransform: readonly (readonly number[])[];
 };
 
@@ -126,29 +131,31 @@ export type PaintInput =
   | GradientPaintInput
   | (UnsupportedValue & { isVisible: boolean });
 
+/** 변환에 넘기는 칠 스타일 하나. description: 스타일 description. `@` 줄만 토큰에 담는다. */
 export type PaintStyleInput = {
   name: string;
   paints: readonly PaintInput[];
-  /** 스타일 description. `@` 줄만 토큰에 담는다 */
   description?: string;
 };
 
-/** 변환 결과. 토큰이 아니라서 넣지 않은 스타일(이미지만 있는 칠 스타일)을 함께 돌려준다. */
+/** 변환 결과. 토큰이 아니라서 넣지 않은 스타일(이미지만 있는 칠 스타일)을 함께 돌려준다. notices: 막지 않고 알리기만 하는 문제(블렌드 층의 날값 색 등). */
 export type DesignTokensResult = {
   tokens: JsonObject;
   skippedStyles: string[];
-  /** 막지 않고 알리기만 하는 문제(블렌드 층의 날값 색 등) */
   notices: string[];
 };
 
+/**
+ * 토큰 변환에 넘기는 피그마 자료.
+ * - aliasNames: 별칭이 가리키는 변수 ID → 변수 이름. 다른 파일(라이브러리) 변수도 담는다
+ * - imageAssets: 이미지 해시 → 이미지 자산 이름(`images/<자산>`, 확장자 없음). Foundations / Assets / Images의 이름 있는 자산이다
+ */
 export type DesignTokensInput = {
   variables: readonly VariableInput[];
-  /** 별칭이 가리키는 변수 ID → 변수 이름. 다른 파일(라이브러리) 변수도 담는다. */
   aliasNames: Readonly<Record<string, string>>;
   textStyles: readonly TextStyleInput[];
   effectStyles: readonly EffectStyleInput[];
   paintStyles: readonly PaintStyleInput[];
-  /** 이미지 해시 → 이미지 자산 이름(`images/<자산>`, 확장자 없음). Foundations / Assets / Images의 이름 있는 자산이다 */
   imageAssets: Readonly<Record<string, string>>;
 };
 
@@ -318,13 +325,16 @@ export function parseCubicBezier(easing: string): number[] | null {
   return values;
 }
 
+/**
+ * 변환 중에 모으는 자료.
+ * - groupNames: 다른 변수 이름의 앞부분이기도 한 변수 이름. 이 변수는 그룹의 `$root` 토큰이다
+ * - notices: 막지 않고 알리기만 하는 문제
+ */
 type ConversionContext = {
   aliasNames: Readonly<Record<string, string>>;
-  /** 다른 변수 이름의 앞부분이기도 한 변수 이름. 이 변수는 그룹의 `$root` 토큰이다. */
   groupNames: ReadonlySet<string>;
   imageAssets: Readonly<Record<string, string>>;
   problems: string[];
-  /** 막지 않고 알리기만 하는 문제 */
   notices: string[];
 };
 

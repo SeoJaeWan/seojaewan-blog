@@ -9,19 +9,21 @@ import { stableStringify } from '../stable-json';
 import { unusedNotices } from '../unused-tokens';
 import { rasterAsset } from './export-component';
 
-/** tokens.json 내보내기 결과 */
+/**
+ * tokens.json 내보내기 결과.
+ * - text: tokens.json 내용
+ * - css: tokens.json에서 변환 함수로 만든 tokens.css 내용
+ * - names: tokens.json에서 변환 함수로 만든 token-names.ts 내용
+ * - skippedStyles: 토큰으로 옮기지 않은 칠 스타일 이름
+ * - images: 토큰의 이미지 칠이 가리키는 이미지 자산 파일(`images/<자산>.<실제 형식의 확장자>`) → 바이트
+ * - notices: 막지 않는 알림: 블렌드 층의 날값 색, 쓰는 곳이 없는 변수·스타일
+ */
 export type TokensExport = {
-  /** tokens.json 내용 */
   text: string;
-  /** tokens.json에서 변환 함수로 만든 tokens.css 내용 */
   css: string;
-  /** tokens.json에서 변환 함수로 만든 token-names.ts 내용 */
   names: string;
-  /** 토큰으로 옮기지 않은 칠 스타일 이름 */
   skippedStyles: string[];
-  /** 토큰의 이미지 칠이 가리키는 이미지 자산 파일(`images/<자산>.<실제 형식의 확장자>`) → 바이트 */
   images: Map<string, Uint8Array>;
-  /** 막지 않는 알림: 블렌드 층의 날값 색, 쓰는 곳이 없는 변수·스타일 */
   notices: string[];
 };
 

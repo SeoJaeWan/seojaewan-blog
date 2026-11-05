@@ -17,7 +17,7 @@ import type {
 /** 조건 → 값. 기준에서 바꾼 것만 적는다. */
 type Change = Readonly<Record<string, string | undefined>>;
 
-/** 표를 만드는 데 쓰는 케이스 정의. */
+/** 표를 만드는 데 쓰는 케이스 정의. line: 정의 파일에서 케이스가 시작하는 줄. */
 export type CaseSource = {
   id: string;
   change?: Change;
@@ -27,14 +27,12 @@ export type CaseSource = {
   expected: readonly string[];
   docs: readonly string[];
   device?: string;
-  /** 정의 파일에서 케이스가 시작하는 줄 */
   line?: number | null;
 };
 
-/** 표를 만드는 데 쓰는 행위 정의. */
+/** 표를 만드는 데 쓰는 행위 정의. file: 저장소 기준 정의 파일 경로. */
 export type BehaviorSource = {
   id: string;
-  /** 저장소 기준 정의 파일 경로 */
   file: string;
   name: string;
   area: string;
@@ -53,11 +51,10 @@ export type BehaviorSource = {
 /** 실행 기록 한 번(보고서의 `history.json`). 결과는 케이스 열쇠(`행위id/케이스id`)로 찾는다. */
 export type HistoryRun = RunSummary & { results: Record<string, ResultStatus> };
 
-/** 표를 만들 때 함께 쓰는 근거와 결과. */
+/** 표를 만들 때 함께 쓰는 근거와 결과. results: `[행위id#번호]` → 결과. 보고서에서만 준다. */
 export type TableInputs = {
   docs: ReadonlyMap<string, CodocsDoc>;
   code: ReadonlyMap<string, CodeRef[]>;
-  /** `[행위id#번호]` → 결과. 보고서에서만 준다 */
   results?: ReadonlyMap<string, CaseResult>;
   mode: TableData['mode'];
   run?: TableData['run'];

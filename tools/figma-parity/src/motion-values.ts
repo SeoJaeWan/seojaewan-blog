@@ -8,17 +8,19 @@
 /** json 키프레임 하나의 위치(0~1)와 값 */
 export type ValueKeyframe = { offset: number; value: unknown };
 
-/** json 트랙 하나의 키프레임 값 */
+/**
+ * json 트랙 하나의 키프레임 값.
+ * - node: 노드 이름(컴포넌트·자산·레이어 이름)
+ * - path: 견본 기준 레이어 경로
+ * - property: 피그마 항목(`OPACITY`, `SCALE_XY`, `PATH_TRIM_END` 등)
+ * - operation: 피그마 트랙 연산(`SET`, `OFFSET`, `SCALE`)
+ * - durationMs: 트랙 길이(ms). 표에 키프레임 시간을 쓸 때만 쓴다
+ */
 export type ValueTrack = {
-  /** 노드 이름(컴포넌트·자산·레이어 이름) */
   node: string;
-  /** 견본 기준 레이어 경로 */
   path: string;
-  /** 피그마 항목(`OPACITY`, `SCALE_XY`, `PATH_TRIM_END` 등) */
   property: string;
-  /** 피그마 트랙 연산(`SET`, `OFFSET`, `SCALE`) */
   operation: string;
-  /** 트랙 길이(ms). 표에 키프레임 시간을 쓸 때만 쓴다 */
   durationMs: number;
   keyframes: ValueKeyframe[];
 };
@@ -26,23 +28,24 @@ export type ValueTrack = {
 /** 키프레임 하나의 CSS 값(속성 이름은 kebab-case) */
 export type CssKeyframe = { offset: number; values: Readonly<Record<string, string>> };
 
-/** 브라우저에서 읽은 CSS 애니메이션 하나의 키프레임 */
+/**
+ * 브라우저에서 읽은 CSS 애니메이션 하나의 키프레임.
+ * - target: 애니메이션이 걸린 요소 설명(메시지용)
+ * - element: 스토리 안 요소 번호. 같은 요소의 애니메이션은 번호가 같다
+ * - node: 요소의 `data-motion-node` 값(같은 CSS 속성을 움직이는 요소가 여럿일 때 json 노드를 가리킨다)
+ * - box: 요소의 레이아웃 크기(px). `translate`의 %를 px로 바꿀 때 쓴다
+ * - pathLength: SVG 경로 길이(`pathLength` 속성, 없으면 실제 길이). 경로가 아니면 null
+ * - keyframes: `getKeyframes()` 값. 브라우저가 `var()`를 푼 값이다
+ * - declarations: `@keyframes` 규칙에 쓴 선언 그대로(`var()` 포함)
+ */
 export type ObservedEffect = {
-  /** `animation-name` */
   name: string;
-  /** 애니메이션이 걸린 요소 설명(메시지용) */
   target: string;
-  /** 스토리 안 요소 번호. 같은 요소의 애니메이션은 번호가 같다 */
   element: number;
-  /** 요소의 `data-motion-node` 값(같은 CSS 속성을 움직이는 요소가 여럿일 때 json 노드를 가리킨다) */
   node: string | null;
-  /** 요소의 레이아웃 크기(px). `translate`의 %를 px로 바꿀 때 쓴다 */
   box: { width: number; height: number };
-  /** SVG 경로 길이(`pathLength` 속성, 없으면 실제 길이). 경로가 아니면 null */
   pathLength: number | null;
-  /** `getKeyframes()` 값. 브라우저가 `var()`를 푼 값이다 */
   keyframes: CssKeyframe[];
-  /** `@keyframes` 규칙에 쓴 선언 그대로(`var()` 포함) */
   declarations: CssKeyframe[];
 };
 
@@ -57,34 +60,38 @@ export type ValueStatus =
   /** 비교할 수 없다(코드 키프레임 없음, 변환표에 없는 항목 등) */
   | 'missing';
 
-/** 결과 표 한 줄 */
+/**
+ * 결과 표 한 줄.
+ * - keyframe: `0%`, `50% (1000ms)`
+ * - property: `WindowFrame OPACITY → opacity`
+ * - figma: 피그마 값
+ * - code: 코드 값
+ * - note: 결과 설명(다를 때 이유)
+ */
 export type ValueRow = {
-  /** `0%`, `50% (1000ms)` */
   keyframe: string;
-  /** `WindowFrame OPACITY → opacity` */
   property: string;
-  /** 피그마 값 */
   figma: string;
-  /** 코드 값 */
   code: string;
   status: ValueStatus;
-  /** 결과 설명(다를 때 이유) */
   note: string;
 };
 
 /** 피그마 값 꼴 */
 type Shape = 'number' | 'xy';
 
-/** 피그마 항목 → CSS 속성 변환 규칙 */
+/**
+ * 피그마 항목 → CSS 속성 변환 규칙.
+ * - css: 값을 읽는 CSS 속성. 앞이 우선이고, 없으면 `transform`에서 읽는다
+ * - tolerance: 같다고 보는 차이
+ * - unit: 값 단위(표 표시용)
+ * - axis: 성분 하나를 고른다(SCALE_X 등). 없으면 xy 전체 또는 숫자
+ */
 type Conversion = {
-  /** 값을 읽는 CSS 속성. 앞이 우선이고, 없으면 `transform`에서 읽는다 */
   css: readonly string[];
   shape: Shape;
-  /** 같다고 보는 차이 */
   tolerance: number;
-  /** 값 단위(표 표시용) */
   unit: string;
-  /** 성분 하나를 고른다(SCALE_X 등). 없으면 xy 전체 또는 숫자 */
   axis?: 'x' | 'y';
 };
 
@@ -161,17 +168,19 @@ const nonPropertyKeys: ReadonlySet<string> = new Set([
 
 /** 키프레임 하나에서 읽은 값 */
 type Vector = { x: number; y: number };
-/** 키프레임 하나에서 읽은 코드 값과 실행 중 값 변수 */
+/**
+ * 키프레임 하나에서 읽은 코드 값과 실행 중 값 변수.
+ * - value: 피그마 단위로 옮긴 값
+ * - text: 표에 쓰는 CSS 선언(`getKeyframes()` 값)
+ * - declaredText: 표에 쓰는 `@keyframes` 선언 그대로(`var()` 포함)
+ * - isConverted: CSS 값과 피그마 값의 꼴이 달라(회전 부호, %, 경로 트림, transform) 옮긴 값을 함께 보일지
+ * - runtime: 성분마다 쓴 실행 중 값 변수(토큰이 아닌 CSS 변수)
+ */
 type CodeValue = {
-  /** 피그마 단위로 옮긴 값 */
   value: Vector;
-  /** 표에 쓰는 CSS 선언(`getKeyframes()` 값) */
   text: string;
-  /** 표에 쓰는 `@keyframes` 선언 그대로(`var()` 포함) */
   declaredText: string;
-  /** CSS 값과 피그마 값의 꼴이 달라(회전 부호, %, 경로 트림, transform) 옮긴 값을 함께 보일지 */
   isConverted: boolean;
-  /** 성분마다 쓴 실행 중 값 변수(토큰이 아닌 CSS 변수) */
   runtime: { x: string[]; y: string[] };
 };
 
@@ -368,10 +377,9 @@ function compareKeyframe(
   };
 }
 
-/** 트랙과 짝지은 요소의 CSS 키프레임 */
+/** 트랙과 짝지은 요소의 CSS 키프레임. keyframes: 요소의 CSS 애니메이션을 합친 키프레임(같은 속성은 뒤 애니메이션이 이긴다). */
 type PairedEffect = {
   element: number;
-  /** 요소의 CSS 애니메이션을 합친 키프레임(같은 속성은 뒤 애니메이션이 이긴다) */
   keyframes: CssKeyframe[];
   declarations: CssKeyframe[];
   box: ObservedEffect['box'];

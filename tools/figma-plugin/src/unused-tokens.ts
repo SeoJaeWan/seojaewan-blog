@@ -1,33 +1,40 @@
 // 쓰는 곳이 없는 변수·스타일을 찾는다. 막지 않고 정리 알림으로만 보여 준다.
 // 피그마 API 값을 옮겨 담은 순수 데이터로 계산한다. figma-reader.ts가 피그마에서 이 모양을 읽는다.
 
-/** 변수 하나 */
+/**
+ * 변수 하나.
+ * - scopes: 피그마 속성 선택 목록에 보이는 범위. 비어 있으면 코드에서만 쓰는 변수라 알리지 않는다
+ * - aliasIds: 모든 모드의 값에서 이 변수가 가리키는 다른 변수 ID(별칭)
+ */
 export type UsageVariable = {
   id: string;
   name: string;
-  /** 피그마 속성 선택 목록에 보이는 범위. 비어 있으면 코드에서만 쓰는 변수라 알리지 않는다 */
   scopes: readonly string[];
-  /** 모든 모드의 값에서 이 변수가 가리키는 다른 변수 ID(별칭) */
   aliasIds: readonly string[];
 };
 
-/** 스타일 하나 */
+/**
+ * 스타일 하나.
+ * - consumerCount: 이 스타일을 쓰는 노드 수
+ * - variableIds: 스타일 값에 연결된 변수 ID
+ */
 export type UsageStyle = {
   id: string;
   name: string;
   kind: 'paint' | 'text' | 'effect';
-  /** 이 스타일을 쓰는 노드 수 */
   consumerCount: number;
-  /** 스타일 값에 연결된 변수 ID */
   variableIds: readonly string[];
 };
 
+/**
+ * 사용처를 찾는 입력.
+ * - nodeVariableIds: 노드(모든 페이지)에 연결된 변수 ID. 글자 구간의 연결과 키프레임 이징(EASING 변수 별칭)도 넣는다
+ * - nodeStyleIds: 노드(모든 페이지)에 입힌 스타일 ID. 글자 일부 구간에만 입힌 스타일도 넣는다
+ */
 export type UsageInput = {
   variables: readonly UsageVariable[];
   styles: readonly UsageStyle[];
-  /** 노드(모든 페이지)에 연결된 변수 ID. 글자 구간의 연결과 키프레임 이징(EASING 변수 별칭)도 넣는다 */
   nodeVariableIds: ReadonlySet<string>;
-  /** 노드(모든 페이지)에 입힌 스타일 ID. 글자 일부 구간에만 입힌 스타일도 넣는다 */
   nodeStyleIds: ReadonlySet<string>;
 };
 
