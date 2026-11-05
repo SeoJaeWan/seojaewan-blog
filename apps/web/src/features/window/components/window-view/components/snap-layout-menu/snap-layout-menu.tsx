@@ -31,7 +31,7 @@ const OPEN_TRIGGER_CLASS_NAME = 'aria-expanded:bg-color-black-4 aria-expanded:te
  * 창 최대화 버튼과 그 아래 가운데에 뜨는 스냅 레이아웃 선택지(피그마 조립 `Window/SnapLayoutMenu`)를 그린다.
  * 피그마 조립은 닫힌 Popover(`Bottom center`)에 CaptionButton(최대화)을 넣은 모양이고, 열린 선택지(SnapLayoutFlyout)는 실행 중에만 뜬다(`@runtime`).
  * 최대화 버튼에 마우스를 올리면 선택지를 열고(Base UI Popover의 hover 열기), 칸을 고르면 닫고 쓰는 곳에 알린다.
- * 버튼을 누르면 최대화한다. 선택지가 열려 있는 동안 최대화 버튼은 Hover 모습이다(피그마 `State=Hover`).
+ * 버튼을 누르면 최대화한다. 선택지가 열려 있는 동안 최대화 버튼은 CaptionButton Hover 모습이다(피그마 조립의 닫힌 모양은 Rest이고, 이 Hover 모습은 실행 중에만 나온다).
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[디자인 시스템:팝업]]
  * @codocs [[스냅:스냅 레이아웃]]
