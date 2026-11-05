@@ -2,9 +2,7 @@ import { fireEvent, spyOn } from 'storybook/test';
 
 /** 화면 위 포인터 자리 */
 type StoryPoint = {
-  /** 가로(px) */
   x: number;
-  /** 세로(px) */
   y: number;
 };
 

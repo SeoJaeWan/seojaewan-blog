@@ -7,13 +7,9 @@ import {
 
 /** 스토리용 글 하나 */
 type StoryPost = {
-  /** slug */
   slug: string;
-  /** 제목 */
   title: string;
-  /** 폴더 경로 */
   folderPath: readonly string[];
-  /** 작성일 */
   date: string;
 };
 

@@ -26,28 +26,19 @@ export type ExplorerCommandName =
 type CommandHandlers = Partial<Record<ExplorerCommandName, MouseEventHandler<HTMLButtonElement>>>;
 
 type ExplorerCommandsProps = CommandHandlers & {
-  /** 피그마 Location. folder는 폴더 명령, recycle-bin은 휴지통 명령이다 */
   location?: ExplorerCommandsLocation;
-  /** 피그마 Device. desktop은 글자 있는 버튼을 쓰고, mobile은 모두 아이콘 버튼이다 */
   device?: ExplorerCommandsDevice;
-  /** 지금 쓸 수 없어 비활성(Button·IconButton disabled)으로 둘 명령 */
   disabledCommands?: readonly ExplorerCommandName[];
-  /** 정렬 버튼이 여는 메뉴 항목. 주면 정렬 버튼을 누를 때 메뉴를 연다 */
   sortMenu?: readonly MenuPopupEntry[];
-  /** 보기 버튼이 여는 메뉴 항목. 주면 보기 버튼을 누를 때 메뉴를 연다 */
   viewMenu?: readonly MenuPopupEntry[];
-  /** 바깥 배치 클래스 */
   className?: string;
 };
 
-/** 명령 버튼 하나 */
+/** 명령 버튼 하나. handler는 누를 때 부르는 동작 prop 이름이다. label은 desktop 버튼 글자이자 접근성 이름이다. isLabeledOnDesktop이면 desktop에서 글자 있는 Button으로, 아니면 IconButton으로 그린다. */
 type Command = {
-  /** 누를 때 부르는 동작 prop 이름 */
   handler: ExplorerCommandName;
-  /** desktop 버튼 글자이자 접근성 이름 */
   label: string;
   icon: IconName;
-  /** desktop에서 글자 있는 Button으로 그린다. 아니면 IconButton이다 */
   isLabeledOnDesktop: boolean;
 };
 
@@ -143,18 +134,23 @@ const MOBILE_NEW_ICON: IconName = 'icons/ic_fluent_folder_add_20_regular.svg';
  * @codocs [[파일 탐색기:구성]]
  * @codocs [[접근성:Tab]]
  * @codocs [[접근성:역할]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.location 피그마 Location. folder는 폴더 명령, recycle-bin은 휴지통 명령이다
+ * @param props.device 피그마 Device. desktop은 글자 있는 버튼을 쓰고, mobile은 모두 아이콘 버튼이다
+ * @param props.disabledCommands 지금 쓸 수 없어 비활성(Button·IconButton disabled)으로 둘 명령
+ * @param props.sortMenu 정렬 버튼이 여는 메뉴 항목. 주면 정렬 버튼을 누를 때 메뉴를 연다
+ * @param props.viewMenu 보기 버튼이 여는 메뉴 항목. 주면 보기 버튼을 누를 때 메뉴를 연다
+ * @param props.className 바깥 배치 클래스
  */
-export function ExplorerCommands(props: ExplorerCommandsProps): JSX.Element {
-  const {
-    location = 'folder',
-    device = 'desktop',
-    disabledCommands = [],
-    sortMenu,
-    viewMenu,
-    className,
-    ...handlers
-  } = props;
+export function ExplorerCommands({
+  location = 'folder',
+  device = 'desktop',
+  disabledCommands = [],
+  sortMenu,
+  viewMenu,
+  className,
+  ...handlers
+}: ExplorerCommandsProps): JSX.Element {
   const isDesktop = device === 'desktop';
   const [openMenu, setOpenMenu] = useState<'onSort' | 'onView' | null>(null);
   const menus = { onSort: sortMenu, onView: viewMenu } as const;

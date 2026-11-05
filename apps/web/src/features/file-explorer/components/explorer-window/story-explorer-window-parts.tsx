@@ -22,37 +22,23 @@ import {
 
 /** 피그마 Window/Explorer 변형 속성 */
 type ExplorerWindowVariant = {
-  /** 피그마 Device */
   device: 'desktop' | 'mobile';
-  /** 피그마 Folder */
   folder: 'blog' | 'react' | 'recycle-bin';
-  /** 피그마 Selection */
   selection: 'none' | 'single';
 };
 
-/** 탐색기 창 조립의 자리를 채울 내용. 탐색기 창(`ExplorerWindow`)과 본문(`ExplorerContent`)의 prop으로 넘긴다 */
+/** 탐색기 창 조립의 자리를 채울 내용. 탐색기 창(`ExplorerWindow`)과 본문(`ExplorerContent`)의 prop으로 넘긴다. commandsLocation은 명령 모음(`ExplorerCommands`)의 위치이며 휴지통이면 휴지통 명령이다. items는 항목 자리 내용이며 폴더는 항목(FileItem)들, 휴지통은 자세히 보기(DetailsHeader와 FileRow) 하나다. */
 type ExplorerWindowParts = {
-  /** 창 탭 제목 */
   tabTitle: string;
-  /** 창 탭 아이콘(현재 위치의 아이콘) */
   tabIcon: ReactNode;
-  /** 명령 모음(`ExplorerCommands`)의 위치. 휴지통이면 휴지통 명령이다 */
   commandsLocation: 'folder' | 'recycle-bin';
-  /** 위치 칸 앞 아이콘 */
   locationIcon: ReactNode;
-  /** 검색 상자 안내 글자 */
   searchPlaceholder: string;
-  /** 위치 칸(BreadcrumbItem)들 */
   path: ReactNode[];
-  /** 탐색 창 폴더 트리 항목(NavigationItem)들 */
   navigation: ReactNode[];
-  /** 상태 줄 항목 수 글자 */
   itemCount: string;
-  /** 상태 줄 선택 글자 */
   selection: string;
-  /** 상태 줄 선택 글자를 보일지 */
   hasSelection: boolean;
-  /** 항목 자리 내용. 폴더는 항목(FileItem)들, 휴지통은 자세히 보기(DetailsHeader와 FileRow) 하나다 */
   items: ReactNode[];
 };
 

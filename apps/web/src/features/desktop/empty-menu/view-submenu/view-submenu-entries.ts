@@ -2,17 +2,12 @@ import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { MENU_SEPARATOR, singleChoiceEntry } from '@/shared/utils/menu-items/menu-items';
 import type { DesktopIconSize } from '@/shared/utils/workspace-rules/workspace-rules';
 
-/** 보기 하위 메뉴가 보이는 설정과 동작 */
+/** 보기 하위 메뉴가 보이는 설정과 동작. isAutoArrangeLocked는 자동 정렬을 바꿀 수 없는지(모바일은 늘 자동 정렬이다)다. */
 export type DesktopViewMenuOptions = {
-  /** 아이콘 크기 */
   iconSize: DesktopIconSize;
-  /** 아이콘 자동 정렬 */
   isAutoArrange: boolean;
-  /** 자동 정렬을 바꿀 수 없는지(모바일은 늘 자동 정렬이다) */
   isAutoArrangeLocked: boolean;
-  /** 아이콘 크기를 고르면 부른다 */
   onIconSizeChange: (iconSize: DesktopIconSize) => void;
-  /** 자동 정렬을 켜거나 끄면 부른다 */
   onAutoArrangeChange: (isAutoArrange: boolean) => void;
 };
 

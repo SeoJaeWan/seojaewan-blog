@@ -15,25 +15,23 @@ import type {
 
 /** 격자 크기(칸 수) */
 export type GridSize = {
-  /** 열 수 */
   columns: number;
-  /** 행 수 */
   rows: number;
 };
 
 /** 화면 위 자리(px). 아이콘 영역 왼쪽 위가 원점이다 */
 export type GridPoint = {
-  /** 가로 */
   x: number;
-  /** 세로 */
   y: number;
 };
 
-/** 아이콘 칸 하나의 크기(px). 아이콘(FileItem) 크기와 아이콘 사이 간격이다 */
+/**
+ * 아이콘 칸 하나의 크기(px). 아이콘(FileItem) 크기와 아이콘 사이 간격이다
+ * - itemWidth: 아이콘 너비. FileItem `Surface=Desktop`의 Size별 너비다
+ * - itemHeight: 이름 한 줄인 아이콘 높이. 위아래 여백 4씩 + 아이콘 + 간격 2 + 글자 한 줄 16이다
+ */
 type CellGeometry = {
-  /** 아이콘 너비. FileItem `Surface=Desktop`의 Size별 너비다 */
   itemWidth: number;
-  /** 이름 한 줄인 아이콘 높이. 위아래 여백 4씩 + 아이콘 + 간격 2 + 글자 한 줄 16이다 */
   itemHeight: number;
 };
 
@@ -59,9 +57,7 @@ const cellGeometries = {
  * @returns 아이콘 너비·높이와 칸 간격(다음 칸까지의 거리)
  */
 export function getCellGeometry(iconSize: DesktopIconSize): CellGeometry & {
-  /** 다음 열까지의 거리 */
   pitchX: number;
-  /** 다음 행까지의 거리 */
   pitchY: number;
 } {
   const geometry = cellGeometries[iconSize];

@@ -2,17 +2,13 @@ import { fireEvent, spyOn } from 'storybook/test';
 
 /** 화면 위 포인터 자리 */
 type StoryPoint = {
-  /** 가로(px) */
   x: number;
-  /** 세로(px) */
   y: number;
 };
 
 /** 놓지 않고 붙들고 있는 끌기 */
 type HeldStoryDrag = {
-  /** 포인터를 옮긴다 */
   moveTo: (point: StoryPoint) => Promise<void>;
-  /** 포인터를 놓고 끌기를 끝낸다 */
   release: () => Promise<void>;
 };
 

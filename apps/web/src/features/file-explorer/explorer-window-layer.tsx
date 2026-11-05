@@ -55,13 +55,9 @@ import {
 import { sortExplorerItems } from './utils/explorer-sort/explorer-sort';
 
 type ExplorerWindowLayerProps = {
-  /** 창 id. 창 내용(탭과 위치 기록)을 바꿀 때 쓴다 */
   windowId: string;
-  /** 창 내용(탭, 탭마다의 위치 기록, 탐색 창 펼침) */
   content: ExplorerWindowContent;
-  /** 창 층이 넘기는 창 동작 속성 */
   controls: WindowFrameControls;
-  /** 화면 방식 */
   device: DeviceVariant;
 };
 
@@ -79,10 +75,18 @@ type ExplorerWindowLayerProps = {
  * @codocs [[파일 탐색기:휴지통 보기]]
  * @codocs [[창 동작:모바일]]
  * @codocs [[파일 탐색기:모바일]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.windowId 창 id. 창 내용(탭과 위치 기록)을 바꿀 때 쓴다
+ * @param props.content 창 내용(탭, 탭마다의 위치 기록, 탐색 창 펼침)
+ * @param props.controls 창 층이 넘기는 창 동작 속성
+ * @param props.device 화면 방식
  */
-export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Element {
-  const { windowId, content, controls, device } = props;
+export function ExplorerWindowLayer({
+  windowId,
+  content,
+  controls,
+  device,
+}: ExplorerWindowLayerProps): JSX.Element {
   const items = useWorkspaceStore((state) => state.items);
   const setContent = useWindowStore((state) => state.setContent);
   const workspace = { items };
@@ -337,19 +341,12 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
 }
 
 type NavigationTreeItemProps = {
-  /** 트리 칸 */
   row: NavigationRow;
-  /** 보이는 트리 칸 전체. 방향키로 옮겨 갈 칸을 찾는다 */
   rows: readonly NavigationRow[];
-  /** 끄는 항목을 이 칸에 놓으려는 중인지. 강조한다 */
   isDropTarget: boolean;
-  /** Tab으로 닿는 칸인지. 고른 칸이 보이지 않으면 가장 가까운 보이는 조상이다 */
   isFocusable: boolean;
-  /** 칸 아이콘 */
   icon: ReactNode;
-  /** 칸을 눌렀을 때 그 위치로 간다 */
   onNavigate: (location: ExplorerLocation) => void;
-  /** 꺾쇠나 → / ← 키로 펼치거나 접을 때 */
   onToggle: (row: NavigationRow, isExpanded: boolean) => void;
 };
 
@@ -360,11 +357,24 @@ type NavigationTreeItemProps = {
  * @codocs [[파일 탐색기:구성]]
  * @codocs [[파일 탐색기:탐색 창]]
  * @codocs [[접근성:Tab]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.row 트리 칸
+ * @param props.rows 보이는 트리 칸 전체. 방향키로 옮겨 갈 칸을 찾는다
+ * @param props.isFocusable Tab으로 닿는 칸인지. 고른 칸이 보이지 않으면 가장 가까운 보이는 조상이다
+ * @param props.isDropTarget 끄는 항목을 이 칸에 놓으려는 중인지. 강조한다
+ * @param props.icon 칸 아이콘
+ * @param props.onNavigate 칸을 눌렀을 때 그 위치로 간다
+ * @param props.onToggle 꺾쇠나 → / ← 키로 펼치거나 접을 때
  */
-function NavigationTreeItem(props: NavigationTreeItemProps): JSX.Element {
-  const { row, rows, isFocusable, isDropTarget, icon, onNavigate, onToggle } = props;
-
+function NavigationTreeItem({
+  row,
+  rows,
+  isFocusable,
+  isDropTarget,
+  icon,
+  onNavigate,
+  onToggle,
+}: NavigationTreeItemProps): JSX.Element {
   /**
    * 트리 칸에서 키를 눌렀을 때 이동하거나 펼치고 접는다.
    * @param event 키 이벤트

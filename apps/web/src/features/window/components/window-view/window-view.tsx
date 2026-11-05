@@ -25,27 +25,16 @@ import { useWindowDrag } from './hooks/use-window-drag/use-window-drag';
 import { useWindowSnapMotion } from './hooks/use-window-snap-motion/use-window-snap-motion';
 
 type WindowViewProps = {
-  /** 그릴 창. 닫힌 창은 저장소에서 지우기 직전의 모습이다 */
   window: OpenWindow;
-  /** 창 제목. 창 영역의 접근성 이름이 된다 */
   title: string;
-  /** 저장소에서 지워져 닫히는 애니메이션만 남은 창인지 */
   isClosing: boolean;
-  /** 맨 앞 창인지 */
   isActive: boolean;
-  /** 쌓는 차례. 클수록 위다 */
   zIndex: number;
-  /** 화면 방식. 모바일은 창이 늘 작업 영역을 채운다 */
   device: DeviceVariant;
-  /** 작업 영역 크기. 최대화·스냅한 창의 자리를 구한다. 마운트 전에는 null이다 */
   workArea: WindowWorkArea | null;
-  /** 앱 창을 그린다 */
   renderWindow: RenderWindow;
-  /** 닫히는 애니메이션이 끝났을 때 부른다. 창 층이 남겨 둔 창을 놓는다 */
   onExitComplete: (id: string) => void;
-  /** 스냅 레이아웃에서 칸을 골라 스냅했을 때 부른다. 창 층이 남은 칸에 Snap Assist를 띄운다 */
   onSnap: (id: string, zone: SnapZone) => void;
-  /** 끄는 동안 놓으면 채울 곳이 바뀌었을 때 부른다. 창 층이 그 자리에 SnapPreview를 그린다 */
   onSnapPreviewChange: (id: string, target: DragSnapTarget | null) => void;
 };
 
@@ -94,22 +83,32 @@ const windowMotionClassNames: Readonly<Record<WindowMotion, string>> = {
  * @codocs [[피그마 연동:모션 클래스]]
  * @codocs [[스냅:스냅된 창]]
  * @codocs [[창 동작:모바일]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.window 그릴 창. 닫힌 창은 저장소에서 지우기 직전의 모습이다
+ * @param props.title 창 제목. 창 영역의 접근성 이름이 된다
+ * @param props.isClosing 저장소에서 지워져 닫히는 애니메이션만 남은 창인지
+ * @param props.isActive 맨 앞 창인지
+ * @param props.zIndex 쌓는 차례. 클수록 위다
+ * @param props.device 화면 방식. 모바일은 창이 늘 작업 영역을 채운다
+ * @param props.workArea 작업 영역 크기. 최대화·스냅한 창의 자리를 구한다. 마운트 전에는 null이다
+ * @param props.renderWindow 앱 창을 그린다
+ * @param props.onExitComplete 닫히는 애니메이션이 끝났을 때 부른다. 창 층이 남겨 둔 창을 놓는다
+ * @param props.onSnap 스냅 레이아웃에서 칸을 골라 스냅했을 때 부른다. 창 층이 남은 칸에 Snap Assist를 띄운다
+ * @param props.onSnapPreviewChange 끄는 동안 놓으면 채울 곳이 바뀌었을 때 부른다. 창 층이 그 자리에 SnapPreview를 그린다
  */
-export function WindowView(props: WindowViewProps): JSX.Element {
-  const {
-    window: target,
-    title,
-    isClosing,
-    isActive,
-    zIndex,
-    device,
-    workArea,
-    renderWindow,
-    onExitComplete,
-    onSnap,
-    onSnapPreviewChange,
-  } = props;
+export function WindowView({
+  window: target,
+  title,
+  isClosing,
+  isActive,
+  zIndex,
+  device,
+  workArea,
+  renderWindow,
+  onExitComplete,
+  onSnap,
+  onSnapPreviewChange,
+}: WindowViewProps): JSX.Element {
   const { id, app, isMinimized } = target;
   const rect = workArea === null ? target.bounds : getWindowRect(target, workArea);
   const { x, y, width, height } = rect;
@@ -304,21 +303,20 @@ export function WindowView(props: WindowViewProps): JSX.Element {
 }
 
 type ResizeHandleProps = {
-  /** 핸들 방향 */
   direction: ResizeDirection;
-  /** 자리와 커서 클래스 */
   className: string;
-  /** 핸들을 눌렀을 때. 그 방향으로 크기 조절을 시작한다 */
   onResizeStart: (direction: ResizeDirection, event: PointerEvent<HTMLDivElement>) => void;
 };
 
 /**
  * 창 크기 조절 핸들 하나를 그린다. 마우스·펜으로만 쓰는 자리라 접근성 트리에서 뺀다.
  * @codocs [[창 동작:창 조작]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.direction 핸들 방향
+ * @param props.className 자리와 커서 클래스
+ * @param props.onResizeStart 핸들을 눌렀을 때. 그 방향으로 크기 조절을 시작한다
  */
-function ResizeHandle(props: ResizeHandleProps): JSX.Element {
-  const { direction, className, onResizeStart } = props;
+function ResizeHandle({ direction, className, onResizeStart }: ResizeHandleProps): JSX.Element {
   /**
    * 누르면 이 방향으로 크기 조절을 시작한다.
    * @param event 누르기 이벤트

@@ -17,11 +17,9 @@ import {
 
 export type ExplorerContentDevice = 'desktop' | 'mobile';
 
-/** 끌어 놓을 곳 */
+/** 끌어 놓을 곳. id는 놓으면 옮길 위치 id(폴더 id, 휴지통 id, 바탕화면은 `desktop`)이고 name은 `○○(으)로 이동` 툴팁에 쓴다. */
 type ExplorerDropTarget = {
-  /** 놓으면 옮길 위치 id(폴더 id, 휴지통 id, 바탕화면은 `desktop`) */
   id: string;
-  /** 위치 이름. `○○(으)로 이동` 툴팁에 쓴다 */
   name: string;
 };
 
@@ -49,34 +47,15 @@ type ExplorerContentProps = Pick<
     StatusBarProps,
     'itemCount' | 'selection' | 'hasSelection' | 'onDetailsView' | 'onLargeIconsView'
   > & {
-    /** 피그마 Device. mobile은 탐색 창과 나눔선 없이 항목만 보인다 */
     device?: ExplorerContentDevice;
-    /** 주소 줄 Breadcrumb의 Items 자리. 경로 칸(BreadcrumbItem)을 넣는다 */
     path?: ReactNode;
-    /** 명령 막대의 Commands 자리. `ExplorerCommands`를 넣는다 */
     commands?: ReactNode;
-    /** 본문 바탕(LayerSurface) 안 탐색 창(NavigationPane)의 Items 자리. 폴더 트리의 NavigationItem을 넣는다. desktop만 보인다 */
     navigation?: ReactNode;
-    /**
-     * 본문 바탕(LayerSurface) 안 `items` 영역의 내용. 현재 폴더의 항목(FileItem, 또는 DetailsHeader와 FileRow)을 넣는다.
-     * 피그마는 슬롯 안에 슬롯 속성을 둘 수 없어 이 영역을 `Window/Explorer`가 LayerSurface 슬롯을 통해 직접 채운다
-     */
     children?: ReactNode;
-    /**
-     * 항목 자리 요소에 넘길 속성(역할·접근성 이름, 선택·우클릭·키보드 동작, ref). 바깥 배치 클래스를 더할 수 있다.
-     * 주지 않으면 이름이 "폴더 내용"인 group이다
-     */
     itemsAreaProps?: ComponentProps<'div'>;
-    /** 항목 자리 요소를 감싸 그린다(우클릭 메뉴처럼 그 요소에 동작을 합치는 컴포넌트). 주지 않으면 그대로 그린다 */
     renderItemsArea?: (area: ReactElement) => ReactNode;
-    /**
-     * 끌어 놓을 곳으로 쓸 때의 위치 id와 이름(`data-drop-target`). 다른 창이나 바탕화면에서 항목을 끌어 이 본문에 놓으면
-     * 그 위치로 옮긴다
-     */
     dropTarget?: ExplorerDropTarget;
-    /** 항목 자리를 새로 그리는 열쇠. 보는 위치가 바뀌면 바꿔, 항목 자리 스크롤을 맨 위로 돌린다 */
     itemsKey?: string;
-    /** 본문에서 키를 눌렀을 때(Backspace, Alt + ← / → 같은 이동 단축키). 본문 어디를 눌러도 키를 받도록 본문이 포커스를 받는다 */
     onKeyDown?: (event: KeyboardEvent<HTMLDivElement>) => void;
   };
 
@@ -84,40 +63,68 @@ type ExplorerContentProps = Pick<
  * 탐색기 창의 본문(피그마 조립 `Explorer/Content`)을 그린다. 주소 줄, 명령 막대, 탐색 창·나눔선·항목 자리, 상태 줄을
  * 위에서부터 놓는다. 탐색 창·나눔선·항목 자리는 카드 바탕(LayerSurface) 위에 가로로 놓는다. 자리마다 들어갈 내용은 쓰는 쪽(`Window/Explorer`)이 넣고, 크기도 쓰는 쪽이 정한다.
  * @codocs [[디자인 시스템:조립]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.device 피그마 Device. mobile은 탐색 창과 나눔선 없이 항목만 보인다
+ * @param props.locationIcon 피그마 Breadcrumb의 `Location icon` 인스턴스 교체 속성. 경로 앞 위치 아이콘이다. 쓰는 곳마다 다르므로 꼭 넘긴다
+ * @param props.searchPlaceholder 검색 상자의 안내 글자. desktop과 mobile 검색 줄에 보인다. 탐색기 창은 `<현재 폴더> 검색`처럼 덮어쓴다
+ * @param props.searchValue 검색 상자의 입력값. 주면 쓰는 곳이 값을 정한다(위치를 옮기면 비우는 등). desktop과 mobile 검색 줄에 보인다
+ * @param props.path 주소 줄 Breadcrumb의 Items 자리. 경로 칸(BreadcrumbItem)을 넣는다
+ * @param props.commands 명령 막대의 Commands 자리. `ExplorerCommands`를 넣는다
+ * @param props.navigation 본문 바탕(LayerSurface) 안 탐색 창(NavigationPane)의 Items 자리. 폴더 트리의 NavigationItem을 넣는다. desktop만 보인다
+ * @param props.children 본문 바탕(LayerSurface) 안 `items` 영역의 내용. 현재 폴더의 항목(FileItem, 또는 DetailsHeader와 FileRow)을 넣는다. 피그마는 슬롯 안에 슬롯 속성을 둘 수 없어 이 영역을 `Window/Explorer`가 LayerSurface 슬롯을 통해 직접 채운다
+ * @param props.itemCount 피그마 TEXT 속성 Item count. 항목 수 글자다
+ * @param props.selection 피그마 TEXT 속성 Selection. 선택 정보 글자다
+ * @param props.hasSelection 피그마 BOOLEAN 속성 Has selection. 선택 정보를 보일지 정한다
+ * @param props.onBack 뒤로 버튼을 눌렀을 때
+ * @param props.canGoBack 뒤로 갈 수 있는지. false면 뒤로 버튼을 비활성(IconButton disabled)으로 둔다
+ * @param props.canGoForward 앞으로 갈 수 있는지. false면 앞으로 버튼을 비활성으로 둔다. desktop만 보인다
+ * @param props.canGoUp 상위 위치로 갈 수 있는지. false면 위로 버튼을 비활성으로 둔다. desktop만 보인다
+ * @param props.onForward 앞으로 버튼을 눌렀을 때. desktop만 보인다
+ * @param props.onUp 위로 버튼을 눌렀을 때. desktop만 보인다
+ * @param props.onRefresh 새로고침 버튼을 눌렀을 때. desktop만 보인다
+ * @param props.onSearchChange 검색 상자에 입력할 때. desktop과 mobile 검색 줄에 보인다
+ * @param props.onSearch 검색 버튼을 눌렀을 때. mobile 주소 줄(search closed)만 보인다
+ * @param props.search 피그마 Search. mobile에서 open이면 줄 전체가 ← 버튼과 나머지 폭을 채우는 검색 상자(검색 줄)로 바뀌고, 나타날 때 검색 상자에 포커스를 준다. desktop은 늘 검색 상자를 보이므로 이 값을 쓰지 않는다
+ * @param props.onSearchClose 검색 줄의 ← 버튼을 눌렀을 때. mobile 검색 줄(search open)만 보인다
+ * @param props.onDetailsView 자세히 보기 버튼을 눌렀을 때 부른다
+ * @param props.onLargeIconsView 큰 아이콘 보기 버튼을 눌렀을 때 부른다
+ * @param props.onKeyDown 본문에서 키를 눌렀을 때(Backspace, Alt + ← / → 같은 이동 단축키). 본문 어디를 눌러도 키를 받도록 본문이 포커스를 받는다
+ * @param props.itemsKey 항목 자리를 새로 그리는 열쇠. 보는 위치가 바뀌면 바꿔, 항목 자리 스크롤을 맨 위로 돌린다
+ * @param props.dropTarget 끌어 놓을 곳으로 쓸 때의 위치 id와 이름(`data-drop-target`). 다른 창이나 바탕화면에서 항목을 끌어 이 본문에 놓으면 그 위치로 옮긴다
+ * @param props.itemsAreaProps 항목 자리 요소에 넘길 속성(역할·접근성 이름, 선택·우클릭·키보드 동작, ref). 바깥 배치 클래스를 더할 수 있다. 주지 않으면 이름이 "폴더 내용"인 group이다
+ * @param props.renderItemsArea 항목 자리 요소를 감싸 그린다(우클릭 메뉴처럼 그 요소에 동작을 합치는 컴포넌트). 주지 않으면 그대로 그린다
  */
-export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
-  const {
-    device = 'desktop',
-    locationIcon,
-    searchPlaceholder,
-    searchValue,
-    path,
-    commands,
-    navigation,
-    children,
-    itemCount,
-    selection,
-    hasSelection: isSelectionShown,
-    onBack: handleBack,
-    canGoBack,
-    canGoForward,
-    canGoUp,
-    onForward: handleForward,
-    onUp: handleUp,
-    onRefresh: handleRefresh,
-    onSearchChange: handleSearchChange,
-    onSearch: handleSearch,
-    search,
-    onSearchClose: handleSearchClose,
-    onDetailsView: handleDetailsView,
-    onLargeIconsView: handleLargeIconsView,
-    onKeyDown: handleKeyDown,
-    itemsKey,
-    dropTarget,
-    itemsAreaProps,
-    renderItemsArea,
-  } = props;
+export function ExplorerContent({
+  device = 'desktop',
+  locationIcon,
+  searchPlaceholder,
+  searchValue,
+  path,
+  commands,
+  navigation,
+  children,
+  itemCount,
+  selection,
+  hasSelection: isSelectionShown,
+  onBack: handleBack,
+  canGoBack,
+  canGoForward,
+  canGoUp,
+  onForward: handleForward,
+  onUp: handleUp,
+  onRefresh: handleRefresh,
+  onSearchChange: handleSearchChange,
+  onSearch: handleSearch,
+  search,
+  onSearchClose: handleSearchClose,
+  onDetailsView: handleDetailsView,
+  onLargeIconsView: handleLargeIconsView,
+  onKeyDown: handleKeyDown,
+  itemsKey,
+  dropTarget,
+  itemsAreaProps,
+  renderItemsArea,
+}: ExplorerContentProps): JSX.Element {
   const isDesktop = device === 'desktop';
   return (
     // 본문 어디를 눌러도 이동 단축키를 받도록 포커스를 받는다(Tab으로는 닿지 않는다). 포커스 고리는 그리지 않는다.

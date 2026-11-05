@@ -12,31 +12,19 @@ import {
 } from '@/shared/utils/menu-items/menu-items';
 import type { WorkspaceItemKind } from '@/shared/utils/workspace-rules/workspace-rules';
 
-/** 아이콘 메뉴가 보이는 상태와 동작 */
+/** 아이콘 메뉴가 보이는 상태와 동작. kind는 우클릭한 항목 종류이며 여럿이면 null이다. isPinned는 Start 고정됨에 있는지(하나일 때)이고 canTrash는 휴지통으로 보낼 수 있는지(휴지통은 보낼 수 없다)다. isRecycleBinEmpty가 true면 휴지통 비우기를 고를 수 없다. */
 type ItemMenuOptions = {
-  /** 우클릭한 항목 종류. 여러 개면 null */
   kind: WorkspaceItemKind | null;
-  /** Start 고정됨에 있는지(하나일 때) */
   isPinned: boolean;
-  /** 휴지통으로 보낼 수 있는지(휴지통은 보낼 수 없다) */
   canTrash: boolean;
-  /** 휴지통이 비었는지. 비었으면 휴지통 비우기를 고를 수 없다 */
   isRecycleBinEmpty: boolean;
-  /** 열기 */
   onOpen: () => void;
-  /** 새 창에서 열기 */
   onOpenInNewWindow: () => void;
-  /** 링크 복사 */
   onCopyLink: () => void;
-  /** 시작 화면에 고정·고정 해제 */
   onTogglePin: () => void;
-  /** 잘라내기 */
   onCut: () => void;
-  /** 이름 바꾸기 */
   onRename: () => void;
-  /** 삭제(휴지통으로 보내기) */
   onTrash: () => void;
-  /** 휴지통 비우기 */
   onEmptyRecycleBin: () => void;
 };
 

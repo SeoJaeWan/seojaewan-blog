@@ -10,13 +10,9 @@ import {
 } from '@seojaewan/design-system';
 
 type SnapLayoutMenuProps = {
-  /** 피그마 State=Inactive. 창이 활성 상태가 아니면 최대화 버튼 아이콘을 흐리게 그린다 */
   isInactive?: boolean;
-  /** 최대화 버튼을 눌렀을 때 */
   onMaximize?: () => void;
-  /** 스냅 칸을 골랐을 때(레이아웃과 칸 번호) */
   onSelectZone?: (layout: SnapLayoutOptionLayout, index: number) => void;
-  /** 바깥 배치 클래스 */
   className?: string;
 };
 
@@ -35,15 +31,18 @@ const OPEN_TRIGGER_CLASS_NAME = 'aria-expanded:bg-color-black-4 aria-expanded:te
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[디자인 시스템:팝업]]
  * @codocs [[스냅:스냅 레이아웃]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.isInactive 피그마 State=Inactive. 창이 활성 상태가 아니면 최대화 버튼 아이콘을 흐리게 그린다
+ * @param props.onMaximize 최대화 버튼을 눌렀을 때
+ * @param props.onSelectZone 스냅 칸을 골랐을 때(레이아웃과 칸 번호)
+ * @param props.className 바깥 배치 클래스
  */
-export function SnapLayoutMenu(props: SnapLayoutMenuProps): JSX.Element {
-  const {
-    isInactive = false,
-    onMaximize: handleMaximize,
-    onSelectZone: handleZoneChoice,
-    className,
-  } = props;
+export function SnapLayoutMenu({
+  isInactive = false,
+  onMaximize: handleMaximize,
+  onSelectZone: handleZoneChoice,
+  className,
+}: SnapLayoutMenuProps): JSX.Element {
   const [isHoverOpen, setIsHoverOpen] = useState(false);
 
   /**

@@ -111,26 +111,19 @@ type ExplorerBodyProps = Pick<
   | 'onUp'
   | 'onKeyDown'
 > & {
-  /** 화면 방식 */
   device: DeviceVariant;
-  /** 보고 있는 위치(폴더 id, 휴지통 id, 바탕화면은 null) */
   location: ExplorerLocation;
-  /** 같은 탭에서 폴더로 간다 */
   onNavigate: (location: ExplorerLocation) => void;
-  /** 폴더를 새 탭에서 연다 */
   onOpenInNewTab: (location: ExplorerLocation) => void;
 };
 
 /** 열린 우클릭 메뉴. 빈 곳 메뉴거나 항목 메뉴(우클릭한 항목들)다 */
 type OpenMenu = { kind: 'empty' } | { kind: 'items'; ids: readonly string[] };
 
-/** 폴더 안 검색 상태 */
+/** 폴더 안 검색 상태. location은 검색어를 입력한 위치이며 다른 위치로 가면 검색을 끝낸다. isOpen은 모바일 검색 줄이 열렸는지이며 데스크톱은 쓰지 않는다. */
 type ExplorerSearchState = {
-  /** 검색어를 입력한 위치. 다른 위치로 가면 검색을 끝낸다 */
   location: ExplorerLocation;
-  /** 검색어 */
   query: string;
-  /** 모바일 검색 줄이 열렸는지. 데스크톱은 쓰지 않는다 */
   isOpen: boolean;
 };
 
@@ -158,17 +151,21 @@ const ICON_VIEWS = { large: 'large', medium: 'medium' } as const;
  * @codocs [[파일 탐색기:폴더 안 검색]]
  * @codocs [[반응형:입력 차이]]
  * @codocs [[파일 탐색기:모바일]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.device 화면 방식
+ * @param props.location 보고 있는 위치(폴더 id, 휴지통 id, 바탕화면은 null)
+ * @param props.onNavigate 같은 탭에서 폴더로 간다
+ * @param props.onOpenInNewTab 폴더를 새 탭에서 연다
+ * @param props.onKeyDown 본문에서 키를 눌렀을 때(Backspace, Alt + ← / → 같은 이동 단축키). 본문 어디를 눌러도 키를 받도록 본문이 포커스를 받는다
  */
-export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
-  const {
-    device,
-    location,
-    onNavigate,
-    onOpenInNewTab,
-    onKeyDown: handleNavigationKeyDown,
-    ...contentProps
-  } = props;
+export function ExplorerBody({
+  device,
+  location,
+  onNavigate,
+  onOpenInNewTab,
+  onKeyDown: handleNavigationKeyDown,
+  ...contentProps
+}: ExplorerBodyProps): JSX.Element {
   const isMobile = device === 'mobile';
   const isRecycleBin = location === RECYCLE_BIN_ID;
   const items = useWorkspaceStore((state) => state.items);

@@ -18,21 +18,14 @@ import {
   RECYCLE_BIN_NAME,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
-/** 탐색 창 트리 칸 하나 */
+/** 탐색 창 트리 칸 하나. key는 트리 칸 열쇠이며 바탕화면은 `desktop`, 폴더는 폴더 id, 휴지통은 휴지통 id다. location은 누르면 갈 위치다. level은 깊이(0~3)이며 3보다 깊은 폴더는 3으로 그린다(NavigationItem Level이 3까지다). expand는 꺾쇠이며 하위 폴더가 없으면 none이다. */
 export type NavigationRow = {
-  /** 트리 칸 열쇠. 바탕화면은 `desktop`, 폴더는 폴더 id, 휴지통은 휴지통 id다 */
   key: string;
-  /** 누르면 갈 위치 */
   location: ExplorerLocation;
-  /** 이름 */
   label: string;
-  /** 깊이(0~3). 3보다 깊은 폴더는 3으로 그린다(NavigationItem Level이 3까지다) */
   level: 0 | 1 | 2 | 3;
-  /** 꺾쇠. 하위 폴더가 없으면 none이다 */
   expand: 'none' | 'collapsed' | 'expanded';
-  /** 현재 위치인지 */
   isSelected: boolean;
-  /** 아이콘 종류 */
   icon: 'desktop' | 'folder' | 'recycle-bin';
 };
 

@@ -11,11 +11,9 @@ const SNAP_FROM_Y = '--motion-window-snap-from-y';
 const SNAP_FROM_SCALE_X = '--motion-window-snap-from-scale-x';
 const SNAP_FROM_SCALE_Y = '--motion-window-snap-from-scale-y';
 
-/** 마지막으로 그린 창 모습 */
+/** 마지막으로 그린 창 모습. layoutKey는 배치를 가리키는 값(배치와 스냅 칸)이며 바뀌면 최대화·복원·스냅이다. */
 type SnapMotionFrame = {
-  /** 자리 */
   rect: WindowBounds;
-  /** 배치를 가리키는 값(배치와 스냅 칸). 이 값이 바뀌면 최대화·복원·스냅이다 */
   layoutKey: string;
 };
 

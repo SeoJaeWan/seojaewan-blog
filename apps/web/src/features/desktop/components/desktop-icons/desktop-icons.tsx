@@ -12,23 +12,15 @@ export type DesktopIconKind = 'recycle-bin' | 'folder' | 'post' | 'link';
 /** 바탕화면 아이콘 크기. 피그마 FileItem Size(큰·보통·작은 아이콘)다 */
 export type DesktopIconView = 'large' | 'medium' | 'small';
 
-/** 바탕화면 아이콘 하나 */
+/** 바탕화면 아이콘 하나. isFull은 휴지통에 항목이 있으면 찬 모양으로 그린다(휴지통에만 쓴다). isSelected가 true면 선택 바탕을 깔며 끌어 올린 놓을 곳(폴더·휴지통)의 강조도 이 모양이다. isRenaming이면 이름 대신 입력창을 그린다(피그마 FileItem `State=Rename`). isCut이면 흐리게 그린다(피그마 FileItem `cut`). cell은 격자 칸이며 모든 아이콘에 있으면 아이콘을 그 칸에 놓고, 없으면 격자 순서대로 흘려 놓는다. */
 export type DesktopIcon = {
-  /** 항목 id */
   id: string;
-  /** 아이콘 아래 이름 */
   name: string;
-  /** 아이콘 종류 */
   kind: DesktopIconKind;
-  /** 휴지통에 항목이 있으면 찬 모양으로 그린다. 휴지통에만 쓴다 */
   isFull?: boolean;
-  /** 선택된 아이콘이면 선택 바탕을 깐다. 끌어 올린 놓을 곳(폴더·휴지통)의 강조도 이 모양이다 */
   isSelected?: boolean;
-  /** 이름 바꾸기 중이면 이름 대신 입력창을 그린다(피그마 FileItem `State=Rename`) */
   isRenaming?: boolean;
-  /** 잘라낸 아이콘이면 흐리게 그린다(피그마 FileItem `cut`) */
   isCut?: boolean;
-  /** 격자 칸. 모든 아이콘에 있으면 아이콘을 그 칸에 놓는다. 없으면 격자 순서대로 흘려 놓는다 */
   cell?: GridCell;
 };
 
@@ -42,17 +34,11 @@ export type DesktopIconProps = Omit<
 };
 
 type DesktopIconsProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 icons 프레임의 아이콘. 칸이 없으면 격자 순서(위에서 아래, 그다음 왼쪽에서 오른쪽)대로 놓는다 */
   icons: readonly DesktopIcon[];
-  /** 아이콘 크기. 피그마 조립은 보통 아이콘이다 */
   iconView?: DesktopIconView;
-  /** 아이콘을 열었을 때 부른다. 데스크톱은 더블클릭, 모바일은 탭(클릭)으로 연다(`iconOpenGesture`) */
   onIconOpen?: (icon: DesktopIcon) => void;
-  /** 아이콘을 여는 동작. 데스크톱은 double-click, 모바일은 click이다 */
   iconOpenGesture?: 'double-click' | 'click';
-  /** 아이콘마다 더할 동작·접근성 속성(선택, 끌기, 키보드, 이름 바꾸기 입력창). 앱의 층이 넘긴다 */
   getIconProps?: (icon: DesktopIcon) => DesktopIconProps;
-  /** 아이콘 위에 겹쳐 그릴 것(끄는 사각형, 끄는 복제본, 툴팁, 말풍선) */
   overlay?: ReactNode;
 };
 
@@ -65,19 +51,25 @@ type DesktopIconsProps = Omit<ComponentProps<'div'>, 'children'> & {
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[바탕화면 아이콘:모바일]]
  * @codocs [[바탕화면 아이콘:격자 순서]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.icons 피그마 icons 프레임의 아이콘. 칸이 없으면 격자 순서(위에서 아래, 그다음 왼쪽에서 오른쪽)대로 놓는다
+ * @param props.iconView 아이콘 크기. 피그마 조립은 보통 아이콘이다
+ * @param props.onIconOpen 아이콘을 열었을 때 부른다. 데스크톱은 더블클릭, 모바일은 탭(클릭)으로 연다(`iconOpenGesture`)
+ * @param props.iconOpenGesture 아이콘을 여는 동작. 데스크톱은 double-click, 모바일은 click이다
+ * @param props.getIconProps 아이콘마다 더할 동작·접근성 속성(선택, 끌기, 키보드, 이름 바꾸기 입력창). 앱의 층이 넘긴다
+ * @param props.overlay 아이콘 위에 겹쳐 그릴 것(끄는 사각형, 끄는 복제본, 툴팁, 말풍선)
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function DesktopIcons(props: DesktopIconsProps): JSX.Element {
-  const {
-    icons,
-    iconView = 'medium',
-    onIconOpen,
-    iconOpenGesture = 'double-click',
-    getIconProps,
-    overlay,
-    className,
-    ...divProps
-  } = props;
+export function DesktopIcons({
+  icons,
+  iconView = 'medium',
+  onIconOpen,
+  iconOpenGesture = 'double-click',
+  getIconProps,
+  overlay,
+  className,
+  ...divProps
+}: DesktopIconsProps): JSX.Element {
   const isPlaced = icons.length > 0 && icons.every((icon) => icon.cell !== undefined);
   return (
     <div
