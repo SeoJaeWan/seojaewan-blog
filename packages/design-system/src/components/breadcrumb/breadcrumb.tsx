@@ -4,9 +4,7 @@ import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
 type BreadcrumbProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 Items 슬롯. 경로 칸(BreadcrumbItem)을 채운다 */
   children?: ReactNode;
-  /** 피그마 `Location icon` 인스턴스 교체 속성(`locationIcon`). 경로 앞 위치 아이콘이다. 쓰는 곳마다 다르므로 꼭 넘긴다 */
   locationIcon: ReactNode;
 };
 
@@ -14,10 +12,17 @@ type BreadcrumbProps = Omit<ComponentProps<'div'>, 'children'> & {
  * 현재 위치 경로를 보여 주는 줄(피그마 Breadcrumb)을 그린다. 탐색기 주소 줄에 쓴다.
  * 위치 아이콘, 꺾쇠, 경로 칸(children)이다. 너비는 갖지 않고 쓰는 곳이 정한다.
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.children 피그마 Items 슬롯. 경로 칸(BreadcrumbItem)을 채운다
+ * @param props.locationIcon 피그마 `Location icon` 인스턴스 교체 속성(`locationIcon`). 경로 앞 위치 아이콘이다. 쓰는 곳마다 다르므로 꼭 넘긴다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function Breadcrumb(props: BreadcrumbProps): JSX.Element {
-  const { children, locationIcon, className, ...divProps } = props;
+export function Breadcrumb({
+  children,
+  locationIcon,
+  className,
+  ...divProps
+}: BreadcrumbProps): JSX.Element {
   return (
     <div
       {...divProps}

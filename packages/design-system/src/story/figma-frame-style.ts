@@ -3,11 +3,10 @@ import type { CSSProperties } from 'react';
 /** 피그마 크기 방식(export.json의 `sizing`). 플러그인은 레이아웃 크기 방식을 그대로 적는다 */
 type FigmaSizing = 'FIXED' | 'HUG' | 'FILL';
 
-/** export.json 트리 노드 가운데 FigmaFrame이 읽는 칸 */
+/** export.json 트리 노드 가운데 FigmaFrame이 읽는 칸. size는 피그마 노드의 크기 숫자(px)다 */
 export type FigmaNode = {
   name: string;
   sizing?: { h: FigmaSizing; v: FigmaSizing };
-  /** 피그마 노드의 크기 숫자(px) */
   size?: { w: number; h: number };
   layout?: { mode?: string };
   children?: readonly FigmaNode[];

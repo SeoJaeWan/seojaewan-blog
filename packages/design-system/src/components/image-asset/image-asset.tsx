@@ -19,9 +19,7 @@ export function getImageAsset(name: ImageAssetName): ImageAssetData {
 }
 
 type ImageAssetProps = Omit<ComponentProps<'img'>, 'src' | 'alt'> & {
-  /** 래스터 자산 이름(figma/assets/ 기준, 확장자 없음) */
   name: ImageAssetName;
-  /** 대체 글자. 장식 이미지면 빈 글자(기본값)로 둔다 */
   alt?: string;
 };
 
@@ -30,10 +28,11 @@ type ImageAssetProps = Omit<ComponentProps<'img'>, 'src' | 'alt'> & {
  * 클래스가 없으면 자산 원본 크기를 `width`·`height`로 달아 원본 비율을 지킨다.
  * 앱은 디자인 시스템 내부 경로를 import할 수 없으므로 이 컴포넌트로 래스터 자산을 쓴다.
  * @codocs [[피그마 연동:자산]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.name 래스터 자산 이름(figma/assets/ 기준, 확장자 없음)
+ * @param props.alt 대체 글자. 장식 이미지면 빈 글자(기본값)로 둔다
  */
-export function ImageAsset(props: ImageAssetProps): JSX.Element {
-  const { name, alt = '', ...imgProps } = props;
+export function ImageAsset({ name, alt = '', ...imgProps }: ImageAssetProps): JSX.Element {
   const { src, width, height } = getImageAsset(name);
   return <img alt={alt} width={width} height={height} {...imgProps} src={src} />;
 }

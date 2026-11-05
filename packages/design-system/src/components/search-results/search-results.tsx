@@ -9,14 +9,8 @@ export type SearchResultsDevice = 'desktop' | 'mobile';
 const CARD_SLOT_CLASS_NAME = '[&>*]:min-w-size-none [&>*]:flex-flex-fill';
 
 type SearchResultsProps = Omit<ComponentProps<'div'>, 'title'> & {
-  /** 피그마 Device. desktop은 결과 목록 옆에 카드를, mobile은 카드를 위에 두고 그 아래에 결과 목록을 쌓는다 */
   device?: SearchResultsDevice;
-  /**
-   * 안쪽 BestMatchCard. 피그마에서 카드는 SearchResults 안에 놓인 인스턴스이고, 카드의 속성(`Title`, `Meta`)과 `Actions` 슬롯은 조립이 바로 채운다.
-   * 카드의 속성과 슬롯을 SearchResults가 다시 열지 않는다. 카드 너비는 SearchResults가 카드 자리에서 채운다(피그마 FILL)
-   */
   card: ReactNode;
-  /** 피그마 `Results` 슬롯. 검색 결과 목록(ListGroup 등)을 넣는다 */
   children?: ReactNode;
 };
 
@@ -26,10 +20,20 @@ type SearchResultsProps = Omit<ComponentProps<'div'>, 'title'> & {
  * 모바일은 높이가 내용에 맞고(피그마 HUG) 스스로 스크롤하지 않는다. 넘칠 때의 스크롤은 쓰는 곳이 ScrollArea로 감싸 정한다.
  * 너비(데스크톱은 높이도)는 쓰는 곳이 정한다(피그마 원본 574×545, 모바일 너비 356은 미리보기 크기다).
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.device 피그마 Device. desktop은 결과 목록 옆에 카드를, mobile은 카드를 위에 두고 그 아래에 결과 목록을 쌓는다
+ * @param props.card 안쪽 BestMatchCard. 피그마에서 카드는 SearchResults 안에 놓인 인스턴스이고, 카드의 속성(`Title`, `Meta`)과 `Actions` 슬롯은 조립이 바로 채운다.
+ *   카드의 속성과 슬롯을 SearchResults가 다시 열지 않는다. 카드 너비는 SearchResults가 카드 자리에서 채운다(피그마 FILL)
+ * @param props.children 피그마 `Results` 슬롯. 검색 결과 목록(ListGroup 등)을 넣는다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function SearchResults(props: SearchResultsProps): JSX.Element {
-  const { device = 'desktop', card, children, className, ...divProps } = props;
+export function SearchResults({
+  device = 'desktop',
+  card,
+  children,
+  className,
+  ...divProps
+}: SearchResultsProps): JSX.Element {
   if (device === 'mobile') {
     return (
       <div

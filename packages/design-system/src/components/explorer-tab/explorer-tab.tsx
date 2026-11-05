@@ -5,19 +5,12 @@ import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
 type ExplorerTabProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
-  /** 피그마 State=Selected. 지금 고른 탭이면 바탕을 깐다 */
   isSelected?: boolean;
-  /** 탭 앞 16px 폴더 아이콘이다. 탭마다 다르므로 필수다(피그마 ExplorerTab에는 아직 교체 속성이 없다) */
   icon: ReactNode;
-  /** 피그마 TEXT 속성 Title. 탭에 보일 폴더 이름이다 */
   title?: string;
-  /** 피그마 불리언 속성 Has separator. 선택되지 않은 탭 오른쪽의 구분선을 그린다 */
   hasSeparator?: boolean;
-  /** Base UI 탭 값. 탭 줄(`Tabs.Root`)의 값과 같으면 선택된 탭으로 알린다 */
   value: number;
-  /** 닫기 버튼의 이름. 버튼은 마우스 전용이라 보조 기술에는 드러나지 않는다 */
   closeLabel?: string;
-  /** 닫기 버튼을 눌렀을 때 부른다. 탭 자체의 onClick은 부르지 않는다 */
   onClose?: (event: MouseEvent<HTMLButtonElement>) => void;
 };
 
@@ -31,20 +24,27 @@ type ExplorerTabProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
  * @codocs [[접근성:역할]]
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
  * @codocs [[디자인 시스템:아이콘 자리]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.isSelected 피그마 State=Selected. 지금 고른 탭이면 바탕을 깐다
+ * @param props.icon 탭 앞 16px 폴더 아이콘이다. 탭마다 다르므로 필수다(피그마 ExplorerTab에는 아직 교체 속성이 없다)
+ * @param props.title 피그마 TEXT 속성 Title. 탭에 보일 폴더 이름이다
+ * @param props.hasSeparator 피그마 불리언 속성 Has separator. 선택되지 않은 탭 오른쪽의 구분선을 그린다
+ * @param props.closeLabel 닫기 버튼의 이름. 버튼은 마우스 전용이라 보조 기술에는 드러나지 않는다
+ * @param props.onClose 닫기 버튼을 눌렀을 때 부른다. 탭 자체의 onClick은 부르지 않는다
+ * @param props.value Base UI 탭 값. 탭 줄(`Tabs.Root`)의 값과 같으면 선택된 탭으로 알린다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
-  const {
-    isSelected = false,
-    icon,
-    title = '폴더 이름',
-    hasSeparator = true,
-    closeLabel = '탭 닫기',
-    onClose,
-    value,
-    className,
-    ...divProps
-  } = props;
+export function ExplorerTab({
+  isSelected = false,
+  icon,
+  title = '폴더 이름',
+  hasSeparator = true,
+  closeLabel = '탭 닫기',
+  onClose,
+  value,
+  className,
+  ...divProps
+}: ExplorerTabProps): JSX.Element {
   return (
     <div
       {...divProps}

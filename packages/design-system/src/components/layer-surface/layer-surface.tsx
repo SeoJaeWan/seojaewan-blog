@@ -3,7 +3,6 @@ import type { ComponentProps, JSX, ReactNode } from 'react';
 import { cn } from '../../cn';
 
 type LayerSurfaceProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 `Content` 슬롯. 가로로 놓인다. 탐색기 본문 조립이 탐색 창·나눔선·항목 자리를 채운다 */
   children?: ReactNode;
 };
 
@@ -13,10 +12,11 @@ type LayerSurfaceProps = Omit<ComponentProps<'div'>, 'children'> & {
  * 피그마에서 테두리가 레이아웃에 들어가므로(strokes included in layout) CSS border를 쓴다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.className 덧붙이거나 덮어쓸 클래스
+ * @param props.children 피그마 `Content` 슬롯. 가로로 놓인다. 탐색기 본문 조립이 탐색 창·나눔선·항목 자리를 채운다
  */
-export function LayerSurface(props: LayerSurfaceProps): JSX.Element {
-  const { className, children, ...divProps } = props;
+export function LayerSurface({ className, children, ...divProps }: LayerSurfaceProps): JSX.Element {
   return (
     <div
       {...divProps}

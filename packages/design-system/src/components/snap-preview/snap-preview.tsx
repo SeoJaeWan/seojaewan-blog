@@ -10,10 +10,10 @@ type SnapPreviewProps = ComponentProps<'div'>;
  * 피그마에서 테두리가 레이아웃에 들어가므로(strokes included in layout) CSS border를 쓴다.
  * @codocs [[디자인 기반:재질 효과]]
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function SnapPreview(props: SnapPreviewProps): JSX.Element {
-  const { className, ...divProps } = props;
+export function SnapPreview({ className, ...divProps }: SnapPreviewProps): JSX.Element {
   return (
     <div
       {...divProps}

@@ -4,34 +4,18 @@ import { cn } from '../../cn';
 import { RenameField } from '../rename-field/rename-field';
 
 type FileRowProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 View. 휴지통(recycle-bin)이면 날짜·유형·위치 대신 원래 위치·삭제한 날짜 칸을 그린다 */
   view?: 'default' | 'recycle-bin';
-  /** 피그마 TEXT 속성 Name. 파일 이름이다 */
   name?: string;
-  /** 피그마 TEXT 속성 Date. 수정한 날짜다 */
   date?: string;
-  /** 피그마 TEXT 속성 Type. 파일 유형이다 */
   type?: string;
-  /** 피그마 TEXT 속성 Location. hasLocation이 켜져 있을 때 보이는 위치다 */
   location?: string;
-  /** 피그마 BOOLEAN 속성 Has location. 위치 칸을 보인다(View=Default에만 있다) */
   hasLocation?: boolean;
-  /** 피그마 TEXT 속성 Original location. View=Recycle bin에서 지우기 전 위치다 */
   originalLocation?: string;
-  /** 피그마 TEXT 속성 Deleted date. View=Recycle bin에서 지운 날짜다 */
   deletedDate?: string;
-  /** 피그마 INSTANCE_SWAP 속성 Icon. 이름 앞 16px 아이콘이다. 파일·폴더 아이콘은 쓰는 곳마다 달라 꼭 넘긴다 */
   icon: ReactNode;
-  /** 피그마 State=Selected. 선택된 줄이면 바탕을 깐다 */
   isSelected?: boolean;
-  /** 피그마 State=Cut·Cut selected. 잘라낸 줄이면 아이콘과 이름을 흐리게 그린다 */
   isCut?: boolean;
-  /** 피그마 State=Rename. 이름 대신 이름 바꾸기 입력 상자를 그리고 선택 바탕을 깐다 */
   isRenaming?: boolean;
-  /**
-   * 이름 바꾸기 입력창(RenameField)에 넘길 값·동작·접근성 속성(`value`, `onValueChange`, `onKeyDown`, `onBlur`, `aria-label` 등).
-   * 생김새는 바꾸지 않는다. `isRenaming`일 때만 쓴다
-   */
   renameFieldProps?: Omit<ComponentProps<typeof RenameField>, 'text' | 'className'>;
 };
 
@@ -43,14 +27,18 @@ type FileRowProps = Omit<ComponentProps<'div'>, 'children'> & {
  * @param flags.isRenaming 이름 바꾸기 여부
  * @returns 상태 이름
  */
-function fileRowState(flags: {
+function fileRowState({
+  isSelected,
+  isCut,
+  isRenaming,
+}: {
   isSelected: boolean;
   isCut: boolean;
   isRenaming: boolean;
 }): 'rest' | 'selected' | 'cut' | 'cut-selected' | 'rename' {
-  if (flags.isRenaming) return 'rename';
-  if (flags.isCut) return flags.isSelected ? 'cut-selected' : 'cut';
-  return flags.isSelected ? 'selected' : 'rest';
+  if (isRenaming) return 'rename';
+  if (isCut) return isSelected ? 'cut-selected' : 'cut';
+  return isSelected ? 'selected' : 'rest';
 }
 
 /**
@@ -63,26 +51,40 @@ function fileRowState(flags: {
  * @codocs [[컴포넌트 목록:상태]]
  * @codocs [[피그마 연동:컨트롤 테두리 구현]]
  * @codocs [[디자인 시스템:아이콘 자리]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.view 피그마 View. 휴지통(recycle-bin)이면 날짜·유형·위치 대신 원래 위치·삭제한 날짜 칸을 그린다
+ * @param props.name 피그마 TEXT 속성 Name. 파일 이름이다
+ * @param props.date 피그마 TEXT 속성 Date. 수정한 날짜다
+ * @param props.type 피그마 TEXT 속성 Type. 파일 유형이다
+ * @param props.location 피그마 TEXT 속성 Location. hasLocation이 켜져 있을 때 보이는 위치다
+ * @param props.hasLocation 피그마 BOOLEAN 속성 Has location. 위치 칸을 보인다(View=Default에만 있다)
+ * @param props.originalLocation 피그마 TEXT 속성 Original location. View=Recycle bin에서 지우기 전 위치다
+ * @param props.deletedDate 피그마 TEXT 속성 Deleted date. View=Recycle bin에서 지운 날짜다
+ * @param props.icon 피그마 INSTANCE_SWAP 속성 Icon. 이름 앞 16px 아이콘이다. 파일·폴더 아이콘은 쓰는 곳마다 달라 꼭 넘긴다
+ * @param props.isSelected 피그마 State=Selected. 선택된 줄이면 바탕을 깐다
+ * @param props.isCut 피그마 State=Cut·Cut selected. 잘라낸 줄이면 아이콘과 이름을 흐리게 그린다
+ * @param props.isRenaming 피그마 State=Rename. 이름 대신 이름 바꾸기 입력 상자를 그리고 선택 바탕을 깐다
+ * @param props.renameFieldProps 이름 바꾸기 입력창(RenameField)에 넘길 값·동작·접근성 속성(`value`, `onValueChange`, `onKeyDown`, `onBlur`, `aria-label` 등).
+ *   생김새는 바꾸지 않는다. `isRenaming`일 때만 쓴다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function FileRow(props: FileRowProps): JSX.Element {
-  const {
-    view = 'default',
-    name = '파일 이름',
-    date = '수정한 날짜',
-    type = '유형',
-    location = '위치',
-    hasLocation = false,
-    originalLocation = '원래 위치',
-    deletedDate = '삭제한 날짜',
-    icon,
-    isSelected = false,
-    isCut = false,
-    isRenaming = false,
-    renameFieldProps,
-    className,
-    ...divProps
-  } = props;
+export function FileRow({
+  view = 'default',
+  name = '파일 이름',
+  date = '수정한 날짜',
+  type = '유형',
+  location = '위치',
+  hasLocation = false,
+  originalLocation = '원래 위치',
+  deletedDate = '삭제한 날짜',
+  icon,
+  isSelected = false,
+  isCut = false,
+  isRenaming = false,
+  renameFieldProps,
+  className,
+  ...divProps
+}: FileRowProps): JSX.Element {
   const dimClassName = isCut ? 'opacity-opacity-cut' : undefined;
   return (
     <div

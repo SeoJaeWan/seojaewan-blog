@@ -8,69 +8,39 @@ import { IconButton } from '../icon-button/icon-button';
 import { ImageAsset, type ImageAssetName } from '../image-asset/image-asset';
 
 type MenuItemCommonProps = {
-  /** 항목 이름. 길면 한 줄로 말줄임한다 */
   label: string;
-  /**
-   * 이름 앞 16px 아이콘(피그마 Has icon). SVG 아이콘이나 앱 로고 같은 래스터 자산(`images/*`)을 넣는다.
-   * 확인·라디오 항목은 아이콘 자리에 선택 표시를 그린다
-   */
   icon?: SvgAssetName | ImageAssetName;
-  /** 오른쪽에 보이는 단축키(예: `Ctrl+O`, 피그마 Has shortcut) */
   shortcut?: string;
-  /** 고를 수 없게 한다 */
   isDisabled?: boolean;
-  /** 덧붙이거나 덮어쓸 클래스 */
   className?: string;
 };
 
 type MenuItemProps = MenuItemCommonProps &
   (
     | {
-        /** 피그마 Variant=Default. 누르면 onClick을 부르고 메뉴를 닫는다 */
         variant?: 'default';
-        /**
-         * 메뉴 밖에 홀로 둔다. 검색 최고 일치 카드(BestMatchCard)의 동작 목록처럼 Base UI 메뉴가 없는 곳에서
-         * 같은 모양의 버튼으로 그리고, 강조는 hover·focus-visible로 한다
-         */
         isStandalone?: boolean;
-        /** 항목을 골랐을 때 호출 */
         onClick?: () => void;
       }
     | {
-        /** 피그마 Variant=Submenu. Menu.SubmenuRoot 안에 두고 하위 메뉴를 연다 */
         variant: 'submenu';
       }
     | {
-        /** 피그마 Variant=Toggle on/off. 켜져 있으면 확인 표시를 그린다 */
         variant: 'checkbox';
-        /** 켜짐 여부(제어) */
         isChecked?: boolean;
-        /** 처음 켜짐 여부(비제어) */
         isDefaultChecked?: boolean;
-        /** 켜짐 여부가 바뀔 때 호출 */
         onCheckedChange?: (checked: boolean) => void;
       }
     | {
-        /** 피그마 Variant=Radio on/off. Menu.RadioGroup 안에 두며, 골라져 있으면 점을 그린다 */
         variant: 'radio';
-        /** 라디오 묶음 안에서 이 항목의 값 */
         value: string;
       }
     | {
-        /**
-         * 피그마 Variant=Zoom. Chrome ⋮ 메뉴의 확대/축소 조절 줄이다. 이름 오른쪽에 지금 배율과 −·+ 버튼을 둔다.
-         * −·+는 Base UI 메뉴 항목이라 ↑↓로 닿고, 눌러도 메뉴가 닫히지 않는다
-         */
         variant: 'zoom';
-        /** 지금 배율 글자(피그마 value, 예: `100%`) */
         value: string;
-        /** 줄이기(−)를 눌렀을 때 호출 */
         onZoomOut?: () => void;
-        /** 키우기(+)를 눌렀을 때 호출 */
         onZoomIn?: () => void;
-        /** 줄이기를 쓸 수 없게 한다(가장 작은 단계) */
         isZoomOutDisabled?: boolean;
-        /** 키우기를 쓸 수 없게 한다(가장 큰 단계) */
         isZoomInDisabled?: boolean;
       }
   );
@@ -102,34 +72,74 @@ const SECONDARY_TEXT_CLASS_NAME = 'text-color-black-61 group-data-disabled:text-
 /**
  * 메뉴 항목(피그마 MenuItem)을 그린다. Base UI Menu의 Popup 안에 둔다.
  * variant에 따라 Base UI의 Item, SubmenuTrigger, CheckboxItem, RadioItem이 키보드 조작과 접근성을 맡는다.
+ * variant마다 받는 속성이 달라 공통 속성만 꺼내고, 나머지는 `variantProps`에 모아 variant로 좁힌다.
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.label 항목 이름. 길면 한 줄로 말줄임한다
+ * @param props.icon 이름 앞 16px 아이콘(피그마 Has icon). SVG 아이콘이나 앱 로고 같은 래스터 자산(`images/*`)을 넣는다.
+ *   확인·라디오 항목은 아이콘 자리에 선택 표시를 그린다
+ * @param props.shortcut 오른쪽에 보이는 단축키(예: `Ctrl+O`, 피그마 Has shortcut)
+ * @param props.isDisabled 고를 수 없게 한다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
+ * @param props.variant 항목 종류. `default`(피그마 Variant=Default)는 누르면 onClick을 부르고 메뉴를 닫는다.
+ *   `submenu`(Variant=Submenu)는 Menu.SubmenuRoot 안에 두고 하위 메뉴를 연다.
+ *   `checkbox`(Variant=Toggle on/off)는 켜져 있으면 확인 표시를 그린다.
+ *   `radio`(Variant=Radio on/off)는 Menu.RadioGroup 안에 두며, 골라져 있으면 점을 그린다.
+ *   `zoom`(Variant=Zoom)은 Chrome ⋮ 메뉴의 확대/축소 조절 줄이다. 이름 오른쪽에 지금 배율과 −·+ 버튼을 둔다.
+ *   −·+는 Base UI 메뉴 항목이라 ↑↓로 닿고, 눌러도 메뉴가 닫히지 않는다
+ * @param props.isStandalone (`default`) 메뉴 밖에 홀로 둔다. 검색 최고 일치 카드(BestMatchCard)의 동작 목록처럼
+ *   Base UI 메뉴가 없는 곳에서 같은 모양의 버튼으로 그리고, 강조는 hover·focus-visible로 한다
+ * @param props.onClick (`default`) 항목을 골랐을 때 호출
+ * @param props.isChecked (`checkbox`) 켜짐 여부(제어)
+ * @param props.isDefaultChecked (`checkbox`) 처음 켜짐 여부(비제어)
+ * @param props.onCheckedChange (`checkbox`) 켜짐 여부가 바뀔 때 호출
+ * @param props.value (`radio`) 라디오 묶음 안에서 이 항목의 값. (`zoom`) 지금 배율 글자(피그마 value, 예: `100%`)
+ * @param props.onZoomOut (`zoom`) 줄이기(−)를 눌렀을 때 호출
+ * @param props.onZoomIn (`zoom`) 키우기(+)를 눌렀을 때 호출
+ * @param props.isZoomOutDisabled (`zoom`) 줄이기를 쓸 수 없게 한다(가장 작은 단계)
+ * @param props.isZoomInDisabled (`zoom`) 키우기를 쓸 수 없게 한다(가장 큰 단계)
  */
-export function MenuItem(props: MenuItemProps): JSX.Element {
-  const className = cn(ROW_CLASS_NAME, props.className);
-  const isDisabled = props.isDisabled ?? false;
-  const icon = props.icon === undefined ? undefined : <MenuItemIcon name={props.icon} />;
-  switch (props.variant) {
+export function MenuItem({
+  label,
+  icon,
+  shortcut,
+  isDisabled = false,
+  className,
+  ...variantProps
+}: MenuItemProps): JSX.Element {
+  const rowClassName = cn(ROW_CLASS_NAME, className);
+  const leading = icon === undefined ? undefined : <MenuItemIcon name={icon} />;
+  switch (variantProps.variant) {
     case 'submenu':
       return (
-        <Menu.SubmenuTrigger className={className} disabled={isDisabled} label={props.label}>
-          <MenuItemContent {...props} leading={icon} />
+        <Menu.SubmenuTrigger className={rowClassName} disabled={isDisabled} label={label}>
+          <MenuItemContent label={label} shortcut={shortcut} variant="submenu" leading={leading} />
         </Menu.SubmenuTrigger>
       );
     case 'zoom':
-      return <MenuZoomRow {...props} icon={props.icon ?? ZOOM_DEFAULT_ICON} />;
-    case 'checkbox':
+      return (
+        <MenuZoomRow
+          {...variantProps}
+          label={label}
+          icon={icon ?? ZOOM_DEFAULT_ICON}
+          className={className}
+        />
+      );
+    case 'checkbox': {
+      const { isChecked, isDefaultChecked, onCheckedChange: handleCheckedChange } = variantProps;
       return (
         <Menu.CheckboxItem
-          className={className}
+          className={rowClassName}
           disabled={isDisabled}
-          label={props.label}
-          checked={props.isChecked}
-          defaultChecked={props.isDefaultChecked}
-          onCheckedChange={props.onCheckedChange}
+          label={label}
+          checked={isChecked}
+          defaultChecked={isDefaultChecked}
+          onCheckedChange={handleCheckedChange}
         >
           <MenuItemContent
-            {...props}
+            label={label}
+            shortcut={shortcut}
+            variant="checkbox"
             leading={
               <Menu.CheckboxItemIndicator className="flex">
                 <Asset
@@ -141,16 +151,19 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           />
         </Menu.CheckboxItem>
       );
+    }
     case 'radio':
       return (
         <Menu.RadioItem
-          className={className}
+          className={rowClassName}
           disabled={isDisabled}
-          label={props.label}
-          value={props.value}
+          label={label}
+          value={variantProps.value}
         >
           <MenuItemContent
-            {...props}
+            label={label}
+            shortcut={shortcut}
+            variant="radio"
             leading={
               <Menu.RadioItemIndicator className="flex">
                 <span className="size-size-menu-item-bullet rounded-full bg-color-black-89 motion-control-state group-data-disabled:bg-color-black-36 group-active:group-data-highlighted:bg-color-black-61" />
@@ -160,57 +173,52 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         </Menu.RadioItem>
       );
     case 'default':
-    case undefined:
-      if (props.isStandalone === true) {
+    case undefined: {
+      const { isStandalone = false, onClick: handleClick } = variantProps;
+      if (isStandalone) {
         return (
           <button
             type="button"
-            className={cn(className, 'text-left')}
+            className={cn(rowClassName, 'text-left')}
             disabled={isDisabled}
             data-disabled={isDisabled ? '' : undefined}
-            onClick={props.onClick}
+            onClick={handleClick}
           >
-            <MenuItemContent {...props} leading={icon} baseClassName={STANDALONE_BASE_CLASS_NAME} />
+            <MenuItemContent
+              label={label}
+              shortcut={shortcut}
+              variant={variantProps.variant}
+              leading={leading}
+              stateClassName={STANDALONE_BASE_CLASS_NAME}
+            />
           </button>
         );
       }
       return (
         <Menu.Item
-          className={className}
+          className={rowClassName}
           disabled={isDisabled}
-          label={props.label}
-          onClick={props.onClick}
+          label={label}
+          onClick={handleClick}
         >
-          <MenuItemContent {...props} leading={icon} />
+          <MenuItemContent
+            label={label}
+            shortcut={shortcut}
+            variant={variantProps.variant}
+            leading={leading}
+          />
         </Menu.Item>
       );
+    }
   }
 }
 
 type MenuZoomRowProps = MenuItemCommonProps & {
-  /**
-   *
-   */
   variant: 'zoom';
-  /**
-   *
-   */
   value: string;
-  /**
-   *
-   */
   onZoomOut?: () => void;
-  /**
-   *
-   */
   onZoomIn?: () => void;
-  /**
-   *
-   */
   isZoomOutDisabled?: boolean;
-  /**
-   *
-   */
   isZoomInDisabled?: boolean;
 };
 
@@ -219,19 +227,26 @@ type MenuZoomRowProps = MenuItemCommonProps & {
  * ↑↓ 키로 닿고, `closeOnClick={false}`라 눌러도 메뉴가 닫히지 않는다. 실제 배율 동작은 쓰는 곳이 콜백과 값으로 잇는다.
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
  * @codocs [[Chrome:확대/축소]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.label 항목 이름. 길면 한 줄로 말줄임한다
+ * @param props.icon 이름 앞 16px 아이콘. MenuItem이 넘기며 기본은 확대 아이콘이다
+ * @param props.value 지금 배율 글자(피그마 value, 예: `100%`)
+ * @param props.onZoomOut 줄이기(−)를 눌렀을 때 호출
+ * @param props.onZoomIn 키우기(+)를 눌렀을 때 호출
+ * @param props.isZoomOutDisabled 줄이기를 쓸 수 없게 한다(가장 작은 단계)
+ * @param props.isZoomInDisabled 키우기를 쓸 수 없게 한다(가장 큰 단계)
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-function MenuZoomRow(props: MenuZoomRowProps): JSX.Element {
-  const {
-    label,
-    icon,
-    value,
-    onZoomOut: handleZoomOut,
-    onZoomIn: handleZoomIn,
-    isZoomOutDisabled = false,
-    isZoomInDisabled = false,
-    className,
-  } = props;
+function MenuZoomRow({
+  label,
+  icon,
+  value,
+  onZoomOut: handleZoomOut,
+  onZoomIn: handleZoomIn,
+  isZoomOutDisabled = false,
+  isZoomInDisabled = false,
+  className,
+}: MenuZoomRowProps): JSX.Element {
   return (
     <Menu.Group
       aria-label={label}
@@ -281,14 +296,14 @@ function MenuZoomRow(props: MenuZoomRowProps): JSX.Element {
 
 /**
  * 아이콘 자리의 자산을 그린다. 래스터 자산(`images/*`)은 ImageAsset, 나머지는 SVG Asset으로 그린다.
- * @param props
+ * @param props 컴포넌트 속성
  * @param props.name 자산 이름
  */
-function MenuItemIcon(props: { name: SvgAssetName | ImageAssetName }): JSX.Element {
-  if (isImageAssetName(props.name)) {
-    return <ImageAsset name={props.name} className="size-size-icon-sm object-contain" />;
+function MenuItemIcon({ name }: { name: SvgAssetName | ImageAssetName }): JSX.Element {
+  if (isImageAssetName(name)) {
+    return <ImageAsset name={name} className="size-size-icon-sm object-contain" />;
   }
-  return <Asset name={props.name} className="size-size-icon-sm" />;
+  return <Asset name={name} className="size-size-icon-sm" />;
 }
 
 /**
@@ -300,34 +315,42 @@ function isImageAssetName(name: SvgAssetName | ImageAssetName): name is ImageAss
   return name.startsWith('images/');
 }
 
-type MenuItemContentProps = MenuItemCommonProps & {
-  /** 이름 앞 16px 자리(피그마 base/leading)에 그릴 내용. 확인·라디오 항목은 항상 자리를 둔다 */
+type MenuItemContentProps = Pick<MenuItemCommonProps, 'label' | 'shortcut'> & {
   leading: ReactNode;
-  /** 항목 종류 */
   variant?: 'default' | 'submenu' | 'checkbox' | 'radio';
-  /** 강조 영역에 덧붙일 상태 클래스 */
-  baseClassName?: string;
+  stateClassName?: string;
 };
 
 /**
  * 강조 영역과 그 안의 아이콘·이름·단축키·꺾쇠를 그린다.
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.label 항목 이름. 길면 한 줄로 말줄임한다
+ * @param props.shortcut 오른쪽에 보이는 단축키
+ * @param props.leading 이름 앞 16px 자리(피그마 base/leading)에 그릴 내용. 확인·라디오 항목은 항상 자리를 둔다
+ * @param props.variant 항목 종류. `submenu`이면 오른쪽에 꺾쇠를 그린다
+ * @param props.stateClassName 강조 영역에 덧붙일 상태 클래스
  */
-function MenuItemContent(props: MenuItemContentProps): JSX.Element {
+function MenuItemContent({
+  label,
+  shortcut,
+  leading,
+  variant,
+  stateClassName,
+}: MenuItemContentProps): JSX.Element {
   return (
-    <span className={cn(baseClassName, props.baseClassName)}>
-      {props.leading !== undefined && (
+    <span className={cn(baseClassName, stateClassName)}>
+      {leading !== undefined && (
         <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center overflow-hidden p-spacing-none">
-          {props.leading}
+          {leading}
         </span>
       )}
-      <span className="min-w-size-none flex-flex-fill truncate type-body">{props.label}</span>
-      {props.shortcut !== undefined && (
+      <span className="min-w-size-none flex-flex-fill truncate type-body">{label}</span>
+      {shortcut !== undefined && (
         <span className={cn('shrink-shrink-none type-caption', SECONDARY_TEXT_CLASS_NAME)}>
-          {props.shortcut}
+          {shortcut}
         </span>
       )}
-      {props.variant === 'submenu' && (
+      {variant === 'submenu' && (
         <Asset
           name="icons/ic_fluent_chevron_right_16_regular.svg"
           className={cn('size-size-icon-sm shrink-shrink-none', SECONDARY_TEXT_CLASS_NAME)}

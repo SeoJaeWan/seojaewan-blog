@@ -121,60 +121,59 @@ const RING_MASK = [
   'pointer-events: none;',
 ] as const;
 
-/** 이름공간 하나에 붙이는 유틸리티 하나 */
+/**
+ * 이름공간 하나에 붙이는 유틸리티 하나. prefix는 `@utility` 이름에서 `-*` 앞부분, declarations는 `--value()`를 받아
+ * 선언 목록을 만드는 함수다. css와 label은 머리 주석 표에 쓰는 CSS 설명과 클래스 모양이다(label이 없으면 `<prefix>-*`).
+ */
 type NamespaceUtility = {
-  /** `@utility` 이름에서 `-*` 앞부분 */
   prefix: string;
-  /** `--value()`를 받아 선언 목록을 만든다 */
   declarations: (value: string) => string[];
-  /** 머리 주석 표에 쓰는 CSS 설명 */
   css: string;
-  /** 머리 주석 표에 쓰는 클래스 모양. 없으면 `<prefix>-*` */
   label?: string;
 };
 
-/** 펼친 토큰 하나 */
+/**
+ * 펼친 토큰 하나. path는 피그마 경로 조각이며, 그룹의 `$root` 토큰(isRoot)이면 `$root`를 뺀 그룹 경로다.
+ * 별칭은 `$root` 토큰을 `{a.b.$root}`로 가리킨다.
+ */
 type FlatToken = {
-  /** 피그마 경로 조각. 그룹의 `$root` 토큰이면 `$root`를 뺀 그룹 경로다. */
   path: string[];
-  /** 그룹의 `$root` 토큰인지. 별칭은 `{a.b.$root}`로 가리킨다. */
   isRoot: boolean;
   type: string;
   value: unknown;
   extensions: Record<string, unknown>;
 };
 
-/** `@theme` 변수 하나 */
+/**
+ * `@theme` 변수 하나. source는 오류 메시지에 쓸 출처다. isRootOnly는 유틸리티가 읽지 않아 이름공간과 상관없이
+ * :root에 두는 변수, isThemeOnly는 클래스가 읽는 별칭이라 이름공간과 상관없이 테마에 두는 변수다.
+ */
 type CssVariable = {
   name: string;
   value: string;
-  /** 오류 메시지에 쓸 출처 */
   source: string;
-  /** 유틸리티가 읽지 않아 이름공간과 상관없이 :root에 두는지 */
   isRootOnly?: boolean;
-  /** 클래스가 읽는 별칭이라 이름공간과 상관없이 테마에 두는지 */
   isThemeOnly?: boolean;
 };
 
-/** 경계값(px)과 구간 조건 */
+/**
+ * 경계값(px)과 구간 조건. values는 `breakpoint/` 뒤 경로 → px, queries는 모바일·노트북 구간의 미디어 조건이다
+ * (경계값 셋이 없으면 undefined).
+ */
 type Breakpoints = {
-  /** `breakpoint/` 뒤 경로 → px */
   values: ReadonlyMap<string, number>;
-  /** 모바일·노트북 구간의 미디어 조건. 경계값 셋이 없으면 undefined */
   queries?: { mobile: string; laptop: string };
 };
 
-/** 한 번의 변환 결과 */
+/** 한 번의 변환 결과. themeNames는 `@theme static`에 든 변수 이름이다 */
 type Converted = {
   css: string;
-  /** `@theme static`에 든 변수 이름 */
   themeNames: readonly string[];
   breakpoints: Breakpoints;
 };
 
-/** 변환에 쓰는 표 */
+/** 변환에 쓰는 표. variables는 변수 경로(`a/b/c`) → 토큰이다 */
 type Context = {
-  /** 변수 경로(`a/b/c`) → 토큰 */
   variables: ReadonlyMap<string, FlatToken>;
 };
 
@@ -183,27 +182,28 @@ type Rgba = [number, number, number, number];
 /** 정규화 좌표의 점이나 벡터 */
 type Point = { x: number; y: number };
 
-/** 그라데이션 정지점 하나 */
 // 피그마 gradientTransform의 위 두 줄([[a, b, c], [d, e, f]])이다.
 type GradientTransform = readonly [
   readonly [number, number, number],
   readonly [number, number, number],
 ];
 
-// CSS 그라데이션 방향과, 피그마 정지점 위치를 CSS 정지점 위치로 바꾸는 함수다.
+/**
+ * CSS 그라데이션 방향과, 피그마 정지점 위치를 CSS 정지점 위치로 바꾸는 함수. angle은 CSS 각도(deg, 0 이상 360 미만,
+ * 반올림한 값), toCss는 피그마 위치(0~1) → CSS 위치(0~1)다.
+ */
 type GradientDirection = {
-  /** CSS 각도(deg, 0 이상 360 미만, 반올림한 값) */
   angle: number;
-  /** 피그마 위치(0~1) → CSS 위치(0~1) */
   toCss: (position: number) => number;
 };
 
+/**
+ * 읽은 그라데이션 정지점 하나. css는 CSS 색(별칭이면 var()), percent는 CSS 정지점 위치(%),
+ * rgba는 실제 색(0~255, 알 수 없으면 undefined)이다.
+ */
 type ParsedStop = {
-  /** CSS 색(별칭이면 var()) */
   css: string;
-  /** CSS 정지점 위치(%) */
   percent: number;
-  /** 실제 색(0~255). 알 수 없으면 undefined */
   rgba: Rgba | undefined;
 };
 

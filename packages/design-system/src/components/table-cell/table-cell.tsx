@@ -3,7 +3,6 @@ import { type ComponentProps, createElement, type JSX } from 'react';
 import { cn } from '../../cn';
 
 type TableCellProps = ComponentProps<'td'> & {
-  /** 피그마 `Variant` 변형. `header`는 머리 칸(`th`), `body`는 본문 칸(`td`)이다 */
   variant?: 'body' | 'header';
 };
 
@@ -13,10 +12,17 @@ type TableCellProps = ComponentProps<'td'> & {
  * (@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
  * 색과 선은 토큰 한 가지 모양이다(@codocs [[Notion 블록:모양]]).
  * 글자 스타일은 피그마와 같이 머리 칸은 Body Strong, 본문 칸은 Body(Regular)다(@codocs [[디자인 기반:서체]]).
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.variant 피그마 `Variant` 변형. `header`는 머리 칸(`th`), `body`는 본문 칸(`td`)이다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
+ * @param props.children 칸 내용(서식이 섞인 글)
  */
-export function TableCell(props: TableCellProps): JSX.Element {
-  const { variant = 'body', className, children, ...cellProps } = props;
+export function TableCell({
+  variant = 'body',
+  className,
+  children,
+  ...cellProps
+}: TableCellProps): JSX.Element {
   const isHeader = variant === 'header';
   return createElement(
     isHeader ? 'th' : 'td',

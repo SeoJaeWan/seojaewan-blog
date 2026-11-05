@@ -4,9 +4,7 @@ import type { ComponentProps, JSX } from 'react';
 import { cn } from '../../cn';
 
 type JumpListLetterProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'children'> & {
-  /** 피그마 Label. 칸에 보이는 글자이자 접근성 이름이다 */
   label: string;
-  /** 덧붙이거나 덮어쓸 클래스 */
   className?: string;
 };
 
@@ -23,10 +21,15 @@ const stateClassNames = [
  * Start 모두 목록의 글자 격자에서 이동할 글자 하나를 고르는 칸(피그마 JumpListLetter)을 그린다.
  * 동작과 접근성(disabled, 포커스)은 Base UI Button이 맡는다.
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.label 피그마 Label. 칸에 보이는 글자이자 접근성 이름이다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function JumpListLetter(props: JumpListLetterProps): JSX.Element {
-  const { label, className, ...buttonProps } = props;
+export function JumpListLetter({
+  label,
+  className,
+  ...buttonProps
+}: JumpListLetterProps): JSX.Element {
   return (
     <BaseButton
       {...buttonProps}

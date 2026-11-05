@@ -15,12 +15,7 @@ import { scrollThumb, type Thumb } from './scroll-thumb';
 export type ScrollAreaMaterial = ScrollbarMaterial;
 
 type ScrollAreaProps = ComponentProps<'div'> & {
-  /** 피그마 Material. 안쪽 Scrollbar의 재질로, 마우스를 올려 펼친 스크롤바 바탕이다 */
   material?: ScrollAreaMaterial;
-  /**
-   * 스크롤되는 요소 안쪽에 줄 클래스. 내용 둘레의 여백을 토큰 클래스로 준다.
-   * 루트 className에 여백을 주면 여백 위에서 휠이 듣지 않고 막대 비율이 어긋나므로 여백은 여기에 준다.
-   */
   contentClassName?: string;
 };
 
@@ -30,18 +25,24 @@ type ScrollAreaProps = ComponentProps<'div'> & {
  * 크기는 쓰는 곳이 className으로 정한다(피그마 원본은 400×200). 내용은 children(피그마 Content 슬롯)이다.
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.material 피그마 Material. 안쪽 Scrollbar의 재질로, 마우스를 올려 펼친 스크롤바 바탕이다
+ * @param props.contentClassName 스크롤되는 요소 안쪽에 줄 클래스. 내용 둘레의 여백을 토큰 클래스로 준다.
+ *   루트 className에 여백을 주면 여백 위에서 휠이 듣지 않고 막대 비율이 어긋나므로 여백은 여기에 준다.
+ * @param props.className 덧붙이거나 덮어쓸 클래스
+ * @param props.children 스크롤할 내용(피그마 Content 슬롯)
+ * @param props.onPointerEnter 포인터가 들어왔을 때 호출
+ * @param props.onPointerLeave 포인터가 나갔을 때 호출
  */
-export function ScrollArea(props: ScrollAreaProps): JSX.Element {
-  const {
-    material = 'acrylic',
-    contentClassName,
-    className,
-    children,
-    onPointerEnter,
-    onPointerLeave,
-    ...divProps
-  } = props;
+export function ScrollArea({
+  material = 'acrylic',
+  contentClassName,
+  className,
+  children,
+  onPointerEnter,
+  onPointerLeave,
+  ...divProps
+}: ScrollAreaProps): JSX.Element {
   const viewportRef = useRef<HTMLDivElement>(null);
   const scrollbarRef = useRef<HTMLDivElement>(null);
   const [thumb, setThumb] = useState<Thumb>();

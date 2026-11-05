@@ -3,11 +3,8 @@ import { type JSX, type ReactNode, useLayoutEffect, useRef, useState } from 'rea
 import { Button } from '../components/button/button';
 
 type MotionPreviewProps = {
-  /** 재생할 모션 클래스 이름(`motion-progress-ring`). 모션 스토리 제목 `Motion/<이름>`의 이름과 같다 */
   motionClass: string;
-  /** 실행 중 값 CSS 변수와 견본의 대표값(견본 주석의 `@runtime`). 예: `{ '--motion-target-x': '120px' }` */
   runtimeValues?: Readonly<Record<string, string>>;
-  /** 모션 클래스를 받아 견본과 같은 컴포넌트를 그린다. 클래스는 움직일 요소에 붙인다 */
   children: (motionClassName: string) => ReactNode;
 };
 
@@ -20,10 +17,16 @@ const NORMAL_PLAYBACK_RATE = 1;
  * 실행 중 값은 CSS 변수로 넣는다. 느리게 보기는 재생 속도(playbackRate)만 바꿔, 모션 시간 검사가 읽는
  * 시간·이징·지연·반복 횟수는 그대로다.
  * @codocs [[피그마 연동:모션]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.motionClass 재생할 모션 클래스 이름(`motion-progress-ring`). 모션 스토리 제목 `Motion/<이름>`의 이름과 같다
+ * @param props.runtimeValues 실행 중 값 CSS 변수와 견본의 대표값(견본 주석의 `@runtime`). 예: `{ '--motion-target-x': '120px' }`
+ * @param props.children 모션 클래스를 받아 견본과 같은 컴포넌트를 그린다. 클래스는 움직일 요소에 붙인다
  */
-export function MotionPreview(props: MotionPreviewProps): JSX.Element {
-  const { motionClass, runtimeValues, children } = props;
+export function MotionPreview({
+  motionClass,
+  runtimeValues,
+  children,
+}: MotionPreviewProps): JSX.Element {
   const stageRef = useRef<HTMLDivElement>(null);
   const [playCount, setPlayCount] = useState(0);
   const [isSlow, setIsSlow] = useState(false);

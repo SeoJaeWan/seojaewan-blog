@@ -4,7 +4,6 @@ import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
 type UnsupportedBlockProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 지원하지 않는 Notion 블록의 유형 이름. 안내 글의 괄호 안에 들어간다 */
   typeName?: string;
 };
 
@@ -12,10 +11,15 @@ type UnsupportedBlockProps = Omit<ComponentProps<'div'>, 'children'> & {
  * 글 본문에서 지원하지 않는 Notion 블록 자리에 보여 주는 안내 상자(피그마 UnsupportedBlock)를 그린다.
  * 너비는 쓰는 곳이 정한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
  * 색과 모서리는 토큰 한 가지 모양이다(@codocs [[Notion 블록:지원하지 않는 블록]]).
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.typeName 지원하지 않는 Notion 블록의 유형 이름. 안내 글의 괄호 안에 들어간다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function UnsupportedBlock(props: UnsupportedBlockProps): JSX.Element {
-  const { typeName = '유형 이름', className, ...divProps } = props;
+export function UnsupportedBlock({
+  typeName = '유형 이름',
+  className,
+  ...divProps
+}: UnsupportedBlockProps): JSX.Element {
   return (
     <div
       {...divProps}

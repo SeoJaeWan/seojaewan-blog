@@ -7,13 +7,9 @@ import { type FigmaExport, figmaFrameStyle, type FigmaNodePath } from './figma-f
 const FIGMA_TITLE_PREFIXES = ['Components/', 'Patterns/'] as const;
 
 type FigmaFrameProps = {
-  /** 스토리가 그리는 컴포넌트·조립의 피그마 export.json */
   source: unknown;
-  /** 스토리 args(피그마 변형 속성). 없는 속성은 아무 변형이나 맞는다 */
   args?: Readonly<Record<string, unknown>>;
-  /** 안쪽 노드를 감쌀 때 루트 아래 노드 이름 경로(`Content/ProfileButton`). 없으면 루트다 */
   node?: FigmaNodePath;
-  /** 감쌀 내용 */
   children: ReactNode;
 };
 
@@ -23,10 +19,13 @@ type FigmaFrameProps = {
  * 만들 수 없으므로 style로 준다.
  * @codocs [[피그마 연동:스토리 규칙]]
  * @codocs [[테스트 작성 규칙:스토리 테스트]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.source 스토리가 그리는 컴포넌트·조립의 피그마 export.json
+ * @param props.args 스토리 args(피그마 변형 속성). 없는 속성은 아무 변형이나 맞는다
+ * @param props.node 안쪽 노드를 감쌀 때 루트 아래 노드 이름 경로(`Content/ProfileButton`). 없으면 루트다
+ * @param props.children 감쌀 내용
  */
-export function FigmaFrame(props: FigmaFrameProps): JSX.Element {
-  const { source, args = {}, node, children } = props;
+export function FigmaFrame({ source, args = {}, node, children }: FigmaFrameProps): JSX.Element {
   return (
     <div
       data-figma-frame={typeof node === 'string' ? node : (node?.join(' > ') ?? '')}

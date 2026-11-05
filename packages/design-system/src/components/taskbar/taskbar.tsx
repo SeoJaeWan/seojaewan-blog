@@ -3,9 +3,7 @@ import type { ComponentProps, JSX, ReactNode } from 'react';
 import { cn } from '../../cn';
 
 type TaskbarProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 Center 슬롯. 시작 버튼·검색·앱 버튼을 넣는다 */
   center?: ReactNode;
-  /** 피그마 Right 슬롯. SystemTray를 넣는다 */
   right?: ReactNode;
 };
 
@@ -16,10 +14,12 @@ type TaskbarProps = Omit<ComponentProps<'div'>, 'children'> & {
  * 높이는 Windows가 정한 48로 고정하고, 너비는 쓰는 곳이 정한다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.center 피그마 Center 슬롯. 시작 버튼·검색·앱 버튼을 넣는다
+ * @param props.right 피그마 Right 슬롯. SystemTray를 넣는다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function Taskbar(props: TaskbarProps): JSX.Element {
-  const { center, right, className, ...divProps } = props;
+export function Taskbar({ center, right, className, ...divProps }: TaskbarProps): JSX.Element {
   return (
     <div
       {...divProps}

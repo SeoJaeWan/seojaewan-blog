@@ -35,7 +35,6 @@ const listItems: readonly SampleListItem[] = [
 ];
 
 type SampleJumpListProps = {
-  /** 모션 클래스. 격자와 목록을 함께 감싼 요소에 건다 */
   motionClassName: string;
 };
 
@@ -48,11 +47,11 @@ type SampleJumpListProps = {
  * 격자와 목록이 모두 투명도를 움직이므로, 키프레임 값 검사가 json 트랙과 짝짓도록 data-motion-node에 json의 노드 이름
  * (`Start/JumpList`, `list`)을 단다.
  * @codocs [[피그마 연동:모션]]
- * @param props 견본 글자 목록 속성
  * @returns 견본 글자 격자와 목록
+ * @param props 컴포넌트 속성
+ * @param props.motionClassName 모션 클래스. 격자와 목록을 함께 감싼 요소에 건다
  */
-export function SampleJumpList(props: SampleJumpListProps): JSX.Element {
-  const { motionClassName } = props;
+export function SampleJumpList({ motionClassName }: SampleJumpListProps): JSX.Element {
   return (
     <div className={cn('grid overflow-hidden', motionClassName)}>
       <div

@@ -3,7 +3,6 @@ import type { ComponentProps, JSX, ReactNode } from 'react';
 import { cn } from '../../cn';
 
 type TableProps = Omit<ComponentProps<'table'>, 'children'> & {
-  /** 피그마 `Rows` 슬롯. 행(`tr`)을 넣고, 칸은 `TableCell`로 그린다 */
   children?: ReactNode;
 };
 
@@ -12,10 +11,11 @@ type TableProps = Omit<ComponentProps<'table'>, 'children'> & {
  * 칸의 오른쪽·아래 선(`TableCell`)과 이어지도록 틀은 왼쪽·위 선만 가진다.
  * 너비는 부모를 채우고 쓰는 곳이 `className`으로 정한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
  * 색과 선은 토큰 한 가지 모양이다(@codocs [[Notion 블록:모양]]).
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.children 피그마 `Rows` 슬롯. 행(`tr`)을 넣고, 칸은 `TableCell`로 그린다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function Table(props: TableProps): JSX.Element {
-  const { children, className, ...tableProps } = props;
+export function Table({ children, className, ...tableProps }: TableProps): JSX.Element {
   return (
     <table
       {...tableProps}

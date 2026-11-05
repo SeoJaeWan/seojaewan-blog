@@ -8,15 +8,10 @@ import { Asset } from '../asset/asset';
 export type ButtonVariant = 'accent' | 'standard' | 'subtle';
 
 type ButtonProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'children'> & {
-  /** 피그마 Variant. accent는 강조 채우기, standard는 기본 버튼, subtle은 배경 없는 버튼이다 */
   variant?: ButtonVariant;
-  /** 피그마 Label. 버튼 글자이자 접근성 이름이다 */
   label: string;
-  /** 피그마 Has icon. 글자 앞에 16px 아이콘을 그린다 */
   hasIcon?: boolean;
-  /** 피그마 Icon. hasIcon일 때 그릴 아이콘이며 기본은 더하기 아이콘이다 */
   icon?: SvgAssetName;
-  /** 덧붙이거나 덮어쓸 클래스 */
   className?: string;
 };
 
@@ -49,17 +44,21 @@ const variantClassNames = {
 /**
  * 기본 버튼(피그마 Button)을 그린다. 동작과 접근성(disabled, 포커스)은 Base UI Button이 맡는다.
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.variant 피그마 Variant. accent는 강조 채우기, standard는 기본 버튼, subtle은 배경 없는 버튼이다
+ * @param props.label 피그마 Label. 버튼 글자이자 접근성 이름이다
+ * @param props.hasIcon 피그마 Has icon. 글자 앞에 16px 아이콘을 그린다
+ * @param props.icon 피그마 Icon. hasIcon일 때 그릴 아이콘이며 기본은 더하기 아이콘이다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function Button(props: ButtonProps): JSX.Element {
-  const {
-    variant = 'standard',
-    label,
-    hasIcon = false,
-    icon = 'icons/ic_fluent_add_20_regular.svg',
-    className,
-    ...buttonProps
-  } = props;
+export function Button({
+  variant = 'standard',
+  label,
+  hasIcon = false,
+  icon = 'icons/ic_fluent_add_20_regular.svg',
+  className,
+  ...buttonProps
+}: ButtonProps): JSX.Element {
   return (
     <BaseButton
       {...buttonProps}

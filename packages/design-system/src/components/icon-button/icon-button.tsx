@@ -8,13 +8,9 @@ import { Asset } from '../asset/asset';
 export type IconButtonVariant = 'standard' | 'subtle' | 'chrome';
 
 type IconButtonProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'children'> & {
-  /** 피그마 Variant. standard는 기본 버튼, subtle은 배경 없는 버튼, chrome은 Chrome 도구 모음용으로 아이콘 색이 chrome/text-secondary다 */
   variant?: IconButtonVariant;
-  /** 접근성 이름. 글자가 없는 버튼이라 aria-label로 붙인다 */
   label: string;
-  /** 가운데 그릴 16px 아이콘이며 기본은 더보기(가로 점 세 개) 아이콘이다 */
   icon?: SvgAssetName;
-  /** 덧붙이거나 덮어쓸 클래스 */
   className?: string;
 };
 
@@ -45,16 +41,19 @@ const variantClassNames = {
 /**
  * 아이콘만 있는 버튼(피그마 IconButton)을 그린다. 동작과 접근성(disabled, 포커스)은 Base UI Button이 맡는다.
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.variant 피그마 Variant. standard는 기본 버튼, subtle은 배경 없는 버튼, chrome은 Chrome 도구 모음용으로 아이콘 색이 chrome/text-secondary다
+ * @param props.label 접근성 이름. 글자가 없는 버튼이라 aria-label로 붙인다
+ * @param props.icon 가운데 그릴 16px 아이콘이며 기본은 더보기(가로 점 세 개) 아이콘이다
+ * @param props.className 덧붙이거나 덮어쓸 클래스
  */
-export function IconButton(props: IconButtonProps): JSX.Element {
-  const {
-    variant = 'standard',
-    label,
-    icon = 'icons/ic_fluent_more_horizontal_20_regular.svg',
-    className,
-    ...buttonProps
-  } = props;
+export function IconButton({
+  variant = 'standard',
+  label,
+  icon = 'icons/ic_fluent_more_horizontal_20_regular.svg',
+  className,
+  ...buttonProps
+}: IconButtonProps): JSX.Element {
   return (
     <BaseButton
       {...buttonProps}
