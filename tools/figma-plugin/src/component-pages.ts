@@ -1,44 +1,42 @@
-// 피그마 파일의 페이지에서 컴포넌트 페이지를 고른다. 피그마 API를 모르는 순수 계산이다.
+// 피그마 파일에서 컴포넌트 페이지를 고르고 컴포넌트의 묶음을 정한다. 피그마 API를 모르는 순수 계산이다.
 
-/** 페이지 이름과 ID */
-export type PageInfo = { id: string; name: string };
+/** 컴포넌트의 조상 하나(페이지 바로 아래부터) */
+export type AncestorInfo = { type: string; name: string };
 
-/** 컴포넌트 페이지와 그 페이지가 든 구분선 묶음 */
-export type ComponentPage = PageInfo & {
-  /** 앞에 놓인 구분선 페이지의 묶음 이름(`- Controls (컨트롤)` → `Controls (컨트롤)`). 첫 구분선 앞이면 null */
-  band: string | null;
-};
+/** 컴포넌트가 든 묶음 섹션과 컴포넌트 섹션. band는 묶음 섹션(`Controls (컨트롤)`), group은 컴포넌트 섹션(`Button (버튼)`) 이름 */
+export type ComponentPlace = { band: string | null; group: string };
 
-/** 고정 페이지(`00 · Guide`, `01 · Foundations`, `03 · Patterns`, `04 · Screens`)는 이름이 숫자로 시작한다 */
-const FIXED_PAGE_PATTERN = /^\d/u;
-/** 묶음 사이 구분선 페이지는 이름이 `-`로 시작한다(`- Controls (컨트롤)`). 묶음 이름은 앞의 `-`와 공백을 뗀 글자다 */
-const DIVIDER_PREFIX_PATTERN = /^[-\s]+/u;
+/** 섹션 밖에 놓인 컴포넌트, `영역/이름` 꼴이 아닌 조립의 묶음 이름 */
+export const UNGROUPED = '묶음 밖';
+
+/** 컴포넌트 페이지(`02 · Components`) 이름에 든 글자. 번호가 바뀌어도 찾도록 이름의 이 글자로 찾는다 */
+const COMPONENTS_PAGE_KEYWORD = 'Components';
 /** 문서용 컴포넌트(`.page_header` 등)는 이름이 점으로 시작한다 */
 const DOC_COMPONENT_PREFIX = '.';
 
 /**
- * 컴포넌트 페이지를 문서 순서대로 고른다. 숫자로 시작하는 고정 페이지와 `-`로 시작하는 구분선 페이지를 뺀 모든 페이지이고,
- * 페이지마다 앞에 놓인 구분선 페이지의 묶음 이름을 붙인다.
- * 컴포넌트 페이지를 나누기 전의 `02 · Components` 페이지(`legacyPageId`)는 숫자로 시작해도 컴포넌트 페이지로 읽는다.
+ * 컴포넌트 페이지인지 본다. 이름에 `Components`가 든 페이지다.
  * @codocs [[피그마 연동:피그마 플러그인]]
- * @param pages 문서 순서의 페이지
- * @param legacyPageId 한 페이지에 모든 컴포넌트를 두던 `02 · Components` 페이지 ID
- * @returns 컴포넌트 페이지(문서 순서)
+ * @param name 페이지 이름
+ * @returns 컴포넌트 페이지면 true
  */
-export function componentPages(pages: readonly PageInfo[], legacyPageId: string): ComponentPage[] {
-  const result: ComponentPage[] = [];
-  let band: string | null = null;
-  for (const page of pages) {
-    const name = page.name.trim();
-    if (page.id === legacyPageId) {
-      result.push({ id: page.id, name: page.name, band });
-    } else if (name.startsWith('-')) {
-      band = name.replace(DIVIDER_PREFIX_PATTERN, '');
-    } else if (!FIXED_PAGE_PATTERN.test(name)) {
-      result.push({ id: page.id, name: page.name, band });
-    }
+export function isComponentsPage(name: string): boolean {
+  return name.includes(COMPONENTS_PAGE_KEYWORD);
+}
+
+/**
+ * 컴포넌트의 묶음을 조상으로 정한다. 묶음(band)은 페이지 바로 아래 섹션, 그룹(group)은 그 안 섹션이다.
+ * 섹션 밖에 놓인 컴포넌트는 묶음 없이 `묶음 밖`이고, 묶음 섹션 바로 안(컴포넌트 섹션 밖)이면 그 묶음의 `묶음 밖`이다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param ancestors 컴포넌트(세트)의 조상. 페이지 바로 아래부터 가장 가까운 것까지이고 컴포넌트 자신은 넣지 않는다
+ * @returns 묶음과 그룹 이름
+ */
+export function componentPlace(ancestors: readonly AncestorInfo[]): ComponentPlace {
+  const [outer, inner] = ancestors;
+  if (outer?.type !== 'SECTION') {
+    return { band: null, group: UNGROUPED };
   }
-  return result;
+  return { band: outer.name, group: inner?.type === 'SECTION' ? inner.name : UNGROUPED };
 }
 
 /**
