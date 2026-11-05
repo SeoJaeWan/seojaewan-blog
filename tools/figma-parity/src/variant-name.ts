@@ -3,22 +3,23 @@
  * 이름 규칙은 플러그인과의 계약이며, 여기서는 그 규칙대로 쓰였는지 다시 확인만 한다.
  */
 
-/** 대상(컴포넌트나 조립)의 변형 하나 */
+/**
+ * 대상(컴포넌트나 조립)의 변형 하나.
+ * - variant: 변형 파일 이름(확장자 제외), 예: `style=accent,state=rest`
+ * - properties: 피그마 변형 속성. 피그마 순서를 유지한다
+ * - node: 변형 PNG 안 노드 위치(배율 1의 px). 노드 위치가 없는 예전 내보내기는 null이다
+ */
 export type VariantEntry = {
-  /** 변형 파일 이름(확장자 제외), 예: `style=accent,state=rest` */
   variant: string;
-  /** 피그마 변형 속성. 피그마 순서를 유지한다 */
   properties: [string, string][];
-  /** 변형 PNG 안 노드 위치(배율 1의 px). 노드 위치가 없는 예전 내보내기는 null이다 */
   node: NodeBox | null;
 };
 
 /** 변형 PNG 안에서 노드가 놓인 자리(배율 1의 px) */
 export type NodeBox = { x: number; y: number; width: number; height: number };
 
-/** export.json을 읽은 결과 */
+/** export.json을 읽은 결과. name: 피그마 이름(컴포넌트는 `Button`, 조립은 `Menu/Folder`). */
 export type TargetManifest = {
-  /** 피그마 이름(컴포넌트는 `Button`, 조립은 `Menu/Folder`) */
   name: string;
   variants: VariantEntry[];
 };

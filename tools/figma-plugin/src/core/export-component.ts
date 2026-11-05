@@ -23,12 +23,14 @@ import { type NameCache, readNodeTree } from './read-node';
 // 컴포넌트나 조립 하나를 검사하고 export.json 내용, 변형 PNG, 쓰는 자산 파일을 만든다.
 // 플러그인 UI와 피그마 MCP(use_figma)가 같은 함수를 쓴다. GitHub와 UI는 모르고, 파일을 바꾸지 않는다.
 
-/** 내보낸 대상(컴포넌트나 조립) */
+/**
+ * 내보낸 대상(컴포넌트나 조립).
+ * - pngs: 변형 이름 → PNG
+ * - assets: 자산 파일(`<묶음>/<자산>.<확장자>`) → 내용. 래스터 자산의 확장자는 바이트의 실제 형식이다
+ */
 export type TargetExport = {
   manifest: ExportManifest;
-  /** 변형 이름 → PNG */
   pngs: Map<string, Uint8Array>;
-  /** 자산 파일(`<묶음>/<자산>.<확장자>`) → 내용. 래스터 자산의 확장자는 바이트의 실제 형식이다 */
   assets: Map<string, Uint8Array>;
 };
 
@@ -367,10 +369,9 @@ function trimBase(track: ManualKeyframeBinding | undefined, fallback: number): n
   return track.baseValue.type === 'FLOAT' ? track.baseValue.value : null;
 }
 
-/** 내보낸 자산 파일의 내용과 확장자 */
+/** 내보낸 자산 파일의 내용과 확장자. extension: 바이트의 실제 형식에 맞는 확장자(`svg`, `png`, `jpg` 등). */
 export type AssetExport = {
   bytes: Uint8Array;
-  /** 바이트의 실제 형식에 맞는 확장자(`svg`, `png`, `jpg` 등) */
   extension: string;
 };
 

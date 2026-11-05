@@ -12,17 +12,18 @@ import {
 } from './motion-values.ts';
 import { escapeMarkdown, paginate } from './pr-comment.ts';
 
-/** 견본 하나의 모션 검사 결과 */
+/**
+ * 견본 하나의 모션 검사 결과.
+ * - url: 피그마 견본 링크
+ * - rows: 키프레임 값 검사 결과
+ * - timingErrors: 모션 시간 검사 오류(시간·이징·지연·반복 횟수)
+ * - error: 검사하지 못한 이유(스토리 없음, 애니메이션 없음 등)
+ */
 export type MotionResult = {
-  /** 견본 이름 */
   name: string;
-  /** 피그마 견본 링크 */
   url: string;
-  /** 키프레임 값 검사 결과 */
   rows: ValueRow[];
-  /** 모션 시간 검사 오류(시간·이징·지연·반복 횟수) */
   timingErrors: string[];
-  /** 검사하지 못한 이유(스토리 없음, 애니메이션 없음 등) */
   error: string | null;
 };
 

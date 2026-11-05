@@ -13,29 +13,30 @@ import { parseManifest, type VariantEntry } from './variant-name.ts';
 
 // 저장소의 피그마 내보내기 자료(컴포넌트와 조립 폴더)를 캡처할 대상 목록으로 읽는다.
 
-/** 캡처할 대상(컴포넌트나 조립) */
+/**
+ * 캡처할 대상(컴포넌트나 조립).
+ * - id: 대상 이름. 컴포넌트는 폴더 이름(`button`), 조립은 `patterns/<영역>/<이름>`이다. `parity-captures` 브랜치와 결과 폴더의 경로이기도 하다
+ * - name: 피그마 이름(`Button`, `Menu/Folder`)
+ * - folder: 피그마 그림 폴더(저장소 기준)
+ * - storybook: 스토리가 있는 Storybook
+ */
 export type Target = {
-  /**
-   * 대상 이름. 컴포넌트는 폴더 이름(`button`), 조립은 `patterns/<영역>/<이름>`이다.
-   * `parity-captures` 브랜치와 결과 폴더의 경로이기도 하다.
-   */
   id: string;
   kind: 'component' | 'pattern';
-  /** 피그마 이름(`Button`, `Menu/Folder`) */
   name: string;
-  /** 피그마 그림 폴더(저장소 기준) */
   folder: string;
-  /** 스토리가 있는 Storybook */
   storybook: StorybookName;
   variants: VariantEntry[];
 };
 
-/** 저장소에 있는 대상 */
+/**
+ * 저장소에 있는 대상.
+ * - fileErrors: PNG가 빠졌거나 export.json이 가리키지 않는 파일이 있는 등 폴더 오류
+ * - scale: figma.json의 PNG 배율
+ */
 export type TargetList = {
   targets: Target[];
-  /** PNG가 빠졌거나 export.json이 가리키지 않는 파일이 있는 등 폴더 오류 */
   fileErrors: string[];
-  /** figma.json의 PNG 배율 */
   scale: number;
 };
 

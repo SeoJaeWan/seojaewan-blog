@@ -24,43 +24,49 @@ const PREVIEW_IMAGE_WIDTH = 360;
 /** 바뀐 변형이 이보다 많은 대상은 미리보기를 접는다 */
 const FOLD_VARIANT_COUNT = 4;
 
-/** PR 하나에 담긴 대상 하나의 변경(main 기준) */
+/**
+ * PR 하나에 담긴 대상 하나의 변경(main 기준).
+ * - name: 피그마 컴포넌트 이름
+ * - folder: 저장소의 대상 폴더(PNG가 있는 곳)
+ * - changedVariants: 새로 생기거나 PNG가 바뀐 변형
+ * - removedVariants: 사라진 변형
+ * - variants: 이번에 내보낸 변형 이름과 최신 피그마 노드 ID
+ */
 export type TargetChanges = {
-  /** 피그마 컴포넌트 이름 */
   name: string;
-  /** 저장소의 대상 폴더(PNG가 있는 곳) */
   folder: string;
-  /** 새로 생기거나 PNG가 바뀐 변형 */
   changedVariants: readonly string[];
-  /** 사라진 변형 */
   removedVariants: readonly string[];
-  /** 이번에 내보낸 변형 이름과 최신 피그마 노드 ID */
   variants: readonly { name: string; nodeId: string }[];
 };
 
-/** 대상 PR 한 번의 커밋에 담은 변경 */
+/**
+ * 대상 PR 한 번의 커밋에 담은 변경.
+ * - changedCount: 새로 쓰거나 바뀐 파일 수
+ * - deletedCount: 지운 파일 수(사라진 변형, 이름이 바뀐 대상의 이전 폴더)
+ * - assetCount: 새로 쓰거나 바뀐 자산 파일 수
+ */
 export type CommitSummary = {
-  /** 새로 쓰거나 바뀐 파일 수 */
   changedCount: number;
-  /** 지운 파일 수(사라진 변형, 이름이 바뀐 대상의 이전 폴더) */
   deletedCount: number;
-  /** 새로 쓰거나 바뀐 자산 파일 수 */
   assetCount: number;
 };
 
-/** 토큰 PR에 쓰는 내용 */
+/**
+ * 토큰 PR에 쓰는 내용.
+ * - addedPaths: main에 없던 토큰 경로
+ * - modifiedPaths: 값이나 종류가 바뀐 토큰 경로
+ * - removedPaths: 이름이 바뀌었거나 지워진 토큰 경로
+ * - usingComponents: 바뀐 토큰을 쓰는 컴포넌트 이름(피그마 기준)
+ * - refreshedComponents: 그중 저장소에 있어 변형 이미지를 다시 내보낸 컴포넌트 이름
+ * - imageUploadCount: 새로 올리거나 바꾼 이미지 자산 수
+ */
 export type TokensSummary = {
-  /** main에 없던 토큰 경로 */
   addedPaths: readonly string[];
-  /** 값이나 종류가 바뀐 토큰 경로 */
   modifiedPaths: readonly string[];
-  /** 이름이 바뀌었거나 지워진 토큰 경로 */
   removedPaths: readonly string[];
-  /** 바뀐 토큰을 쓰는 컴포넌트 이름(피그마 기준) */
   usingComponents: readonly string[];
-  /** 그중 저장소에 있어 변형 이미지를 다시 내보낸 컴포넌트 이름 */
   refreshedComponents: readonly string[];
-  /** 새로 올리거나 바꾼 이미지 자산 수 */
   imageUploadCount: number;
 };
 

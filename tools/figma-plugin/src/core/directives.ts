@@ -17,10 +17,9 @@ export type DirectiveKey = (typeof DIRECTIVE_KEYS)[number];
 /** 키 → 값 목록. `@trigger`처럼 여러 줄을 쓸 수 있는 키가 있어 목록이다 */
 export type Directives = Partial<Record<DirectiveKey, string[]>>;
 
-/** `@` 줄을 읽은 결과 */
+/** `@` 줄을 읽은 결과. problems: 고쳐야 할 줄. */
 export type ParsedDirectives = {
   directives: Directives;
-  /** 고쳐야 할 줄 */
   problems: string[];
 };
 

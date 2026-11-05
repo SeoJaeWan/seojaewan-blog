@@ -8,27 +8,28 @@ export const TOKENS_KEY = 'tokens';
 /** 목록에 보이는 대상 종류(토큰은 따로 한 줄이다) */
 export type ItemKind = 'component' | 'pattern' | 'motion';
 
-/** 목록 항목 하나 */
+/**
+ * 목록 항목 하나.
+ * - key: 선택 키(`<종류>:<노드 ID>`)
+ * - groupKey: 묶음 키
+ * - band: 묶음 섹션 이름. 없으면 null
+ * - variantCount: 변형 수. 애니메이션은 null
+ */
 export type CatalogItem = {
-  /** 선택 키(`<종류>:<노드 ID>`) */
   key: string;
   id: string;
   kind: ItemKind;
   name: string;
-  /** 묶음 키 */
   groupKey: string;
-  /** 묶음 섹션 이름. 없으면 null */
   band: string | null;
-  /** 변형 수. 애니메이션은 null */
   variantCount: number | null;
 };
 
-/** 묶음 하나. 컴포넌트는 컴포넌트 섹션, 조립은 영역(PR 하나), 애니메이션은 하나 */
+/** 묶음 하나. 컴포넌트는 컴포넌트 섹션, 조립은 영역(PR 하나), 애니메이션은 하나. band: 묶음 위의 묶음 섹션 이름. 섹션 밖 컴포넌트, 조립, 애니메이션은 null. */
 export type CatalogGroup = {
   key: string;
   kind: ItemKind;
   title: string;
-  /** 묶음 위의 묶음 섹션 이름. 섹션 밖 컴포넌트, 조립, 애니메이션은 null */
   band: string | null;
   items: CatalogItem[];
 };

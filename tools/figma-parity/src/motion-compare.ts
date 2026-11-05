@@ -6,19 +6,20 @@
 import type { MotionSpec } from './motion-spec.ts';
 import { storyEntries } from './story-target.ts';
 
-/** 브라우저에서 읽은 CSS 애니메이션 하나 */
+/**
+ * 브라우저에서 읽은 CSS 애니메이션 하나.
+ * - target: 애니메이션이 걸린 요소 설명(메시지용)
+ * - duration: ms
+ * - delay: ms
+ * - iterations: 반복 횟수. 무한이면 `infinite`
+ * - easings: 끝(offset 1)을 뺀 키프레임마다의 이징(다음 키프레임까지 움직이는 곡선)
+ */
 export type ObservedAnimation = {
-  /** `animation-name` */
   name: string;
-  /** 애니메이션이 걸린 요소 설명(메시지용) */
   target: string;
-  /** ms */
   duration: number;
-  /** ms */
   delay: number;
-  /** 반복 횟수. 무한이면 `infinite` */
   iterations: number | 'infinite';
-  /** 끝(offset 1)을 뺀 키프레임마다의 이징(다음 키프레임까지 움직이는 곡선) */
   easings: string[];
 };
 

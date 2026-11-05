@@ -20,10 +20,9 @@ export type JsonReport = {
   stats?: { startTime?: string; duration?: number };
 };
 
-/** 보고서에서 꺼낸 케이스 결과. trace는 보고서가 적은 절대 경로다. */
+/** 보고서에서 꺼낸 케이스 결과. trace는 보고서가 적은 절대 경로다. steps: 마지막 시도의 맨 위 단계(기대 결과 `test.step`)와 실패 여부. */
 export type ReportedCase = Pick<CaseResult, 'status' | 'durationMs' | 'error'> & {
   tracePath: string | null;
-  /** 마지막 시도의 맨 위 단계(기대 결과 `test.step`)와 실패 여부 */
   steps: { title: string; isFailed: boolean }[];
 };
 

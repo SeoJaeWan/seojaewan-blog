@@ -10,10 +10,13 @@ export type StoryArgValue = string | boolean;
 
 export type Interaction = 'none' | 'hover' | 'pressed' | 'focus';
 
+/**
+ * 캡처할 스토리 하나.
+ * - args: 스토리 args. 피그마 속성 이름을 camelCase로, 값을 정규화한 이름으로 바꾼 것이다
+ * - interaction: 캡처 전에 브라우저에서 재현할 상호작용
+ */
 export type StoryTarget = {
-  /** 스토리 args. 피그마 속성 이름을 camelCase로, 값을 정규화한 이름으로 바꾼 것이다 */
   args: Record<string, StoryArgValue>;
-  /** 캡처 전에 브라우저에서 재현할 상호작용 */
   interaction: Interaction;
 };
 

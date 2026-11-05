@@ -6,26 +6,27 @@
 /** 바뀐 파일의 기준 커밋 내용과 지금 내용. 없는 쪽은 undefined */
 export type FileChange = { before: string | undefined; after: string | undefined };
 
-/** 범위 계산에 필요한 저장소 상태 */
+/**
+ * 범위 계산에 필요한 저장소 상태.
+ * - changedFiles: 저장소 기준 경로 목록
+ * - motionNames: 지금 저장소에 json이 있는 견본 이름. json이 없는 클래스(상태 전환 등)는 검사 대상이 아니다
+ * - readChange: 저장소 기준 경로의 기준 커밋 내용과 지금 내용을 읽는다
+ * - motionStoryFiles: 모션 스토리 폴더(`src/motion-story/`)의 지금 파일(저장소 기준 경로 → 내용). 모션 스토리 도우미가 바뀌면 이것으로 그 도우미를 import하는 모션 스토리를 찾는다. 없으면 도우미가 바뀔 때 전체다
+ */
 export type MotionScopeInputs = {
-  /** 저장소 기준 경로 목록 */
   changedFiles: readonly string[];
-  /** 지금 저장소에 json이 있는 견본 이름. json이 없는 클래스(상태 전환 등)는 검사 대상이 아니다 */
   motionNames: ReadonlySet<string>;
-  /** 저장소 기준 경로의 기준 커밋 내용과 지금 내용을 읽는다 */
   readChange: (file: string) => FileChange;
-  /**
-   * 모션 스토리 폴더(`src/motion-story/`)의 지금 파일(저장소 기준 경로 → 내용). 모션 스토리 도우미가 바뀌면
-   * 이것으로 그 도우미를 import하는 모션 스토리를 찾는다. 없으면 도우미가 바뀔 때 전체다.
-   */
   motionStoryFiles?: ReadonlyMap<string, string>;
 };
 
-/** 검사 범위 */
+/**
+ * 검사 범위.
+ * - motions: 검사할 견본 이름(정렬)
+ * - reasons: 견본마다 고른 이유(로그용)
+ */
 export type MotionScope = {
-  /** 검사할 견본 이름(정렬) */
   motions: string[];
-  /** 견본마다 고른 이유(로그용) */
   reasons: Map<string, string[]>;
 };
 

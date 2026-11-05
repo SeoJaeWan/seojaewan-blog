@@ -3,23 +3,27 @@
  * tokens.css는 figma/tokens.json에서 만든 생성 파일이라, 두 파일 중 하나가 바뀌면 이 파일의 변경이 실제로 바뀐 토큰이다.
  */
 
-/** 바뀐 토큰을 쓰는 클래스와 변수 */
+/**
+ * 바뀐 토큰을 쓰는 클래스와 변수.
+ * - classes: 바뀐 클래스 이름(변형 접두어 없이, `bg-color-black-4`, `type-body`)
+ * - prefixes: 이 접두어로 시작하는 클래스는 모두 바뀌었다(`border-gradient-elevation-`)
+ * - variables: 바뀐 CSS 변수(`--motion-scale-up`). 인라인 스타일이나 손으로 쓴 CSS가 var()로 쓸 수 있다
+ */
 export type TokenUsage = {
-  /** 바뀐 클래스 이름(변형 접두어 없이, `bg-color-black-4`, `type-body`) */
   classes: Set<string>;
-  /** 이 접두어로 시작하는 클래스는 모두 바뀌었다(`border-gradient-elevation-`) */
   prefixes: string[];
-  /** 바뀐 CSS 변수(`--motion-scale-up`). 인라인 스타일이나 손으로 쓴 CSS가 var()로 쓸 수 있다 */
   variables: Set<string>;
 };
 
-/** tokens.css를 나눈 결과 */
+/**
+ * tokens.css를 나눈 결과.
+ * - variables: `@theme`과 `:root`의 사용자 속성 이름 → 값
+ * - utilities: `@utility` 이름 → 본문
+ * - rest: 블록과 주석을 뺀 나머지(공백 정리)
+ */
 type CssBlocks = {
-  /** `@theme`과 `:root`의 사용자 속성 이름 → 값 */
   variables: Map<string, string>;
-  /** `@utility` 이름 → 본문 */
   utilities: Map<string, string>;
-  /** 블록과 주석을 뺀 나머지(공백 정리) */
   rest: string;
 };
 

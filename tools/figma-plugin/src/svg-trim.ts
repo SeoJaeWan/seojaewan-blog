@@ -8,17 +8,19 @@ export type AffineTransform = readonly [
   readonly [number, number, number],
 ];
 
-/** 경로 트림이 걸린 레이어 하나 */
+/**
+ * 경로 트림이 걸린 레이어 하나.
+ * - name: 레이어 이름(메시지에 쓴다)
+ * - paths: 벡터의 `vectorPaths` 경로 데이터. 벡터가 아니면 null
+ * - transform: 벡터 좌표 → 자산 컴포넌트 좌표
+ * - start: PATH_TRIM_START 기본값(트랙이 없으면 0). 숫자로 읽지 못하면 null
+ * - end: PATH_TRIM_END 기본값(트랙이 없으면 1). 숫자로 읽지 못하면 null
+ */
 export type TrimmedVector = {
-  /** 레이어 이름(메시지에 쓴다) */
   name: string;
-  /** 벡터의 `vectorPaths` 경로 데이터. 벡터가 아니면 null */
   paths: readonly string[] | null;
-  /** 벡터 좌표 → 자산 컴포넌트 좌표 */
   transform: AffineTransform;
-  /** PATH_TRIM_START 기본값(트랙이 없으면 0). 숫자로 읽지 못하면 null */
   start: number | null;
-  /** PATH_TRIM_END 기본값(트랙이 없으면 1). 숫자로 읽지 못하면 null */
   end: number | null;
 };
 

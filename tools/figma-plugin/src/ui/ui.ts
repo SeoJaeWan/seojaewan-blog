@@ -82,26 +82,28 @@ const ui = {
   exportButton: element('export', HTMLButtonElement),
 };
 
-/** 화면 상태 */
+/**
+ * 화면 상태.
+ * - isLoaded: 본체가 목록을 보냈는지
+ * - motionUnavailable: 애니메이션을 내보낼 수 없을 때의 안내
+ * - selected: 고른 키(토큰은 TOKENS_KEY)
+ * - expanded: 펼친 묶음 키
+ * - openDetails: 펼쳐 둔 결과 영역 키. 다시 그려도 펼친 채로 둔다
+ * - filter: 목록 안 찾기 글자
+ * - lastRequest: 마지막 내보내기 요청. "다시 내보내기"가 쓴다
+ */
 type State = {
   view: View;
-  /** 본체가 목록을 보냈는지 */
   isLoaded: boolean;
   catalog: Catalog;
-  /** 애니메이션을 내보낼 수 없을 때의 안내 */
   motionUnavailable: string | null;
-  /** 고른 키(토큰은 TOKENS_KEY) */
   selected: Set<string>;
-  /** 펼친 묶음 키 */
   expanded: Set<string>;
-  /** 펼쳐 둔 결과 영역 키. 다시 그려도 펼친 채로 둔다 */
   openDetails: Set<string>;
   isTokenDetailOpen: boolean;
-  /** 목록 안 찾기 글자 */
   filter: string;
   repoStatus: RepoStatus;
   run: RunState;
-  /** 마지막 내보내기 요청. "다시 내보내기"가 쓴다 */
   lastRequest: ExportMessage | null;
 };
 
