@@ -5,13 +5,11 @@ import { getPostIndex } from '@/content/post-source/post-source';
 import { Shell } from '@/shell/shell';
 
 type PostEntryPageProps = {
-  /** 경로의 글 slug */
   params: Promise<PostRouteParams>;
 };
 
 /** 경로 값 */
 type PostRouteParams = {
-  /** 글 slug */
   slug: string;
 };
 
@@ -20,11 +18,12 @@ type PostRouteParams = {
  * 시작하게 한다. 색인에 없는 글이면 404로 답한다(`not-found.tsx`가 찾을 수 없음 Chrome 창을 그린다).
  * @codocs [[창 동작:새로고침과 첫 진입]]
  * @codocs [[Chrome:글 주소]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.params 경로의 글 slug
  * @returns 글이 열린 화면
  */
-export default async function PostEntryPage(props: PostEntryPageProps): Promise<ReactNode> {
-  const { slug } = await props.params;
+export default async function PostEntryPage({ params }: PostEntryPageProps): Promise<ReactNode> {
+  const { slug } = await params;
   const posts = await getPostIndex();
   if (!posts.some((post) => post.slug === slug)) {
     notFound();

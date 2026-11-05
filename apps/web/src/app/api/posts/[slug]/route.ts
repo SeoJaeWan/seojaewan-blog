@@ -1,13 +1,11 @@
 import { getPostBody } from '@/content/post-source/post-source';
 
 type PostBodyRouteContext = {
-  /** 경로의 글 slug */
   params: Promise<PostRouteParams>;
 };
 
 /** 경로 값 */
 type PostRouteParams = {
-  /** 글 slug */
   slug: string;
 };
 

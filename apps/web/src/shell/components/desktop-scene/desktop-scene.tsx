@@ -5,15 +5,10 @@ import { cn } from '@seojaewan/design-system';
 import { DesktopWallpaper } from '@/features/desktop/desktop-wallpaper';
 
 type DesktopSceneProps = {
-  /** 피그마 icons 프레임 자리. `DesktopIcons`(앱은 저장소에 이은 `DesktopIconsLayer`)를 넣는다 */
   icons: ReactNode;
-  /** 창 층·패널 층 자리. 아이콘 위, 작업 표시줄 아래에 겹친다 */
   children?: ReactNode;
-  /** 피그마 Taskbar/Default 인스턴스 자리. `TaskbarDefault`(앱은 저장소에 이은 `TaskbarLayer`)를 넣는다 */
   taskbar: ReactNode;
-  /** 바탕화면 전체를 조작할 수 없게 할지(다시 시작하는 동안). 포커스와 보조 기술도 닿지 않는다 */
   isInert?: boolean;
-  /** 바깥 배치 클래스. 크기는 쓰는 곳(화면)이 정한다 */
   className?: string;
 };
 
@@ -27,10 +22,20 @@ type DesktopSceneProps = {
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[저장소 구성:앱 폴더 구조]]
  * @codocs [[바탕화면:배경화면]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.icons 피그마 icons 프레임 자리. `DesktopIcons`(앱은 저장소에 이은 `DesktopIconsLayer`)를 넣는다
+ * @param props.children 창 층·패널 층 자리. 아이콘 위, 작업 표시줄 아래에 겹친다
+ * @param props.taskbar 피그마 Taskbar/Default 인스턴스 자리. `TaskbarDefault`(앱은 저장소에 이은 `TaskbarLayer`)를 넣는다
+ * @param props.isInert 바탕화면 전체를 조작할 수 없게 할지(다시 시작하는 동안). 포커스와 보조 기술도 닿지 않는다
+ * @param props.className 바깥 배치 클래스. 크기는 쓰는 곳(화면)이 정한다
  */
-export function DesktopScene(props: DesktopSceneProps): JSX.Element {
-  const { icons, children, taskbar, isInert, className } = props;
+export function DesktopScene({
+  icons,
+  children,
+  taskbar,
+  isInert,
+  className,
+}: DesktopSceneProps): JSX.Element {
   return (
     <div inert={isInert} className={cn('relative flex flex-col overflow-clip', className)}>
       {/* 배경화면은 맨 아래에 깔고, 뒤에 오는 자리(relative)가 그 위에 그려진다 */}

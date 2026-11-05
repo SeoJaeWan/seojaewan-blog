@@ -31,15 +31,17 @@ import { type InitialPage, useInitialWindow } from './hooks/use-initial-window/u
  * 주소로 처음 들어왔으면(`initialPage`) 그 주소의 Chrome 창 하나를 연 채로 시작하고, 그 창을 열 때까지 브라우저 주소를 그대로 둔다.
  * @codocs [[창 동작:브라우저 주소]]
  * @codocs [[창 동작:새로고침과 첫 진입]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.posts 서버(`content/`)가 읽은 글 색인
+ * @param props.initialPage 주소로 처음 들어왔을 때 열어 둘 Chrome 페이지(`/posts/<slug>`, 찾을 수 없음). `/`이면 없다
  */
-export function Shell(props: ShellProps): JSX.Element {
-  const { posts, initialPage = null } = props;
+export function Shell({ posts, initialPage: initialPageProp }: ShellProps): JSX.Element {
   const generation = useRestartStore((state) => state.generation);
   const phase = useRestartStore((state) => state.phase);
   const mainRef = useRef<HTMLElement>(null);
   const wasRestartingRef = useRef(false);
   const isRestarting = phase !== 'idle';
+  const initialPage = initialPageProp ?? null;
   const isInitialWindowPending = useInitialWindow(initialPage);
   // 브라우저 주소는 화면 전체에서 한 번만 맞춘다(창 축소 화면이 창을 여러 번 그려도 한 번).
   useBrowserAddressSync(!isInitialWindowPending);
@@ -77,14 +79,11 @@ export function Shell(props: ShellProps): JSX.Element {
 }
 
 type ShellProps = {
-  /** 서버(`content/`)가 읽은 글 색인 */
   posts: readonly PostSummary[];
-  /** 주소로 처음 들어왔을 때 열어 둘 Chrome 페이지(`/posts/<slug>`, 찾을 수 없음). `/`이면 없다 */
   initialPage?: InitialPage;
 };
 
 type ShellDesktopProps = {
-  /** 다시 시작하는 중이라 데스크톱 하위 트리를 조작할 수 없게 할지 */
   isInert: boolean;
 };
 
@@ -95,15 +94,16 @@ type ShellDesktopProps = {
  * 창 안에 무엇을 그릴지(앱 등록표)는 shell이 창 층과 작업 표시줄 창 미리보기에 넘긴다. 각 층은 비어 있는 곳의 클릭을 아래(아이콘)로 넘긴다.
  * @codocs [[저장소 구성:앱 폴더 구조]]
  * @codocs [[기술 스택:상태 관리]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.isInert 다시 시작하는 중이라 데스크톱 하위 트리를 조작할 수 없게 할지
  * @returns 데스크톱 하위 트리
  */
-function ShellDesktop(props: ShellDesktopProps): JSX.Element {
+function ShellDesktop({ isInert }: ShellDesktopProps): JSX.Element {
   const renderWindow = useAppWindowRenderer();
   const getWindowTitle = useAppWindowTitle();
   return (
     <DesktopScene
-      isInert={props.isInert}
+      isInert={isInert}
       className="size-full"
       icons={<DesktopIconsLayer />}
       taskbar={<TaskbarLayer renderWindow={renderWindow} getWindowTitle={getWindowTitle} />}
