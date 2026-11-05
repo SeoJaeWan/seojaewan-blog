@@ -345,11 +345,10 @@ export async function readUsageInput(): Promise<UsageInput> {
   };
 }
 
-/** 컴포넌트 하나가 쓰는 토큰 */
+/** 컴포넌트 하나가 쓰는 토큰. tokens: 연결된 변수 이름과 스타일 이름. */
 export type ComponentTokenUsage = {
   id: string;
   name: string;
-  /** 연결된 변수 이름과 스타일 이름 */
   tokens: Set<string>;
 };
 
@@ -495,11 +494,13 @@ function collectAliasIds(value: unknown, ids: Set<string>): void {
   }
 }
 
-/** 이미지 자산 하나 */
+/**
+ * 이미지 자산 하나.
+ * - name: 자산 이름(`images/<자산>`, 확장자 없음)
+ * - node: 자산 컴포넌트
+ */
 export type ImageAsset = {
-  /** 자산 이름(`images/<자산>`, 확장자 없음) */
   name: string;
-  /** 자산 컴포넌트 */
   node: ComponentNode;
 };
 

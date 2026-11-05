@@ -21,10 +21,13 @@ const newPatternHeader = ['| 변형 | 지금 코드 |', '|---|---|'];
 /** 이전 코드 그림이 없는 변형의 이전 코드 칸 */
 export const NO_PREVIOUS = '이전 그림 없음(새 변형)';
 
+/**
+ * 댓글 본문을 만드는 옵션.
+ * - imageUrl: 결과 폴더 기준 이미지 경로(`button/style=accent,state=rest/code.png`)를 댓글에 넣을 주소로 바꾼다
+ * - runUrl: 이 실행(Actions run) 주소
+ */
 export type CommentOptions = {
-  /** 결과 폴더 기준 이미지 경로(`button/style=accent,state=rest/code.png`)를 댓글에 넣을 주소로 바꾼다 */
   imageUrl: (file: string) => string;
-  /** 이 실행(Actions run) 주소 */
   runUrl: string;
 };
 
@@ -183,11 +186,13 @@ function image(file: string, alt: string, options: CommentOptions): string {
   return `<img src="${options.imageUrl(file)}" alt="${alt}">`;
 }
 
-/** 댓글 나누기 설정 */
+/**
+ * 댓글 나누기 설정.
+ * - marker: 댓글을 찾는 숨은 표시 이름(`figma-parity`, `motion-check`)
+ * - tableHeader: 표가 든 블록을 나눌 때 다시 쓰는 표 머리
+ */
 export type PaginateOptions = {
-  /** 댓글을 찾는 숨은 표시 이름(`figma-parity`, `motion-check`) */
   marker: string;
-  /** 표가 든 블록을 나눌 때 다시 쓰는 표 머리 */
   tableHeader: readonly string[];
 };
 

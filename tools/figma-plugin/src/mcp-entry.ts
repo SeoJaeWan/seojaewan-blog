@@ -16,33 +16,41 @@ import { sha256Hex, utf8Encode } from './sha256';
 // use_figma 코드 길이 제한(5만 자) 때문에 토큰은 mcp-tokens.ts(dist/use-figma-tokens.js)로 나눴다.
 // GitHub에는 올리지 않는다. 받은 쪽이 파일을 쓰고, 피그마 안에서 계산한 SHA-256과 받은 내용의 해시를 대조한다.
 
-/** 내보낸 파일 하나 */
+/**
+ * 내보낸 파일 하나.
+ * - path: 저장소 루트 기준 경로
+ * - sha256: 피그마 안에서 계산한 내용(바이트)의 SHA-256
+ */
 export type McpFile = {
-  /** 저장소 루트 기준 경로 */
   path: string;
   encoding: 'utf8' | 'base64';
   content: string;
-  /** 피그마 안에서 계산한 내용(바이트)의 SHA-256 */
   sha256: string;
 };
 
+/**
+ * MCP로 내보낼 대상 선택.
+ * - components: 내보낼 컴포넌트(세트) 이름
+ * - patterns: 내보낼 조립 이름(`영역/이름`)
+ * - motions: 내보낼 애니메이션 견본 이름(`motion-progress-ring`)
+ * - shouldCheckOnly: true면 검사만 하고 파일 내용은 돌려주지 않는다
+ */
 export type McpExportOptions = {
-  /** 내보낼 컴포넌트(세트) 이름 */
   components: string[];
-  /** 내보낼 조립 이름(`영역/이름`) */
   patterns?: string[];
-  /** 내보낼 애니메이션 견본 이름(`motion-progress-ring`) */
   motions?: string[];
-  /** true면 검사만 하고 파일 내용은 돌려주지 않는다 */
   shouldCheckOnly?: boolean;
 };
 
+/**
+ * MCP 내보내기 결과.
+ * - notices: 막지 않는 알림(같은 값 변수가 여럿인 모션 짝 등)
+ * - folders: 내보낸 대상 폴더(저장소 경로)
+ */
 export type McpExportResult = {
   fileKey: string | undefined;
   violations: Violation[];
-  /** 막지 않는 알림(같은 값 변수가 여럿인 모션 짝 등) */
   notices: string[];
-  /** 내보낸 대상 폴더(저장소 경로) */
   folders: string[];
   files: McpFile[];
 };

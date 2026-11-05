@@ -69,18 +69,21 @@ import { utf8Encode } from './sha256';
 import { componentsUsingTokens, tokenChanges } from './token-changes';
 import { parentFolder, planTree } from './tree-changes';
 
+/**
+ * 내보내기 요청.
+ * - componentIds: 내보낼 컴포넌트. 조립·애니메이션과 함께 비어 있으면 토큰만 내보낸다
+ * - patternIds: 내보낼 조립
+ * - motionIds: 내보낼 애니메이션 견본
+ * - notify: 막지 않는 알림(쓰는 곳이 없는 변수·스타일, 같은 값 변수가 여럿인 모션 짝, 건너뛴 애니메이션)을 UI에 보여 준다
+ * - progress: 진행 막대와 지금 하는 일을 UI에 알린다
+ */
 export type ExportRequest = {
   token: string;
-  /** 내보낼 컴포넌트. 조립·애니메이션과 함께 비어 있으면 토큰만 내보낸다 */
   componentIds: readonly string[];
-  /** 내보낼 조립 */
   patternIds: readonly string[];
-  /** 내보낼 애니메이션 견본 */
   motionIds: readonly string[];
   log: (text: string) => void;
-  /** 막지 않는 알림(쓰는 곳이 없는 변수·스타일, 같은 값 변수가 여럿인 모션 짝, 건너뛴 애니메이션)을 UI에 보여 준다 */
   notify: (notices: string[]) => void;
-  /** 진행 막대와 지금 하는 일을 UI에 알린다 */
   progress: (update: ExportProgress) => void;
 };
 
@@ -93,19 +96,20 @@ type RepoState = { head: Head; files: Map<string, string> };
 /** 저장소에서 읽는 파일 범위 */
 const REPO_PREFIXES = [`${FIGMA_DIR}/`, TOKENS_CSS_PATH, `${PATTERNS_DIR}/`] as const;
 
-/** 커밋할 PR 브랜치의 상태 */
+/**
+ * 커밋할 PR 브랜치의 상태.
+ * - state: 커밋을 얹을 상태. 열린 PR이 있으면 그 브랜치 끝, 없으면 main
+ * - openPullRequest: 열린 PR. 없으면 null
+ */
 type Target = {
   branch: string;
-  /** 커밋을 얹을 상태. 열린 PR이 있으면 그 브랜치 끝, 없으면 main */
   state: RepoState;
-  /** 열린 PR. 없으면 null */
   openPullRequest: { url: string; number: number } | null;
 };
 
-/** 내보낸 대상 하나와 저장소 위치 */
+/** 내보낸 대상 하나와 저장소 위치. folder: 저장소의 대상 폴더. */
 type PlacedTarget = {
   exported: TargetExport;
-  /** 저장소의 대상 폴더 */
   folder: string;
 };
 

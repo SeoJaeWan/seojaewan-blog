@@ -207,7 +207,7 @@ const testLikeFiles = [
 // @codocs [[코드 작성 규칙:JSDoc]]
 // "JSDoc은 함수·컴포넌트에만" 규칙을 거는 경로. 앱·도구는 따로 바꾸며, 바꿀 때 이 목록에 경로를 더한다.
 // 모든 경로가 들어오면 JSDoc 설정 두 블록을 하나로 합치고 옛 규칙(Props 속성 context, props 예외)을 지운다.
-const jsdocFunctionOnlyFiles = [`${DESIGN_SYSTEM}/**/*.{ts,tsx}`];
+const jsdocFunctionOnlyFiles = [`${DESIGN_SYSTEM}/**/*.{ts,tsx}`, 'tools/*/**/*.{ts,tsx}'];
 
 // 함수·메서드와 5줄 이상인 콜백에 JSDoc을 요구한다.
 const requireJsdocOptions = {

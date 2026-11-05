@@ -1,12 +1,14 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
-/** codocs 문서 하나에서 읽은 것. */
+/**
+ * codocs 문서 하나에서 읽은 것.
+ * - path: 저장소 기준 경로
+ * - sections: 섹션 이름 → 본문
+ */
 export type CodocsDoc = {
   name: string;
-  /** 저장소 기준 경로 */
   path: string;
-  /** 섹션 이름 → 본문 */
   sections: Map<string, string>;
 };
 

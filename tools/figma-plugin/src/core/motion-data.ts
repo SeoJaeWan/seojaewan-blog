@@ -23,12 +23,14 @@ export type EasingData =
   /** 키프레임을 정의한 곳을 찾지 못해 연결을 알 수 없음 */
   | { kind: 'unknown' };
 
-/** 키프레임 하나 */
+/**
+ * 키프레임 하나.
+ * - time: 타임라인 위치(초)
+ * - easing: 이전 키프레임에서 이 키프레임까지 움직이는 이징(피그마 규칙). 첫 키프레임의 이징은 쓰이지 않는다
+ */
 export type KeyframeData = {
-  /** 타임라인 위치(초) */
   time: number;
   value: MotionValue;
-  /** 이전 키프레임에서 이 키프레임까지 움직이는 이징(피그마 규칙). 첫 키프레임의 이징은 쓰이지 않는다 */
   easing: EasingData;
 };
 
@@ -41,54 +43,62 @@ export type MotionNodeKind =
   /** 그 밖의 레이어. 이름은 레이어 이름 */
   | 'layer';
 
-/** 노드 하나의 항목 하나에 걸린 키프레임 트랙 */
+/**
+ * 노드 하나의 항목 하나에 걸린 키프레임 트랙.
+ * - node: 노드 이름(컴포넌트·자산·레이어 이름)
+ * - nodeId: 키프레임이 걸린 피그마 노드 ID
+ * - path: 견본 기준 레이어 경로(`ProgressRing / Arc`)
+ * - property: 피그마 항목 이름(`ROTATION`, `SCALE_XY`, `fills[0]`, `effects[0].RADIUS`)
+ * - operation: 피그마 트랙 연산(`SET`, `OFFSET`, `SCALE`)
+ * - keyframes: 시간순 키프레임
+ */
 export type TrackData = {
-  /** 노드 이름(컴포넌트·자산·레이어 이름) */
   node: string;
   nodeKind: MotionNodeKind;
-  /** 키프레임이 걸린 피그마 노드 ID */
   nodeId: string;
-  /** 견본 기준 레이어 경로(`ProgressRing / Arc`) */
   path: string;
-  /** 피그마 항목 이름(`ROTATION`, `SCALE_XY`, `fills[0]`, `effects[0].RADIUS`) */
   property: string;
-  /** 피그마 트랙 연산(`SET`, `OFFSET`, `SCALE`) */
   operation: string;
-  /** 시간순 키프레임 */
   keyframes: KeyframeData[];
 };
 
-/** 읽는 중에 알게 된, 내보낼 수 없는 문제 */
+/**
+ * 읽는 중에 알게 된, 내보낼 수 없는 문제.
+ * - path: 견본 기준 레이어 경로와 항목
+ * - nodeId: 문제가 있는 피그마 노드 ID
+ */
 export type ReadProblem = {
-  /** 견본 기준 레이어 경로와 항목 */
   path: string;
-  /** 문제가 있는 피그마 노드 ID */
   nodeId: string;
   reason: string;
   fix: string;
 };
 
-/** 모션 견본 하나 */
+/**
+ * 모션 견본 하나.
+ * - name: 견본 프레임 이름(모션 클래스 이름)
+ * - annotations: 견본 프레임 주석의 글
+ * - lengthMs: 견본 타임라인 길이(ms). 읽지 못했으면 null
+ */
 export type MotionSampleData = {
-  /** 견본 프레임 이름(모션 클래스 이름) */
   name: string;
   nodeId: string;
   tracks: TrackData[];
   problems: ReadProblem[];
-  /** 견본 프레임 주석의 글 */
   annotations: string[];
-  /** 견본 타임라인 길이(ms). 읽지 못했으면 null */
   lengthMs: number | null;
 };
 
-/** `motion/*` 변수 하나 */
+/**
+ * `motion/*` 변수 하나.
+ * - resolvedType: 변수 종류(`FLOAT`, `EASING` 등)
+ * - value: FLOAT 변수의 값(별칭을 푼 기본 모드 값). FLOAT가 아니거나 읽지 못했으면 null
+ * - curve: EASING 변수의 곡선 네 점
+ */
 export type MotionVariable = {
   name: string;
-  /** 변수 종류(`FLOAT`, `EASING` 등) */
   resolvedType: string;
-  /** FLOAT 변수의 값(별칭을 푼 기본 모드 값). FLOAT가 아니거나 읽지 못했으면 null */
   value: number | null;
-  /** EASING 변수의 곡선 네 점 */
   curve?: readonly number[] | null;
 };
 

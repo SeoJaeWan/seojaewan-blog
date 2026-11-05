@@ -8,14 +8,17 @@ import { type JsonObject, type JsonValue, stableStringify } from './stable-json'
 /** 변형 PNG 안에서 변형 노드가 놓인 자리(배율 1의 px) */
 export type NodeBox = { x: number; y: number; width: number; height: number };
 
+/**
+ * export.json의 변형 하나.
+ * - nodeId: 변형 노드 ID
+ * - properties: 변형 속성(피그마 속성 이름 → 값). 단독 컴포넌트는 비어 있다
+ * - node: PNG 안 노드 위치. PNG에는 그림자와 노드 밖으로 나온 자식까지 담긴다
+ * - tree: 구현 참고용 레이어 트리. 판정에 쓰지 않는다
+ */
 export type VariantEntry = {
-  /** 변형 노드 ID */
   nodeId: string;
-  /** 변형 속성(피그마 속성 이름 → 값). 단독 컴포넌트는 비어 있다 */
   properties: Record<string, string>;
-  /** PNG 안 노드 위치. PNG에는 그림자와 노드 밖으로 나온 자식까지 담긴다 */
   node: NodeBox;
-  /** 구현 참고용 레이어 트리. 판정에 쓰지 않는다 */
   tree?: JsonObject;
 };
 
@@ -49,17 +52,19 @@ function roundPx(value: number): number {
   return Math.round(value * 100) / 100 + 0;
 }
 
-/** 대상 폴더의 export.json */
+/**
+ * 대상 폴더의 export.json.
+ * - name: 피그마 컴포넌트(세트) 이름. 조립은 `영역/이름`
+ * - nodeId: 컴포넌트 세트나 단독 컴포넌트 ID. 이름이 바뀐 폴더를 찾는 데 쓴다
+ * - variants: 변형 파일 이름(확장자 제외) → 변형
+ * - description: 컴포넌트 description. 없으면 적지 않는다
+ * - propertyDefinitions: 컴포넌트 속성 정의(구현 참고용)
+ */
 export type ExportManifest = {
-  /** 피그마 컴포넌트(세트) 이름. 조립은 `영역/이름` */
   name: string;
-  /** 컴포넌트 세트나 단독 컴포넌트 ID. 이름이 바뀐 폴더를 찾는 데 쓴다 */
   nodeId: string;
-  /** 변형 파일 이름(확장자 제외) → 변형 */
   variants: Record<string, VariantEntry>;
-  /** 컴포넌트 description. 없으면 적지 않는다 */
   description?: string;
-  /** 컴포넌트 속성 정의(구현 참고용) */
   propertyDefinitions?: JsonObject;
 };
 

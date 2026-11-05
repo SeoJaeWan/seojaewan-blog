@@ -6,17 +6,19 @@ import path from 'node:path';
 import { fromRepo, runsDir, WEB_DIR } from './paths.ts';
 import { type JsonReport, readReportedCases, type ReportedCase } from './playwright-results.ts';
 
-/** 실행해보기 한 번의 상태. */
+/**
+ * 실행해보기 한 번의 상태.
+ * - message: 실패·오류 내용
+ * - steps: 기대 결과 단계(`test.step`)와 실패 여부
+ * - trace: trace zip 절대 경로
+ */
 export type CaseRun = {
   token: string;
   status: 'running' | 'passed' | 'failed' | 'error';
   startedAt: string;
   finishedAt: string | null;
-  /** 실패·오류 내용 */
   message: string | null;
-  /** 기대 결과 단계(`test.step`)와 실패 여부 */
   steps: ReportedCase['steps'];
-  /** trace zip 절대 경로 */
   trace: string | null;
 };
 

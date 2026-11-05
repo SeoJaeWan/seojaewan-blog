@@ -7,13 +7,15 @@ import { ASSETS_DIR } from './plugin-config';
 /** 트리 만들기 요청 하나에 넣는 최대 항목 수 */
 export const TREE_CHUNK_SIZE = 100;
 
-/** 트리 변경 계획 */
+/**
+ * 트리 변경 계획.
+ * - entries: 트리 항목(바뀐 파일과 지울 파일)
+ * - changed: 새로 생기거나 내용이 바뀐 파일 경로
+ * - deleted: 지울 파일 경로
+ */
 export type TreePlan = {
-  /** 트리 항목(바뀐 파일과 지울 파일) */
   entries: TreeEntry[];
-  /** 새로 생기거나 내용이 바뀐 파일 경로 */
   changed: string[];
-  /** 지울 파일 경로 */
   deleted: string[];
 };
 

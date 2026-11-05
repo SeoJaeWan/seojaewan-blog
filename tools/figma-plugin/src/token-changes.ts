@@ -15,25 +15,21 @@ const STYLE_GROUP = /^style\/(?:text|effect|paint)\//u;
 /** 별칭 참조(`{color.blue.dark-1}`) */
 const ALIAS_REFERENCE = /\{([^{}]+)\}/gu;
 
-/** tokens.json 비교 결과 */
+/**
+ * tokens.json 비교 결과.
+ * - changedPaths: 값이나 종류가 바뀌었거나 새로 생기거나 사라진 토큰 경로(`color/blue/dark-1`, `style/text/Body`)
+ * - addedPaths: main에 없던 토큰 경로
+ * - modifiedPaths: 값이나 종류가 바뀐 토큰 경로
+ * - removedPaths: main에만 있는 토큰 경로(이름이 바뀌었거나 지워진 토큰)
+ * - renamedPaths: 이름이 바뀐 것으로 보는 짝. main에만 있는 토큰과 새로 생긴 토큰의 종류·값이 같으면 이름을 바꾼 것으로 본다. 같은 값이 여럿이면 경로 순서대로 하나씩 짝짓는다. addedPaths·removedPaths에도 그대로 남아 있다
+ * - affectedNames: 피그마가 그 토큰을 부르는 이름. 바뀐 토큰과, 바뀐 토큰을 (거쳐서라도) 가리키는 별칭을 모두 담는다. 변수는 경로 그대로(`accent-fill/default`), 스타일은 스타일 이름(`Hangul/Body`)이다
+ */
 export type TokenChanges = {
-  /** 값이나 종류가 바뀌었거나 새로 생기거나 사라진 토큰 경로(`color/blue/dark-1`, `style/text/Body`) */
   changedPaths: string[];
-  /** main에 없던 토큰 경로 */
   addedPaths: string[];
-  /** 값이나 종류가 바뀐 토큰 경로 */
   modifiedPaths: string[];
-  /** main에만 있는 토큰 경로(이름이 바뀌었거나 지워진 토큰) */
   removedPaths: string[];
-  /**
-   * 이름이 바뀐 것으로 보는 짝. main에만 있는 토큰과 새로 생긴 토큰의 종류·값이 같으면 이름을 바꾼 것으로 본다.
-   * 같은 값이 여럿이면 경로 순서대로 하나씩 짝짓는다. addedPaths·removedPaths에도 그대로 남아 있다.
-   */
   renamedPaths: { from: string; to: string }[];
-  /**
-   * 피그마가 그 토큰을 부르는 이름. 바뀐 토큰과, 바뀐 토큰을 (거쳐서라도) 가리키는 별칭을 모두 담는다.
-   * 변수는 경로 그대로(`accent-fill/default`), 스타일은 스타일 이름(`Hangul/Body`)이다.
-   */
   affectedNames: Set<string>;
 };
 

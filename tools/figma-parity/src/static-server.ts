@@ -3,8 +3,8 @@ import { createServer } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import path from 'node:path';
 
+/** 시험용 정적 서버. url: `http://127.0.0.1:<port>`. */
 export type StaticServer = {
-  /** `http://127.0.0.1:<port>` */
   url: string;
   close: () => Promise<void>;
 };

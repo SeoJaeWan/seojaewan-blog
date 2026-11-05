@@ -250,13 +250,15 @@ async function readTracks(node: SceneNode, path: string, sample: MotionSampleDat
   }
 }
 
-/** 키프레임이 걸린 항목 하나 */
+/**
+ * 키프레임이 걸린 항목 하나.
+ * - keys: `manualKeyframeTracks`에서 같은 항목을 찾는 키 경로(`['fills', '0']`)
+ * - property: 항목 이름(`ROTATION`, `fills[0]`, `effects[0].RADIUS`)
+ * - binding: 키프레임. 컴포넌트 속성에 묶인 칠·효과처럼 읽을 수 없으면 null
+ */
 type AnimatedField = {
-  /** `manualKeyframeTracks`에서 같은 항목을 찾는 키 경로(`['fills', '0']`) */
   keys: string[];
-  /** 항목 이름(`ROTATION`, `fills[0]`, `effects[0].RADIUS`) */
   property: string;
-  /** 키프레임. 컴포넌트 속성에 묶인 칠·효과처럼 읽을 수 없으면 null */
   binding: KeyframeBinding | null;
 };
 

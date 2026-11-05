@@ -5,45 +5,51 @@
 
 import { changedTokenUsage, usesTokens } from './tokens-scope.ts';
 
-/** 캡처 범위 */
+/**
+ * 캡처 범위.
+ * - reason: 전체로 정한 이유(파일 경로와 설명)
+ * - components: 컴포넌트 폴더 이름
+ * - patterns: 조립 이름(`Menu/Folder`)
+ */
 export type AffectedSelection =
   | {
       all: true;
-      /** 전체로 정한 이유(파일 경로와 설명) */
       reason: string;
     }
   | {
       all: false;
-      /** 컴포넌트 폴더 이름 */
       components: Set<string>;
-      /** 조립 이름(`Menu/Folder`) */
       patterns: Set<string>;
     };
 
 /** 바뀐 파일의 기준 커밋 내용과 지금 내용. 없는 쪽은 undefined */
 export type FileChange = { before: string | undefined; after: string | undefined };
 
-/** 조립 하나의 코드 */
+/**
+ * 조립 하나의 코드.
+ * - files: 조립 스토리 파일과 그 스토리가 import하는 앱 파일(저장소 기준)
+ * - sources: 그 파일들의 내용
+ * - components: 그 파일들이 `@seojaewan/design-system`에서 가져다 쓰는 컴포넌트 폴더 이름
+ */
 export type PatternCode = {
-  /** 조립 스토리 파일과 그 스토리가 import하는 앱 파일(저장소 기준) */
   files: ReadonlySet<string>;
-  /** 그 파일들의 내용 */
   sources: readonly string[];
-  /** 그 파일들이 `@seojaewan/design-system`에서 가져다 쓰는 컴포넌트 폴더 이름 */
   components: ReadonlySet<string>;
 };
 
-/** 범위 계산에 필요한 저장소 상태 */
+/**
+ * 범위 계산에 필요한 저장소 상태.
+ * - changedFiles: 저장소 기준 경로 목록
+ * - componentSources: 컴포넌트 폴더 이름 → 그 폴더의 소스 내용(테스트 제외, 스토리 포함)
+ * - patterns: 조립 이름 → 조립 코드
+ * - patternAreas: 조립 이름 → 피그마 그림 폴더의 영역(`menu`)
+ * - readChange: 저장소 기준 경로의 기준 커밋 내용과 지금 내용을 읽는다
+ */
 export type AffectedInputs = {
-  /** 저장소 기준 경로 목록 */
   changedFiles: readonly string[];
-  /** 컴포넌트 폴더 이름 → 그 폴더의 소스 내용(테스트 제외, 스토리 포함) */
   componentSources: ReadonlyMap<string, readonly string[]>;
-  /** 조립 이름 → 조립 코드 */
   patterns: ReadonlyMap<string, PatternCode>;
-  /** 조립 이름 → 피그마 그림 폴더의 영역(`menu`) */
   patternAreas: ReadonlyMap<string, string>;
-  /** 저장소 기준 경로의 기준 커밋 내용과 지금 내용을 읽는다 */
   readChange: (file: string) => FileChange;
 };
 
@@ -82,15 +88,17 @@ const RELATIVE_COMPONENT_IMPORT = /from\s+['"]\.\.\/([^/'"]+)\//gu;
 // asset-data.ts에서 자산 하나가 시작하는 줄(`  'icons/x.svg': {`)이다.
 const ASSET_DATA_ENTRY = /^ {2}'([^']+)': \{$/u;
 
-/** 파일 하나가 정한 범위 */
+/**
+ * 파일 하나가 정한 범위.
+ * - components: 그것을 담는 컴포넌트와 쓰는 조립까지 넓힐 컴포넌트
+ * - figmaComponents: 그것을 담는 컴포넌트까지만 넓힐 컴포넌트(피그마 그림만 바뀜)
+ */
 type FileScope =
   | { kind: 'none' }
   | { kind: 'all'; reason: string }
   | {
       kind: 'some';
-      /** 그것을 담는 컴포넌트와 쓰는 조립까지 넓힐 컴포넌트 */
       components?: Iterable<string>;
-      /** 그것을 담는 컴포넌트까지만 넓힐 컴포넌트(피그마 그림만 바뀜) */
       figmaComponents?: Iterable<string>;
       patterns?: Iterable<string>;
     };
