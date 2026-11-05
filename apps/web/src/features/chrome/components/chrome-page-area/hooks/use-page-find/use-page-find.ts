@@ -2,15 +2,17 @@ import { type RefObject, useEffect, useId, useState } from 'react';
 
 import { findTextRanges, stepMatchIndex } from './utils/page-find/page-find';
 
-/** 찾기 결과와 이동 */
+/**
+ * 찾기 결과와 이동
+ * - current: 지금 위치(1부터). 일치가 없으면 0
+ * - total: 일치하는 곳의 개수
+ * - next: 다음 일치로 간다. 끝이면 처음으로 돌아간다
+ * - previous: 이전 일치로 간다. 처음이면 끝으로 돌아간다
+ */
 export type PageFind = {
-  /** 지금 위치(1부터). 일치가 없으면 0 */
   current: number;
-  /** 일치하는 곳의 개수 */
   total: number;
-  /** 다음 일치로 간다. 끝이면 처음으로 돌아간다 */
   next: () => void;
-  /** 이전 일치로 간다. 처음이면 끝으로 돌아간다 */
   previous: () => void;
 };
 

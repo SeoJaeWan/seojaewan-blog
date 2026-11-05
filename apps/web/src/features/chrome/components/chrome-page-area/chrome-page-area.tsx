@@ -19,40 +19,27 @@ import { ChromeFindBar } from './components/chrome-find-bar/chrome-find-bar';
 import { ChromeImageViewer } from './components/chrome-image-viewer/chrome-image-viewer';
 import { usePageFind } from './hooks/use-page-find/use-page-find';
 
-/** 열린 찾기 막대 */
+/** 열린 찾기 막대. focusRequest는 입력칸에 포커스를 주고 글자를 모두 선택할 때마다 바꾸는 번호다(이미 열린 막대를 Ctrl+F로 다시 열 때). */
 export type ChromePageFind = {
-  /** 찾는 글자 */
   query: string;
-  /** 입력칸에 포커스를 주고 글자를 모두 선택할 때마다 바꾸는 번호(이미 열린 막대를 Ctrl+F로 다시 열 때) */
   focusRequest: number;
 };
 
-/** 크게 보는 이미지 */
+/** 크게 보는 이미지. trigger는 크게 보기를 닫은 뒤 포커스를 돌려줄 요소(누른 이미지)다. */
 export type ChromePageImage = {
-  /** 이미지 블록 */
   block: PostImageBlock;
-  /** 크게 보기를 닫은 뒤 포커스를 돌려줄 요소(누른 이미지) */
   trigger: HTMLElement;
 };
 
 type ChromePageAreaProps = {
-  /** 페이지 영역 요소. 쓰는 곳이 이 영역의 너비로 페이지 모양을 정한다 */
   areaRef: RefObject<HTMLDivElement | null>;
-  /** 화면 방식. 모바일은 찾기 막대가 도구 모음 아래 전체 폭이다 */
   device: DeviceVariant;
-  /** 페이지 모양. 크게 보기가 이 배치를 따른다 */
   layout: ChromePageLayout;
-  /** 탭 내용(고른 탭의 페이지) */
   children: ReactNode;
-  /** 열린 찾기 막대. 닫혀 있으면 null */
   find: ChromePageFind | null;
-  /** 찾는 글자를 바꿀 때 */
   onFindQueryChange: (query: string) => void;
-  /** 찾기 막대를 닫을 때(Esc, 닫기 버튼) */
   onFindClose: () => void;
-  /** 크게 보는 이미지. 없으면 null */
   image: ChromePageImage | null;
-  /** 크게 보기를 닫을 때(닫기 버튼, Esc, 이미지 밖 바탕) */
   onImageClose: () => void;
 };
 
@@ -70,20 +57,28 @@ const findBarClassNames = {
  * 탭 내용은 눌러서 포커스를 받을 수 있어(Tab 키로는 닿지 않는다) 본문을 누른 뒤에도 Chrome 창 단축키(Ctrl+F 등)가 닿는다.
  * @codocs [[Chrome:페이지에서 찾기]]
  * @codocs [[Chrome:글 화면]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.areaRef 페이지 영역 요소. 쓰는 곳이 이 영역의 너비로 페이지 모양을 정한다
+ * @param props.device 화면 방식. 모바일은 찾기 막대가 도구 모음 아래 전체 폭이다
+ * @param props.layout 페이지 모양. 크게 보기가 이 배치를 따른다
+ * @param props.children 탭 내용(고른 탭의 페이지)
+ * @param props.find 열린 찾기 막대. 닫혀 있으면 null
+ * @param props.onFindQueryChange 찾는 글자를 바꿀 때
+ * @param props.onFindClose 찾기 막대를 닫을 때(Esc, 닫기 버튼)
+ * @param props.image 크게 보는 이미지. 없으면 null
+ * @param props.onImageClose 크게 보기를 닫을 때(닫기 버튼, Esc, 이미지 밖 바탕)
  */
-export function ChromePageArea(props: ChromePageAreaProps): JSX.Element {
-  const {
-    areaRef,
-    device,
-    layout,
-    children,
-    find,
-    onFindQueryChange: handleFindQueryChange,
-    onFindClose: handleFindClose,
-    image,
-    onImageClose: handleImageClose,
-  } = props;
+export function ChromePageArea({
+  areaRef,
+  device,
+  layout,
+  children,
+  find,
+  onFindQueryChange: handleFindQueryChange,
+  onFindClose: handleFindClose,
+  image,
+  onImageClose: handleImageClose,
+}: ChromePageAreaProps): JSX.Element {
   const contentRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
   const {

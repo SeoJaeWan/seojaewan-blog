@@ -28,82 +28,45 @@ export type ChromePageLatestPost = { id?: string; title: string };
 export type ChromePageSearchResult = { id?: string; title: string; date: string; url: string };
 
 type ChromePageCommonProps = {
-  /** 피그마 Layout. wide는 넓은 창, narrow는 좁은 창의 배치다. 쓰는 곳이 창 내용 너비로 고른다 */
   layout?: ChromePageLayout;
-  /** 바깥 배치 클래스. 크기는 쓰는 곳(창)이 정한다 */
   className?: string;
-  /** 페이지를 스크롤하는 상자. 글 화면이 지금 읽는 위치를 잴 때 쓴다 */
   scrollRef?: Ref<HTMLDivElement>;
-  /**
-   * 페이지 본문 배율(1이 100%, [[Chrome:확대/축소]]). 주면 스크롤 상자 안의 본문만 키우거나 줄인다(스크롤 상자 크기는 그대로다).
-   * 주지 않으면 배율을 걸지 않는다(조립 스토리)
-   */
   zoom?: number;
 };
 
 type ChromePostPageProps = {
-  /** 피그마 Page=Post. 글 화면이다 */
   page: 'post';
-  /**
-   * 커버 이미지(피그마 PostCover `image`). 있으면 제목 위에 그린다. Notion 커버 제공([[Notion 이미지 제공]])은
-   * 9단계라 그 전까지는 쓰는 곳이 넣는다
-   */
   cover?: ReactNode;
-  /** 제목 위 작은 글자(폴더 경로와 작성일) */
   meta: string;
-  /** 글 제목 */
   title: string;
-  /** 목차 항목. wide는 오른쪽에 펼치고, narrow는 제목 아래 접은 목차로 보인다. 비어 있으면 목차를 그리지 않는다 */
   toc: readonly ChromePageTocItem[];
-  /** 목차 항목을 눌렀을 때(클릭·Enter·Space). 누른 항목의 순서를 받는다 */
   onTocItemSelect?: (index: number) => void;
-  /** narrow에서 목차를 펼쳤는지. 펼치면 접은 목차 대신 항목 목록을 보인다 */
   isTocExpanded?: boolean;
-  /** narrow에서 목차를 누르면 펼치거나 접는다 */
   onTocToggle?: () => void;
-  /** 글 본문 자리. Notion 글을 바꾼 블록(문단, 제목, 코드 블록 등)을 넣는다. 블록 사이 간격은 이 화면이 정한다 */
   children?: ReactNode;
-  /** 이전 글 제목. 없으면 카드를 그리지 않는다 */
   previousTitle?: string;
-  /** 다음 글 제목. 없으면 카드를 그리지 않는다 */
   nextTitle?: string;
-  /** 이전 글 카드를 눌렀을 때(클릭·Enter·Space) */
   onPreviousOpen?: () => void;
-  /** 다음 글 카드를 눌렀을 때(클릭·Enter·Space) */
   onNextOpen?: () => void;
 };
 
 type ChromeNewTabPageProps = {
-  /** 피그마 Page=New tab. 새 탭 페이지다 */
   page: 'new-tab';
-  /** 최신 글 바로가기 */
   latestPosts: readonly ChromePageLatestPost[];
-  /** 최신 글 바로가기를 눌렀을 때. 누른 글의 순서를 받는다 */
   onLatestPostOpen?: (index: number) => void;
-  /**
-   * 가운데 검색창 자리(피그마 `Chrome/NewTabSearch`). 주소창과 같이 동작하는 검색창을 쓰는 곳이 넣는다.
-   * 주지 않으면 닫힌 모습의 `ChromeNewTabSearch`다
-   */
   search?: ReactNode;
 };
 
 type ChromeSearchResultsPageProps = {
-  /** 피그마 Page=Search results. 검색 결과 페이지다 */
   page: 'search-results';
-  /** 검색어 */
   query: string;
-  /** 제목에 검색어가 든 글 목록 */
   results: readonly ChromePageSearchResult[];
-  /** 결과 글을 눌렀을 때(클릭·Enter·Space). 누른 글의 순서를 받는다 */
   onResultOpen?: (index: number) => void;
 };
 
 type ChromeNotFoundPageProps = {
-  /** 피그마 Page=Not found. 페이지를 찾을 수 없음 화면이다 */
   page: 'not-found';
-  /** 찾지 못한 주소 */
   url: string;
-  /** 새로고침 버튼을 누르면 부른다 */
   onReload?: MouseEventHandler<HTMLElement>;
 };
 
@@ -122,25 +85,37 @@ const WORDMARK = 'seojaewan.com';
  * 글 화면. wide는 글(최대 720)과 오른쪽 목차(220)를 가운데에 놓고, narrow는 글 머리 아래에 접은 목차를 둔다.
  * wide의 목차는 스크롤해도 오른쪽에 붙어 있다(sticky). 목차 항목이 없으면 목차를 그리지 않는다.
  * narrow의 접은 목차를 누르면 펼치고, 펼친 목차의 머리(제목)를 누르면 다시 접는다(클릭·Enter·Space).
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.layout 피그마 Layout. wide는 넓은 창, narrow는 좁은 창의 배치다. 쓰는 곳이 창 내용 너비로 고른다
+ * @param props.cover 커버 이미지(피그마 PostCover `image`). 있으면 제목 위에 그린다. Notion 커버 제공([[Notion 이미지 제공]])은 9단계라 그 전까지는 쓰는 곳이 넣는다
+ * @param props.meta 제목 위 작은 글자(폴더 경로와 작성일)
+ * @param props.title 글 제목
+ * @param props.toc 목차 항목. wide는 오른쪽에 펼치고, narrow는 제목 아래 접은 목차로 보인다. 비어 있으면 목차를 그리지 않는다
+ * @param props.children 글 본문 자리. Notion 글을 바꾼 블록(문단, 제목, 코드 블록 등)을 넣는다. 블록 사이 간격은 이 화면이 정한다
+ * @param props.previousTitle 이전 글 제목. 없으면 카드를 그리지 않는다
+ * @param props.nextTitle 다음 글 제목. 없으면 카드를 그리지 않는다
+ * @param props.onTocItemSelect 목차 항목을 눌렀을 때(클릭·Enter·Space). 누른 항목의 순서를 받는다
+ * @param props.isTocExpanded narrow에서 목차를 펼쳤는지. 펼치면 접은 목차 대신 항목 목록을 보인다
+ * @param props.onTocToggle narrow에서 목차를 누르면 펼치거나 접는다
+ * @param props.onPreviousOpen 이전 글 카드를 눌렀을 때(클릭·Enter·Space)
+ * @param props.onNextOpen 다음 글 카드를 눌렀을 때(클릭·Enter·Space)
  * @returns 글 화면
  */
-function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JSX.Element {
-  const {
-    layout,
-    cover,
-    meta,
-    title,
-    toc,
-    children,
-    previousTitle,
-    nextTitle,
-    onTocItemSelect,
-    isTocExpanded = false,
-    onTocToggle,
-    onPreviousOpen,
-    onNextOpen,
-  } = props;
+function PostPage({
+  layout,
+  cover,
+  meta,
+  title,
+  toc,
+  children,
+  previousTitle,
+  nextTitle,
+  onTocItemSelect,
+  isTocExpanded = false,
+  onTocToggle,
+  onPreviousOpen,
+  onNextOpen,
+}: ChromePostPageProps & { layout: ChromePageLayout }): JSX.Element {
   const isWide = layout === 'wide';
   const tocItems = toc.map(
     /**
@@ -235,11 +210,19 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
 
 /**
  * 새 탭 페이지. 로고 자리 글자, 검색창, 최신 글 바로가기를 가운데에 쌓는다.
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.layout 피그마 Layout. wide는 넓은 창, narrow는 좁은 창의 배치다. 쓰는 곳이 창 내용 너비로 고른다
+ * @param props.latestPosts 최신 글 바로가기
+ * @param props.onLatestPostOpen 최신 글 바로가기를 눌렀을 때. 누른 글의 순서를 받는다
+ * @param props.search 가운데 검색창 자리(피그마 `Chrome/NewTabSearch`). 주소창과 같이 동작하는 검색창을 쓰는 곳이 넣는다. 주지 않으면 닫힌 모습의 `ChromeNewTabSearch`다
  * @returns 새 탭 페이지
  */
-function NewTabPage(props: ChromeNewTabPageProps & { layout: ChromePageLayout }): JSX.Element {
-  const { layout, latestPosts, onLatestPostOpen, search = <ChromeNewTabSearch /> } = props;
+function NewTabPage({
+  layout,
+  latestPosts,
+  onLatestPostOpen,
+  search = <ChromeNewTabSearch />,
+}: ChromeNewTabPageProps & { layout: ChromePageLayout }): JSX.Element {
   const isWide = layout === 'wide';
   return (
     <div
@@ -285,13 +268,19 @@ function NewTabPage(props: ChromeNewTabPageProps & { layout: ChromePageLayout })
 
 /**
  * 검색 결과 페이지. 검색어와 개수 제목 아래에 글 목록을 둔다. narrow는 오른쪽 주소 글자를 뺀다.
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.layout 피그마 Layout. wide는 넓은 창, narrow는 좁은 창의 배치다. 쓰는 곳이 창 내용 너비로 고른다
+ * @param props.query 검색어
+ * @param props.results 제목에 검색어가 든 글 목록
+ * @param props.onResultOpen 결과 글을 눌렀을 때(클릭·Enter·Space). 누른 글의 순서를 받는다
  * @returns 검색 결과 페이지
  */
-function SearchResultsPage(
-  props: ChromeSearchResultsPageProps & { layout: ChromePageLayout },
-): JSX.Element {
-  const { layout, query, results, onResultOpen } = props;
+function SearchResultsPage({
+  layout,
+  query,
+  results,
+  onResultOpen,
+}: ChromeSearchResultsPageProps & { layout: ChromePageLayout }): JSX.Element {
   const isWide = layout === 'wide';
   return (
     <div
@@ -340,11 +329,15 @@ function SearchResultsPage(
 
 /**
  * 페이지를 찾을 수 없음 화면. Chrome 오류 화면처럼 안내를 가운데에 둔다.
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.url 찾지 못한 주소
+ * @param props.onReload 새로고침 버튼을 누르면 부른다
  * @returns 찾을 수 없음 화면
  */
-function NotFoundPage(props: ChromeNotFoundPageProps & { layout: ChromePageLayout }): JSX.Element {
-  const { url, onReload: handleReload } = props;
+function NotFoundPage({
+  url,
+  onReload: handleReload,
+}: ChromeNotFoundPageProps & { layout: ChromePageLayout }): JSX.Element {
   return (
     <div className="flex flex-flex-fill items-center justify-center px-spacing-2xl">
       <EmptyState
@@ -367,26 +360,56 @@ function NotFoundPage(props: ChromeNotFoundPageProps & { layout: ChromePageLayou
  * @codocs [[Chrome:글 화면]]
  * @codocs [[Chrome:새 탭 페이지]]
  * @codocs [[Chrome:확대/축소]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.layout 피그마 Layout. wide는 넓은 창, narrow는 좁은 창의 배치다. 쓰는 곳이 창 내용 너비로 고른다
+ * @param props.className 바깥 배치 클래스. 크기는 쓰는 곳(창)이 정한다
+ * @param props.scrollRef 페이지를 스크롤하는 상자. 글 화면이 지금 읽는 위치를 잴 때 쓴다
+ * @param props.zoom 페이지 본문 배율(1이 100%, [[Chrome:확대/축소]]). 주면 스크롤 상자 안의 본문만 키우거나 줄인다(스크롤 상자 크기는 그대로다). 주지 않으면 배율을 걸지 않는다(조립 스토리)
+ * @param props.page 그릴 화면. post는 글 화면, new-tab은 새 탭 페이지, search-results는 검색 결과 페이지, not-found는 페이지를 찾을 수 없음 화면이다
+ * @param props.cover (post) 커버 이미지(피그마 PostCover `image`). 있으면 제목 위에 그린다. Notion 커버 제공([[Notion 이미지 제공]])은 9단계라 그 전까지는 쓰는 곳이 넣는다
+ * @param props.meta (post) 제목 위 작은 글자(폴더 경로와 작성일)
+ * @param props.title (post) 글 제목
+ * @param props.toc (post) 목차 항목. wide는 오른쪽에 펼치고, narrow는 제목 아래 접은 목차로 보인다. 비어 있으면 목차를 그리지 않는다
+ * @param props.onTocItemSelect (post) 목차 항목을 눌렀을 때(클릭·Enter·Space). 누른 항목의 순서를 받는다
+ * @param props.isTocExpanded (post) narrow에서 목차를 펼쳤는지. 펼치면 접은 목차 대신 항목 목록을 보인다
+ * @param props.onTocToggle (post) narrow에서 목차를 누르면 펼치거나 접는다
+ * @param props.children (post) 글 본문 자리. Notion 글을 바꾼 블록(문단, 제목, 코드 블록 등)을 넣는다. 블록 사이 간격은 이 화면이 정한다
+ * @param props.previousTitle (post) 이전 글 제목. 없으면 카드를 그리지 않는다
+ * @param props.nextTitle (post) 다음 글 제목. 없으면 카드를 그리지 않는다
+ * @param props.onPreviousOpen (post) 이전 글 카드를 눌렀을 때(클릭·Enter·Space)
+ * @param props.onNextOpen (post) 다음 글 카드를 눌렀을 때(클릭·Enter·Space)
+ * @param props.latestPosts (new-tab) 최신 글 바로가기
+ * @param props.onLatestPostOpen (new-tab) 최신 글 바로가기를 눌렀을 때. 누른 글의 순서를 받는다
+ * @param props.search (new-tab) 가운데 검색창 자리(피그마 `Chrome/NewTabSearch`). 주소창과 같이 동작하는 검색창을 쓰는 곳이 넣는다. 주지 않으면 닫힌 모습의 `ChromeNewTabSearch`다
+ * @param props.query (search-results) 검색어
+ * @param props.results (search-results) 제목에 검색어가 든 글 목록
+ * @param props.onResultOpen (search-results) 결과 글을 눌렀을 때(클릭·Enter·Space). 누른 글의 순서를 받는다
+ * @param props.url (not-found) 찾지 못한 주소
+ * @param props.onReload (not-found) 새로고침 버튼을 누르면 부른다
  */
-export function ChromePage(props: ChromePageProps): JSX.Element {
-  const { layout = 'wide', className, scrollRef, zoom } = props;
+export function ChromePage({
+  layout = 'wide',
+  className,
+  scrollRef,
+  zoom,
+  ...pageProps
+}: ChromePageProps): JSX.Element {
   let content: JSX.Element;
-  switch (props.page) {
+  switch (pageProps.page) {
     case 'post': {
-      content = <PostPage {...props} layout={layout} />;
+      content = <PostPage {...pageProps} layout={layout} />;
       break;
     }
     case 'new-tab': {
-      content = <NewTabPage {...props} layout={layout} />;
+      content = <NewTabPage {...pageProps} layout={layout} />;
       break;
     }
     case 'search-results': {
-      content = <SearchResultsPage {...props} layout={layout} />;
+      content = <SearchResultsPage {...pageProps} layout={layout} />;
       break;
     }
     case 'not-found': {
-      content = <NotFoundPage {...props} layout={layout} />;
+      content = <NotFoundPage {...pageProps} layout={layout} />;
       break;
     }
   }

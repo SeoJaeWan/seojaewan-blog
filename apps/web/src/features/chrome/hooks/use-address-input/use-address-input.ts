@@ -2,54 +2,61 @@ import { type KeyboardEvent, useId, useState } from 'react';
 
 import type { AddressSuggestionTarget } from '@/features/chrome/utils/chrome-address/chrome-address';
 
+/**
+ * 주소 입력칸 훅의 설정
+ * - address: 입력하지 않을 때 보이는 글자(주소창은 지금 페이지의 주소, 새 탭 검색창은 빈칸)
+ * - getSuggestions: 입력 중인 글자의 추천 목록을 구한다
+ * - onSuggestionOpen: 추천을 골랐을 때(Enter나 클릭)
+ * - onSubmit: 추천을 고르지 않고 Enter를 눌렀을 때. 입력한 글자를 받는다
+ * - onInput: 글자를 입력했을 때(추천 목록 너비를 맞출 때 쓴다)
+ */
 type AddressInputOptions = {
-  /** 입력하지 않을 때 보이는 글자(주소창은 지금 페이지의 주소, 새 탭 검색창은 빈칸) */
   address: string;
-  /** 입력 중인 글자의 추천 목록을 구한다 */
   getSuggestions: (query: string) => readonly AddressSuggestionTarget[];
-  /** 추천을 골랐을 때(Enter나 클릭) */
   onSuggestionOpen: (target: AddressSuggestionTarget) => void;
-  /** 추천을 고르지 않고 Enter를 눌렀을 때. 입력한 글자를 받는다 */
   onSubmit: (text: string) => void;
-  /** 글자를 입력했을 때(추천 목록 너비를 맞출 때 쓴다) */
   onInput?: () => void;
 };
 
-/** 입력칸에 그대로 넘기는 콤보 상자 속성 */
+/**
+ * 입력칸에 그대로 넘기는 콤보 상자 속성
+ * - role: 콤보 상자 역할
+ * - 'aria-autocomplete': 추천 목록을 띄운다는 표시
+ * - 'aria-expanded': 추천 목록을 열었는지
+ * - 'aria-controls': 연 추천 목록 요소의 id
+ * - 'aria-activedescendant': 고른 추천 줄의 id
+ * - value: 입력칸 글자
+ * - onValueChange: 글자를 입력했을 때
+ * - onKeyDown: 키를 눌렀을 때
+ * - onBlur: 포커스를 잃었을 때
+ */
 type AddressInputProps = {
-  /** 콤보 상자 역할 */
   role: 'combobox';
-  /** 추천 목록을 띄운다는 표시 */
   'aria-autocomplete': 'list';
-  /** 추천 목록을 열었는지 */
   'aria-expanded': boolean;
-  /** 연 추천 목록 요소의 id */
   'aria-controls': string | undefined;
-  /** 고른 추천 줄의 id */
   'aria-activedescendant': string | undefined;
-  /** 입력칸 글자 */
   value: string;
-  /** 글자를 입력했을 때 */
   onValueChange: (next: string) => void;
-  /** 키를 눌렀을 때 */
   onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
-  /** 포커스를 잃었을 때 */
   onBlur: () => void;
 };
 
-/** 추천 입력칸의 상태와 속성 */
+/**
+ * 추천 입력칸의 상태와 속성
+ * - inputProps: 입력칸 속성
+ * - listId: 추천 목록 요소의 id
+ * - suggestions: 보이는 추천. 목록을 닫았으면 비어 있다
+ * - isListOpen: 추천 목록을 열었는지
+ * - selectedIndex: 고른 추천의 차례. 고르지 않았으면 undefined
+ * - onSuggestionSelect: 추천 줄을 눌렀을 때. 그 추천을 연다
+ */
 type AddressInput = {
-  /** 입력칸 속성 */
   inputProps: AddressInputProps;
-  /** 추천 목록 요소의 id */
   listId: string;
-  /** 보이는 추천. 목록을 닫았으면 비어 있다 */
   suggestions: readonly AddressSuggestionTarget[];
-  /** 추천 목록을 열었는지 */
   isListOpen: boolean;
-  /** 고른 추천의 차례. 고르지 않았으면 undefined */
   selectedIndex: number | undefined;
-  /** 추천 줄을 눌렀을 때. 그 추천을 연다 */
   onSuggestionSelect: (index: number) => void;
 };
 

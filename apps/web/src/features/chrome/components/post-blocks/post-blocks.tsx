@@ -40,32 +40,13 @@ export type PostImageBlock = Extract<PostBlock, { type: 'image' }>;
 export type PostEquationBlock = Extract<PostBlock, { type: 'equation' }>;
 
 type PostBlocksProps = {
-  /** 본문 블록 */
   blocks: readonly PostBlock[];
-  /**
-   * 링크 주소가 블로그 안의 페이지면 그 페이지를 돌려준다. 외부 주소면 null이다. 없으면 모든 링크가 외부 주소다
-   */
   resolveLink?: (href: string) => ChromeTabPage | null;
-  /** 블로그 글 링크를 눌렀을 때. 같은 탭에서 그 페이지로 간다 */
   onPageOpen?: (page: ChromeTabPage) => void;
-  /**
-   * 이미지 블록의 이미지(피그마 Figure `image`)를 그린다. 없으면 임시 이미지(배경화면 Bloom)를 그린다.
-   * Notion 이미지 제공([[Notion 이미지 제공]])이 9단계라 그 전까지의 자리다
-   */
   renderImage?: (block: PostImageBlock) => ReactNode;
-  /**
-   * 이미지를 눌렀을 때(클릭·Enter·Space). 주면 이미지가 크게 보기 버튼이 된다. 누른 이미지 블록과, 크게 보기를 닫은 뒤
-   * 포커스를 돌려줄 버튼을 받는다. 주지 않으면 누를 수 없는 이미지다(조립 스토리)
-   */
   onImageOpen?: (block: PostImageBlock, trigger: HTMLElement) => void;
-  /**
-   * 수식 블록의 수식(피그마 Equation `Formula` 슬롯)을 그린다. 없으면 서버가 KaTeX로 그려 보낸 HTML(`html`)을 넣고,
-   * HTML이 없으면 식을 코드 글자로 보인다([[기술 스택:글 본문 처리]]). 조립 스토리가 피그마의 수식 그림을 넣을 때 쓴다
-   */
   renderEquation?: (block: PostEquationBlock) => ReactNode;
-  /** 처음에 펼쳐 둘 토글 블록의 차례(본문 맨 위 차례). 없으면 모든 토글이 접혀 있다 */
   expandedToggleIndexes?: readonly number[];
-  /** 바깥 배치 클래스 */
   className?: string;
 };
 
@@ -94,19 +75,26 @@ const BULLETS = ['•', '◦', '▪'] as const;
  * @codocs [[Notion 블록:지원 블록]]
  * @codocs [[Notion 블록:모양]]
  * @codocs [[Chrome:글 화면]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.blocks 본문 블록
+ * @param props.resolveLink 링크 주소가 블로그 안의 페이지면 그 페이지를 돌려준다. 외부 주소면 null이다. 없으면 모든 링크가 외부 주소다
+ * @param props.onPageOpen 블로그 글 링크를 눌렀을 때. 같은 탭에서 그 페이지로 간다
+ * @param props.renderImage 이미지 블록의 이미지(피그마 Figure `image`)를 그린다. 없으면 임시 이미지(배경화면 Bloom)를 그린다. Notion 이미지 제공([[Notion 이미지 제공]])이 9단계라 그 전까지의 자리다
+ * @param props.onImageOpen 이미지를 눌렀을 때(클릭·Enter·Space). 주면 이미지가 크게 보기 버튼이 된다. 누른 이미지 블록과, 크게 보기를 닫은 뒤 포커스를 돌려줄 버튼을 받는다. 주지 않으면 누를 수 없는 이미지다(조립 스토리)
+ * @param props.renderEquation 수식 블록의 수식(피그마 Equation `Formula` 슬롯)을 그린다. 없으면 서버가 KaTeX로 그려 보낸 HTML(`html`)을 넣고, HTML이 없으면 식을 코드 글자로 보인다([[기술 스택:글 본문 처리]]). 조립 스토리가 피그마의 수식 그림을 넣을 때 쓴다
+ * @param props.expandedToggleIndexes 처음에 펼쳐 둘 토글 블록의 차례(본문 맨 위 차례). 없으면 모든 토글이 접혀 있다
+ * @param props.className 바깥 배치 클래스
  */
-export function PostBlocks(props: PostBlocksProps): JSX.Element {
-  const {
-    blocks,
-    resolveLink,
-    onPageOpen: handlePageOpen,
-    renderImage = renderTemporaryImage,
-    onImageOpen,
-    renderEquation = renderServerEquation,
-    expandedToggleIndexes = [],
-    className,
-  } = props;
+export function PostBlocks({
+  blocks,
+  resolveLink,
+  onPageOpen: handlePageOpen,
+  renderImage = renderTemporaryImage,
+  onImageOpen,
+  renderEquation = renderServerEquation,
+  expandedToggleIndexes = [],
+  className,
+}: PostBlocksProps): JSX.Element {
   const topHeadingLevel = getTopHeadingLevel(blocks);
 
   /**

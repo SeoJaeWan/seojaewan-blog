@@ -23,21 +23,13 @@ const META_PATH_SEPARATOR = ' › ';
 const META_DATE_SEPARATOR = ' · ';
 
 type ChromePostTabProps = {
-  /** 보는 글 */
   post: PostItem;
-  /** 작업 공간(글 색인) */
   workspace: Pick<WorkspaceState, 'items'>;
-  /** 피그마 Chrome/Page Layout */
   layout: 'wide' | 'narrow';
-  /** 링크 주소가 블로그 안의 페이지면 그 페이지를 돌려준다. 외부 주소면 null이다 */
   resolveLink: (href: string) => ChromeTabPage | null;
-  /** 같은 탭에서 페이지로 갈 때(본문 링크, 이전·다음 글) */
   onNavigate: (page: ChromeTabPage) => void;
-  /** 찾을 수 없음 화면의 새로고침 버튼을 눌렀을 때 */
   onReload: () => void;
-  /** 페이지 본문 배율(1이 100%). 주지 않으면 배율을 걸지 않는다 */
   zoom?: number;
-  /** 본문 이미지를 눌렀을 때(크게 보기). 누른 이미지 블록과 포커스를 돌려줄 요소를 받는다 */
   onImageOpen?: (block: PostImageBlock, trigger: HTMLElement) => void;
 };
 
@@ -47,19 +39,26 @@ type ChromePostTabProps = {
  * (받는 중·실패 화면은 디자인이 없다). 제목이 1개 이상이면 목차를 보이고, 스크롤하는 동안 지금 읽는 제목을 표시한다.
  * 목차 항목을 누르면 그 제목으로 스크롤한다.
  * @codocs [[Chrome:글 화면]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.post 보는 글
+ * @param props.workspace 작업 공간(글 색인)
+ * @param props.layout 피그마 Chrome/Page Layout
+ * @param props.resolveLink 링크 주소가 블로그 안의 페이지면 그 페이지를 돌려준다. 외부 주소면 null이다
+ * @param props.onNavigate 같은 탭에서 페이지로 갈 때(본문 링크, 이전·다음 글)
+ * @param props.onReload 찾을 수 없음 화면의 새로고침 버튼을 눌렀을 때
+ * @param props.zoom 페이지 본문 배율(1이 100%). 주지 않으면 배율을 걸지 않는다
+ * @param props.onImageOpen 본문 이미지를 눌렀을 때(크게 보기). 누른 이미지 블록과 포커스를 돌려줄 요소를 받는다
  */
-export function ChromePostTab(props: ChromePostTabProps): JSX.Element {
-  const {
-    post,
-    workspace,
-    layout,
-    resolveLink,
-    onNavigate: handleNavigate,
-    onReload: handleReload,
-    zoom,
-    onImageOpen: handleImageOpen,
-  } = props;
+export function ChromePostTab({
+  post,
+  workspace,
+  layout,
+  resolveLink,
+  onNavigate: handleNavigate,
+  onReload: handleReload,
+  zoom,
+  onImageOpen: handleImageOpen,
+}: ChromePostTabProps): JSX.Element {
   const body = usePostBody(post.slug);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isTocExpanded, setIsTocExpanded] = useState(false);

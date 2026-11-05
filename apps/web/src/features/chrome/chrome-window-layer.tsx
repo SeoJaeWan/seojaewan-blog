@@ -66,26 +66,20 @@ import { DEFAULT_ZOOM } from './utils/chrome-zoom/chrome-zoom';
 // Chrome 새 탭 페이지에 보이는 최신 글 개수(피그마 Chrome/Page `Page=New tab`).
 const NEW_TAB_LATEST_POST_COUNT = 6;
 
-/** 열린 찾기 막대와 그 막대를 연 페이지 */
+/** 열린 찾기 막대와 그 막대를 연 페이지. pageKey는 막대를 연 페이지(탭과 기록 차례)이며 다른 페이지로 가면 막대를 닫는다. */
 type FindState = ChromePageFind & {
-  /** 막대를 연 페이지(탭과 기록 차례). 다른 페이지로 가면 막대를 닫는다 */
   pageKey: string;
 };
 
-/** 크게 보는 이미지와 그 이미지가 있는 페이지 */
+/** 크게 보는 이미지와 그 이미지가 있는 페이지. pageKey는 이미지가 있는 페이지(탭과 기록 차례)다. */
 type ImageViewerState = ChromePageImage & {
-  /** 이미지가 있는 페이지(탭과 기록 차례) */
   pageKey: string;
 };
 
 type ChromeWindowLayerProps = {
-  /** 창 id. 창 내용(탭과 탭마다의 기록)을 바꿀 때 쓴다 */
   windowId: string;
-  /** Chrome 창 내용(탭, 탭마다의 기록, 고른 탭) */
   content: ChromeWindowContent;
-  /** 창 층이 넘기는 창 동작 속성 */
   controls: WindowFrameControls;
-  /** 화면 방식 */
   device: DeviceVariant;
 };
 
@@ -107,10 +101,18 @@ type ChromeWindowLayerProps = {
  * @codocs [[Chrome:휴지통에 있는 글]]
  * @codocs [[창 동작:모바일]]
  * @codocs [[Chrome:모바일]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.windowId 창 id. 창 내용(탭과 탭마다의 기록)을 바꿀 때 쓴다
+ * @param props.content Chrome 창 내용(탭, 탭마다의 기록, 고른 탭)
+ * @param props.controls 창 층이 넘기는 창 동작 속성
+ * @param props.device 화면 방식
  */
-export function ChromeWindowLayer(props: ChromeWindowLayerProps): JSX.Element {
-  const { windowId, content, controls, device } = props;
+export function ChromeWindowLayer({
+  windowId,
+  content,
+  controls,
+  device,
+}: ChromeWindowLayerProps): JSX.Element {
   const items = useWorkspaceStore((state) => state.items);
   const restoreTrashedPost = useWorkspaceStore((state) => state.restoreTrashedPost);
   const setContent = useWindowStore((state) => state.setContent);
@@ -487,29 +489,17 @@ export function ChromeWindowLayer(props: ChromeWindowLayerProps): JSX.Element {
 }
 
 type ChromeTabContentProps = {
-  /** 고른 탭의 페이지 */
   page: ChromeTabPage;
-  /** 글 페이지면 그 글. 색인에 없으면 undefined */
   post: PostItem | undefined;
-  /** 작업 공간 */
   workspace: Pick<WorkspaceState, 'items'>;
-  /** 페이지 모양. 창 내용 너비로 정한다 */
   layout: ChromePageLayout;
-  /** 페이지 본문 배율(1이 100%) */
   zoom: number;
-  /** 탭 안에서 페이지로 갈 때 */
   onNavigate: (page: ChromeTabPage) => void;
-  /** 새 탭 페이지 검색창에서 추천을 고르지 않고 Enter를 눌렀을 때(주소창과 같다) */
   onAddressSubmit: (text: string) => void;
-  /** 새 탭 페이지 검색창의 추천 목록을 구한다(주소창과 같다) */
   getSuggestions: (query: string) => readonly AddressSuggestionTarget[];
-  /** 새 탭 페이지 검색창에서 추천을 골랐을 때 */
   onSuggestionOpen: (target: AddressSuggestionTarget) => void;
-  /** 찾을 수 없음 화면의 새로고침 버튼을 눌렀을 때 */
   onReload: () => void;
-  /** 글 본문 링크 주소가 블로그 안의 페이지면 그 페이지를 돌려준다. 외부 주소면 null이다 */
   resolveLink: (href: string) => ChromeTabPage | null;
-  /** 글 본문 이미지를 눌렀을 때(크게 보기) */
   onImageOpen: (block: PostImageBlock, trigger: HTMLElement) => void;
 };
 
@@ -520,24 +510,35 @@ type ChromeTabContentProps = {
  * @codocs [[Chrome:새 탭 페이지]]
  * @codocs [[Chrome:주소창]]
  * @codocs [[Chrome:확대/축소]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.page 고른 탭의 페이지
+ * @param props.post 글 페이지면 그 글. 색인에 없으면 undefined
+ * @param props.workspace 작업 공간
+ * @param props.layout 페이지 모양. 창 내용 너비로 정한다
+ * @param props.zoom 페이지 본문 배율(1이 100%)
+ * @param props.onNavigate 탭 안에서 페이지로 갈 때
+ * @param props.onAddressSubmit 새 탭 페이지 검색창에서 추천을 고르지 않고 Enter를 눌렀을 때(주소창과 같다)
+ * @param props.getSuggestions 새 탭 페이지 검색창의 추천 목록을 구한다(주소창과 같다)
+ * @param props.onSuggestionOpen 새 탭 페이지 검색창에서 추천을 골랐을 때
+ * @param props.onReload 찾을 수 없음 화면의 새로고침 버튼을 눌렀을 때
+ * @param props.resolveLink 글 본문 링크 주소가 블로그 안의 페이지면 그 페이지를 돌려준다. 외부 주소면 null이다
+ * @param props.onImageOpen 글 본문 이미지를 눌렀을 때(크게 보기)
  * @returns 탭 내용
  */
-function ChromeTabContent(props: ChromeTabContentProps): JSX.Element {
-  const {
-    page,
-    post,
-    workspace,
-    layout,
-    zoom,
-    onNavigate: handleNavigate,
-    onAddressSubmit: handleAddressSubmit,
-    getSuggestions,
-    onSuggestionOpen: handleSuggestionOpen,
-    onReload: handleReload,
-    resolveLink,
-    onImageOpen: handleImageOpen,
-  } = props;
+function ChromeTabContent({
+  page,
+  post,
+  workspace,
+  layout,
+  zoom,
+  onNavigate: handleNavigate,
+  onAddressSubmit: handleAddressSubmit,
+  getSuggestions,
+  onSuggestionOpen: handleSuggestionOpen,
+  onReload: handleReload,
+  resolveLink,
+  onImageOpen: handleImageOpen,
+}: ChromeTabContentProps): JSX.Element {
   const posts =
     page.kind === 'new-tab'
       ? getLatestPosts(workspace, NEW_TAB_LATEST_POST_COUNT)
@@ -663,11 +664,13 @@ function isTrashedPost(workspace: Pick<WorkspaceState, 'items'>, slug: string): 
   return target !== undefined && isItemInTrash(workspace, target.id);
 }
 
-/** 메뉴가 닫힌 뒤 포커스를 메뉴 버튼으로 돌려줄지 정하는 표시 */
+/**
+ * 메뉴가 닫힌 뒤 포커스를 메뉴 버튼으로 돌려줄지 정하는 표시
+ * - keep: 메뉴가 닫힌 뒤 포커스를 돌려주지 않게 표시한다. 메뉴 항목을 고를 때 부른다
+ * - shouldReturnFocus: 메뉴가 닫힐 때 부른다. 포커스를 돌려주면 true이고, 표시를 지운다
+ */
 type MenuFocusKeeper = {
-  /** 메뉴가 닫힌 뒤 포커스를 돌려주지 않게 표시한다. 메뉴 항목을 고를 때 부른다 */
   keep: () => void;
-  /** 메뉴가 닫힐 때 부른다. 포커스를 돌려주면 true이고, 표시를 지운다 */
   shouldReturnFocus: () => boolean;
 };
 

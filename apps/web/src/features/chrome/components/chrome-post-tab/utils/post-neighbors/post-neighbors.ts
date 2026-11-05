@@ -4,11 +4,9 @@ import {
   type WorkspaceState,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
-/** 글 꼬리의 이전 글·다음 글 */
+/** 글 꼬리의 이전 글·다음 글. previous는 작성일이 앞선 글, next는 작성일이 뒤인 글이며 없으면 undefined다. */
 export type PostNeighbors = {
-  /** 이전 글(작성일이 앞선 글). 없으면 undefined */
   previous: PostItem | undefined;
-  /** 다음 글(작성일이 뒤인 글). 없으면 undefined */
   next: PostItem | undefined;
 };
 

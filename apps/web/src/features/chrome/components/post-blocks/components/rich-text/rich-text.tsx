@@ -10,16 +10,9 @@ import {
 } from './utils/rich-text-format/rich-text-format';
 
 type RichTextProps = {
-  /** Notion에서 온 글자 조각들 */
   richText: readonly RichTextPart[];
-  /**
-   * 링크 글자 크기. `body-large`는 본문 글자(Body Large Link) 자리, `inherit`는 둘레 글자 크기를 따르는 자리(표 칸)다.
-   * 없으면 `body-large`다
-   */
   linkSize?: 'body-large' | 'inherit';
-  /** 링크 주소가 블로그 안의 페이지면 그 페이지를 돌려준다. 외부 주소면 null이다. 없으면 모든 링크가 외부 주소다 */
   resolveLink?: (href: string) => ChromeTabPage | null;
-  /** 블로그 글 링크를 눌렀을 때. 같은 탭에서 그 페이지로 간다 */
   onPageOpen?: (page: ChromeTabPage) => void;
 };
 
@@ -57,10 +50,18 @@ function wrapMark(mark: RichTextMark, content: ReactNode): JSX.Element {
  * 외부 주소면 실제 브라우저의 새 탭(noopener)에서 연다.
  * @codocs [[Notion 블록:모양]]
  * @codocs [[Chrome:글 화면]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.richText Notion에서 온 글자 조각들
+ * @param props.linkSize 링크 글자 크기. `body-large`는 본문 글자(Body Large Link) 자리, `inherit`는 둘레 글자 크기를 따르는 자리(표 칸)다. 없으면 `body-large`다
+ * @param props.resolveLink 링크 주소가 블로그 안의 페이지면 그 페이지를 돌려준다. 외부 주소면 null이다. 없으면 모든 링크가 외부 주소다
+ * @param props.onPageOpen 블로그 글 링크를 눌렀을 때. 같은 탭에서 그 페이지로 간다
  */
-export function RichText(props: RichTextProps): JSX.Element {
-  const { richText, linkSize = 'body-large', resolveLink, onPageOpen: handlePageOpen } = props;
+export function RichText({
+  richText,
+  linkSize = 'body-large',
+  resolveLink,
+  onPageOpen: handlePageOpen,
+}: RichTextProps): JSX.Element {
   const linkClassName = LINK_CLASS_NAMES[linkSize];
 
   return (

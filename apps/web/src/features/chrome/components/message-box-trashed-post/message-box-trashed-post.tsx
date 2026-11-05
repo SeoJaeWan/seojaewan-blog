@@ -14,11 +14,8 @@ export const TRASHED_POST_MESSAGE = {
 } as const;
 
 type MessageBoxTrashedPostProps = {
-  /** 복원 버튼을 누르면 부른다 */
   onPrimaryClick?: MouseEventHandler<HTMLElement>;
-  /** 취소 버튼을 누르면 부른다 */
   onSecondaryClick?: MouseEventHandler<HTMLElement>;
-  /** 바깥 배치 클래스 */
   className?: string;
 };
 
@@ -27,14 +24,16 @@ type MessageBoxTrashedPostProps = {
  * 띄우는 위치와 막(모달)은 쓰는 곳이 정한다.
  * @codocs [[Chrome:휴지통에 있는 글]]
  * @codocs [[디자인 시스템:조립]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.onPrimaryClick 복원 버튼을 누르면 부른다
+ * @param props.onSecondaryClick 취소 버튼을 누르면 부른다
+ * @param props.className 바깥 배치 클래스
  */
-export function MessageBoxTrashedPost(props: MessageBoxTrashedPostProps): JSX.Element {
-  const {
-    onPrimaryClick: handlePrimaryClick,
-    onSecondaryClick: handleSecondaryClick,
-    className,
-  } = props;
+export function MessageBoxTrashedPost({
+  onPrimaryClick: handlePrimaryClick,
+  onSecondaryClick: handleSecondaryClick,
+  className,
+}: MessageBoxTrashedPostProps): JSX.Element {
   return (
     <MessageBox
       {...TRASHED_POST_MESSAGE}

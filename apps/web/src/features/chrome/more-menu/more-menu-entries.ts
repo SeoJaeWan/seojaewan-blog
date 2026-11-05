@@ -2,27 +2,17 @@ import { canZoomIn, canZoomOut, formatZoom } from '@/features/chrome/utils/chrom
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { copyLinkMenuItem, MENU_ICONS, MENU_SEPARATOR } from '@/shared/utils/menu-items/menu-items';
 
-/** ⋮ 메뉴가 보이는 상태와 동작 */
+/** ⋮ 메뉴가 보이는 상태와 동작. isMobile이면 앞으로·새로고침을 메뉴 맨 위에 두고 단축키 글자를 보이지 않는다(onForward·onRefresh는 모바일에만 쓴다). canCopyLink는 글을 보고 있을 때 true이고, canGoForward는 모바일에서 앞으로 갈 수 있는지다. zoom은 지금 배율(%)이다. */
 type ChromeMoreMenuOptions = {
-  /** 모바일인지. 모바일은 앞으로·새로고침을 메뉴 맨 위에 두고 단축키 글자를 보이지 않는다 */
   isMobile: boolean;
-  /** 링크를 복사할 수 있는지(글을 보고 있을 때) */
   canCopyLink: boolean;
-  /** 앞으로 갈 수 있는지(모바일) */
   canGoForward: boolean;
-  /** 지금 배율(%) */
   zoom: number;
-  /** 링크 복사 */
   onCopyLink: () => void;
-  /** 페이지에서 찾기 */
   onFind: () => void;
-  /** 배율 줄이기(−) */
   onZoomOut: () => void;
-  /** 배율 키우기(+) */
   onZoomIn: () => void;
-  /** 앞으로(모바일) */
   onForward: () => void;
-  /** 새로고침(모바일) */
   onRefresh: () => void;
 };
 
