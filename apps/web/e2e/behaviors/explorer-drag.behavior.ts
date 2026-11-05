@@ -34,7 +34,7 @@ export const behavior = defineBehavior({
       base: 'PC',
     },
   },
-  requires: [{ when: { input: '터치' }, then: { screen: '모바일', search: '안 찾음' } }],
+  requires: [{ when: { input: '터치' }, then: { screen: '모바일' } }],
   cases: [
     {
       id: 'drag-to-tree-and-search',
@@ -77,8 +77,9 @@ export const behavior = defineBehavior({
       result: '끌어도 제자리',
       change: { input: '터치' },
       combine: {
-        change: { drop: '같은 창의 폴더' },
-        reason: '모바일 탐색기에는 왼쪽 탐색 창이 없어 같은 창의 폴더로 끈다',
+        change: { drop: '같은 창의 폴더', search: '안 찾음' },
+        reason:
+          '모바일 탐색기에는 왼쪽 탐색 창이 없어 같은 창의 폴더로 끌고, 터치 케이스는 옮긴 뒤 찾는 단계를 하지 않는다',
       },
       device: 'Pixel 7',
       scenario:

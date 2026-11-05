@@ -30,10 +30,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
-export const Figma: Story = {
-  parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
-};
+export const Figma: Story = {};
 
 /**
  * 서식 없는 글자 조각을 만든다.
