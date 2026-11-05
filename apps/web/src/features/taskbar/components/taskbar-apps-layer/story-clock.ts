@@ -1,18 +1,13 @@
-/** 스토리의 가짜 시계 */
+/** 스토리의 가짜 시계. tick은 시간을 흘려 그 사이의 타이머를 부르고, restore는 진짜 타이머로 돌려놓는다. */
 export type StoryClock = {
-  /** 시간을 흘려 그 사이의 타이머를 부른다 */
   tick: (ms: number) => void;
-  /** 진짜 타이머로 돌려놓는다 */
   restore: () => void;
 };
 
 /** 기다리는 타이머 */
 type PendingTimer = {
-  /** 타이머 id */
   id: number;
-  /** 부를 시각(ms) */
   at: number;
-  /** 부를 함수 */
   callback: () => void;
 };
 

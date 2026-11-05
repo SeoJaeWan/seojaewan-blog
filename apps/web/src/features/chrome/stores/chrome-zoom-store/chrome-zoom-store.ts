@@ -3,15 +3,17 @@ import { create } from 'zustand';
 import { DEFAULT_ZOOM, zoomIn, zoomOut } from '@/features/chrome/utils/chrome-zoom/chrome-zoom';
 import { registerStoreReset } from '@/shared/stores/store-reset/store-reset';
 
-/** Chrome 배율 저장소. 지금 배율과 바꾸는 동작이다 */
+/**
+ * Chrome 배율 저장소. 지금 배율과 바꾸는 동작이다
+ * - zoom: 페이지 본문 배율(%)
+ * - zoomIn: 한 단계 키운다
+ * - zoomOut: 한 단계 줄인다
+ * - resetZoom: 100%로 돌린다
+ */
 type ChromeZoomStore = {
-  /** 페이지 본문 배율(%) */
   zoom: number;
-  /** 한 단계 키운다 */
   zoomIn: () => void;
-  /** 한 단계 줄인다 */
   zoomOut: () => void;
-  /** 100%로 돌린다 */
   resetZoom: () => void;
 };
 

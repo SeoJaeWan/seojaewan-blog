@@ -3,7 +3,6 @@ import 'katex/dist/katex.min.css';
 import type { JSX } from 'react';
 
 type KatexHtmlProps = {
-  /** 서버가 KaTeX로 그려 보낸 수식 HTML */
   html: string;
 };
 
@@ -14,10 +13,10 @@ type KatexHtmlProps = {
  * 유틸리티를 이기므로 `!`(important)로 뺀다. 넓은 수식은 가로로만 스크롤한다(KaTeX 글자 상자가 세로로 조금 넘쳐
  * 세로 스크롤 막대가 생기지 않게 한다).
  * @codocs [[기술 스택:글 본문 처리]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.html 서버가 KaTeX로 그려 보낸 수식 HTML
  */
-export function KatexHtml(props: KatexHtmlProps): JSX.Element {
-  const { html } = props;
+export function KatexHtml({ html }: KatexHtmlProps): JSX.Element {
   return (
     <div
       className="max-w-full overflow-x-auto overflow-y-hidden type-body-large text-color-black-89 [&_.katex-display]:m-spacing-none!"

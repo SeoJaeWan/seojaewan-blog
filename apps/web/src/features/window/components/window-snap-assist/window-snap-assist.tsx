@@ -17,25 +17,15 @@ import { SnapAssist } from './components/snap-assist/snap-assist';
 const THUMBNAIL_BOX = { width: 192, height: 108 } as const;
 
 type WindowSnapAssistProps = {
-  /** 채울 남은 칸 */
   zone: SnapZone;
-  /** 남은 칸에 제안할 다른 창들 */
   windows: readonly OpenWindow[];
-  /** 작업 영역 크기 */
   workArea: WindowWorkArea;
-  /** 쌓는 차례. 모든 창보다 위다 */
   zIndex: number;
-  /** 앱 창을 그린다. 축소 화면에 쓴다 */
   renderWindow: RenderWindow;
-  /** 창 제목을 정한다 */
   getWindowTitle: (window: OpenWindow) => string;
-  /** 창 앱 아이콘(16px)을 그린다 */
   renderWindowIcon: (window: OpenWindow) => ReactNode;
-  /** 제안 창을 골랐을 때 */
   onSelect: (id: string) => void;
-  /** 제안 카드의 닫기 버튼을 눌렀을 때 */
   onCloseWindow: (id: string) => void;
-  /** Esc나 빈 곳을 눌러 제안을 닫을 때 */
   onDismiss: () => void;
 };
 
@@ -44,21 +34,30 @@ type WindowSnapAssistProps = {
  * 카드를 고르면 그 창이 남은 칸을 채우고, Esc나 카드 밖(빈 곳)을 누르면 닫는다. 뜨면 첫 카드로 포커스를 옮긴다.
  * @codocs [[스냅:Snap Assist]]
  * @codocs [[접근성:포커스]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.zone 채울 남은 칸
+ * @param props.windows 남은 칸에 제안할 다른 창들
+ * @param props.workArea 작업 영역 크기
+ * @param props.zIndex 쌓는 차례. 모든 창보다 위다
+ * @param props.renderWindow 앱 창을 그린다. 축소 화면에 쓴다
+ * @param props.getWindowTitle 창 제목을 정한다
+ * @param props.renderWindowIcon 창 앱 아이콘(16px)을 그린다
+ * @param props.onSelect 제안 창을 골랐을 때
+ * @param props.onCloseWindow 제안 카드의 닫기 버튼을 눌렀을 때
+ * @param props.onDismiss Esc나 빈 곳을 눌러 제안을 닫을 때
  */
-export function WindowSnapAssist(props: WindowSnapAssistProps): JSX.Element {
-  const {
-    zone,
-    windows,
-    workArea,
-    zIndex,
-    renderWindow,
-    getWindowTitle,
-    renderWindowIcon,
-    onSelect: handleSelect,
-    onCloseWindow: handleCloseWindow,
-    onDismiss,
-  } = props;
+export function WindowSnapAssist({
+  zone,
+  windows,
+  workArea,
+  zIndex,
+  renderWindow,
+  getWindowTitle,
+  renderWindowIcon,
+  onSelect: handleSelect,
+  onCloseWindow: handleCloseWindow,
+  onDismiss,
+}: WindowSnapAssistProps): JSX.Element {
   const rect = getSnapZoneRect(zone, workArea);
   const dismissRef = useRef(onDismiss);
   const assistRef = useRef<HTMLDivElement>(null);

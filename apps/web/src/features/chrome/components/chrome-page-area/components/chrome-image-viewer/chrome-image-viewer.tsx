@@ -5,17 +5,11 @@ import { cn, IconButton } from '@seojaewan/design-system';
 export type ChromeImageViewerLayout = 'wide' | 'narrow';
 
 type ChromeImageViewerProps = {
-  /** 피그마 Layout. wide는 넓은 창(이미지 칸 좌우 여백 32), narrow는 좁은 창의 배치다. 쓰는 곳이 창 내용 너비로 고른다 */
   layout?: ChromeImageViewerLayout;
-  /** 크게 볼 이미지(`<img>`, 피그마 `image`). 크기는 뷰어가 정한다: 영역 안에 맞추되 원본보다 키우지 않는다 */
   image: ReactNode;
-  /** 이미지 아래 캡션. 없으면 그리지 않는다 */
   caption?: string;
-  /** 닫기 버튼, Esc, 이미지 밖 바탕을 눌렀을 때 */
   onClose?: () => void;
-  /** 바깥 배치 클래스. 덮을 페이지 영역의 크기와 위치는 쓰는 곳이 정한다 */
   className?: string;
-  /** 대화 상자 요소. 여는 쪽이 열 때 포커스를 이 안으로 옮기는 데 쓴다(대화 상자 자체도 포커스를 받는다) */
   ref?: Ref<HTMLDivElement>;
 };
 
@@ -27,11 +21,22 @@ type ChromeImageViewerProps = {
  * (`ChromePageArea`)이 붙인다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[Chrome:글 화면]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.layout 피그마 Layout. wide는 넓은 창(이미지 칸 좌우 여백 32), narrow는 좁은 창의 배치다. 쓰는 곳이 창 내용 너비로 고른다
+ * @param props.image 크게 볼 이미지(`<img>`, 피그마 `image`). 크기는 뷰어가 정한다: 영역 안에 맞추되 원본보다 키우지 않는다
+ * @param props.caption 이미지 아래 캡션. 없으면 그리지 않는다
+ * @param props.onClose 닫기 버튼, Esc, 이미지 밖 바탕을 눌렀을 때
+ * @param props.className 바깥 배치 클래스. 덮을 페이지 영역의 크기와 위치는 쓰는 곳이 정한다
+ * @param props.ref 대화 상자 요소. 여는 쪽이 열 때 포커스를 이 안으로 옮기는 데 쓴다(대화 상자 자체도 포커스를 받는다)
  */
-export function ChromeImageViewer(props: ChromeImageViewerProps): JSX.Element {
-  const { layout = 'wide', image, caption, onClose: handleClose, className, ref } = props;
-
+export function ChromeImageViewer({
+  layout = 'wide',
+  image,
+  caption,
+  onClose: handleClose,
+  className,
+  ref,
+}: ChromeImageViewerProps): JSX.Element {
   /**
    * 이미지 밖 바탕(덮개나 이미지 칸의 빈 곳)을 누르면 닫는다.
    * @param event 누르기 이벤트

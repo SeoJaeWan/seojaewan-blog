@@ -28,17 +28,11 @@ type ChromeNewTabSearchProps = Pick<
   | 'aria-activedescendant'
   | 'aria-autocomplete'
 > & {
-  /** 추천 목록. 개수는 검색 결과에 따라 정해진다 */
   suggestions?: readonly ChromeNewTabSuggestion[];
-  /** 추천 목록을 열었는지(피그마 Popover State). 열면 입력칸에 포커스를 준다(입력 중인 모습). 기본은 닫힌 모습이다 */
   isOpen?: boolean;
-  /** 고른(Selected) 추천의 순서. 없으면 고른 추천이 없다 */
   selectedIndex?: number;
-  /** 추천 목록 요소의 id. 검색창의 `aria-controls`와 추천 줄 id에 쓴다 */
   listId?: string;
-  /** 추천 줄을 눌렀을 때. 누른 줄의 순서를 받는다 */
   onSuggestionSelect?: (index: number) => void;
-  /** 바깥 배치 클래스 */
   className?: string;
 };
 
@@ -58,18 +52,23 @@ const suggestionIcons = {
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[Chrome:새 탭 페이지]]
  * @codocs [[Chrome:주소창]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.suggestions 추천 목록. 개수는 검색 결과에 따라 정해진다
+ * @param props.isOpen 추천 목록을 열었는지(피그마 Popover State). 열면 입력칸에 포커스를 준다(입력 중인 모습). 기본은 닫힌 모습이다
+ * @param props.selectedIndex 고른(Selected) 추천의 순서. 없으면 고른 추천이 없다
+ * @param props.listId 추천 목록 요소의 id. 검색창의 `aria-controls`와 추천 줄 id에 쓴다
+ * @param props.onSuggestionSelect 추천 줄을 눌렀을 때. 누른 줄의 순서를 받는다
+ * @param props.className 바깥 배치 클래스
  */
-export function ChromeNewTabSearch(props: ChromeNewTabSearchProps): JSX.Element {
-  const {
-    suggestions = [],
-    isOpen = false,
-    selectedIndex,
-    listId,
-    onSuggestionSelect,
-    className,
-    ...searchBoxProps
-  } = props;
+export function ChromeNewTabSearch({
+  suggestions = [],
+  isOpen = false,
+  selectedIndex,
+  listId,
+  onSuggestionSelect,
+  className,
+  ...searchBoxProps
+}: ChromeNewTabSearchProps): JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(

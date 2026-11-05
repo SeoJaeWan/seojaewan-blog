@@ -5,11 +5,8 @@ import { useAddressInput } from '@/features/chrome/hooks/use-address-input/use-a
 import type { AddressSuggestionTarget } from '@/features/chrome/utils/chrome-address/chrome-address';
 
 type ChromeNewTabSearchFieldProps = {
-  /** 입력 중인 글자의 추천 목록을 구한다(주소창 추천과 같다) */
   getSuggestions: (query: string) => readonly AddressSuggestionTarget[];
-  /** 추천을 골랐을 때(Enter나 클릭) */
   onSuggestionOpen: (target: AddressSuggestionTarget) => void;
-  /** 추천을 고르지 않고 Enter를 눌렀을 때. 입력한 글자를 받는다 */
   onSubmit: (text: string) => void;
 };
 
@@ -19,10 +16,16 @@ type ChromeNewTabSearchFieldProps = {
  * 고르지 않고 Enter를 누르면 주소창에 입력한 것과 같이 간다. Esc나 포커스를 잃으면 추천을 닫고 빈칸으로 돌린다.
  * @codocs [[Chrome:새 탭 페이지]]
  * @codocs [[Chrome:주소창]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.getSuggestions 입력 중인 글자의 추천 목록을 구한다(주소창 추천과 같다)
+ * @param props.onSuggestionOpen 추천을 골랐을 때(Enter나 클릭)
+ * @param props.onSubmit 추천을 고르지 않고 Enter를 눌렀을 때. 입력한 글자를 받는다
  */
-export function ChromeNewTabSearchField(props: ChromeNewTabSearchFieldProps): JSX.Element {
-  const { getSuggestions, onSuggestionOpen, onSubmit } = props;
+export function ChromeNewTabSearchField({
+  getSuggestions,
+  onSuggestionOpen,
+  onSubmit,
+}: ChromeNewTabSearchFieldProps): JSX.Element {
   const {
     inputProps,
     listId,

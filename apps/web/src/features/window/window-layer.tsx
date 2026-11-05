@@ -20,35 +20,26 @@ import { WindowSnapAssist } from './components/window-snap-assist/window-snap-as
 import { WindowView } from './components/window-view/window-view';
 
 type WindowLayerProps = {
-  /** 앱 창을 그린다. 앱마다 다른 창 조립은 쓰는 곳이 고른다 */
   renderWindow: RenderWindow;
-  /** 창 제목을 정한다. 창 영역의 접근성 이름이 된다 */
   getWindowTitle: (window: OpenWindow) => string;
-  /** 창 앱 아이콘(16px)을 그린다. Snap Assist 카드에 쓴다 */
   renderWindowIcon: (window: OpenWindow) => ReactNode;
 };
 
-/** 스냅한 뒤 남은 칸을 다른 창으로 채우는 제안(Snap Assist)의 진행 */
+/** 스냅한 뒤 남은 칸을 다른 창으로 채우는 제안(Snap Assist)의 진행. zones는 아직 채우지 않은 칸이며 앞에서부터 하나씩 제안한다. placedIds는 이번 레이아웃에 이미 놓은 창이며 제안에서 뺀다. */
 type SnapAssistProgress = {
-  /** 아직 채우지 않은 칸. 앞에서부터 하나씩 제안한다 */
   zones: readonly SnapZone[];
-  /** 이번 레이아웃에 이미 놓은 창. 제안에서 뺀다 */
   placedIds: readonly string[];
 };
 
-/** 저장소에서 지웠지만 닫히는 애니메이션 동안 화면에 남긴 창 */
+/** 저장소에서 지웠지만 닫히는 애니메이션 동안 화면에 남긴 창. window는 지우기 직전의 창이고, anchorId는 쌓는 차례에서 바로 아래에 있던 남은 창이며 없으면 맨 아래다. */
 type LeavingWindow = {
-  /** 지우기 직전의 창 */
   window: OpenWindow;
-  /** 쌓는 차례에서 바로 아래에 있던 남은 창. 없으면 맨 아래다 */
   anchorId: string | null;
 };
 
 /** 끄는 창과 놓으면 채울 곳 */
 type DragSnapPreview = {
-  /** 끄는 창 */
   id: string;
-  /** 채울 곳 */
   target: DragSnapTarget;
 };
 
@@ -72,10 +63,16 @@ type WindowSnapshot = Pick<WindowState, 'windows' | 'order'>;
  * @codocs [[스냅:끌어서 스냅]]
  * @codocs [[스냅:Snap Assist]]
  * @codocs [[접근성:포커스]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.renderWindow 앱 창을 그린다. 앱마다 다른 창 조립은 쓰는 곳이 고른다
+ * @param props.getWindowTitle 창 제목을 정한다. 창 영역의 접근성 이름이 된다
+ * @param props.renderWindowIcon 창 앱 아이콘(16px)을 그린다. Snap Assist 카드에 쓴다
  */
-export function WindowLayer(props: WindowLayerProps): JSX.Element {
-  const { renderWindow, getWindowTitle, renderWindowIcon } = props;
+export function WindowLayer({
+  renderWindow,
+  getWindowTitle,
+  renderWindowIcon,
+}: WindowLayerProps): JSX.Element {
   const windows = useWindowStore((state) => state.windows);
   const order = useWindowStore((state) => state.order);
   const snap = useWindowStore((state) => state.snap);

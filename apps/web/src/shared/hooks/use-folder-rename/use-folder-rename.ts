@@ -15,15 +15,11 @@ import {
   getFolderNameToCommit,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
-/** 이름을 바꾸는 중인 폴더 */
+/** 이름을 바꾸는 중인 폴더. error는 말풍선에 보일 이유이며 없으면 null이다. messageBox는 확정하다 막혀 띄운 메시지 상자이며 없으면 null이다. */
 type RenameState = {
-  /** 폴더 id */
   id: string;
-  /** 입력 중인 이름 */
   value: string;
-  /** 말풍선에 보일 이유. 없으면 null */
   error: string | null;
-  /** 확정하다 막혀 띄운 메시지 상자. 없으면 null */
   messageBox: FolderNameMessageBox | null;
 };
 
@@ -32,58 +28,59 @@ type FolderNameMessageBox = 'reserved-name' | 'duplicate';
 
 /** 입력이 바뀐 이벤트의 정보(Base UI Input `onValueChange`의 두 번째 인자) */
 type ValueChangeDetails = {
-  /** 입력 이벤트 */
   event: Event;
 };
 
-/** 이름 바꾸기 입력창(RenameField)에 넘길 속성 */
+/**
+ * 이름 바꾸기 입력창(RenameField)에 넘길 속성
+ * - ref: 입력창 요소. 메시지 상자를 닫은 뒤 포커스를 돌려주는 데 쓴다
+ * - onKeyDown: Enter 확정, Esc 취소
+ * - onBlur: 바깥을 누르면 확정
+ * - maxLength: 최대 길이(UTF-16 단위). 넘게는 입력되지 않는다
+ * - 'aria-invalid': 말풍선으로 이유를 보이는 중이면 true
+ * - 'aria-describedby': 말풍선으로 이유를 보이는 중이면 말풍선의 id
+ */
 type RenameFieldProps = {
-  /** 입력창 요소. 메시지 상자를 닫은 뒤 포커스를 돌려주는 데 쓴다 */
   ref: RefObject<HTMLInputElement | null>;
-  /** 입력 중인 이름 */
   value: string;
-  /** 입력이 바뀔 때 */
   onValueChange: (value: string, details: ValueChangeDetails) => void;
-  /** Enter 확정, Esc 취소 */
   onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
-  /** 바깥을 누르면 확정 */
   onBlur: (event: FocusEvent<HTMLInputElement>) => void;
-  /** 최대 길이(UTF-16 단위). 넘게는 입력되지 않는다 */
   maxLength: number;
-  /** 접근성 이름 */
   'aria-label': string;
-  /** 말풍선으로 이유를 보이는 중이면 true */
   'aria-invalid': boolean;
-  /** 말풍선으로 이유를 보이는 중이면 말풍선의 id */
   'aria-describedby': string | undefined;
 };
 
 /** 메시지 상자 대화 상자(MessageBoxDialog)에 넘길 속성 */
 type RenameMessageBoxProps = ComponentProps<typeof MessageBoxDialog>;
 
-/** 이름 바꾸기 상태와 조작 */
+/**
+ * 이름 바꾸기 상태와 조작
+ * - errorBalloonProps: 말풍선(`Tooltip`)에 넘길 속성. 입력창이 이 말풍선을 설명으로 가리키고 스크린 리더가 뜨는 즉시 읽는다
+ * - id: 말풍선 id
+ * - role: 뜨는 즉시 읽는 역할
+ * - startRename: 폴더 이름 바꾸기를 시작한다
+ * - renameFieldProps: 입력창에 넘길 속성
+ * - messageBoxProps: 예약 이름·같은 이름 메시지 상자(`MessageBoxDialog`)에 넘길 속성. 늘 그려 두고 `open`으로 띄운다
+ */
 type FolderRenameControls = {
-  /** 이름을 바꾸는 중인 폴더 id. 아니면 null */
   renamingId: string | null;
-  /** 말풍선 문구. 없으면 null */
   errorMessage: string | null;
-  /** 말풍선(`Tooltip`)에 넘길 속성. 입력창이 이 말풍선을 설명으로 가리키고 스크린 리더가 뜨는 즉시 읽는다 */
   errorBalloonProps: {
-    /** 말풍선 id */
     id: string;
-    /** 뜨는 즉시 읽는 역할 */
     role: 'alert';
   };
-  /** 폴더 이름 바꾸기를 시작한다 */
   startRename: (id: string, name: string) => void;
-  /** 입력창에 넘길 속성 */
   renameFieldProps: RenameFieldProps;
-  /** 예약 이름·같은 이름 메시지 상자(`MessageBoxDialog`)에 넘길 속성. 늘 그려 두고 `open`으로 띄운다 */
   messageBoxProps: RenameMessageBoxProps;
 };
 
+/**
+ * 폴더 이름 바꾸기 훅의 설정
+ * - onKeyboardEnd: Enter·Esc로 이름 바꾸기를 끝냈을 때 부른다. 사라진 입력창 대신 그 폴더 항목에 키보드 포커스를 돌려주는 데 쓴다
+ */
 type UseFolderRenameOptions = {
-  /** Enter·Esc로 이름 바꾸기를 끝냈을 때 부른다. 사라진 입력창 대신 그 폴더 항목에 키보드 포커스를 돌려주는 데 쓴다 */
   onKeyboardEnd?: (id: string) => void;
 };
 

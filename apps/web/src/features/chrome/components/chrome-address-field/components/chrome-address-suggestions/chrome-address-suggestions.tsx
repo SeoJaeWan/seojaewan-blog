@@ -23,21 +23,13 @@ type ChromeAddressSuggestionsProps = Pick<
   | 'aria-activedescendant'
   | 'aria-autocomplete'
 > & {
-  /** 피그마 AddressBar Query. 주소창에 입력 중인 글자다(`value`를 주지 않을 때의 처음 값) */
   query?: string;
-  /** 추천 목록. 개수는 검색 결과에 따라 정해진다 */
   suggestions: readonly ChromeAddressSuggestion[];
-  /** 고른(Selected) 추천의 순서. 없으면 고른 추천이 없다 */
   selectedIndex?: number;
-  /** 추천 목록을 열었는지(피그마 Popover State). 닫혀 있으면 평소 주소창 모양이다. 기본은 닫힌 모습이다 */
   isOpen?: boolean;
-  /** 주소창과 추천 목록의 너비(px). 도구 모음에서 남는 너비를 채운 주소창 너비다. 주지 않으면 바깥 배치(`className`)가 정한다 */
   width?: number;
-  /** 추천 목록 요소의 id. 주소창의 `aria-controls`와 추천 줄 id에 쓴다 */
   listId?: string;
-  /** 추천 줄을 눌렀을 때. 누른 줄의 순서를 받는다 */
   onSuggestionSelect?: (index: number) => void;
-  /** 바깥 배치 클래스 */
   className?: string;
 };
 
@@ -55,20 +47,27 @@ const suggestionIcons = {
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[디자인 시스템:팝업]]
  * @codocs [[Chrome:주소창]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.query 피그마 AddressBar Query. 주소창에 입력 중인 글자다(`value`를 주지 않을 때의 처음 값)
+ * @param props.suggestions 추천 목록. 개수는 검색 결과에 따라 정해진다
+ * @param props.selectedIndex 고른(Selected) 추천의 순서. 없으면 고른 추천이 없다
+ * @param props.isOpen 추천 목록을 열었는지(피그마 Popover State). 닫혀 있으면 평소 주소창 모양이다. 기본은 닫힌 모습이다
+ * @param props.width 주소창과 추천 목록의 너비(px). 도구 모음에서 남는 너비를 채운 주소창 너비다. 주지 않으면 바깥 배치(`className`)가 정한다
+ * @param props.listId 추천 목록 요소의 id. 주소창의 `aria-controls`와 추천 줄 id에 쓴다
+ * @param props.onSuggestionSelect 추천 줄을 눌렀을 때. 누른 줄의 순서를 받는다
+ * @param props.className 바깥 배치 클래스
  */
-export function ChromeAddressSuggestions(props: ChromeAddressSuggestionsProps): JSX.Element {
-  const {
-    query,
-    suggestions,
-    selectedIndex,
-    isOpen = false,
-    width,
-    listId,
-    onSuggestionSelect,
-    className,
-    ...addressBarProps
-  } = props;
+export function ChromeAddressSuggestions({
+  query,
+  suggestions,
+  selectedIndex,
+  isOpen = false,
+  width,
+  listId,
+  onSuggestionSelect,
+  className,
+  ...addressBarProps
+}: ChromeAddressSuggestionsProps): JSX.Element {
   // 주소창 너비는 창 크기에 따라 실행 중에 정해지는 값이라 인라인 스타일로 준다.
   const widthStyle = width === undefined ? undefined : { width };
   return (

@@ -1,33 +1,29 @@
 // 아이콘·항목을 고르는 규칙을 React 밖의 순수 함수로 모은다. 바탕화면과 탐색기가 함께 쓴다.
 // 포인터·키보드를 이 규칙에 잇는 것은 `shared/hooks/use-selection`이다.
 
-/** 고른 항목. 바탕화면·탐색기의 선택 상태다 */
+/**
+ * 고른 항목. 바탕화면·탐색기의 선택 상태다
+ * - ids: 고른 항목 id. 고른 차례다
+ * - anchorId: 범위 선택(Shift)의 시작 항목. 마지막으로 하나를 고르거나 Ctrl로 더한 항목이다
+ * - focusId: 키보드 포커스가 있는 항목. 방향키는 이 항목에서 옆 항목으로 옮긴다
+ */
 export type Selection = {
-  /** 고른 항목 id. 고른 차례다 */
   ids: readonly string[];
-  /** 범위 선택(Shift)의 시작 항목. 마지막으로 하나를 고르거나 Ctrl로 더한 항목이다 */
   anchorId: string | null;
-  /** 키보드 포커스가 있는 항목. 방향키는 이 항목에서 옆 항목으로 옮긴다 */
   focusId: string | null;
 };
 
 /** 격자 위 칸 좌표. 열과 행은 0부터 센다 */
 export type SelectionCell = {
-  /** 열 */
   column: number;
-  /** 행 */
   row: number;
 };
 
 /** 화면 위 사각형(px). 끄는 사각형과 항목 자리에 쓴다 */
 export type SelectionRect = {
-  /** 왼쪽 */
   x: number;
-  /** 위쪽 */
   y: number;
-  /** 너비 */
   width: number;
-  /** 높이 */
   height: number;
 };
 

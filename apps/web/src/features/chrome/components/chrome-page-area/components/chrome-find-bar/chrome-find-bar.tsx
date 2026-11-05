@@ -10,19 +10,12 @@ type ChromeFindBarProps = Pick<
   SearchBoxProps,
   'value' | 'defaultValue' | 'onValueChange' | 'onKeyDown'
 > & {
-  /** 피그마 Device. desktop은 도구 모음 아래 오른쪽에 뜨는 너비 400의 상자, mobile은 도구 모음 아래 전체 폭이다 */
   device?: ChromeFindBarDevice;
-  /** 지금 위치(1부터). 일치가 없으면 0이다 */
   current: number;
-  /** 일치하는 곳의 개수 */
   total: number;
-  /** 이전(↑) 버튼을 눌렀을 때 */
   onPrevious?: () => void;
-  /** 다음(↓) 버튼을 눌렀을 때 */
   onNext?: () => void;
-  /** 닫기 버튼을 눌렀을 때 */
   onClose?: () => void;
-  /** 바깥 배치 클래스. 놓을 자리(도구 모음 아래 오른쪽 등)는 쓰는 곳이 정한다 */
   className?: string;
 };
 
@@ -40,19 +33,25 @@ const FIND_LABEL = '페이지에서 찾기';
  * 찾기·강조·키 입력은 쓰는 곳이 `onValueChange`·`onKeyDown`과 버튼 콜백으로 붙인다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[Chrome:페이지에서 찾기]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.device 피그마 Device. desktop은 도구 모음 아래 오른쪽에 뜨는 너비 400의 상자, mobile은 도구 모음 아래 전체 폭이다
+ * @param props.current 지금 위치(1부터). 일치가 없으면 0이다
+ * @param props.total 일치하는 곳의 개수
+ * @param props.onPrevious 이전(↑) 버튼을 눌렀을 때
+ * @param props.onNext 다음(↓) 버튼을 눌렀을 때
+ * @param props.onClose 닫기 버튼을 눌렀을 때
+ * @param props.className 바깥 배치 클래스. 놓을 자리(도구 모음 아래 오른쪽 등)는 쓰는 곳이 정한다
  */
-export function ChromeFindBar(props: ChromeFindBarProps): JSX.Element {
-  const {
-    device = 'desktop',
-    current,
-    total,
-    onPrevious: handlePrevious,
-    onNext: handleNext,
-    onClose: handleClose,
-    className,
-    ...searchBoxProps
-  } = props;
+export function ChromeFindBar({
+  device = 'desktop',
+  current,
+  total,
+  onPrevious: handlePrevious,
+  onNext: handleNext,
+  onClose: handleClose,
+  className,
+  ...searchBoxProps
+}: ChromeFindBarProps): JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {

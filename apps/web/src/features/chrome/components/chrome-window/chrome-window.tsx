@@ -24,13 +24,10 @@ import { useTabStrip } from '@/shared/hooks/use-tab-strip/use-tab-strip';
 
 export type ChromeWindowDevice = 'desktop' | 'mobile';
 
-/** Chrome 창의 탭 하나 */
+/** Chrome 창의 탭 하나. id를 주지 않으면 차례와 제목으로 구분한다. isActive가 true인 탭의 제목을 모바일은 창 제목으로 쓴다. */
 export type ChromeWindowTab = {
-  /** 탭 id. 주지 않으면 차례와 제목으로 구분한다 */
   id?: string;
-  /** 탭에 보일 페이지 제목 */
   title: string;
-  /** 지금 고른 탭인지. 모바일은 고른 탭의 제목을 창 제목으로 쓴다 */
   isActive?: boolean;
 };
 
@@ -57,31 +54,18 @@ type ToolbarProps = Pick<
 
 type ChromeWindowProps = WindowFrameControlProps &
   ToolbarProps & {
-    /** 피그마 Device. desktop은 탭 줄이 있는 떠 있는 창, mobile은 탭 대신 제목 표시줄만 있는 전체화면 창이다 */
     device?: ChromeWindowDevice;
-    /** 열린 탭. desktop은 탭 줄에 모두 그리고, mobile은 고른 탭의 제목만 제목 표시줄에 보인다 */
     tabs: readonly ChromeWindowTab[];
-    /** 탭을 눌렀을 때. 누른 탭의 차례를 받는다 */
     onTabSelect?: (index: number) => void;
-    /** 탭의 닫기 버튼을 누르거나 탭을 가운데 클릭하거나 탭에서 Delete를 눌렀을 때. 닫을 탭의 차례를 받는다 */
     onTabClose?: (index: number) => void;
-    /** 탭을 끌어 다른 자리로 옮길 때. 옮길 탭의 차례와 옮길 자리를 받는다 */
     onTabMove?: (from: number, to: number) => void;
-    /** 새 탭(+) 버튼을 눌렀을 때 */
     onNewTab?: () => void;
-    /** 주소창 주소. 주소창 자리(`addressBar`)를 주지 않을 때 쓴다 */
     url: string;
-    /** ⋮ 메뉴 항목(피그마 `Menu/ChromeMore`, 모바일은 `Menu/ChromeMoreMobile`). 주지 않으면 메뉴가 없다 */
     moreMenuItems?: readonly MenuPopupEntry[];
-    /** ⋮ 메뉴가 열렸는지 */
     isMoreMenuOpen?: boolean;
-    /** ⋮ 메뉴를 열거나 닫으려 할 때 */
     onMoreMenuOpenChange?: (isOpen: boolean) => void;
-    /** ⋮ 메뉴가 닫힌 뒤 포커스가 갈 곳(Base UI `finalFocus`). 주지 않으면 ⋮ 버튼으로 돌아간다 */
     moreMenuFinalFocus?: ComponentProps<typeof MenuButton>['finalFocus'];
-    /** 탭 내용 자리. 고른 탭의 `ChromePage`(또는 그것을 담은 페이지 영역)를 넣는다. 이 자리가 도구 모음 아래 남는 자리를 채우게 한다 */
     children?: ReactNode;
-    /** 바깥 배치 클래스. 창 크기는 쓰는 곳이 정한다 */
     className?: string;
   };
 
@@ -105,32 +89,51 @@ const MIDDLE_BUTTON = 1;
  * @codocs [[창 동작:모바일]]
  * @codocs [[Chrome:모바일]]
  * @codocs [[접근성:역할]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.device 피그마 Device. desktop은 탭 줄이 있는 떠 있는 창, mobile은 탭 대신 제목 표시줄만 있는 전체화면 창이다
+ * @param props.tabs 열린 탭. desktop은 탭 줄에 모두 그리고, mobile은 고른 탭의 제목만 제목 표시줄에 보인다
+ * @param props.url 주소창 주소. 주소창 자리(`addressBar`)를 주지 않을 때 쓴다
+ * @param props.onTabSelect 탭을 눌렀을 때. 누른 탭의 차례를 받는다
+ * @param props.onTabClose 탭의 닫기 버튼을 누르거나 탭을 가운데 클릭하거나 탭에서 Delete를 눌렀을 때. 닫을 탭의 차례를 받는다
+ * @param props.onTabMove 탭을 끌어 다른 자리로 옮길 때. 옮길 탭의 차례와 옮길 자리를 받는다
+ * @param props.onNewTab 새 탭(+) 버튼을 눌렀을 때
+ * @param props.canGoBack 뒤로 갈 수 있는지. false면 뒤로 버튼을 비활성으로 둔다(뒤로 갈 기록이 없을 때)
+ * @param props.canGoForward 앞으로 갈 수 있는지. false면 앞으로 버튼을 비활성으로 둔다(앞으로 갈 기록이 없을 때)
+ * @param props.onBack 뒤로 버튼을 눌렀을 때 부른다
+ * @param props.onForward 앞으로 버튼을 눌렀을 때 부른다
+ * @param props.onRefresh 새로고침 버튼을 눌렀을 때 부른다
+ * @param props.addressBar 주소창 자리. 주소창과 추천 목록을 묶은 조립처럼 쓰는 곳이 채운다. 남는 너비를 채우도록 `min-w-size-none flex-flex-fill`을 준다. 주지 않으면 `url`·`onUrlChange`로 AddressBar를 그린다
+ * @param props.moreMenuItems ⋮ 메뉴 항목(피그마 `Menu/ChromeMore`, 모바일은 `Menu/ChromeMoreMobile`). 주지 않으면 메뉴가 없다
+ * @param props.isMoreMenuOpen ⋮ 메뉴가 열렸는지
+ * @param props.onMoreMenuOpenChange ⋮ 메뉴를 열거나 닫으려 할 때
+ * @param props.moreMenuFinalFocus ⋮ 메뉴가 닫힌 뒤 포커스가 갈 곳(Base UI `finalFocus`). 주지 않으면 ⋮ 버튼으로 돌아간다
+ * @param props.children 탭 내용 자리. 고른 탭의 `ChromePage`(또는 그것을 담은 페이지 영역)를 넣는다. 이 자리가 도구 모음 아래 남는 자리를 채우게 한다
+ * @param props.className 바깥 배치 클래스. 창 크기는 쓰는 곳이 정한다
+ * @param props.onTitleBarPointerDown 제목 표시줄을 눌렀을 때(창 끌기 시작). 창 버튼 위에서 누른 것은 부르지 않는다
  */
-export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
-  const {
-    device = 'desktop',
-    tabs,
-    url,
-    onTabSelect,
-    onTabClose,
-    onTabMove,
-    onNewTab: handleNewTab,
-    canGoBack,
-    canGoForward,
-    onBack: handleBack,
-    onForward: handleForward,
-    onRefresh: handleRefresh,
-    addressBar,
-    moreMenuItems,
-    isMoreMenuOpen = false,
-    onMoreMenuOpenChange: handleMoreMenuOpenChange,
-    moreMenuFinalFocus,
-    children,
-    className,
-    onTitleBarPointerDown: handleFrameTitleBarPointerDown,
-    ...frameProps
-  } = props;
+export function ChromeWindow({
+  device = 'desktop',
+  tabs,
+  url,
+  onTabSelect,
+  onTabClose,
+  onTabMove,
+  onNewTab: handleNewTab,
+  canGoBack,
+  canGoForward,
+  onBack: handleBack,
+  onForward: handleForward,
+  onRefresh: handleRefresh,
+  addressBar,
+  moreMenuItems,
+  isMoreMenuOpen = false,
+  onMoreMenuOpenChange: handleMoreMenuOpenChange,
+  moreMenuFinalFocus,
+  children,
+  className,
+  onTitleBarPointerDown: handleFrameTitleBarPointerDown,
+  ...frameProps
+}: ChromeWindowProps): JSX.Element {
   const isDesktop = device === 'desktop';
   const activeIndex = tabs.findIndex((tab) => tab.isActive === true);
   const {

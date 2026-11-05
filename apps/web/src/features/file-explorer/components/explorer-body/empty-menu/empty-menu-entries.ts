@@ -12,21 +12,14 @@ import {
 } from '@/shared/utils/menu-items/menu-items';
 import { newSubmenuItem } from '@/shared/utils/new-submenu/new-submenu-entries';
 
-/** 빈 곳 메뉴가 보이는 상태와 동작 */
+/** 빈 곳 메뉴가 보이는 상태와 동작. isRecycleBin이면 휴지통 보기이며 정렬 기준·새로 고침·휴지통 비우기 메뉴다. isRecycleBinEmpty가 true면 휴지통 비우기를 고를 수 없다. */
 type EmptyMenuOptions = ViewMenuOptions & {
-  /** 휴지통 보기인지. 휴지통은 정렬 기준·새로 고침·휴지통 비우기 메뉴다 */
   isRecycleBin: boolean;
-  /** 붙여넣을 수 있는지 */
   canPaste: boolean;
-  /** 붙여넣기 */
   onPaste: () => void;
-  /** 새로 만들기 > 폴더 */
   onNewFolder: () => void;
-  /** 휴지통이 비었는지. 비었으면 휴지통 비우기를 고를 수 없다 */
   isRecycleBinEmpty: boolean;
-  /** 새로 고침(휴지통) */
   onRefresh: () => void;
-  /** 휴지통 비우기 */
   onEmptyRecycleBin: () => void;
 };
 

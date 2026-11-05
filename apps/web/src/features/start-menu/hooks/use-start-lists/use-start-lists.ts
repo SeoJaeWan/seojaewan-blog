@@ -14,21 +14,23 @@ import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import { copyItemLink } from '@/shared/utils/item-link/item-link';
 
-/** Start 고정됨과 모두 목록을 그리는 데이터와 그 동작 */
+/**
+ * Start 고정됨과 모두 목록을 그리는 데이터와 그 동작
+ * - view: 모두 목록의 보기
+ * - pinned: 고정됨 항목. 고정한 순서이고 휴지통에 들어간 항목은 뺀다
+ * - groups: 모두 목록의 묶음
+ * - getPinnedMenuItems: 고정 항목의 우클릭 메뉴 항목
+ * - getListMenuItems: 모두 목록 항목의 우클릭 메뉴 항목
+ * - movePinned: 고정 항목을 다른 고정 항목의 자리로 옮긴다
+ * - changeView: 모두 목록의 보기를 바꾼다
+ */
 export type StartLists = {
-  /** 모두 목록의 보기 */
   view: StartAllView;
-  /** 고정됨 항목. 고정한 순서이고 휴지통에 들어간 항목은 뺀다 */
   pinned: readonly StartItem[];
-  /** 모두 목록의 묶음 */
   groups: readonly StartItemGroup[];
-  /** 고정 항목의 우클릭 메뉴 항목 */
   getPinnedMenuItems: (item: StartItem) => readonly MenuPopupEntry[];
-  /** 모두 목록 항목의 우클릭 메뉴 항목 */
   getListMenuItems: (item: StartItem) => readonly MenuPopupEntry[];
-  /** 고정 항목을 다른 고정 항목의 자리로 옮긴다 */
   movePinned: (id: string, targetId: string) => void;
-  /** 모두 목록의 보기를 바꾼다 */
   changeView: (view: StartAllView) => void;
 };
 

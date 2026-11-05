@@ -23,45 +23,50 @@ import type {
 } from '@/shared/utils/window-rules/window-rules';
 import { MIN_WINDOW_SIZES } from '@/shared/utils/window-rules/window-rules';
 
+/**
+ * 창 끌기 훅의 설정
+ * - elementRef: 작업 영역 위에 놓인 창 요소. 끄는 동안 이 요소의 left·top·width·height를 바로 바꾼다
+ * - window: 끌 창
+ * - rect: 창이 지금 화면에서 차지하는 자리
+ * - workArea: 작업 영역 크기. 마운트 전에는 null이다
+ * - isEnabled: 끌기·크기 조절을 받을지. 모바일 창, 닫히는 창은 받지 않는다
+ * - onSnapPreviewChange: 끄는 동안 놓으면 채울 곳이 바뀌었을 때 부른다. 끝 근처를 벗어나거나 끌기가 끝나면 null이다
+ * - onDragSnap: 끌어서 스냅 칸에 놓았을 때 부른다. 창 층이 남은 칸에 Snap Assist를 띄운다
+ * - rememberSnapRect: 끌어서 스냅·최대화할 때 끌던 자리를 최대화·스냅 FLIP의 이전 자리로 넘긴다
+ */
 type UseWindowDragOptions = {
-  /** 작업 영역 위에 놓인 창 요소. 끄는 동안 이 요소의 left·top·width·height를 바로 바꾼다 */
   elementRef: RefObject<HTMLElement | null>;
-  /** 끌 창 */
   window: OpenWindow;
-  /** 창이 지금 화면에서 차지하는 자리 */
   rect: WindowBounds;
-  /** 작업 영역 크기. 마운트 전에는 null이다 */
   workArea: WindowWorkArea | null;
-  /** 끌기·크기 조절을 받을지. 모바일 창, 닫히는 창은 받지 않는다 */
   isEnabled: boolean;
-  /** 끄는 동안 놓으면 채울 곳이 바뀌었을 때 부른다. 끝 근처를 벗어나거나 끌기가 끝나면 null이다 */
   onSnapPreviewChange: (target: DragSnapTarget | null) => void;
-  /** 끌어서 스냅 칸에 놓았을 때 부른다. 창 층이 남은 칸에 Snap Assist를 띄운다 */
   onDragSnap: (zone: SnapZone) => void;
-  /** 끌어서 스냅·최대화할 때 끌던 자리를 최대화·스냅 FLIP의 이전 자리로 넘긴다 */
   rememberSnapRect: (rect: WindowBounds) => void;
 };
 
-/** 창 끌기와 크기 조절을 시작하는 핸들러 */
+/**
+ * 창 끌기와 크기 조절을 시작하는 핸들러
+ * - handleTitleBarPointerDown: 제목 표시줄을 눌렀을 때. 끌어 옮기기를 시작한다
+ * - handleResizePointerDown: 크기 조절 핸들을 눌렀을 때. 그 방향으로 크기 조절을 시작한다
+ */
 type WindowDragHandlers = {
-  /** 제목 표시줄을 눌렀을 때. 끌어 옮기기를 시작한다 */
   handleTitleBarPointerDown: (event: ReactPointerEvent<HTMLElement>) => void;
-  /** 크기 조절 핸들을 눌렀을 때. 그 방향으로 크기 조절을 시작한다 */
   handleResizePointerDown: (
     direction: ResizeDirection,
     event: ReactPointerEvent<HTMLElement>,
   ) => void;
 };
 
-/** 누른 포인터 하나를 따라가는 데 필요한 것 */
+/**
+ * 누른 포인터 하나를 따라가는 데 필요한 것
+ * - grab: 누른 자리(작업 영역 기준)
+ * - track: 포인터를 따라가기 시작한다
+ */
 type PointerSession = {
-  /** 창 요소 */
   element: HTMLElement;
-  /** 작업 영역 크기 */
   workArea: WindowWorkArea;
-  /** 누른 자리(작업 영역 기준) */
   grab: WindowPoint;
-  /** 포인터를 따라가기 시작한다 */
   track: (onMove: (point: WindowPoint) => void, onEnd: (point: WindowPoint | null) => void) => void;
 };
 

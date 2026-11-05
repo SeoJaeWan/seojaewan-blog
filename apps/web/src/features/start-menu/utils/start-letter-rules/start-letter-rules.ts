@@ -52,15 +52,12 @@ export type JumpListLetter = (typeof JUMP_LIST_LETTERS)[number];
 
 /** 첫 글자로 묶을 항목. 이름만 본다 */
 type LetterItem = {
-  /** 항목 이름 */
   title: string;
 };
 
-/** 첫 글자로 묶은 묶음 하나 */
+/** 첫 글자로 묶은 묶음 하나. items는 이름순이다. */
 export type LetterGroup<T extends LetterItem> = {
-  /** 묶음 글자 */
   label: JumpListLetter;
-  /** 묶음 안의 항목. 이름순이다 */
   items: readonly T[];
 };
 

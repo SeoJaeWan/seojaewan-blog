@@ -10,7 +10,6 @@ import { PREVIEW_THUMBNAIL, PREVIEW_WINDOWS } from './story-data';
 import { TaskbarWindowPreviewList } from './taskbar-window-preview-list';
 
 type PreviewListStoryProps = {
-  /** 보일 창 개수(피그마 Taskbar/PreviewList Count) */
   count: number;
 };
 
@@ -19,11 +18,11 @@ type PreviewListStoryProps = {
  * 그 목록을 품는 `Taskbar/AppPreview` 스토리가 함께 쓴다. 축소 화면은 실제 탐색기 창을 `WindowThumbnail`로 줄인 것이다.
  * 축소 화면의 탐색기 창은 피그마처럼 `Window/Explorer`(`Device=Desktop, Folder=Blog, Selection=Single`) 그대로이고, 탭 제목만 창마다 다르다.
  * @codocs [[저장소 구성:앱 폴더 구조]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.count 보일 창 개수(피그마 Taskbar/PreviewList Count)
  * @returns TaskbarWindowPreviewList
  */
-export function PreviewListStory(props: PreviewListStoryProps): JSX.Element {
-  const { count } = props;
+export function PreviewListStory({ count }: PreviewListStoryProps): JSX.Element {
   const parts = getExplorerWindowParts({ device: 'desktop', folder: 'blog', selection: 'single' });
   return (
     <TaskbarWindowPreviewList

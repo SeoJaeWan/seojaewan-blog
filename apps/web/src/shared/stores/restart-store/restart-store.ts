@@ -10,15 +10,17 @@ import {
   startRestart,
 } from '@/shared/utils/restart-rules/restart-rules';
 
-/** 다시 시작 저장소. 다시 시작 단계와 데스크톱 하위 트리의 세대 번호다 */
+/**
+ * 다시 시작 저장소. 다시 시작 단계와 데스크톱 하위 트리의 세대 번호다
+ * - restart: 전원 메뉴의 `다시 시작`을 눌렀다. 다시 시작하는 중이면 무시한다
+ * - finishCovering: 재부팅 화면이 화면을 다 덮었다. 저장소를 처음 상태로 돌리고 세대를 올린다
+ * - finishShowing: 재부팅 화면을 보여 주는 시간이 지났다
+ * - finishRevealing: 재부팅 화면이 사라졌다
+ */
 export type RestartStore = RestartState & {
-  /** 전원 메뉴의 `다시 시작`을 눌렀다. 다시 시작하는 중이면 무시한다 */
   restart: () => void;
-  /** 재부팅 화면이 화면을 다 덮었다. 저장소를 처음 상태로 돌리고 세대를 올린다 */
   finishCovering: () => void;
-  /** 재부팅 화면을 보여 주는 시간이 지났다 */
   finishShowing: () => void;
-  /** 재부팅 화면이 사라졌다 */
   finishRevealing: () => void;
 };
 

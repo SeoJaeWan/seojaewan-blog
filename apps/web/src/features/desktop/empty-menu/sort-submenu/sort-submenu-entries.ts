@@ -4,9 +4,7 @@ import type { DesktopSortKey } from '@/shared/utils/workspace-rules/workspace-ru
 
 /** 정렬 기준 하위 메뉴가 보이는 설정과 동작 */
 export type DesktopSortMenuOptions = {
-  /** 정렬 기준 */
   sortBy: DesktopSortKey;
-  /** 정렬 기준을 고르면 부른다 */
   onSortByChange: (sortBy: DesktopSortKey) => void;
 };
 

@@ -12,35 +12,21 @@ import {
 } from '@/shared/utils/menu-items/menu-items';
 import type { WorkspaceItemKind } from '@/shared/utils/workspace-rules/workspace-rules';
 
-/** 항목 메뉴가 보이는 상태와 동작 */
+/** 항목 메뉴가 보이는 상태와 동작. kind는 우클릭한 항목 종류이며 여러 개면 null이다. isInRecycleBin이면 휴지통 안의 항목이라 열 수 없고 복원만 된다. isMobile이면 탭 하나라 새 탭에서 열기가 없다. isPinned는 Start 고정됨에 있는지(하나일 때)다. */
 type ItemMenuOptions = {
-  /** 우클릭한 항목 종류. 여러 개면 null */
   kind: WorkspaceItemKind | null;
-  /** 휴지통 안의 항목인지. 열 수 없고 복원만 된다 */
   isInRecycleBin: boolean;
-  /** 모바일인지. 모바일은 탭 하나라 새 탭에서 열기가 없다 */
   isMobile: boolean;
-  /** Start 고정됨에 있는지(하나일 때) */
   isPinned: boolean;
-  /** 휴지통으로 보낼 수 있는지 */
   canTrash: boolean;
-  /** 열기 */
   onOpen: () => void;
-  /** 새 탭에서 열기 */
   onOpenInNewTab: () => void;
-  /** 새 창에서 열기 */
   onOpenInNewWindow: () => void;
-  /** 링크 복사 */
   onCopyLink: () => void;
-  /** 시작 화면에 고정·고정 해제 */
   onTogglePin: () => void;
-  /** 잘라내기 */
   onCut: () => void;
-  /** 이름 바꾸기 */
   onRename: () => void;
-  /** 삭제(휴지통으로 보내기) */
   onTrash: () => void;
-  /** 복원 */
   onRestore: () => void;
 };
 

@@ -1,10 +1,7 @@
 /** 스크롤 상자의 지금 상태(px) */
 export type ScrollMetrics = {
-  /** 스크롤한 거리 */
   scrollTop: number;
-  /** 보이는 높이 */
   clientHeight: number;
-  /** 내용 전체 높이 */
   scrollHeight: number;
 };
 

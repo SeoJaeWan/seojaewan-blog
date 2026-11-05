@@ -9,22 +9,12 @@ type MessageBoxContentProps = Pick<
 >;
 
 type MessageBoxDialogProps = MessageBoxContentProps & {
-  /** 열림 여부. 주면 쓰는 곳이 열고 닫기를 정한다 */
   isOpen?: boolean;
-  /** 처음 열림 여부(열림 여부를 쓰는 곳이 갖지 않을 때) */
   isDefaultOpen?: boolean;
-  /** 열리거나 닫힐 때 부른다. 버튼, Esc가 닫는다 */
   onOpenChange?: (open: boolean) => void;
-  /** 강조 버튼(확인)을 누르면 부른다. 부른 뒤 대화 상자를 닫는다 */
   onPrimaryClick?: () => void;
-  /** 기본 버튼(취소)을 누르면 부른다. 부른 뒤 대화 상자를 닫는다 */
   onSecondaryClick?: () => void;
-  /**
-   * 닫힌 뒤 포커스를 둘 요소. 없으면 열기 전에 포커스가 있던 요소로 돌려준다. Base UI는 Tab으로 닿는 요소만 받으므로,
-   * 그렇지 않은 요소로 옮길 때는 `false`를 주고 `onCloseComplete`에서 옮긴다
-   */
   finalFocus?: RefObject<HTMLElement | null> | false;
-  /** 닫기가 끝난 뒤 부른다 */
   onCloseComplete?: () => void;
 };
 
@@ -34,19 +24,25 @@ type MessageBoxDialogProps = MessageBoxContentProps & {
  * 사라지는 움직임은 없어 버튼을 누르면 바로 닫힌다. 버튼은 어느 쪽이든 핸들러를 부른 뒤 닫는다.
  * @codocs [[휴지통:비우기]]
  * @codocs [[피그마 연동:모션 클래스]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.isOpen 열림 여부. 주면 쓰는 곳이 열고 닫기를 정한다
+ * @param props.isDefaultOpen 처음 열림 여부(열림 여부를 쓰는 곳이 갖지 않을 때)
+ * @param props.onOpenChange 열리거나 닫힐 때 부른다. 버튼, Esc가 닫는다
+ * @param props.onPrimaryClick 강조 버튼(확인)을 누르면 부른다. 부른 뒤 대화 상자를 닫는다
+ * @param props.onSecondaryClick 기본 버튼(취소)을 누르면 부른다. 부른 뒤 대화 상자를 닫는다
+ * @param props.finalFocus 닫힌 뒤 포커스를 둘 요소. 없으면 열기 전에 포커스가 있던 요소로 돌려준다. Base UI는 Tab으로 닿는 요소만 받으므로, 그렇지 않은 요소로 옮길 때는 `false`를 주고 `onCloseComplete`에서 옮긴다
+ * @param props.onCloseComplete 닫기가 끝난 뒤 부른다
  */
-export function MessageBoxDialog(props: MessageBoxDialogProps): JSX.Element {
-  const {
-    isOpen,
-    isDefaultOpen,
-    onOpenChange,
-    onPrimaryClick,
-    onSecondaryClick,
-    finalFocus,
-    onCloseComplete,
-    ...contentProps
-  } = props;
+export function MessageBoxDialog({
+  isOpen,
+  isDefaultOpen,
+  onOpenChange,
+  onPrimaryClick,
+  onSecondaryClick,
+  finalFocus,
+  onCloseComplete,
+  ...contentProps
+}: MessageBoxDialogProps): JSX.Element {
   const actionsRef = useRef<AlertDialog.Root.Actions | null>(null);
 
   /**

@@ -15,24 +15,17 @@ export const BLOG_HOST = 'seojaewan.com';
 /** 주소창 추천에 보이는 글의 최대 개수 */
 export const ADDRESS_SUGGESTION_POST_LIMIT = 5;
 
-/** 주소창 추천 한 줄과 그 줄을 골랐을 때 갈 페이지 */
+/** 주소창 추천 한 줄과 그 줄을 골랐을 때 갈 페이지. post(글 추천)의 title은 글 제목, url은 글 주소이고, search(검색 추천)의 title은 보이는 글자다. page는 그 줄을 골랐을 때 갈 페이지다. */
 export type AddressSuggestionTarget =
   | {
-      /** 글 추천 */
       kind: 'post';
-      /** 글 제목 */
       title: string;
-      /** 글 주소 */
       url: string;
-      /** 갈 페이지 */
       page: ChromeTabPage;
     }
   | {
-      /** 검색 추천 */
       kind: 'search';
-      /** 보이는 글자 */
       title: string;
-      /** 갈 페이지 */
       page: ChromeTabPage;
     };
 

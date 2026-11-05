@@ -19,19 +19,15 @@ export type StartApp = 'file-explorer' | 'chrome';
 /** 아이콘을 정하는 항목 종류. 폴더·글·외부 링크는 종류만으로, 앱은 어느 앱인지로 아이콘이 정해진다 */
 export type ItemIconSource = { kind: 'folder' | 'post' | 'link' } | { kind: 'app'; app: StartApp };
 
-/** Start 고정됨과 모두 목록에 보이는 항목 하나 */
+/** Start 고정됨과 모두 목록에 보이는 항목 하나. id는 작업 공간 항목 id(앱은 `APP_ITEM_IDS`의 id)이며 목록의 key이고, 열거나 고정을 바꿀 때 어느 항목인지 알린다. */
 export type StartItem = ItemIconSource & {
-  /** 작업 공간 항목 id(앱은 `APP_ITEM_IDS`의 id). 목록의 key이고, 열거나 고정을 바꿀 때 어느 항목인지 알린다 */
   id: string;
-  /** 항목 이름(글은 제목) */
   title: string;
 };
 
-/** 모두 목록의 묶음 하나. 간단히·그리드는 첫 글자, 범주는 항목 종류로 묶는다 */
+/** 모두 목록의 묶음 하나. 간단히·그리드는 첫 글자, 범주는 항목 종류로 묶는다. items는 이름순이다. */
 export type StartItemGroup = {
-  /** 묶음 머리글(첫 글자나 종류 이름) */
   label: string;
-  /** 묶음 안의 항목. 이름순이다 */
   items: readonly StartItem[];
 };
 
@@ -41,41 +37,30 @@ export type StartAllView = 'list' | 'grid' | 'category';
 /** 검색 대상의 종류. 폴더, 글, 외부 링크다 */
 export type SearchItemKind = 'folder' | 'post' | 'link';
 
-/** 검색 패널에 보이는 항목 하나 */
+/** 검색 패널에 보이는 항목 하나. id는 작업 공간 항목 id이며 목록의 key이고, 열거나 링크를 복사할 때 어느 항목인지 알린다. kind는 아이콘과 종류 이름을 정한다. */
 export type SearchItem = {
-  /** 작업 공간 항목 id. 목록의 key이고, 열거나 링크를 복사할 때 어느 항목인지 알린다 */
   id: string;
-  /** 항목 종류. 아이콘과 종류 이름을 정한다 */
   kind: SearchItemKind;
-  /** 항목 이름(글은 제목) */
   title: string;
 };
 
-/** 추천 글 하나 */
+/** 추천 글 하나. date는 글 날짜(예: `2026-10-20`)다. */
 export type SearchRecommendedPost = {
-  /** 글 항목 id */
   id: string;
-  /** 글 제목 */
   title: string;
-  /** 글 날짜(예: `2026-10-20`) */
   date: string;
 };
 
-/** 결과 항목 하나. 글이면 카드에 날짜를 함께 보인다 */
+/** 결과 항목 하나. 글이면 카드에 날짜를 함께 보인다. date는 글 날짜이며 카드의 부가 정보에 종류 이름과 함께 보인다. */
 export type SearchResultItem = SearchItem & {
-  /** 글 날짜. 카드의 부가 정보에 종류 이름과 함께 보인다 */
   date?: string;
 };
 
-/** 검색 결과. 최고 일치 하나와 나머지 결과를 종류별로 묶은 것이다 */
+/** 검색 결과. 최고 일치 하나와 나머지 결과를 종류별로 묶은 것이다. bestMatch는 결과 목록 맨 위의 최고 일치이며 처음에 카드가 보이는 항목이다. */
 export type SearchResultGroups = {
-  /** 결과 목록 맨 위의 최고 일치. 처음에 카드가 보이는 항목이다 */
   bestMatch: SearchResultItem;
-  /** 나머지 폴더 결과 */
   folders: readonly SearchResultItem[];
-  /** 나머지 글 결과 */
   posts: readonly SearchResultItem[];
-  /** 나머지 외부 링크 결과 */
   links: readonly SearchResultItem[];
 };
 

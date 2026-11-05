@@ -10,21 +10,15 @@ import {
 
 /** 일치 단계를 붙인 항목 */
 type RankedItem = {
-  /** 항목 */
   item: PlacedItem;
-  /** 일치 단계 */
   rank: MatchRank;
 };
 
 /** 검색 결과를 종류별로 묶은 것. 맨 앞 최고 일치와 나머지다 */
 export type SearchResultSet = {
-  /** 맨 위에 크게 보이는 최고 일치 */
   bestMatch: PlacedItem;
-  /** 나머지 폴더 결과 */
   folders: PlacedItem[];
-  /** 나머지 글 결과 */
   posts: PlacedItem[];
-  /** 나머지 외부 링크 결과 */
   links: PlacedItem[];
 };
 

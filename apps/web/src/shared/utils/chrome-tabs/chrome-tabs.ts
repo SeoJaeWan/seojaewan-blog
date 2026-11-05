@@ -1,7 +1,7 @@
 // Chrome 창 내용(탭 목록과 탭마다의 뒤로·앞으로 기록)의 모양과, 창 규칙(`window-rules`)이 글을 열 때 쓰는 탭 규칙이다.
 // 글을 여는 입구(바탕화면·탐색기·Start)가 창 저장소로 글을 열기 때문에 shared에 둔다. 나머지 탭 조작은 Chrome 기능에 있다.
 
-/** Chrome 탭 하나가 보여 주는 페이지. 새 탭 페이지, 글, 검색 결과, 찾을 수 없음 화면이다 */
+/** Chrome 탭 하나가 보여 주는 페이지. 새 탭 페이지, 글, 검색 결과, 찾을 수 없음 화면이다. entryPath는 없는 주소로 처음 들어와 연 화면이면 들어온 경로(예: `/posts/none`)이며 그 화면을 보는 동안 브라우저 주소로 둔다. */
 export type ChromeTabPage =
   | { kind: 'new-tab' }
   | { kind: 'post'; slug: string }
@@ -9,29 +9,21 @@ export type ChromeTabPage =
   | {
       kind: 'not-found';
       url: string;
-      /** 없는 주소로 처음 들어와 연 화면이면 들어온 경로(예: `/posts/none`). 그 화면을 보는 동안 브라우저 주소로 둔다 */
       entryPath?: string;
     };
 
-/** Chrome 탭 하나. 뒤로·앞으로 기록은 탭마다 따로 있다 */
+/** Chrome 탭 하나. 뒤로·앞으로 기록은 탭마다 따로 있다. id는 창 안에서만 겹치지 않는다. history는 처음 연 페이지부터 차례대로 지나온 페이지이고 historyIndex는 그 기록에서 지금 보는 페이지의 차례다. */
 export type ChromeTabState = {
-  /** 탭 id. 창 안에서만 겹치지 않는다 */
   id: string;
-  /** 지나온 페이지. 처음 연 페이지부터 차례대로다 */
   history: readonly ChromeTabPage[];
-  /** 기록에서 지금 보는 페이지의 차례 */
   historyIndex: number;
 };
 
-/** Chrome 창 내용. 탭 목록과 고른 탭이다 */
+/** Chrome 창 내용. 탭 목록과 고른 탭이다. lastTabSerial은 마지막으로 만든 탭의 차례이며 새 탭 id를 만드는 데 쓴다. */
 export type ChromeWindowContent = {
-  /** 앱 */
   app: 'chrome';
-  /** 탭 목록 */
   tabs: readonly ChromeTabState[];
-  /** 고른 탭의 차례 */
   activeTabIndex: number;
-  /** 마지막으로 만든 탭의 차례. 새 탭 id를 만드는 데 쓴다 */
   lastTabSerial: number;
 };
 

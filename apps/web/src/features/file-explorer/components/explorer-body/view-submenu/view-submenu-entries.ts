@@ -9,13 +9,9 @@ import type {
 
 /** 보기·정렬 메뉴가 보이는 지금 설정과 동작 */
 export type ViewMenuOptions = {
-  /** 지금 보기와 정렬 */
   view: ExplorerFolderView;
-  /** 보기를 고르면 부른다 */
   onViewChange: (view: ExplorerViewMode) => void;
-  /** 정렬 기준을 고르면 부른다 */
   onSortByChange: (sortBy: ExplorerSortKey) => void;
-  /** 정렬 방향을 고르면 부른다 */
   onSortDirectionChange: (direction: SortDirection) => void;
 };
 

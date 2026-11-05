@@ -16,13 +16,9 @@ export type WindowApp = 'file-explorer' | 'chrome';
 
 /** 창 자리(px). 작업 영역 왼쪽 위가 원점이다 */
 export type WindowBounds = {
-  /** 왼쪽 끝 */
   x: number;
-  /** 위쪽 끝 */
   y: number;
-  /** 너비 */
   width: number;
-  /** 높이 */
   height: number;
 };
 
@@ -40,47 +36,32 @@ export type SnapLayout = 'half' | 'two-thirds' | 'half-quarter' | 'quad';
  * (디자인 시스템 `SnapLayoutOption`의 칸 번호와 같다).
  */
 export type SnapZone = {
-  /** 레이아웃 */
   layout: SnapLayout;
-  /** 칸 번호 */
   index: number;
 };
 
-/** 최대화하기 바로 앞의 모습. 이전 크기로 복원하면 이 모습으로 돌아간다 */
+/** 최대화하기 바로 앞의 모습. 이전 크기로 복원하면 이 모습으로 돌아간다. snapZone은 스냅해 있었으면 그 칸이다. */
 export type WindowRestorePoint = {
-  /** 배치 */
   placement: Exclude<WindowPlacement, 'maximized'>;
-  /** 스냅해 있었으면 그 칸 */
   snapZone: SnapZone | null;
 };
 
 /** 탐색기가 보는 위치. 폴더 id, 휴지통 id, 바탕화면은 null이다 */
 export type ExplorerLocation = string | null;
 
-/** 탐색기 탭 하나. 뒤로·앞으로 기록은 탭마다 따로 있다 */
+/** 탐색기 탭 하나. 뒤로·앞으로 기록은 탭마다 따로 있다. id는 창 안에서만 겹치지 않는다. history는 처음 연 위치부터 차례대로 지나온 위치이고 historyIndex는 그 기록에서 지금 보는 위치의 차례다. */
 export type ExplorerTabState = {
-  /** 탭 id. 창 안에서만 겹치지 않는다 */
   id: string;
-  /** 지나온 위치. 처음 연 위치부터 차례대로다 */
   history: readonly ExplorerLocation[];
-  /** 기록에서 지금 보는 위치의 차례 */
   historyIndex: number;
 };
 
-/** 탐색기 창 내용. 탭 목록과 고른 탭, 탐색 창 폴더 트리를 방문자가 펼치거나 접은 상태다 */
+/** 탐색기 창 내용. 탭 목록과 고른 탭, 탐색 창 폴더 트리를 방문자가 펼치거나 접은 상태다. lastTabSerial은 마지막으로 만든 탭의 차례이며 새 탭 id를 만드는 데 쓴다. treeExpansion은 탐색 창 트리 칸(바탕화면은 `desktop`, 폴더는 폴더 id)을 방문자가 펼친(true) 또는 접은(false) 상태이고, 없는 칸은 현재 위치와 그 조상이면 펼치고 나머지는 접는다. 창 안에서만 기억한다. */
 export type ExplorerWindowContent = {
-  /** 앱 */
   app: 'file-explorer';
-  /** 탭 목록 */
   tabs: readonly ExplorerTabState[];
-  /** 고른 탭의 차례 */
   activeTabIndex: number;
-  /** 마지막으로 만든 탭의 차례. 새 탭 id를 만드는 데 쓴다 */
   lastTabSerial: number;
-  /**
-   * 탐색 창 트리 칸(바탕화면은 `desktop`, 폴더는 폴더 id)을 방문자가 펼치거나(true) 접은(false) 상태.
-   * 없는 칸은 현재 위치와 그 조상이면 펼치고 나머지는 접는다. 창 안에서만 기억한다
-   */
   treeExpansion: Readonly<Record<string, boolean>>;
 };
 
@@ -89,67 +70,43 @@ export type ExplorerWindowContent = {
  */
 export type WindowContent = ExplorerWindowContent | ChromeWindowContent;
 
-/** 열린 창 하나 */
+/** 열린 창 하나. serial은 연 차례(1부터)이며 화면에 그리는 DOM 순서를 고정하는 데 쓴다. bounds는 떠 있을 때(placement default)의 자리이며 최대화·스냅해도 지우지 않아 떠 있는 창으로 돌아갈 때 쓴다. snapZone은 placement가 snapped일 때만, previous(최대화하기 바로 앞의 모습)는 placement가 maximized일 때만 있다. */
 export type OpenWindow = {
-  /** 창 id */
   id: string;
-  /** 창을 연 앱 */
   app: WindowApp;
-  /** 연 차례(1부터). 화면에 그리는 DOM 순서를 고정하는 데 쓴다 */
   serial: number;
-  /** 떠 있을 때(placement default)의 자리. 최대화·스냅해도 지우지 않아 떠 있는 창으로 돌아갈 때 쓴다 */
   bounds: WindowBounds;
-  /** 배치 */
   placement: WindowPlacement;
-  /** 스냅한 칸. placement가 snapped일 때만 있다 */
   snapZone: SnapZone | null;
-  /** 최대화하기 바로 앞의 모습. placement가 maximized일 때만 있다 */
   previous: WindowRestorePoint | null;
-  /** 최소화됐는지 */
   isMinimized: boolean;
-  /** 창 내용 */
   content: WindowContent;
 };
 
-/** 창 저장소의 상태 */
+/** 창 저장소의 상태. windows는 id로 찾는다. order는 활성 순서이며 끝이 가장 최근에 맨 앞이었던 창이다(최소화된 창도 들어 있다). lastSerial은 마지막으로 연 창의 차례다. */
 export type WindowState = {
-  /** 열린 창. id로 찾는다 */
   windows: Readonly<Record<string, OpenWindow>>;
-  /** 활성 순서. 끝이 가장 최근에 맨 앞이었던 창이다. 최소화된 창도 들어 있다 */
   order: readonly string[];
-  /** 마지막으로 연 창의 차례 */
   lastSerial: number;
 };
 
 /** 작업 영역 크기(px). 화면에서 작업 표시줄을 뺀 곳이다 */
 export type WindowWorkArea = {
-  /** 너비 */
   width: number;
-  /** 높이 */
   height: number;
 };
 
-/** 창 층이 앱 창(`ExplorerWindow`, `ChromeWindow`)의 WindowFrame에 넘기는 속성 */
+/** 창 층이 앱 창(`ExplorerWindow`, `ChromeWindow`)의 WindowFrame에 넘기는 속성. placement는 WindowFrame의 `placement` 값이며 모바일은 늘 maximized다. 늘 최대화인 모바일 창에는 onMaximize가 없고, 끌 수 없는 모바일 창에는 onTitleBarPointerDown이 없다. maximizeSlot은 최대화 버튼 자리이며 마우스를 올리면 스냅 레이아웃을 여는 `SnapLayoutMenu`다. className은 바깥 배치 클래스이며 창 크기는 창을 담는 자리(창 층의 창 자리, 축소 화면)가 채워 정한다. */
 export type WindowFrameControls = {
-  /** 맨 앞 창이 아니면 흐리게 그린다 */
   isInactive: boolean;
-  /** 창 배치(WindowFrame의 `placement` 값). 모바일은 늘 maximized다 */
   placement: 'default' | 'maximized' | 'snapped';
-  /** 최소화 버튼을 눌렀을 때 */
   onMinimize: () => void;
-  /** 닫기 버튼을 눌렀을 때 */
   onClose: () => void;
-  /** 최대화 버튼을 눌렀을 때. 늘 최대화인 모바일 창은 없다 */
   onMaximize?: () => void;
-  /** 이전 크기로 복원 버튼을 눌렀을 때 */
   onRestore?: () => void;
-  /** 제목 표시줄을 더블클릭했을 때(최대화·복원) */
   onTitleBarDoubleClick?: () => void;
-  /** 제목 표시줄을 눌렀을 때(창 끌기 시작). 끌 수 없는 모바일 창은 없다 */
   onTitleBarPointerDown?: (event: PointerEvent<HTMLDivElement>) => void;
-  /** 최대화 버튼 자리. 마우스를 올리면 스냅 레이아웃을 여는 `SnapLayoutMenu`다 */
   maximizeSlot?: ReactNode;
-  /** 바깥 배치 클래스. 창 크기는 창을 담는 자리(창 층의 창 자리, 축소 화면)가 채워 정한다 */
   className?: string;
 };
 
@@ -656,13 +613,9 @@ export function getWindowRect(window: OpenWindow, workArea: WindowWorkArea): Win
 
 /** 최대화·복원·스냅 FLIP의 시작 값. 새 자리에서 이전 자리로 되돌리는 이동(px)과 배율이다 */
 export type SnapFlip = {
-  /** 가로 이동 */
   x: number;
-  /** 세로 이동 */
   y: number;
-  /** 가로 배율 */
   scaleX: number;
-  /** 세로 배율 */
   scaleY: number;
 };
 

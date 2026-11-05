@@ -12,16 +12,12 @@ import { getDesktopSortMenuEntries } from './sort-submenu/sort-submenu-entries';
 import type { DesktopViewMenuOptions } from './view-submenu/view-submenu-entries';
 import { getDesktopViewMenuEntries } from './view-submenu/view-submenu-entries';
 
-/** 빈 곳 메뉴가 보이는 설정과 동작 */
+/** 빈 곳 메뉴가 보이는 설정과 동작. canPaste는 붙여넣을 수 있는지(잘라낸 항목을 바탕화면으로 옮길 수 있는지)다. */
 type DesktopMenuOptions = DesktopViewMenuOptions &
   DesktopSortMenuOptions & {
-    /** 새로 고침 */
     onRefresh: () => void;
-    /** 붙여넣을 수 있는지(잘라낸 항목을 바탕화면으로 옮길 수 있는지) */
     canPaste: boolean;
-    /** 붙여넣기 */
     onPaste: () => void;
-    /** 새로 만들기 > 폴더 */
     onNewFolder: () => void;
   };
 

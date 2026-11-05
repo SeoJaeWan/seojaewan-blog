@@ -37,16 +37,12 @@ const PREVIEW_CARD_PADDING = 8;
 
 /** 지금 띄운 창 미리보기. 어느 앱의 것이고 클릭으로 열었는지(click) 마우스를 올려 열었는지(hover)다 */
 type OpenedPreview = {
-  /** 앱 */
   app: WindowApp;
-  /** 연 방법 */
   source: 'click' | 'hover';
 };
 
 export type TaskbarAppsLayerProps = {
-  /** 앱 창을 그린다. 미리보기 축소 화면 안에 쓴다. 앱마다 다른 창 조립은 쓰는 곳(앱 등록표)이 고른다 */
   renderWindow: RenderWindow;
-  /** 창 제목을 정한다. 미리보기 제목이 된다 */
   getWindowTitle: (window: OpenWindow) => string;
 };
 
@@ -72,11 +68,15 @@ export type TaskbarAppsLayerProps = {
  * @codocs [[작업 표시줄:우클릭 메뉴]]
  * @codocs [[접근성:Tab]]
  * @codocs [[접근성:포커스]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.renderWindow 앱 창을 그린다. 미리보기 축소 화면 안에 쓴다. 앱마다 다른 창 조립은 쓰는 곳(앱 등록표)이 고른다
+ * @param props.getWindowTitle 창 제목을 정한다. 미리보기 제목이 된다
  * @returns 앱 버튼들
  */
-export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
-  const { renderWindow, getWindowTitle } = props;
+export function TaskbarAppsLayer({
+  renderWindow,
+  getWindowTitle,
+}: TaskbarAppsLayerProps): JSX.Element {
   const windows = useWindowStore((state) => state.windows);
   const order = useWindowStore((state) => state.order);
   const minimize = useWindowStore((state) => state.minimize);

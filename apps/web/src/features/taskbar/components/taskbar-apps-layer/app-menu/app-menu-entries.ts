@@ -10,15 +10,11 @@ import type { WindowApp } from '@/shared/utils/window-rules/window-rules';
 /** 앱 버튼 우클릭 메뉴에서 고를 수 있는 일 */
 export type TaskbarAppMenuAction = 'open-new' | 'pin' | 'unpin' | 'close-windows';
 
-/** 앱 버튼 우클릭 메뉴가 보이는 상태와 동작 */
+/** 앱 버튼 우클릭 메뉴가 보이는 상태와 동작. onAction은 항목을 고르면 그 일과 함께 부른다. */
 type TaskbarAppMenuOptions = {
-  /** 버튼의 앱 */
   app: WindowApp;
-  /** 작업 표시줄에 고정했는지 */
   isPinned: boolean;
-  /** 그 앱의 열린 창 개수 */
   windowCount: number;
-  /** 항목을 고르면 그 일과 함께 부른다 */
   onAction: (action: TaskbarAppMenuAction) => void;
 };
 

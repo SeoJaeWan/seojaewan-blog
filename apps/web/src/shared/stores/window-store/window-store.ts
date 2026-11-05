@@ -32,46 +32,44 @@ import {
  */
 export type WindowInteraction = 'drag' | 'resize' | null;
 
-/** 저장소에만 있는 화면 상태 */
+/** 저장소에만 있는 화면 상태. interaction은 끌기·크기 조절 중인지(drag·resize)이며 아니면 null이다. */
 type WindowUiState = {
-  /** 끌기·크기 조절 중인지 */
   interaction: WindowInteraction;
 };
 
-/** 창 저장소의 조작 */
+/**
+ * 창 저장소의 조작
+ * - open: 새 창을 열고 맨 앞으로 둔다. 창 내용을 주지 않으면 앱을 처음 열 때의 내용이다. 연 창의 id를 돌려준다
+ * - openPost: 글을 가장 최근 Chrome 창의 새 탭(없으면 새 Chrome 창)으로 연다. `isSameTab`(모바일)이면 그 창의 고른 탭에서 연다. 글을 연 창의 id를 돌려준다
+ * - focus: 창을 맨 앞으로 가져온다
+ * - close: 창을 바로 지운다
+ * - minimize: 창을 최소화한다
+ * - restore: 창을 복원하고 맨 앞으로 가져온다
+ * - maximize: 창을 최대화한다
+ * - restoreFromMaximize: 최대화한 창을 바로 앞 모습으로 복원한다
+ * - toggleMaximize: 최대화했으면 복원하고, 아니면 최대화한다(제목 표시줄 더블클릭)
+ * - snap: 창을 스냅 칸에 맞추고 맨 앞으로 가져온다
+ * - setBounds: 떠 있는 창의 자리를 바꾼다(끌어서 옮기거나 크기를 조절한 뒤 놓았을 때)
+ * - detach: 최대화·스냅한 창을 끌어서 떼어 떠 있는 창으로 돌린다
+ * - setContent: 창 내용(탐색기 탭과 위치 기록 등)을 바꾼다
+ * - setInteraction: 끌기·크기 조절을 시작하거나(drag·resize) 끝낸다(null)
+ * - reset: 창을 모두 닫은 처음 상태로 돌린다(다시 시작)
+ */
 type WindowActions = {
-  /** 새 창을 열고 맨 앞으로 둔다. 창 내용을 주지 않으면 앱을 처음 열 때의 내용이다. 연 창의 id를 돌려준다 */
   open: (app: WindowApp, workArea: WindowWorkArea, content?: WindowContent) => string;
-  /**
-   * 글을 가장 최근 Chrome 창의 새 탭(없으면 새 Chrome 창)으로 연다. `isSameTab`(모바일)이면 그 창의 고른 탭에서 연다.
-   * 글을 연 창의 id를 돌려준다
-   */
   openPost: (slug: string, workArea: WindowWorkArea, isSameTab?: boolean) => string;
-  /** 창을 맨 앞으로 가져온다 */
   focus: (id: string) => void;
-  /** 창을 바로 지운다 */
   close: (id: string) => void;
-  /** 창을 최소화한다 */
   minimize: (id: string) => void;
-  /** 창을 복원하고 맨 앞으로 가져온다 */
   restore: (id: string) => void;
-  /** 창을 최대화한다 */
   maximize: (id: string) => void;
-  /** 최대화한 창을 바로 앞 모습으로 복원한다 */
   restoreFromMaximize: (id: string) => void;
-  /** 최대화했으면 복원하고, 아니면 최대화한다(제목 표시줄 더블클릭) */
   toggleMaximize: (id: string) => void;
-  /** 창을 스냅 칸에 맞추고 맨 앞으로 가져온다 */
   snap: (id: string, zone: SnapZone) => void;
-  /** 떠 있는 창의 자리를 바꾼다(끌어서 옮기거나 크기를 조절한 뒤 놓았을 때) */
   setBounds: (id: string, bounds: WindowBounds) => void;
-  /** 최대화·스냅한 창을 끌어서 떼어 떠 있는 창으로 돌린다 */
   detach: (id: string, bounds: WindowBounds) => void;
-  /** 창 내용(탐색기 탭과 위치 기록 등)을 바꾼다 */
   setContent: (id: string, content: WindowContent) => void;
-  /** 끌기·크기 조절을 시작하거나(drag·resize) 끝낸다(null) */
   setInteraction: (interaction: WindowInteraction) => void;
-  /** 창을 모두 닫은 처음 상태로 돌린다(다시 시작) */
   reset: () => void;
 };
 

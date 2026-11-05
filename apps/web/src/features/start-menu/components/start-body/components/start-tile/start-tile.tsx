@@ -10,17 +10,11 @@ import { ContextMenuArea } from '@/shared/components/context-menu-area/context-m
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 
 type StartTileProps = {
-  /** 항목 */
   item: StartItem;
-  /** 칸 너비 클래스 */
   className: string | undefined;
-  /** 칸을 눌렀을 때 부른다 */
   onItemOpen?: (item: StartItem) => void;
-  /** 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartTile`). 주지 않으면 메뉴가 없다 */
   menuItems?: readonly MenuPopupEntry[];
-  /** 칸 위에서 포인터를 눌렀을 때 부른다. 쓰는 곳이 끌어 순서 바꾸기를 시작한다 */
   onPointerDown?: (event: PointerEvent<HTMLButtonElement>, item: StartItem) => void;
-  /** 끌기 뒤에 따라오는 클릭인지 쓰는 곳에 묻는다. 맞으면 항목을 열지 않는다 */
   shouldSuppressClick?: () => boolean;
 };
 
@@ -28,10 +22,22 @@ type StartTileProps = {
  * 항목 칸 하나(PinnedTile)를 그린다. 누르면 그 항목으로 `onItemOpen`을 부른다. 메뉴 항목을 주면 칸을 우클릭(모바일은 길게 누르기)할 때
  * 그 메뉴를 칸 옆에 띄운다. 끌어 순서를 바꾼 뒤에 따라오는 클릭은 항목을 열지 않는다.
  * @codocs [[Start 메뉴:고정됨]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.item 항목
+ * @param props.className 칸 너비 클래스
+ * @param props.menuItems 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartTile`). 주지 않으면 메뉴가 없다
+ * @param props.shouldSuppressClick 끌기 뒤에 따라오는 클릭인지 쓰는 곳에 묻는다. 맞으면 항목을 열지 않는다
+ * @param props.onItemOpen 칸을 눌렀을 때 부른다
+ * @param props.onPointerDown 칸 위에서 포인터를 눌렀을 때 부른다. 쓰는 곳이 끌어 순서 바꾸기를 시작한다
  */
-export function StartTile(props: StartTileProps): JSX.Element {
-  const { item, className, menuItems, shouldSuppressClick } = props;
+export function StartTile({
+  item,
+  className,
+  menuItems,
+  shouldSuppressClick,
+  onItemOpen: handleItemOpen,
+  onPointerDown: handlePointerDownProp,
+}: StartTileProps): JSX.Element {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   /** 칸을 누르면 쓰는 곳에 항목을 알린다. 끌기 뒤의 클릭은 넘긴다. */
@@ -39,7 +45,7 @@ export function StartTile(props: StartTileProps): JSX.Element {
     if (shouldSuppressClick?.() === true) {
       return;
     }
-    props.onItemOpen?.(item);
+    handleItemOpen?.(item);
   }
 
   /**
@@ -47,7 +53,7 @@ export function StartTile(props: StartTileProps): JSX.Element {
    * @param event 포인터 이벤트
    */
   function handlePointerDown(event: PointerEvent<HTMLButtonElement>): void {
-    props.onPointerDown?.(event, item);
+    handlePointerDownProp?.(event, item);
   }
 
   /**

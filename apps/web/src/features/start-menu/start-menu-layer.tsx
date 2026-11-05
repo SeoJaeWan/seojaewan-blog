@@ -317,17 +317,11 @@ export function StartMenuLayer(): JSX.Element {
 }
 
 type PanelDialogProps = {
-  /** 패널 종류. 줄어들 수 있는 가장 작은 높이가 다르다 */
   panel: PanelKind;
-  /** 보여야 하는지(저장소의 값) */
   isOpen: boolean;
-  /** 패널의 접근성 이름 */
   label: string;
-  /** 화면 방식 */
   device: DeviceVariant;
-  /** 패널을 닫아야 할 때 부른다(Esc, 바깥 누르기, 포커스가 밖으로 나감) */
   onClose: () => void;
-  /** 패널을 그린다. 받은 클래스와 최대 높이를 패널 바탕(ShellSurface)에 넘긴다 */
   children: (panelClassName: string, panelStyle: CSSProperties | undefined) => ReactNode;
 };
 
@@ -343,10 +337,22 @@ type PanelDialogProps = {
  * @codocs [[디자인 기반:모션]]
  * @codocs [[Start 메뉴:모바일]]
  * @codocs [[접근성:역할]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.panel 패널 종류. 줄어들 수 있는 가장 작은 높이가 다르다
+ * @param props.isOpen 보여야 하는지(저장소의 값)
+ * @param props.label 패널의 접근성 이름
+ * @param props.device 화면 방식
+ * @param props.onClose 패널을 닫아야 할 때 부른다(Esc, 바깥 누르기, 포커스가 밖으로 나감)
+ * @param props.children 패널을 그린다. 받은 클래스와 최대 높이를 패널 바탕(ShellSurface)에 넘긴다
  */
-function PanelDialog(props: PanelDialogProps): ReactNode {
-  const { panel, isOpen, label, device, onClose, children } = props;
+function PanelDialog({
+  panel,
+  isOpen,
+  label,
+  device,
+  onClose,
+  children,
+}: PanelDialogProps): ReactNode {
   // 포털 자리 요소. Base UI 포털이 자리를 그릴 때 요소를 받아야 하므로 ref가 아니라 상태다.
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const workArea = useWorkArea();

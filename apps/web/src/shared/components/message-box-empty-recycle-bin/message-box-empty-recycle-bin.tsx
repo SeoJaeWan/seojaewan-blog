@@ -14,9 +14,7 @@ export const EMPTY_RECYCLE_BIN_MESSAGE = {
 } as const;
 
 type MessageBoxEmptyRecycleBinProps = {
-  /** 확인 버튼을 누르면 부른다 */
   onPrimaryClick?: MouseEventHandler<HTMLElement>;
-  /** 바깥 배치 클래스 */
   className?: string;
 };
 
@@ -26,10 +24,14 @@ type MessageBoxEmptyRecycleBinProps = {
  * 앱은 `EMPTY_RECYCLE_BIN_MESSAGE`를 `MessageBoxDialog`에 넘겨 모달로 띄운다.
  * @codocs [[휴지통:비우기]]
  * @codocs [[디자인 시스템:조립]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.onPrimaryClick 확인 버튼을 누르면 부른다
+ * @param props.className 바깥 배치 클래스
  */
-export function MessageBoxEmptyRecycleBin(props: MessageBoxEmptyRecycleBinProps): JSX.Element {
-  const { onPrimaryClick: handlePrimaryClick, className } = props;
+export function MessageBoxEmptyRecycleBin({
+  onPrimaryClick: handlePrimaryClick,
+  className,
+}: MessageBoxEmptyRecycleBinProps): JSX.Element {
   return (
     <MessageBox
       {...EMPTY_RECYCLE_BIN_MESSAGE}
