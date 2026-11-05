@@ -22,38 +22,25 @@ import type {
 export type SearchBodyDevice = 'desktop' | 'mobile';
 
 type SearchBodyCommonProps = {
-  /** 피그마 Device. 결과 화면에서 고른 항목의 카드를 옆(desktop)이나 위(mobile)에 둔다 */
   device?: SearchBodyDevice;
-  /**
-   * 기기별 좌우 여백에 더할 내용 둘레 여백 클래스(예: Start 결과 화면의 아래 24). 좌우 여백과 같은 칸에 준다
-   */
   contentClassName?: string;
-  /** 항목 줄(최근, 추천, 결과)이나 카드의 `열기`를 눌렀을 때 그 항목의 id로 부른다. 항목을 여는 일은 쓰는 곳이 한다 */
   onItemOpen?: (id: string) => void;
 };
 
 type SearchBodyProps = SearchBodyCommonProps &
   (
     | {
-        /** 피그마 View=Before typing. 최근 항목과 추천 글을 보인다 */
         view: 'before-typing';
-        /** 최근에 연 항목. 없으면 최근 묶음을 그리지 않는다 */
         recent: readonly SearchItem[];
-        /** 추천 글 */
         recommended: readonly SearchRecommendedPost[];
       }
     | {
-        /** 피그마 View=Results. 고른 항목의 카드(처음에는 최고 일치)와 종류별 결과를 보인다 */
         view: 'results';
-        /** 검색 결과 */
         results: SearchResultGroups;
-        /** 고른 항목의 id. 그 줄에 선택 바탕을 깐다. 주지 않으면 최고 일치다 */
         selectedId?: string;
-        /** 카드의 `링크 복사`를 눌렀을 때 그 항목의 id로 부른다 */
         onCopyLink?: (id: string) => void;
       }
     | {
-        /** 피그마 View=No results. "검색 결과 없음"을 안내한다 */
         view: 'no-results';
       }
   );
@@ -79,19 +66,32 @@ const contentInsetClassNames = {
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[검색:결과 화면]]
  * @codocs [[검색:입력 전 화면]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.device 피그마 Device. 결과 화면에서 고른 항목의 카드를 옆(desktop)이나 위(mobile)에 둔다
+ * @param props.contentClassName 기기별 좌우 여백에 더할 내용 둘레 여백 클래스(예: Start 결과 화면의 아래 24). 좌우 여백과 같은 칸에 준다
+ * @param props.onItemOpen 항목 줄(최근, 추천, 결과)이나 카드의 `열기`를 눌렀을 때 그 항목의 id로 부른다. 항목을 여는 일은 쓰는 곳이 한다
+ * @param props.view 보일 화면. before-typing은 최근 항목과 추천 글(피그마 View=Before typing), results는 고른 항목의 카드(처음에는 최고 일치)와 종류별 결과(View=Results), no-results는 "검색 결과 없음" 안내(View=No results)다
+ * @param props.recent (before-typing) 최근에 연 항목. 없으면 최근 묶음을 그리지 않는다
+ * @param props.recommended (before-typing) 추천 글
+ * @param props.results (results) 검색 결과
+ * @param props.selectedId (results) 고른 항목의 id. 그 줄에 선택 바탕을 깐다. 주지 않으면 최고 일치다
+ * @param props.onCopyLink (results) 카드의 `링크 복사`를 눌렀을 때 그 항목의 id로 부른다
  */
-export function SearchBody(props: SearchBodyProps): JSX.Element {
-  const { device = 'desktop' } = props;
-  const contentClassName = cn(contentInsetClassNames[device], props.contentClassName);
-  switch (props.view) {
+export function SearchBody({
+  device = 'desktop',
+  contentClassName: extraContentClassName,
+  onItemOpen: handleItemOpen,
+  ...viewProps
+}: SearchBodyProps): JSX.Element {
+  const contentClassName = cn(contentInsetClassNames[device], extraContentClassName);
+  switch (viewProps.view) {
     case 'before-typing':
       return (
         <ScrollArea contentClassName={contentClassName}>
           <div className="flex w-full shrink-shrink-none flex-col items-start gap-spacing-2xs">
-            {props.recent.length > 0 && (
+            {viewProps.recent.length > 0 && (
               <ListGroup label="최근" className="w-full shrink-shrink-none">
-                {props.recent.map(
+                {viewProps.recent.map(
                   /**
                    * 최근 항목 한 줄을 그린다.
                    * @param item 최근 항목
@@ -104,14 +104,14 @@ export function SearchBody(props: SearchBodyProps): JSX.Element {
                       title={item.title}
                       icon={renderItemIcon({ kind: item.kind })}
                       className="w-full"
-                      onOpen={props.onItemOpen}
+                      onOpen={handleItemOpen}
                     />
                   ),
                 )}
               </ListGroup>
             )}
             <ListGroup label="추천" className="w-full shrink-shrink-none">
-              {props.recommended.map(
+              {viewProps.recommended.map(
                 /**
                  * 추천 글 한 줄을 그린다.
                  * @param post 추천 글
@@ -125,7 +125,7 @@ export function SearchBody(props: SearchBodyProps): JSX.Element {
                     subtitle={post.date}
                     icon={renderItemIcon({ kind: 'post' })}
                     className="w-full"
-                    onOpen={props.onItemOpen}
+                    onOpen={handleItemOpen}
                   />
                 ),
               )}
@@ -133,17 +133,19 @@ export function SearchBody(props: SearchBodyProps): JSX.Element {
           </div>
         </ScrollArea>
       );
-    case 'results':
+    case 'results': {
+      const { onCopyLink: handleCopyLink } = viewProps;
       return (
         <SearchBodyResults
           device={device}
-          results={props.results}
-          selectedId={props.selectedId}
+          results={viewProps.results}
+          selectedId={viewProps.selectedId}
           contentClassName={contentClassName}
-          onItemOpen={props.onItemOpen}
-          onCopyLink={props.onCopyLink}
+          onItemOpen={handleItemOpen}
+          onCopyLink={handleCopyLink}
         />
       );
+    }
     case 'no-results':
       return (
         <div className={cn('flex items-center justify-center', contentClassName)}>
@@ -154,17 +156,11 @@ export function SearchBody(props: SearchBodyProps): JSX.Element {
 }
 
 type SearchBodyResultsProps = {
-  /** 피그마 Device */
   device: SearchBodyDevice;
-  /** 검색 결과 */
   results: SearchResultGroups;
-  /** 고른 항목의 id. 주지 않으면 최고 일치다 */
   selectedId?: string;
-  /** 내용 둘레 여백 클래스(좌우 여백 포함). 모바일은 스크롤되는 칸에, 데스크톱은 SearchResults를 담는 바탕에 준다 */
   contentClassName?: string;
-  /** 항목 줄이나 카드의 `열기`를 눌렀을 때 부른다 */
   onItemOpen?: (id: string) => void;
-  /** 카드의 `링크 복사`를 눌렀을 때 부른다 */
   onCopyLink?: (id: string) => void;
 };
 
@@ -172,12 +168,24 @@ type SearchBodyResultsProps = {
  * 결과 화면을 그린다. 최고 일치는 맨 위 묶음에 보이고, 나머지 결과는 있는 종류만 묶어 보인다.
  * 카드는 목록에서 고른 항목을 따라가고(처음에는 최고 일치), 내용과 동작은 그 항목의 종류에 맞춘다.
  * @codocs [[검색:결과 화면]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.device 피그마 Device
+ * @param props.results 검색 결과
+ * @param props.contentClassName 내용 둘레 여백 클래스(좌우 여백 포함). 모바일은 스크롤되는 칸에, 데스크톱은 SearchResults를 담는 바탕에 준다
+ * @param props.selectedId 고른 항목의 id. 주지 않으면 최고 일치다
+ * @param props.onItemOpen 항목 줄이나 카드의 `열기`를 눌렀을 때 부른다
+ * @param props.onCopyLink 카드의 `링크 복사`를 눌렀을 때 부른다
  */
-function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
-  const { device, results, contentClassName } = props;
+function SearchBodyResults({
+  device,
+  results,
+  contentClassName,
+  selectedId: selectedIdProp,
+  onItemOpen: handleItemOpen,
+  onCopyLink: handleCopyLink,
+}: SearchBodyResultsProps): JSX.Element {
   const { bestMatch } = results;
-  const cardItem = findResultItem(results, props.selectedId) ?? bestMatch;
+  const cardItem = findResultItem(results, selectedIdProp) ?? bestMatch;
   const selectedId = cardItem.id;
   const cardKindLabel = kindLabels[cardItem.kind];
   // 링크 복사는 주소가 있는 글과 외부 링크에만 둔다(폴더는 열기만).
@@ -185,12 +193,12 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
 
   /** 카드의 `열기`를 누르면 카드의 항목을 연다고 알린다. */
   function handleOpenCardItem(): void {
-    props.onItemOpen?.(cardItem.id);
+    handleItemOpen?.(cardItem.id);
   }
 
   /** 카드의 `링크 복사`를 누르면 카드의 항목의 링크를 복사한다고 알린다. */
   function handleCopyCardItemLink(): void {
-    props.onCopyLink?.(cardItem.id);
+    handleCopyLink?.(cardItem.id);
   }
 
   const groups = [
@@ -233,7 +241,7 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
           subtitle={kindLabels[bestMatch.kind]}
           icon={renderItemIcon({ kind: bestMatch.kind })}
           className="w-full"
-          onOpen={props.onItemOpen}
+          onOpen={handleItemOpen}
         />
       </ListGroup>
       {groups
@@ -260,7 +268,7 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
                     title={item.title}
                     icon={renderItemIcon({ kind: group.kind })}
                     className="w-full"
-                    onOpen={props.onItemOpen}
+                    onOpen={handleItemOpen}
                   />
                 ),
               )}

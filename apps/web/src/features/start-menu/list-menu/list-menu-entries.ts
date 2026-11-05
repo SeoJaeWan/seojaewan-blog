@@ -7,21 +7,14 @@ import {
   taskbarPinMenuItem,
 } from '@/shared/utils/menu-items/menu-items';
 
-/** 모두 목록 항목 메뉴가 보이는 상태와 동작 */
+/** 모두 목록 항목 메뉴가 보이는 상태와 동작. canCopyLink는 링크를 복사할 수 있는 항목인지(글과 외부 링크)다. isPinnedToTaskbar는 앱이면 작업 표시줄에 고정됐는지이며 앱이 아니면 undefined라 작업 표시줄 고정 항목이 없다. */
 type ListMenuOptions = {
-  /** 이미 Start 고정됨에 있는지 */
   isPinnedToStart: boolean;
-  /** 링크를 복사할 수 있는 항목인지(글과 외부 링크) */
   canCopyLink: boolean;
-  /** 앱이면 작업 표시줄에 고정됐는지. 앱이 아니면 undefined라 작업 표시줄 고정 항목이 없다 */
   isPinnedToTaskbar: boolean | undefined;
-  /** 열기 */
   onOpen: () => void;
-  /** 시작 화면에 고정·고정 해제 */
   onToggleStartPin: () => void;
-  /** 링크 복사 */
   onCopyLink: () => void;
-  /** 작업 표시줄에 고정·고정 해제 */
   onToggleTaskbarPin: () => void;
 };
 

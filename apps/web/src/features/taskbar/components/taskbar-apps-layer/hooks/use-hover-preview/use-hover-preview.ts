@@ -9,19 +9,25 @@ export const HOVER_PREVIEW_OPEN_DELAY = 400;
 /** 앱 버튼과 미리보기 밖으로 나가고 창 미리보기를 닫기까지 기다리는 시간(ms) */
 export const HOVER_PREVIEW_CLOSE_DELAY = 300;
 
+/**
+ * 호버 미리보기 훅의 설정
+ * - onOpen: 마우스를 올린 채 기다리면 부른다. 미리보기를 띄운다
+ * - onClose: 버튼과 미리보기 밖으로 나가 기다리면 부른다. 미리보기를 닫는다
+ */
 type UseHoverPreviewOptions<T> = {
-  /** 마우스를 올린 채 기다리면 부른다. 미리보기를 띄운다 */
   onOpen: (target: T) => void;
-  /** 버튼과 미리보기 밖으로 나가 기다리면 부른다. 미리보기를 닫는다 */
   onClose: () => void;
 };
 
+/**
+ * 호버 미리보기 훅의 결과
+ * - handlePointerEnter: 버튼이나 미리보기에 포인터가 들어왔을 때 부른다. 마우스일 때만 센다
+ * - handlePointerLeave: 버튼과 미리보기에서 포인터가 나갔을 때 부른다. 마우스일 때만 센다
+ * - cancel: 기다리던 열기·닫기를 모두 취소한다. 클릭처럼 다른 방법으로 미리보기를 정할 때 부른다
+ */
 type UseHoverPreviewResult<T> = {
-  /** 버튼이나 미리보기에 포인터가 들어왔을 때 부른다. 마우스일 때만 센다 */
   handlePointerEnter: (target: T, event: HoverPointerEvent) => void;
-  /** 버튼과 미리보기에서 포인터가 나갔을 때 부른다. 마우스일 때만 센다 */
   handlePointerLeave: (event: HoverPointerEvent) => void;
-  /** 기다리던 열기·닫기를 모두 취소한다. 클릭처럼 다른 방법으로 미리보기를 정할 때 부른다 */
   cancel: () => void;
 };
 

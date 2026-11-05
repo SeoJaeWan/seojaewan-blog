@@ -26,11 +26,12 @@ type TaskbarLayerProps = TaskbarAppsLayerProps;
  * @codocs [[검색:개요]]
  * @codocs [[검색:입력칸]]
  * @codocs [[작업 표시줄:모바일]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.renderWindow 앱 창을 그린다. 미리보기 축소 화면 안에 쓴다. 앱마다 다른 창 조립은 쓰는 곳(앱 등록표)이 고른다
+ * @param props.getWindowTitle 창 제목을 정한다. 미리보기 제목이 된다
  * @returns 작업 표시줄
  */
-export function TaskbarLayer(props: TaskbarLayerProps): JSX.Element {
-  const { renderWindow, getWindowTitle } = props;
+export function TaskbarLayer({ renderWindow, getWindowTitle }: TaskbarLayerProps): JSX.Element {
   const device = toDeviceVariant(useDevice());
   const clock = useClock();
   const openPanel = usePanelStore((state) => state.openPanel);

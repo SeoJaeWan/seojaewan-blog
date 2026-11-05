@@ -16,19 +16,12 @@ type ItemListRowProps = Omit<
   ComponentProps<'div'>,
   'id' | 'title' | 'children' | 'ref' | 'role' | 'tabIndex'
 > & {
-  /** 항목 id. 열 때 `onOpen`에 넘긴다 */
   id: string;
-  /** 항목 이름 */
   title: string;
-  /** 이름 아래 보조 설명. 주면 두 줄 크기(two-line)로 그린다 */
   subtitle?: string;
-  /** 이름 앞 아이콘 */
   icon: ReactNode;
-  /** 지금 고른 줄인지(검색 결과의 선택). `ListItem`의 선택 바탕을 깔고 `aria-current`를 단다 */
   isSelected?: boolean;
-  /** 줄을 열었을 때(클릭·Enter·Space) 그 항목의 id로 부른다 */
   onOpen?: (id: string) => void;
-  /** 줄 요소의 ref. 우클릭 메뉴(`ContextMenu.Trigger`)처럼 줄에 동작을 붙이는 쪽이 넘긴다 */
   ref?: Ref<HTMLDivElement>;
 };
 
@@ -41,20 +34,27 @@ type ItemListRowProps = Omit<
  * @codocs [[Start 메뉴:열기와 닫기]]
  * @codocs [[검색:결과 화면]]
  * @codocs [[접근성:역할]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.id 항목 id. 열 때 `onOpen`에 넘긴다
+ * @param props.title 항목 이름
+ * @param props.subtitle 이름 아래 보조 설명. 주면 두 줄 크기(two-line)로 그린다
+ * @param props.icon 이름 앞 아이콘
+ * @param props.isSelected 지금 고른 줄인지(검색 결과의 선택). `ListItem`의 선택 바탕을 깔고 `aria-current`를 단다
+ * @param props.onOpen 줄을 열었을 때(클릭·Enter·Space) 그 항목의 id로 부른다
+ * @param props.ref 줄 요소의 ref. 우클릭 메뉴(`ContextMenu.Trigger`)처럼 줄에 동작을 붙이는 쪽이 넘긴다
+ * @param props.onClick 줄을 눌렀을 때. 열기(`onOpen`)와 함께 부른다
  */
-export function ItemListRow(props: ItemListRowProps): JSX.Element {
-  const {
-    id,
-    title,
-    subtitle,
-    icon,
-    isSelected = false,
-    onOpen: handleOpenItem,
-    ref: forwardedRef,
-    onClick: handleClickProp,
-    ...rowAttributes
-  } = props;
+export function ItemListRow({
+  id,
+  title,
+  subtitle,
+  icon,
+  isSelected = false,
+  onOpen: handleOpenItem,
+  ref: forwardedRef,
+  onClick: handleClickProp,
+  ...rowAttributes
+}: ItemListRowProps): JSX.Element {
   const rowRef = useRef<HTMLDivElement>(null);
 
   useImperativeHandle(

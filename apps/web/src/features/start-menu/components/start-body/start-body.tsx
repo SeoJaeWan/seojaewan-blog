@@ -37,29 +37,17 @@ import { getViewMenuEntries } from './view-menu/view-menu-entries';
 export type StartBodyDevice = 'desktop' | 'mobile';
 
 type StartBodyCommonProps = {
-  /** 피그마 Device. 모바일은 고정 항목 칸(89)과 내용 좌우 여백(16)이 좁다 */
   device?: StartBodyDevice;
 };
 
 type StartListViewProps = StartBodyCommonProps & {
-  /** 피그마 View=List·Grid·Category. 고정됨과 모두 목록을 보인다 */
   view: StartAllView;
-  /** 고정됨 항목 */
   pinned: readonly StartItem[];
-  /** 모두 목록의 묶음 */
   groups: readonly StartItemGroup[];
-  /** 항목 칸(고정됨, 그리드 보기)과 목록 줄을 눌렀을 때 부른다. 항목을 여는 일은 쓰는 곳이 한다 */
   onItemOpen?: (item: StartItem) => void;
-  /** 고정됨 칸의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartTile`)을 항목마다 정한다. 주지 않으면 메뉴가 없다 */
   getPinnedMenuItems?: (item: StartItem) => readonly MenuPopupEntry[];
-  /**
-   * 모두 목록 줄(그리드 보기는 칸)의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartListApp`·`Menu/StartListPost`)을
-   * 항목마다 정한다. 주지 않으면 메뉴가 없다
-   */
   getListMenuItems?: (item: StartItem) => readonly MenuPopupEntry[];
-  /** 고정됨 칸을 끌어 다른 칸 자리에 놓을 때(끄는 동안 칸마다) 끈 항목 id와 놓인 칸의 항목 id로 부른다. 주지 않으면 끌 수 없다 */
   onPinnedMove?: (id: string, targetId: string) => void;
-  /** `보기:` 메뉴에서 보기를 골랐을 때 부른다. 주지 않으면 `보기:`는 메뉴 없는 버튼 모양만 그린다 */
   onViewChange?: (view: StartAllView) => void;
 };
 
@@ -68,25 +56,17 @@ type StartBodyProps =
   | (StartBodyCommonProps &
       (
         | {
-            /** 피그마 View=JumpList. 모두 제목 줄과 글자 격자를 보인다 */
             view: 'jump-list';
-            /** 목록에 항목이 있는 글자 */
             availableLetters: readonly string[];
           }
         | {
-            /** 피그마 View=Results. 검색 결과 화면(`Search/Body` 결과와 같다)을 보인다 */
             view: 'results';
-            /** 검색 결과 */
             results: SearchResultGroups;
-            /** 고른 항목의 id. 주지 않으면 최고 일치다 */
             selectedId?: string;
-            /** 항목 줄이나 카드의 `열기`를 눌렀을 때 그 항목의 id로 부른다 */
             onItemOpen?: (id: string) => void;
-            /** 카드의 `링크 복사`를 눌렀을 때 그 항목의 id로 부른다 */
             onCopyLink?: (id: string) => void;
           }
         | {
-            /** 검색 결과가 없을 때. "검색 결과 없음"을 안내한다 */
             view: 'no-results';
           }
       ));
@@ -121,32 +101,44 @@ const contentInsetClassNames = {
  * @codocs [[Start 메뉴:고정됨]]
  * @codocs [[Start 메뉴:모두]]
  * @codocs [[Start 메뉴:검색]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.device 피그마 Device. 모바일은 고정 항목 칸(89)과 내용 좌우 여백(16)이 좁다
+ * @param props.view 보일 화면. list·grid·category는 고정됨과 모두 목록(피그마 View=List·Grid·Category), jump-list는 모두 제목 줄과 글자 격자(View=JumpList), results는 검색 결과 화면(`Search/Body` 결과와 같다), no-results는 검색 결과가 없을 때의 "검색 결과 없음" 안내다
+ * @param props.pinned (list·grid·category) 고정됨 항목
+ * @param props.groups (list·grid·category) 모두 목록의 묶음
+ * @param props.onItemOpen (list·grid·category) 항목 칸(고정됨, 그리드 보기)과 목록 줄을 눌렀을 때 부른다. 항목을 여는 일은 쓰는 곳이 한다. (results) 항목 줄이나 카드의 `열기`를 눌렀을 때 그 항목의 id로 부른다
+ * @param props.getPinnedMenuItems (list·grid·category) 고정됨 칸의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartTile`)을 항목마다 정한다. 주지 않으면 메뉴가 없다
+ * @param props.getListMenuItems (list·grid·category) 모두 목록 줄(그리드 보기는 칸)의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartListApp`·`Menu/StartListPost`)을 항목마다 정한다. 주지 않으면 메뉴가 없다
+ * @param props.onPinnedMove (list·grid·category) 고정됨 칸을 끌어 다른 칸 자리에 놓을 때(끄는 동안 칸마다) 끈 항목 id와 놓인 칸의 항목 id로 부른다. 주지 않으면 끌 수 없다
+ * @param props.onViewChange (list·grid·category) `보기:` 메뉴에서 보기를 골랐을 때 부른다. 주지 않으면 `보기:`는 메뉴 없는 버튼 모양만 그린다
+ * @param props.availableLetters (jump-list) 목록에 항목이 있는 글자
+ * @param props.results (results) 검색 결과
+ * @param props.selectedId (results) 고른 항목의 id. 주지 않으면 최고 일치다
+ * @param props.onCopyLink (results) 카드의 `링크 복사`를 눌렀을 때 그 항목의 id로 부른다
  */
-export function StartBody(props: StartBodyProps): JSX.Element {
-  const { device = 'desktop' } = props;
-  switch (props.view) {
+export function StartBody({ device = 'desktop', ...viewProps }: StartBodyProps): JSX.Element {
+  switch (viewProps.view) {
     // 검색 결과 화면은 검색 본문을 그대로 쓴다. 좌우 여백은 검색 본문이 갖고, Start는 아래 24만 같은 칸(모바일은 스크롤되는 칸)에 더한다.
-    case 'results':
+    case 'results': {
+      const { onItemOpen: handleItemOpen, onCopyLink: handleCopyLink } = viewProps;
       return (
         <SearchBody
           view="results"
-          device={props.device}
-          results={props.results}
-          selectedId={props.selectedId}
-          onItemOpen={props.onItemOpen}
-          onCopyLink={props.onCopyLink}
+          device={device}
+          results={viewProps.results}
+          selectedId={viewProps.selectedId}
+          onItemOpen={handleItemOpen}
+          onCopyLink={handleCopyLink}
           contentClassName="pb-spacing-2xl"
         />
       );
+    }
     case 'no-results':
-      return (
-        <SearchBody view="no-results" device={props.device} contentClassName="pb-spacing-2xl" />
-      );
+      return <SearchBody view="no-results" device={device} contentClassName="pb-spacing-2xl" />;
     case 'jump-list':
       return (
         <StartJumpListView
-          availableLetters={props.availableLetters}
+          availableLetters={viewProps.availableLetters}
           className={cn(
             'flex flex-col items-start gap-spacing-lg overflow-clip pb-spacing-2xl',
             contentInsetClassNames[device],
@@ -156,41 +148,44 @@ export function StartBody(props: StartBodyProps): JSX.Element {
     case 'list':
     case 'grid':
     case 'category':
-      return <StartListView {...props} />;
+      return <StartListView {...viewProps} device={device} />;
   }
 }
 
 type StartJumpListViewProps = {
-  /** 목록에 항목이 있는 글자 */
   availableLetters: readonly string[];
-  /** 바탕 요소의 클래스(배치와 크기) */
   className: string;
-  /** 바탕 요소를 누를 수 없게 할지(닫히는 중) */
   isInert?: boolean;
-  /** "뒤로"를 눌렀을 때 부른다 */
   onBack?: () => void;
-  /** 글자를 골랐을 때 부른다 */
   onLetterSelect?: (letter: string) => void;
 };
 
 /**
  * 글자 격자 화면(피그마 `Start/Body` `View=JumpList`의 내용)을 그린다. "모두" 제목 줄 오른쪽에 "뒤로" 버튼, 아래 가운데에 글자 격자다.
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.isInert 바탕 요소를 누를 수 없게 할지(닫히는 중)
+ * @param props.className 바탕 요소의 클래스(배치와 크기)
+ * @param props.onBack "뒤로"를 눌렀을 때 부른다
+ * @param props.availableLetters 목록에 항목이 있는 글자
+ * @param props.onLetterSelect 글자를 골랐을 때 부른다
  */
-function StartJumpListView(props: StartJumpListViewProps): JSX.Element {
+function StartJumpListView({
+  isInert,
+  className,
+  onBack: handleBack,
+  availableLetters,
+  onLetterSelect: handleLetterSelect,
+}: StartJumpListViewProps): JSX.Element {
   return (
-    <div inert={props.isInert} className={props.className}>
+    <div inert={isInert} className={className}>
       <SectionTitle
         title="모두"
         hasAction
-        action={<Button variant="subtle" label="뒤로" onClick={props.onBack} />}
+        action={<Button variant="subtle" label="뒤로" onClick={handleBack} />}
         className="w-full shrink-shrink-none"
       />
       <div className="flex w-full shrink-shrink-none flex-col items-center">
-        <StartJumpList
-          availableLetters={props.availableLetters}
-          onLetterSelect={props.onLetterSelect}
-        />
+        <StartJumpList availableLetters={availableLetters} onLetterSelect={handleLetterSelect} />
       </div>
     </div>
   );
@@ -207,10 +202,28 @@ function StartJumpListView(props: StartJumpListViewProps): JSX.Element {
  * @codocs [[Start 메뉴:모두]]
  * @codocs [[피그마 연동:모션 클래스]]
  * @codocs [[접근성:영역 이름]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.view 피그마 View=List·Grid·Category. 고정됨과 모두 목록을 보인다
+ * @param props.device 피그마 Device. 모바일은 고정 항목 칸(89)과 내용 좌우 여백(16)이 좁다
+ * @param props.pinned 고정됨 항목
+ * @param props.groups 모두 목록의 묶음
+ * @param props.onItemOpen 항목 칸(고정됨, 그리드 보기)과 목록 줄을 눌렀을 때 부른다. 항목을 여는 일은 쓰는 곳이 한다
+ * @param props.getPinnedMenuItems 고정됨 칸의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartTile`)을 항목마다 정한다. 주지 않으면 메뉴가 없다
+ * @param props.getListMenuItems 모두 목록 줄(그리드 보기는 칸)의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartListApp`·`Menu/StartListPost`)을 항목마다 정한다. 주지 않으면 메뉴가 없다
+ * @param props.onPinnedMove 고정됨 칸을 끌어 다른 칸 자리에 놓을 때(끄는 동안 칸마다) 끈 항목 id와 놓인 칸의 항목 id로 부른다. 주지 않으면 끌 수 없다
+ * @param props.onViewChange `보기:` 메뉴에서 보기를 골랐을 때 부른다. 주지 않으면 `보기:`는 메뉴 없는 버튼 모양만 그린다
  */
-function StartListView(props: StartListViewProps): JSX.Element {
-  const { view, groups, device = 'desktop' } = props;
+function StartListView({
+  view,
+  device = 'desktop',
+  pinned,
+  groups,
+  onItemOpen: handleItemOpen,
+  getPinnedMenuItems,
+  getListMenuItems,
+  onPinnedMove: handlePinnedMove,
+  onViewChange: handleViewChange,
+}: StartListViewProps): JSX.Element {
   const tileClassName = tileClassNames[device];
   // 첫 글자로 묶은 보기(간단히·그리드)만 글자 격자로 이동한다. 범주 보기의 머리글은 종류 이름이라 누를 수 없다.
   const isJumpListEnabled = view !== 'category';
@@ -283,7 +296,6 @@ function StartListView(props: StartListViewProps): JSX.Element {
    */
   function handlePinnedPointerDown(event: PointerEvent<HTMLButtonElement>, item: StartItem): void {
     isPinnedDraggedRef.current = false;
-    const { onPinnedMove: handlePinnedMove } = props;
     if (handlePinnedMove === undefined) {
       return;
     }
@@ -316,7 +328,7 @@ function StartListView(props: StartListViewProps): JSX.Element {
    */
   function handleViewSelect(nextView: StartAllView): void {
     setIsViewMenuOpen(false);
-    props.onViewChange?.(nextView);
+    handleViewChange?.(nextView);
   }
 
   /**
@@ -335,7 +347,7 @@ function StartListView(props: StartListViewProps): JSX.Element {
    * @returns `보기:` 버튼
    */
   function renderViewControl(): JSX.Element {
-    if (props.onViewChange === undefined) {
+    if (handleViewChange === undefined) {
       return <DropDownButton subject="보기" label={viewLabels[view]} />;
     }
     return (
@@ -390,7 +402,7 @@ function StartListView(props: StartListViewProps): JSX.Element {
                 {...pinnedRovingProps}
                 className="w-full shrink-shrink-none"
               >
-                {props.pinned.map(
+                {pinned.map(
                   /**
                    * 고정 항목 칸 하나를 그린다.
                    * @param item 고정 항목
@@ -401,8 +413,8 @@ function StartListView(props: StartListViewProps): JSX.Element {
                       key={item.id}
                       item={item}
                       className={tileClassName}
-                      onItemOpen={props.onItemOpen}
-                      menuItems={props.getPinnedMenuItems?.(item)}
+                      onItemOpen={handleItemOpen}
+                      menuItems={getPinnedMenuItems?.(item)}
                       onPointerDown={handlePinnedPointerDown}
                       shouldSuppressClick={shouldSuppressPinnedClick}
                     />
@@ -425,8 +437,8 @@ function StartListView(props: StartListViewProps): JSX.Element {
                 view={view}
                 groups={groups}
                 tileClassName={tileClassName}
-                onItemOpen={props.onItemOpen}
-                getMenuItems={props.getListMenuItems}
+                onItemOpen={handleItemOpen}
+                getMenuItems={getListMenuItems}
                 onHeaderClick={handleHeaderClick}
               />
             </section>
@@ -450,17 +462,11 @@ function StartListView(props: StartListViewProps): JSX.Element {
 }
 
 type StartAllListProps = {
-  /** 모두 목록의 보기 */
   view: StartAllView;
-  /** 모두 목록의 묶음 */
   groups: readonly StartItemGroup[];
-  /** 그리드 보기의 항목 칸 너비 클래스 */
   tileClassName: string | undefined;
-  /** 그리드 보기의 항목 칸을 눌렀을 때 부른다 */
   onItemOpen?: (item: StartItem) => void;
-  /** 항목의 우클릭 메뉴 항목을 정한다. 주지 않으면 메뉴가 없다 */
   getMenuItems?: (item: StartItem) => readonly MenuPopupEntry[];
-  /** 묶음 머리글을 눌렀을 때 그 묶음 글자로 부른다. 없으면 머리글은 누를 수 없다 */
   onHeaderClick?: (label: string) => void;
 };
 
@@ -468,10 +474,22 @@ type StartAllListProps = {
  * 모두 목록을 묶음마다 ListGroup으로 그린다. 그리드 보기는 묶음 안을 PinnedTile 격자로, 나머지는 ListItem 줄로 채운다.
  * 목록 전체(머리글 포함)가 Tab 한 번에 닿고 안에서 방향키로 옮긴다.
  * @codocs [[접근성:Tab]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.view 모두 목록의 보기
+ * @param props.groups 모두 목록의 묶음
+ * @param props.tileClassName 그리드 보기의 항목 칸 너비 클래스
+ * @param props.onItemOpen 그리드 보기의 항목 칸을 눌렀을 때 부른다
+ * @param props.getMenuItems 항목의 우클릭 메뉴 항목을 정한다. 주지 않으면 메뉴가 없다
+ * @param props.onHeaderClick 묶음 머리글을 눌렀을 때 그 묶음 글자로 부른다. 없으면 머리글은 누를 수 없다
  */
-function StartAllList(props: StartAllListProps): JSX.Element {
-  const { view, groups, tileClassName } = props;
+function StartAllList({
+  view,
+  groups,
+  tileClassName,
+  onItemOpen: handleItemOpen,
+  getMenuItems,
+  onHeaderClick: handleHeaderClick,
+}: StartAllListProps): JSX.Element {
   const listRef = useRef<HTMLDivElement>(null);
   const rovingProps = useRovingFocus(listRef, {
     orientation: view === 'grid' ? 'grid' : 'vertical',
@@ -494,9 +512,9 @@ function StartAllList(props: StartAllListProps): JSX.Element {
             view={view}
             group={group}
             tileClassName={tileClassName}
-            onItemOpen={props.onItemOpen}
-            getMenuItems={props.getMenuItems}
-            onHeaderClick={props.onHeaderClick}
+            onItemOpen={handleItemOpen}
+            getMenuItems={getMenuItems}
+            onHeaderClick={handleHeaderClick}
           />
         ),
       )}
@@ -505,17 +523,27 @@ function StartAllList(props: StartAllListProps): JSX.Element {
 }
 
 type StartAllGroupProps = Omit<StartAllListProps, 'groups'> & {
-  /** 묶음 */
   group: StartItemGroup;
 };
 
 /**
  * 모두 목록의 묶음 하나를 ListGroup으로 그린다. 글자 격자에서 고른 글자로 옮길 때 찾도록 묶음 글자(`data-letter-group`)를 단다.
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.view 모두 목록의 보기
+ * @param props.group 묶음
+ * @param props.tileClassName 그리드 보기의 항목 칸 너비 클래스
+ * @param props.onHeaderClick 묶음 머리글을 눌렀을 때 그 묶음 글자로 부른다. 없으면 머리글은 누를 수 없다
+ * @param props.onItemOpen 그리드 보기의 항목 칸을 눌렀을 때 부른다
+ * @param props.getMenuItems 항목의 우클릭 메뉴 항목을 정한다. 주지 않으면 메뉴가 없다
  */
-function StartAllGroup(props: StartAllGroupProps): JSX.Element {
-  const { view, group, tileClassName, onHeaderClick } = props;
-
+function StartAllGroup({
+  view,
+  group,
+  tileClassName,
+  onHeaderClick,
+  onItemOpen: handleItemOpen,
+  getMenuItems,
+}: StartAllGroupProps): JSX.Element {
   /** 머리글을 누르면 이 묶음의 글자로 알린다. */
   function notifyHeaderClick(): void {
     onHeaderClick?.(group.label);
@@ -542,8 +570,8 @@ function StartAllGroup(props: StartAllGroupProps): JSX.Element {
                 key={item.id}
                 item={item}
                 className={tileClassName}
-                onItemOpen={props.onItemOpen}
-                menuItems={props.getMenuItems?.(item)}
+                onItemOpen={handleItemOpen}
+                menuItems={getMenuItems?.(item)}
               />
             ),
           )}
@@ -559,8 +587,8 @@ function StartAllGroup(props: StartAllGroupProps): JSX.Element {
             <StartListRow
               key={item.id}
               item={item}
-              onItemOpen={props.onItemOpen}
-              menuItems={props.getMenuItems?.(item)}
+              onItemOpen={handleItemOpen}
+              menuItems={getMenuItems?.(item)}
             />
           ),
         )
@@ -570,11 +598,8 @@ function StartAllGroup(props: StartAllGroupProps): JSX.Element {
 }
 
 type StartListRowProps = {
-  /** 항목 */
   item: StartItem;
-  /** 줄을 열었을 때 부른다 */
   onItemOpen?: (item: StartItem) => void;
-  /** 우클릭(모바일은 길게 누르기) 메뉴 항목. 주지 않으면 메뉴가 없다 */
   menuItems?: readonly MenuPopupEntry[];
 };
 
@@ -584,15 +609,21 @@ type StartListRowProps = {
  * 줄(`ItemListRow`)이 받은 속성과 ref를 줄 요소에 넘기므로, 줄 자체가 우클릭을 받는 영역이다.
  * @codocs [[Start 메뉴:열기와 닫기]]
  * @codocs [[Start 메뉴:모두]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.item 항목
+ * @param props.menuItems 우클릭(모바일은 길게 누르기) 메뉴 항목. 주지 않으면 메뉴가 없다
+ * @param props.onItemOpen 줄을 열었을 때 부른다
  */
-function StartListRow(props: StartListRowProps): JSX.Element {
-  const { item, menuItems } = props;
+function StartListRow({
+  item,
+  menuItems,
+  onItemOpen: handleItemOpen,
+}: StartListRowProps): JSX.Element {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   /** 줄을 열면 쓰는 곳에 항목을 알린다. */
   function handleOpen(): void {
-    props.onItemOpen?.(item);
+    handleItemOpen?.(item);
   }
 
   /**

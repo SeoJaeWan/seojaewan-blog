@@ -31,25 +31,27 @@ const recommendedCounts = { desktop: 6, mobile: 3 } as const satisfies Record<
   number
 >;
 
-/** 검색 패널과 Start 검색 화면이 그리는 데이터와 동작 */
+/**
+ * 검색 패널과 Start 검색 화면이 그리는 데이터와 동작
+ * - query: 검색어
+ * - setQuery: 검색어를 바꾼다
+ * - isSearching: 검색어가 있어 결과 화면을 보일지(공백만이면 아니다)
+ * - results: 검색 결과. 결과가 없으면 null
+ * - selectedId: 고른 항목의 id. 결과가 없으면 undefined
+ * - recent: 입력 전 화면의 최근 항목
+ * - recommended: 입력 전 화면의 추천 글
+ * - openItem: 항목을 연다. 열면 패널이 닫힌다
+ * - copyLink: 항목의 링크를 복사한다
+ */
 export type StartSearch = {
-  /** 검색어 */
   query: string;
-  /** 검색어를 바꾼다 */
   setQuery: (query: string) => void;
-  /** 검색어가 있어 결과 화면을 보일지(공백만이면 아니다) */
   isSearching: boolean;
-  /** 검색 결과. 결과가 없으면 null */
   results: SearchResultGroups | null;
-  /** 고른 항목의 id. 결과가 없으면 undefined */
   selectedId: string | undefined;
-  /** 입력 전 화면의 최근 항목 */
   recent: readonly SearchItem[];
-  /** 입력 전 화면의 추천 글 */
   recommended: readonly SearchRecommendedPost[];
-  /** 항목을 연다. 열면 패널이 닫힌다 */
   openItem: (id: string) => void;
-  /** 항목의 링크를 복사한다 */
   copyLink: (id: string) => void;
 };
 

@@ -5,21 +5,13 @@ import { ProfileButton, SearchBox, ShellSurface, StartMenuFooter } from '@seojae
 export type StartMenuPanelDevice = 'desktop' | 'mobile';
 
 type StartMenuPanelProps = {
-  /** 피그마 Device. 모바일은 검색 줄의 좌우 여백이 16으로 좁다. 패널 크기와 모서리는 ShellSurface가 정한다 */
   device?: StartMenuPanelDevice;
-  /** 위쪽 검색 입력칸(SearchBox `Appearance=Pill`)에 넘길 속성 */
   searchBoxProps?: Omit<ComponentProps<typeof SearchBox>, 'variant' | 'className'>;
-  /** 아래 줄 프로필 이름 */
   profileName: string;
-  /** 아래 줄 프로필 사진(32×32) */
   profilePhoto: ReactNode;
-  /** 아래 줄 오른쪽 자리. 쓰는 쪽이 전원 버튼(`Start/PowerButton`)을 넣는다 */
   powerButton?: ReactNode;
-  /** 본문 자리. 쓰는 쪽이 Start 본문(`Start/Body`)을 넣는다 */
   children?: ReactNode;
-  /** 바깥 배치 클래스 */
   className?: string;
-  /** 실행 중에 정해지는 크기(패널 최대 높이). 쓰는 곳(패널 층)이 화면 높이에 맞춰 넘긴다 */
   style?: CSSProperties;
 };
 
@@ -30,19 +22,26 @@ type StartMenuPanelProps = {
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[Start 메뉴:구성]]
  * @codocs [[Start 메뉴:모바일]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.device 피그마 Device. 모바일은 검색 줄의 좌우 여백이 16으로 좁다. 패널 크기와 모서리는 ShellSurface가 정한다
+ * @param props.searchBoxProps 위쪽 검색 입력칸(SearchBox `Appearance=Pill`)에 넘길 속성
+ * @param props.profileName 아래 줄 프로필 이름
+ * @param props.profilePhoto 아래 줄 프로필 사진(32×32)
+ * @param props.powerButton 아래 줄 오른쪽 자리. 쓰는 쪽이 전원 버튼(`Start/PowerButton`)을 넣는다
+ * @param props.children 본문 자리. 쓰는 쪽이 Start 본문(`Start/Body`)을 넣는다
+ * @param props.className 바깥 배치 클래스
+ * @param props.style 실행 중에 정해지는 크기(패널 최대 높이). 쓰는 곳(패널 층)이 화면 높이에 맞춰 넘긴다
  */
-export function StartMenuPanel(props: StartMenuPanelProps): JSX.Element {
-  const {
-    device = 'desktop',
-    searchBoxProps,
-    profileName,
-    profilePhoto,
-    powerButton,
-    children,
-    className,
-    style,
-  } = props;
+export function StartMenuPanel({
+  device = 'desktop',
+  searchBoxProps,
+  profileName,
+  profilePhoto,
+  powerButton,
+  children,
+  className,
+  style,
+}: StartMenuPanelProps): JSX.Element {
   const isMobile = device === 'mobile';
   return (
     <ShellSurface device={device} className={className} style={style}>

@@ -2,11 +2,9 @@ import { useSyncExternalStore } from 'react';
 
 const MINUTE_MS = 60_000;
 
-/** 작업 표시줄 시계에 보이는 두 줄 */
+/** 작업 표시줄 시계에 보이는 두 줄. time은 위 줄(시간, 예: `오후 3:24`), date는 아래 줄(날짜, 예: `2026-10-20`)이다. */
 export type Clock = {
-  /** 위 줄(시간). 예: `오후 3:24` */
   time: string;
-  /** 아래 줄(날짜). 예: `2026-10-20` */
   date: string;
 };
 

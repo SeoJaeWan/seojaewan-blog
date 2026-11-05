@@ -5,26 +5,17 @@ import { Asset, SearchBox, SystemTray, Taskbar, TaskbarButton } from '@seojaewan
 export type TaskbarDefaultSearch = 'box' | 'button';
 
 type TaskbarDefaultProps = {
-  /** 피그마 Search. box는 검색 입력칸(넓은 화면), button은 검색 아이콘 버튼(좁은 화면)이다 */
   search?: TaskbarDefaultSearch;
-  /** 앱 버튼 자리. 고정한 앱과 실행 중인 앱의 `TaskbarAppButton`(또는 그 버튼을 품은 `TaskbarAppMenu`·`TaskbarAppPreview`)을 넣는다 */
   apps?: ReactNode;
-  /** 시계 위 줄(시간). 피그마 SystemTray Time */
   time: string;
-  /** 시계 아래 줄(날짜). 피그마 SystemTray Date */
   date: string;
-  /** Start 버튼을 눌렀을 때 부른다. Start 메뉴를 열고 닫는 일은 쓰는 곳이 한다 */
   onStartClick?: MouseEventHandler<HTMLButtonElement>;
-  /** Start 메뉴가 열려 있는지. Start 버튼의 `aria-expanded`가 된다. 주지 않으면 달지 않는다 */
   isStartOpen?: boolean;
-  /** 검색 입력칸(search=box)에 넘기는 속성. 포커스하면 검색 패널을 여는 `onFocus` 등을 넣는다 */
   searchBoxProps?: Omit<
     ComponentProps<typeof SearchBox>,
     'variant' | 'placeholder' | 'aria-label' | 'className'
   >;
-  /** 검색 버튼(search=button)을 눌렀을 때 부른다. 좁은 화면에서 검색 패널을 연다 */
   onSearchClick?: MouseEventHandler<HTMLButtonElement>;
-  /** 검색 패널이 열려 있는지. 검색 버튼(search=button)의 `aria-expanded`가 된다. 주지 않으면 달지 않는다 */
   isSearchOpen?: boolean;
 };
 
@@ -36,10 +27,28 @@ type TaskbarDefaultProps = {
  * (누르면 패널을 열고 닫는 버튼이라 바깥 클릭으로 닫으면 다시 열려 버린다).
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[작업 표시줄:구성]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.search 피그마 Search. box는 검색 입력칸(넓은 화면), button은 검색 아이콘 버튼(좁은 화면)이다
+ * @param props.apps 앱 버튼 자리. 고정한 앱과 실행 중인 앱의 `TaskbarAppButton`(또는 그 버튼을 품은 `TaskbarAppMenu`·`TaskbarAppPreview`)을 넣는다
+ * @param props.time 시계 위 줄(시간). 피그마 SystemTray Time
+ * @param props.date 시계 아래 줄(날짜). 피그마 SystemTray Date
+ * @param props.isStartOpen Start 메뉴가 열려 있는지. Start 버튼의 `aria-expanded`가 된다. 주지 않으면 달지 않는다
+ * @param props.searchBoxProps 검색 입력칸(search=box)에 넘기는 속성. 포커스하면 검색 패널을 여는 `onFocus` 등을 넣는다
+ * @param props.isSearchOpen 검색 패널이 열려 있는지. 검색 버튼(search=button)의 `aria-expanded`가 된다. 주지 않으면 달지 않는다
+ * @param props.onStartClick Start 버튼을 눌렀을 때 부른다. Start 메뉴를 열고 닫는 일은 쓰는 곳이 한다
+ * @param props.onSearchClick 검색 버튼(search=button)을 눌렀을 때 부른다. 좁은 화면에서 검색 패널을 연다
  */
-export function TaskbarDefault(props: TaskbarDefaultProps): JSX.Element {
-  const { search = 'box', apps, time, date, isStartOpen, searchBoxProps, isSearchOpen } = props;
+export function TaskbarDefault({
+  search = 'box',
+  apps,
+  time,
+  date,
+  isStartOpen,
+  searchBoxProps,
+  isSearchOpen,
+  onStartClick: handleStartClick,
+  onSearchClick: handleSearchClick,
+}: TaskbarDefaultProps): JSX.Element {
   return (
     <Taskbar
       center={
@@ -48,7 +57,7 @@ export function TaskbarDefault(props: TaskbarDefaultProps): JSX.Element {
             data-panel-trigger
             label="시작"
             aria-expanded={isStartOpen}
-            onClick={props.onStartClick}
+            onClick={handleStartClick}
             icon={<Asset name="illustrations/logo-windows.svg" />}
           />
           {search === 'box' ? (
@@ -67,7 +76,7 @@ export function TaskbarDefault(props: TaskbarDefaultProps): JSX.Element {
               data-panel-trigger
               label="검색"
               aria-expanded={isSearchOpen}
-              onClick={props.onSearchClick}
+              onClick={handleSearchClick}
               icon={
                 <Asset
                   name="icons/ic_fluent_search_20_regular.svg"

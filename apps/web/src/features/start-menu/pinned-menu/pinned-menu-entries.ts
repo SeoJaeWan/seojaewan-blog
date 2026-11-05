@@ -7,19 +7,13 @@ import {
   startPinMenuItem,
 } from '@/shared/utils/menu-items/menu-items';
 
-/** 고정 항목 메뉴가 보이는 상태와 동작 */
+/** 고정 항목 메뉴가 보이는 상태와 동작. canMoveToFront는 맨 앞으로 옮길 수 있는지(이미 맨 앞이면 옮길 수 없다)이고 canCopyLink는 링크를 복사할 수 있는 항목인지(글과 외부 링크)다. */
 type PinnedMenuOptions = {
-  /** 맨 앞으로 옮길 수 있는지(이미 맨 앞이면 옮길 수 없다) */
   canMoveToFront: boolean;
-  /** 링크를 복사할 수 있는 항목인지(글과 외부 링크) */
   canCopyLink: boolean;
-  /** 열기 */
   onOpen: () => void;
-  /** 맨 앞으로 이동 */
   onMoveToFront: () => void;
-  /** 링크 복사 */
   onCopyLink: () => void;
-  /** 시작 화면에서 고정 해제 */
   onUnpin: () => void;
 };
 

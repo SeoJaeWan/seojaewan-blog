@@ -10,7 +10,6 @@ type TaskbarAppButtonProps = Omit<
   ComponentProps<typeof TaskbarButton>,
   'icon' | 'label' | 'children'
 > & {
-  /** 버튼이 가리키는 앱 */
   app: TaskbarAppId;
 };
 
@@ -19,10 +18,10 @@ type TaskbarAppButtonProps = Omit<
  * 최소화·복원 모션이 버튼 자리를 찾을 수 있게 `data-taskbar-app`에 앱 id를 단다.
  * 우클릭 메뉴나 창 미리보기를 여는 조립(`TaskbarAppItem`)의 트리거로도 쓴다.
  * @codocs [[작업 표시줄:앱 버튼]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.app 버튼이 가리키는 앱
  */
-export function TaskbarAppButton(props: TaskbarAppButtonProps): JSX.Element {
-  const { app, ...buttonProps } = props;
+export function TaskbarAppButton({ app, ...buttonProps }: TaskbarAppButtonProps): JSX.Element {
   return (
     <TaskbarButton
       {...buttonProps}
