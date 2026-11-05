@@ -1,5 +1,12 @@
 import { type CanvasBox, compareRankPaths, readingOrder } from './canvas-order';
-import { componentPages, isDocComponent } from './component-pages';
+import {
+  type AncestorInfo,
+  type ComponentPlace,
+  componentPlace,
+  isComponentsPage,
+  isDocComponent,
+  UNGROUPED,
+} from './component-pages';
 import { ASSET_GROUP_PREFIX, ASSET_GROUPS } from './core/asset-groups';
 import type { CheckContext } from './core/check-structure';
 import {
@@ -20,29 +27,26 @@ import type {
 } from './design-tokens';
 import type { ComponentSummary } from './messages';
 import { assetName } from './naming';
-import { COMPONENTS_PAGE_ID, PATTERNS_PAGE_ID } from './plugin-config';
+import { PATTERNS_PAGE_ID } from './plugin-config';
 import type { UsageInput, UsageStyle, UsageVariable } from './unused-tokens';
 
 // 피그마 API를 읽어 순수 데이터로 옮기는 얇은 층. 변환 규칙은 design-tokens.ts, naming.ts에 둔다.
 
-/** 섹션 밖에 놓인 컴포넌트, `영역/이름` 꼴이 아닌 조립의 묶음 이름 */
-const UNGROUPED = '묶음 밖';
-
 /**
- * 컴포넌트 페이지(숫자로 시작하는 고정 페이지와 구분선 페이지를 뺀 모든 페이지)의 컴포넌트 세트와 단독 컴포넌트를
- * 페이지 순서, 페이지 안은 캔버스 순서로 찾는다. 묶음은 페이지이고, 그 위에 앞에 놓인 구분선 페이지의 묶음이 있다.
- * 컴포넌트 페이지를 나누기 전의 "02 · Components" 페이지도 읽고, 그 페이지의 묶음은 영역 섹션(페이지 바로 아래 섹션)이다.
+ * 컴포넌트 페이지(이름에 `Components`가 든 페이지, `02 · Components`)의 컴포넌트 세트와 단독 컴포넌트를 캔버스 순서로 찾는다.
+ * 묶음(band)은 페이지 바로 아래 섹션, 그룹(group)은 그 안 컴포넌트 섹션이다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @codocs [[피그마 연동:플러그인 화면]]
  * @returns 컴포넌트 목록
  */
 export async function listComponents(): Promise<ComponentSummary[]> {
   const summaries: ComponentSummary[] = [];
-  for (const info of componentPages(figma.root.children, COMPONENTS_PAGE_ID)) {
-    const page = await loadPage(info.id);
-    const groupOf = page.id === COMPONENTS_PAGE_ID ? areaSectionName : (): string => page.name;
-    const pageSummaries = await listPageComponents(page, groupOf);
-    summaries.push(...pageSummaries.map((summary) => ({ ...summary, band: info.band })));
+  for (const page of figma.root.children) {
+    if (!isComponentsPage(page.name)) {
+      continue;
+    }
+    await page.loadAsync();
+    summaries.push(...(await listPageComponents(page, sectionPlace)));
   }
   return summaries;
 }
@@ -54,7 +58,9 @@ export async function listComponents(): Promise<ComponentSummary[]> {
  * @returns 조립 목록
  */
 export async function listPatterns(): Promise<ComponentSummary[]> {
-  return listPageComponents(await loadPage(PATTERNS_PAGE_ID), patternAreaName);
+  return listPageComponents(await loadPage(PATTERNS_PAGE_ID), (node) => ({
+    group: patternAreaName(node),
+  }));
 }
 
 /**
@@ -79,12 +85,12 @@ export async function sortByCanvasOrder<T extends { readonly id: string }>(
 /**
  * 페이지의 컴포넌트 세트와 세트 밖 단독 컴포넌트를 찾아 캔버스 순서로 정렬한다. 이름이 점으로 시작하는 문서용 컴포넌트는 뺀다.
  * @param page 불러온 페이지
- * @param groupOf 노드의 묶음 이름을 정하는 함수
+ * @param placeOf 노드의 묶음 이름(그룹, 있으면 그 위 묶음)을 정하는 함수
  * @returns 컴포넌트 목록
  */
 async function listPageComponents(
   page: PageNode,
-  groupOf: (node: ComponentSetNode | ComponentNode) => string,
+  placeOf: (node: ComponentSetNode | ComponentNode) => Pick<ComponentSummary, 'group' | 'band'>,
 ): Promise<ComponentSummary[]> {
   const nodes = page.findAllWithCriteria({ types: ['COMPONENT_SET', 'COMPONENT'] });
   const summaries: ComponentSummary[] = [];
@@ -98,7 +104,7 @@ async function listPageComponents(
         name: node.name,
         kind: node.type,
         variantCount: variantsOf(node).length,
-        group: groupOf(node),
+        ...placeOf(node),
       });
     } else if (node.parent?.type !== 'COMPONENT_SET') {
       summaries.push({
@@ -106,7 +112,7 @@ async function listPageComponents(
         name: node.name,
         kind: node.type,
         variantCount: 1,
-        group: groupOf(node),
+        ...placeOf(node),
       });
     }
   }
@@ -114,16 +120,21 @@ async function listPageComponents(
 }
 
 /**
- * 노드가 든 영역 섹션(페이지 바로 아래 섹션)의 이름을 구한다.
+ * 컴포넌트가 든 묶음 섹션(페이지 바로 아래 섹션)과 컴포넌트 섹션(그 안 섹션)의 이름을 구한다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
  * @param node 컴포넌트
- * @returns 영역 섹션 이름, 섹션 밖이면 `묶음 밖`
+ * @returns 묶음과 그룹 이름
  */
-function areaSectionName(node: BaseNode): string {
-  let current: BaseNode = node;
-  while (current.parent !== null && current.parent.type !== 'PAGE') {
-    current = current.parent;
+function sectionPlace(node: BaseNode): ComponentPlace {
+  const ancestors: AncestorInfo[] = [];
+  for (
+    let current = node.parent;
+    current !== null && current.type !== 'PAGE' && current.type !== 'DOCUMENT';
+    current = current.parent
+  ) {
+    ancestors.unshift({ type: current.type, name: current.name });
   }
-  return current !== node && current.type === 'SECTION' ? current.name : UNGROUPED;
+  return componentPlace(ancestors);
 }
 
 /**

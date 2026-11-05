@@ -1,51 +1,64 @@
 import { describe, expect, it } from 'vitest';
 
-import { componentPages, isDocComponent } from './component-pages';
+import {
+  type AncestorInfo,
+  componentPlace,
+  isComponentsPage,
+  isDocComponent,
+  UNGROUPED,
+} from './component-pages';
 
-const LEGACY = '1:2';
+/**
+ * 섹션 조상을 만든다.
+ * @param name 섹션 이름
+ * @returns 조상
+ */
+function section(name: string): AncestorInfo {
+  return { type: 'SECTION', name };
+}
+
+/**
+ * 프레임 조상을 만든다.
+ * @param name 프레임 이름
+ * @returns 조상
+ */
+function frame(name: string): AncestorInfo {
+  return { type: 'FRAME', name };
+}
 
 // @codocs [[피그마 연동:피그마 플러그인]]
-describe('컴포넌트 페이지는 고정 페이지와 구분선 페이지를 뺀 모든 페이지다', () => {
-  it('숫자로 시작하는 고정 페이지와 `-`로 시작하는 구분선 페이지를 빼고, 페이지마다 구분선 묶음 이름을 붙인다', () => {
-    const pages = [
-      { id: '0:1', name: '00 · Guide' },
-      { id: '0:2', name: '01 · Foundations' },
-      { id: '8:1', name: '- Controls (컨트롤)' },
-      { id: '9:1', name: 'Button (버튼)' },
-      { id: '9:2', name: 'Checkbox (체크 상자)' },
-      { id: '8:2', name: '--  Window (창)' },
-      { id: '9:4', name: 'Window (창)' },
-      { id: '0:3', name: '03 · Patterns' },
-      { id: '0:4', name: '04 · Screens' },
-    ];
-    expect(componentPages(pages, LEGACY).map((page) => [page.band, page.name])).toEqual([
-      ['Controls (컨트롤)', 'Button (버튼)'],
-      ['Controls (컨트롤)', 'Checkbox (체크 상자)'],
-      ['Window (창)', 'Window (창)'],
-    ]);
+describe('컴포넌트는 02 · Components 페이지의 묶음 섹션 > 컴포넌트 섹션으로 묶는다', () => {
+  it('이름에 Components가 든 페이지가 컴포넌트 페이지다(번호가 바뀌어도 된다)', () => {
+    expect(isComponentsPage('02 · Components')).toBe(true);
+    expect(isComponentsPage('05 · Components')).toBe(true);
+    expect(isComponentsPage('01 · Foundations')).toBe(false);
+    expect(isComponentsPage('03 · Patterns')).toBe(false);
+    expect(isComponentsPage('Button (버튼)')).toBe(false);
   });
 
-  it('첫 구분선 앞의 페이지는 묶음이 없다', () => {
-    const pages = [
-      { id: '9:1', name: 'Button (버튼)' },
-      { id: '8:1', name: '- Window (창)' },
-      { id: '9:2', name: 'Window (창)' },
-    ];
-    expect(componentPages(pages, LEGACY).map((page) => page.band)).toEqual([null, 'Window (창)']);
+  it('묶음은 페이지 바로 아래 섹션, 그룹은 그 안 섹션이다', () => {
+    expect(
+      componentPlace([section('Controls (컨트롤)'), section('Button (버튼)'), frame('component')]),
+    ).toEqual({ band: 'Controls (컨트롤)', group: 'Button (버튼)' });
   });
 
-  it('한 페이지에 모든 컴포넌트를 두던 02 · Components 페이지도 읽는다', () => {
-    const pages = [
-      { id: '0:2', name: '01 · Foundations' },
-      { id: LEGACY, name: '02 · Components' },
-      { id: '0:3', name: '03 · Patterns' },
-    ];
-    expect(componentPages(pages, LEGACY).map((page) => page.id)).toEqual([LEGACY]);
+  it('섹션 밖에 놓인 컴포넌트는 묶음 없이 묶음 밖이다', () => {
+    expect(componentPlace([])).toEqual({ band: null, group: UNGROUPED });
+    expect(componentPlace([frame('component'), section('Button (버튼)')])).toEqual({
+      band: null,
+      group: UNGROUPED,
+    });
   });
 
-  it('`-`가 가운데 든 이름은 컴포넌트 페이지다', () => {
-    const pages = [{ id: '4', name: 'Snap - 창 배치' }];
-    expect(componentPages(pages, LEGACY).map((page) => page.id)).toEqual(['4']);
+  it('묶음 섹션 바로 안(컴포넌트 섹션 밖)에 놓인 컴포넌트는 그 묶음의 묶음 밖이다', () => {
+    expect(componentPlace([section('Window (창)')])).toEqual({
+      band: 'Window (창)',
+      group: UNGROUPED,
+    });
+    expect(componentPlace([section('Window (창)'), frame('row'), section('Tab')])).toEqual({
+      band: 'Window (창)',
+      group: UNGROUPED,
+    });
   });
 
   it('이름이 점으로 시작하는 문서용 컴포넌트는 내보내지 않는다', () => {

@@ -83,10 +83,10 @@ describe('대상 목록: 열릴 PR 수', () => {
 });
 
 // @codocs [[피그마 연동:플러그인 화면]]
-describe('대상 목록: 구분선 묶음 > 페이지 > 컴포넌트', () => {
+describe('대상 목록: 묶음 섹션 > 컴포넌트 섹션 > 컴포넌트', () => {
   const paged = buildCatalog(
     [
-      { id: '1:1', name: 'Old', kind: 'COMPONENT', variantCount: 1, group: 'Controls' },
+      { id: '1:1', name: 'Loose', kind: 'COMPONENT', variantCount: 1, group: '묶음 밖' },
       {
         id: '2:1',
         name: 'Button',
@@ -116,20 +116,20 @@ describe('대상 목록: 구분선 묶음 > 페이지 > 컴포넌트', () => {
     [],
   );
 
-  it('이어진 페이지 묶음을 구분선 묶음으로 모으고, 첫 구분선 앞 묶음은 구분선 묶음 없이 맨 위에 둔다', () => {
+  it('이어진 컴포넌트 섹션을 묶음 섹션으로 모으고, 섹션 밖 컴포넌트는 묶음 섹션 없이 둔다', () => {
     expect(
       bandGroups(paged.groups).map((band) => [band.band, band.groups.map((group) => group.title)]),
     ).toEqual([
-      [null, ['Controls']],
+      [null, ['묶음 밖']],
       ['Controls (컨트롤)', ['Button (버튼)', 'Checkbox (체크 상자)']],
       ['Window (창)', ['Window (창)']],
       [null, ['Menu']],
     ]);
   });
 
-  it('묶음 키에 구분선 묶음 이름이 들고, 펼침 키는 구분선 묶음마다 하나다', () => {
+  it('묶음 키에 묶음 섹션 이름이 들고, 펼침 키는 묶음 섹션마다 하나다', () => {
     expect(paged.items.map((item) => item.groupKey).slice(0, 2)).toEqual([
-      'component:Controls',
+      'component:묶음 밖',
       'component:Controls (컨트롤):Button (버튼)',
     ]);
     expect(paged.items.map((item) => bandKeyOf(item))).toEqual([

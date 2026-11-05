@@ -20,13 +20,13 @@ const meta = {
     variant: { control: 'select', options: ['bulleted', 'numbered', 'to-do'] },
     isChecked: { control: 'boolean' },
   },
-  // 글자 속성은 피그마 기본값(`Marker` 1., `Text` 목록 항목)을 넣는다. `Checked`는 `To do`에서만 그린다.
+  // 글자 속성은 피그마 기본값(`Text` 목록 항목)을 넣는다. 표시는 변형이 그린다. `Checked`는 `To do`에서만 그린다.
   render: (args) => (
     <ul>
       {args.variant === 'to-do' ? (
         <ListBlock variant="to-do" isChecked={args.isChecked} label="목록 항목" text="목록 항목" />
       ) : (
-        <ListBlock variant={args.variant} marker="1." text="목록 항목" />
+        <ListBlock variant={args.variant} text="목록 항목" />
       )}
     </ul>
   ),

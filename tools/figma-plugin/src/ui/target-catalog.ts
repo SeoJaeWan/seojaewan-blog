@@ -17,23 +17,23 @@ export type CatalogItem = {
   name: string;
   /** 묶음 키 */
   groupKey: string;
-  /** 구분선 묶음 이름. 없으면 null */
+  /** 묶음 섹션 이름. 없으면 null */
   band: string | null;
   /** 변형 수. 애니메이션은 null */
   variantCount: number | null;
 };
 
-/** 묶음 하나. 컴포넌트는 페이지(나누기 전 02 · Components는 영역 섹션), 조립은 영역(PR 하나), 애니메이션은 하나 */
+/** 묶음 하나. 컴포넌트는 컴포넌트 섹션, 조립은 영역(PR 하나), 애니메이션은 하나 */
 export type CatalogGroup = {
   key: string;
   kind: ItemKind;
   title: string;
-  /** 묶음 위의 구분선 묶음 이름. 첫 구분선 앞 페이지, 조립, 애니메이션은 null */
+  /** 묶음 위의 묶음 섹션 이름. 섹션 밖 컴포넌트, 조립, 애니메이션은 null */
   band: string | null;
   items: CatalogItem[];
 };
 
-/** 구분선 묶음 하나와 그 안의 묶음(페이지). 구분선 묶음이 없는 묶음끼리는 band가 null이다 */
+/** 묶음 섹션 하나와 그 안의 묶음(컴포넌트 섹션). 묶음 섹션이 없는 묶음끼리는 band가 null이다 */
 export type CatalogBand = { band: string | null; key: string; groups: CatalogGroup[] };
 
 /** 대상 목록 */
@@ -109,11 +109,11 @@ export function buildCatalog(
 }
 
 /**
- * 묶음을 구분선 묶음으로 나눈다. 이어진 묶음 가운데 구분선 묶음이 같은 것끼리 모으고 순서는 바꾸지 않는다.
- * 구분선 묶음이 없는 묶음(첫 구분선 앞 페이지, 나누기 전 02 · Components의 영역 섹션)은 band가 null인 묶음으로 모인다.
+ * 묶음을 묶음 섹션으로 나눈다. 이어진 묶음 가운데 묶음 섹션이 같은 것끼리 모으고 순서는 바꾸지 않는다.
+ * 묶음 섹션이 없는 묶음(섹션 밖 컴포넌트, 조립, 애니메이션)은 band가 null인 묶음으로 모인다.
  * @codocs [[피그마 연동:플러그인 화면]]
  * @param groups 묶음(받은 순서)
- * @returns 구분선 묶음
+ * @returns 묶음 섹션
  */
 export function bandGroups(groups: readonly CatalogGroup[]): CatalogBand[] {
   const bands: CatalogBand[] = [];
@@ -133,9 +133,9 @@ export function bandGroups(groups: readonly CatalogGroup[]): CatalogBand[] {
 }
 
 /**
- * 구분선 묶음의 펼침 키를 구한다.
+ * 묶음 섹션의 펼침 키를 구한다.
  * @param item 항목
- * @returns 키. 구분선 묶음이 없으면 null
+ * @returns 키. 묶음 섹션이 없으면 null
  */
 export function bandKeyOf(item: CatalogItem): string | null {
   return item.band === null ? null : `band:${item.kind}:${item.band}`;
