@@ -57,7 +57,7 @@ function failureOf(info) {
   if (run === undefined || (run.status !== 'failed' && run.status !== 'error')) {
     return null;
   }
-  const failed = run.steps.find((item) => item.failed);
+  const failed = run.steps.find((item) => item.isFailed);
   return { check: failed?.title ?? null, error: run.message ?? '실행하지 못했다' };
 }
 
@@ -77,7 +77,7 @@ function checkState(info, expected) {
   if (steps.length === 0) {
     return 'todo';
   }
-  return steps.some((item) => item.failed) ? 'bad' : 'ok';
+  return steps.some((item) => item.isFailed) ? 'bad' : 'ok';
 }
 
 /**
@@ -278,7 +278,7 @@ function card(behavior, number) {
       const failure = info === null ? null : failureOf(info);
       const kind = row.kind === 'missing' ? 'missing' : row.kind === 'case' ? '' : 'gray';
       const cells = row.cells
-        .map((cell) => `<td class="v${cell.changed ? ' ch' : ''}">${esc(cell.value)}</td>`)
+        .map((cell) => `<td class="v${cell.isChanged ? ' ch' : ''}">${esc(cell.value)}</td>`)
         .join('');
       const key = info === null ? '' : `${behavior.id}:${info.number}`;
       const open = info !== null && state.open.has(key);

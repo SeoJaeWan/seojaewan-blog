@@ -19,7 +19,7 @@ import { ChromeNewTabSearch } from '@/features/chrome/components/chrome-new-tab-
 export type ChromePageLayout = 'wide' | 'narrow';
 
 /** 목차 항목 하나 */
-export type ChromePageTocItem = { label: string; active?: boolean };
+export type ChromePageTocItem = { label: string; isActive?: boolean };
 
 /** 새 탭 최신 글 바로가기 하나. id는 같은 제목의 글을 구분한다 */
 export type ChromePageLatestPost = { id?: string; title: string };
@@ -154,7 +154,7 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
         <TocItem
           key={String(index) + item.label}
           label={item.label}
-          isActive={item.active}
+          isActive={item.isActive}
           {...(onTocItemSelect === undefined
             ? {}
             : getOpenableRowProps(() => {

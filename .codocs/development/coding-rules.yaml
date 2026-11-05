@@ -21,7 +21,7 @@ _codocs:
   | React 컴포넌트 | PascalCase | TypeScript JSX 검사(소문자 태그는 HTML 태그로 해석돼 쓸 수 없다), `react-hooks/rules-of-hooks`, `react/jsx-pascal-case` |
   | 상수 | UPPER_SNAKE_CASE | `no-restricted-syntax` |
   | boolean 변수·매개변수 | `is`·`has`·`can`·`should`로 시작 | `naming-convention`의 타입 기반 검사 |
-  | Props 타입의 boolean 속성 | 같음 | `no-restricted-syntax` |
+  | 타입의 boolean 속성 | 같음 | `no-restricted-syntax` |
   | 이벤트 핸들러 | props는 `on*`, 내부 함수는 `handle*` | `react/jsx-handler-names` |
   | 훅 | `use*` | `react-hooks/rules-of-hooks` |
 
@@ -30,9 +30,10 @@ _codocs:
   함수 안의 `const`는 초기값과 상관없이 camelCase다.
 
   접두어는 뜻에 따라 고른다. 지금 상태는 `is`, 가진 것·켜진 부분은 `has`, 할 수 있는지(능력)는 `can`, 해야 하는지는 `should`다. 뒤로·앞으로·위로 이동 버튼처럼 "갈 수 있는지"를 나타내는 prop은 `canGoBack`·`canGoForward`·`canGoUp`이다(`isBackDisabled`처럼 뒤집어 넘기지 않는다).
-  우리 Props 타입에 선언하는 boolean 속성도 모두 `is`·`has`·`can`·`should`로 시작한다(`isSelected`, `isActive`, `isOpen`, `isExpanded`, `isCurrent`). lint가 이름이 `Props`로 끝나는 `type`에 직접 선언한 boolean 속성(`boolean`, `boolean | undefined`)도 검사한다. `naming-convention`은 속성이 속한 타입 이름을 가리지 못해 앱 데이터 타입(목록 항목, 훅 옵션 등 이름이 `Props`로 끝나지 않는 타입)까지 걸리므로 `no-restricted-syntax` 선택자로 건다. 데이터 타입의 boolean은 대상이 아니다. Toc·Scrollbar의 펼침도 `state` 문자열이 아니라 `isExpanded` boolean으로 받는다. 피그마 불리언 속성 `Has …`는 `has…` prop이 된다([[컴포넌트 목록:속성 이름]]).
+  우리 타입(Props 타입과 데이터 타입 모두)에 선언하는 boolean 속성도 모두 `is`·`has`·`can`·`should`로 시작한다(`isSelected`, `isActive`, `isOpen`, `isExpanded`, `isCurrent`). lint가 모든 타입 리터럴에 직접 선언한 boolean 속성(`boolean`, `boolean | undefined`)을 검사한다. `naming-convention`은 타입 속성의 boolean 여부를 가리지 못해 `no-restricted-syntax` 선택자로 건다. 객체 값의 키(`{ visible: true }`)는 바깥 API 이름이라 검사하지 않는다. Toc·Scrollbar의 펼침도 `state` 문자열이 아니라 `isExpanded` boolean으로 받는다. 피그마 불리언 속성 `Has …`는 `has…` prop이 된다([[컴포넌트 목록:속성 이름]]).
   `ComponentProps<...>`로 받아 `...rest`로 그대로 흘려보내는 HTML·Base UI 표준 이름(`disabled`, `type` 등)만 그대로 쓴다.
-  우리 Props 타입에 직접 선언한 boolean은 표준 이름과 같아도 접두어를 붙이고(`checked` → `isChecked`), 안쪽 요소나 Base UI에 넘길 때만 표준 이름으로 바꿔 넘긴다(Checkbox `isChecked` → `aria-checked={isChecked}`).
+  우리 타입에 직접 선언한 boolean은 표준 이름과 같아도 접두어를 붙이고(`checked` → `isChecked`), 안쪽 요소나 Base UI에 넘길 때만 표준 이름으로 바꿔 넘긴다(Checkbox `isChecked` → `aria-checked={isChecked}`).
+  바깥 API(피그마 Plugin API, Notion, Playwright 결과 등)의 값을 담는 우리 타입도 우리 이름을 쓴다. 값을 받는 곳에서 옮겨 담고(`isVisible: paint.visible ?? true`), 바깥 API 객체를 직접 읽는 곳(`node.visible`)은 바깥 이름 그대로다. 예외 주석으로 이름을 피하지 않는다.
 
   예외: 스토리 파일(`*.stories.tsx`)에서 내보내는 모듈 최상위 `const`는 PascalCase도 쓸 수 있다(예: `export const Figma`). `export default`로 내보내는 `meta`는 camelCase 그대로다. Storybook CSF는 export 이름이 스토리 이름이 되고 PascalCase가 Storybook의 관례이기 때문이다. 스토리 파일의 다른 이름은 위 규칙을 그대로 따른다.
 함수: |

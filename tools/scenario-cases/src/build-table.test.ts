@@ -95,7 +95,7 @@ function outline(table: BehaviorTable | undefined): string[] {
         .map(
           (row) =>
             `${row.kind}${row.case === null ? '' : `(${String(row.case)})`} ${row.cells
-              .filter((cell) => cell.changed)
+              .filter((cell) => cell.isChanged)
               .map((cell) => cell.value)
               .join('+')}`,
         )
@@ -181,7 +181,7 @@ describe('시나리오 케이스 표', () => {
       link: '[[항목 조작:열기]]',
       doc: '항목 조작',
       section: '열기',
-      found: true,
+      isFound: true,
     });
     expect(data.sections['[[항목 조작:열기]]']).toMatchObject({
       path: '.codocs/features/common/item-actions.yaml',

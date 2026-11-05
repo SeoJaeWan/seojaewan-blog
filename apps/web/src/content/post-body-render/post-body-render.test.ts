@@ -27,7 +27,7 @@ describe('기술 스택:글 본문 처리', () => {
   it('목록·할 일·토글 안의 하위 블록도 처리한다', async () => {
     const blocks: PostBlock[] = [
       { type: 'bulleted_list_item', richText: [], children: [CODE_BLOCK] },
-      { type: 'to_do', richText: [], checked: false, children: [EQUATION_BLOCK] },
+      { type: 'to_do', richText: [], isChecked: false, children: [EQUATION_BLOCK] },
       {
         type: 'toggle',
         richText: [],

@@ -319,7 +319,7 @@ function handleExportClick(): void {
   startExport({
     type: 'export',
     token: ui.token.value,
-    tokens: state.selected.has(TOKENS_KEY),
+    isTokensSelected: state.selected.has(TOKENS_KEY),
     componentIds: idsOf('component'),
     patternIds: idsOf('pattern'),
     motionIds: idsOf('motion'),

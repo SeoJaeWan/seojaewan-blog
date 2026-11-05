@@ -42,6 +42,6 @@ describe('Start 메뉴:고정됨', () => {
 
   it('맨 앞 항목에서는 맨 앞으로 이동을 고를 수 없다', () => {
     const [, moveToFront] = getPinnedMenuEntries({ ...pinnedOptions, canMoveToFront: false });
-    expect(moveToFront).toMatchObject({ label: '맨 앞으로 이동', disabled: true });
+    expect(moveToFront).toMatchObject({ label: '맨 앞으로 이동', isDisabled: true });
   });
 });

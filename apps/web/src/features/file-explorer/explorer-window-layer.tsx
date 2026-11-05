@@ -258,7 +258,7 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
           return {
             id: tab.id,
             title: getExplorerLocationName(workspace, tabLocation),
-            selected: index === content.activeTabIndex,
+            isSelected: index === content.activeTabIndex,
             icon: renderLocationIcon(workspace, tabLocation),
           };
         },
@@ -407,7 +407,7 @@ function NavigationTreeItem(props: NavigationTreeItemProps): JSX.Element {
     <NavigationItem
       level={row.level}
       expand={row.expand}
-      isSelected={row.selected || isDropTarget}
+      isSelected={row.isSelected || isDropTarget}
       {...{ [DROP_TARGET_ATTRIBUTE]: row.key, [DROP_TARGET_NAME_ATTRIBUTE]: row.label }}
       label={row.label}
       icon={icon}

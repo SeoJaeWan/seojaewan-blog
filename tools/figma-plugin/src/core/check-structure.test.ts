@@ -228,7 +228,7 @@ describe('구조 검사: 변수·스타일에 연결되지 않은 시각 값', (
     expect(
       reasonsAfter((root) => {
         root.strokeStyle = undefined;
-        root.effects = [{ type: 'DROP_SHADOW', visible: true, blendMode: 'NORMAL' }];
+        root.effects = [{ type: 'DROP_SHADOW', isVisible: true, blendMode: 'NORMAL' }];
       }),
     ).toEqual([
       'GRADIENT_LINEAR 선이 스타일에 연결되어 있지 않다',
@@ -319,10 +319,20 @@ describe('구조 검사: CSS로 그릴 수 없는 기능', () => {
       reasonsAfter((root) => {
         root.effectStyle = 'Elevation/Flyout';
         root.effects = [
-          { type: 'NOISE', visible: true, blendMode: 'NORMAL' },
-          { type: 'TEXTURE', visible: true, blendMode: 'NORMAL' },
-          { type: 'BACKGROUND_BLUR', visible: true, blendMode: 'NORMAL', blurType: 'PROGRESSIVE' },
-          { type: 'DROP_SHADOW', visible: true, blendMode: 'MULTIPLY', showShadowBehindNode: true },
+          { type: 'NOISE', isVisible: true, blendMode: 'NORMAL' },
+          { type: 'TEXTURE', isVisible: true, blendMode: 'NORMAL' },
+          {
+            type: 'BACKGROUND_BLUR',
+            isVisible: true,
+            blendMode: 'NORMAL',
+            blurType: 'PROGRESSIVE',
+          },
+          {
+            type: 'DROP_SHADOW',
+            isVisible: true,
+            blendMode: 'MULTIPLY',
+            isShadowShownBehindNode: true,
+          },
         ];
       }),
     ).toEqual([
@@ -338,7 +348,7 @@ describe('구조 검사: CSS로 그릴 수 없는 기능', () => {
     expect(
       reasonsAfter((root) => {
         root.fillStyle = 'Material/Mica Base';
-        root.fills = [{ type: 'SOLID', visible: true, blendMode: 'LUMINOSITY' }];
+        root.fills = [{ type: 'SOLID', isVisible: true, blendMode: 'LUMINOSITY' }];
       }),
     ).toEqual(['칠에 블렌드 LUMINOSITY가 들어 있다(CSS로 그릴 수 없다)']);
   });
@@ -347,7 +357,7 @@ describe('구조 검사: CSS로 그릴 수 없는 기능', () => {
     expect(
       reasonsAfter((root) => {
         root.dashPattern = [4, 4];
-        root.variableWidthStroke = true;
+        root.hasVariableWidthStroke = true;
         root.cornerSmoothing = 0.6;
         root.isMask = true;
       }),
@@ -388,7 +398,7 @@ describe('구조 검사: CSS로 그릴 수 없는 기능', () => {
             path: 'wallpaper',
             type: 'RECTANGLE',
             fillStyle: 'Wallpaper',
-            fills: [{ type: 'IMAGE', visible: true, blendMode: 'NORMAL', imageHash }],
+            fills: [{ type: 'IMAGE', isVisible: true, blendMode: 'NORMAL', imageHash }],
           }),
         ),
       );
@@ -910,10 +920,10 @@ describe('구조 검사: 변형을 자르는 조상', () => {
   it('자르기가 꺼진 조상과 섹션·그룹은 위반이 없다', () => {
     expect(
       checkClippingAncestors('Button', [
-        { id: '1:1', name: 'Buttons', type: 'SECTION', clipsContent: false },
-        { id: '1:2', name: 'row', type: 'FRAME', clipsContent: false },
-        { id: '1:3', name: 'group', type: 'GROUP', clipsContent: false },
-        { id: '1:4', name: 'Button', type: 'COMPONENT_SET', clipsContent: false },
+        { id: '1:1', name: 'Buttons', type: 'SECTION', isClippingContent: false },
+        { id: '1:2', name: 'row', type: 'FRAME', isClippingContent: false },
+        { id: '1:3', name: 'group', type: 'GROUP', isClippingContent: false },
+        { id: '1:4', name: 'Button', type: 'COMPONENT_SET', isClippingContent: false },
       ]),
     ).toEqual([]);
   });
@@ -925,13 +935,13 @@ describe('구조 검사: 변형을 자르는 조상', () => {
   it('자르는 배치 프레임마다 위치·조상 경로·고칠 방법과 그 프레임의 노드 ID를 대상마다 한 번 돌려준다', () => {
     expect(
       checkClippingAncestors('MessageBox/EmptyRecycleBin', [
-        { id: '2:1', name: 'pattern grid', type: 'FRAME', clipsContent: true },
-        { id: '2:2', name: 'row', type: 'FRAME', clipsContent: true },
+        { id: '2:1', name: 'pattern grid', type: 'FRAME', isClippingContent: true },
+        { id: '2:2', name: 'row', type: 'FRAME', isClippingContent: true },
         {
           id: '2:3',
           name: 'MessageBox/EmptyRecycleBin',
           type: 'COMPONENT_SET',
-          clipsContent: false,
+          isClippingContent: false,
         },
       ]),
     ).toEqual([
@@ -955,8 +965,8 @@ describe('구조 검사: 변형을 자르는 조상', () => {
   it('변형을 담은 컴포넌트 세트의 자르기도 막는다', () => {
     expect(
       checkClippingAncestors('WindowFrame', [
-        { id: '3:1', name: 'Windows', type: 'SECTION', clipsContent: false },
-        { id: '3:2', name: 'WindowFrame', type: 'COMPONENT_SET', clipsContent: true },
+        { id: '3:1', name: 'Windows', type: 'SECTION', isClippingContent: false },
+        { id: '3:2', name: 'WindowFrame', type: 'COMPONENT_SET', isClippingContent: true },
       ]),
     ).toEqual([
       {
@@ -972,7 +982,7 @@ describe('구조 검사: 변형을 자르는 조상', () => {
   it('섹션은 자르기 값이 켜져 있다고 읽혀도 대상이 아니다', () => {
     expect(
       checkClippingAncestors('Button', [
-        { id: '4:1', name: 'Buttons', type: 'SECTION', clipsContent: true },
+        { id: '4:1', name: 'Buttons', type: 'SECTION', isClippingContent: true },
       ]),
     ).toEqual([]);
   });
@@ -1153,7 +1163,7 @@ describe('다이아몬드 그라데이션', () => {
         path: 'a',
         type: 'FRAME',
         fillStyle: 'Diamond',
-        fills: [{ type: 'GRADIENT_DIAMOND', visible: true, blendMode: 'NORMAL' }],
+        fills: [{ type: 'GRADIENT_DIAMOND', isVisible: true, blendMode: 'NORMAL' }],
       }),
     );
     expect(reasons).toEqual(['칠 종류 GRADIENT_DIAMOND는 CSS로 그릴 수 없다']);
@@ -1277,7 +1287,7 @@ describe('구조 검사: 조립', () => {
     });
     const shadow = frame({
       path: 'shadow',
-      effects: [{ type: 'DROP_SHADOW', visible: true, blendMode: 'NORMAL' }],
+      effects: [{ type: 'DROP_SHADOW', isVisible: true, blendMode: 'NORMAL' }],
       effectStyle: 'Elevation/Card',
     });
     expect(patternReasons(patternRoot([body, shadow]))).toEqual([
@@ -1293,7 +1303,7 @@ describe('구조 검사: 조립', () => {
   it('숨긴 칠·선·효과와 프레임이 아닌 레이어는 보지 않는다', () => {
     const hidden = frame({
       path: 'hidden',
-      fills: [{ ...solid('layer-fill/default'), visible: false }],
+      fills: [{ ...solid('layer-fill/default'), isVisible: false }],
     });
     const rectangle = fixedChild({
       path: 'background',

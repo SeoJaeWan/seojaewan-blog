@@ -203,7 +203,10 @@ function createWorkspaceStore(
       update((state) => ({ ...state, desktop: { ...state.desktop, iconSize } }));
     },
     setDesktopAutoArrange: (isAutoArrange) => {
-      update((state) => ({ ...state, desktop: { ...state.desktop, autoArrange: isAutoArrange } }));
+      update((state) => ({
+        ...state,
+        desktop: { ...state.desktop, isAutoArrange: isAutoArrange },
+      }));
     },
     setDesktopSortBy: (sortBy) => {
       update((state) => ({ ...state, desktop: { ...state.desktop, sortBy } }));

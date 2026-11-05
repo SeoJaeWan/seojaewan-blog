@@ -134,7 +134,7 @@ export type ExportMessage = {
   type: 'export';
   token: string;
   /** 토큰을 내보낼 대상으로 골랐는지. 다른 대상을 내보낼 때는 고르지 않아도 토큰을 비교한다 */
-  tokens: boolean;
+  isTokensSelected: boolean;
   /** 내보낼 컴포넌트 */
   componentIds: string[];
   /** 내보낼 조립 */

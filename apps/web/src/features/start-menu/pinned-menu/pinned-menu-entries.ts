@@ -37,7 +37,7 @@ export function getPinnedMenuEntries(options: PinnedMenuOptions): MenuPopupEntry
     {
       label: '맨 앞으로 이동',
       icon: MENU_ICONS.arrowUp,
-      disabled: !options.canMoveToFront,
+      isDisabled: !options.canMoveToFront,
       onClick: options.onMoveToFront,
     },
     ...(options.canCopyLink ? [copyLinkMenuItem(options.onCopyLink)] : []),

@@ -255,7 +255,7 @@ export type AncestorData = {
   /** 피그마 노드 종류(`FRAME`, `COMPONENT_SET` 등) */
   type: string;
   /** 내용 자르기(Clip content). 이 속성이 없는 노드(그룹·섹션)는 false */
-  clipsContent: boolean;
+  isClippingContent: boolean;
 };
 
 // 메시지에 쓰는 조상 종류 이름
@@ -282,7 +282,7 @@ export function checkClippingAncestors(
 ): Violation[] {
   const violations: Violation[] = [];
   for (const [index, ancestor] of ancestors.entries()) {
-    if (!ancestor.clipsContent || ancestor.type === 'SECTION' || ancestor.type === 'PAGE') {
+    if (!ancestor.isClippingContent || ancestor.type === 'SECTION' || ancestor.type === 'PAGE') {
       continue;
     }
     const kind = ancestorKinds[ancestor.type] ?? ancestor.type;
@@ -476,7 +476,7 @@ function checkPlacementFrames(node: NodeData, isInsideInstance: boolean, add: Ad
     const looks = [
       ...(hasVisiblePaint(node.fills) ? ['칠'] : []),
       ...(hasVisiblePaint(node.strokes) ? ['선'] : []),
-      ...((node.effects ?? []).some((effect) => effect.visible) ? ['효과'] : []),
+      ...((node.effects ?? []).some((effect) => effect.isVisible) ? ['효과'] : []),
     ];
     if (looks.length > 0) {
       const list = looks.join('·');
@@ -499,7 +499,7 @@ function checkPlacementFrames(node: NodeData, isInsideInstance: boolean, add: Ad
  * @returns 보이는 것이 있으면 true
  */
 function hasVisiblePaint(paints: readonly PaintData[] | 'mixed' | null): boolean {
-  return paints === 'mixed' || (paints ?? []).some((paint) => paint.visible);
+  return paints === 'mixed' || (paints ?? []).some((paint) => paint.isVisible);
 }
 
 /**
@@ -745,7 +745,7 @@ function checkPaints(
   context: CheckContext,
   add: Add,
 ): void {
-  const visible = paints.filter((paint) => paint.visible);
+  const visible = paints.filter((paint) => paint.isVisible);
   for (const paint of visible) {
     if (!isOneOf(types, paint.type)) {
       add(
@@ -797,14 +797,14 @@ function checkPaints(
  * @param add 위반을 더하는 함수
  */
 function checkStrokes(node: NodeData, context: CheckContext, add: Add): void {
-  if (node.strokes === null || !node.strokes.some((paint) => paint.visible)) {
+  if (node.strokes === null || !node.strokes.some((paint) => paint.isVisible)) {
     return;
   }
   checkPaints(node, '선', node.strokes, node.strokeStyle, STROKE_TYPES, context, add);
   if (node.dashPattern.length > 0) {
     add(node, '점선은 CSS로 같게 그릴 수 없다', '실선으로 바꾼다.');
   }
-  if (node.variableWidthStroke || node.complexStroke) {
+  if (node.hasVariableWidthStroke || node.hasComplexStroke) {
     add(node, '가변 두께·브러시 선은 CSS로 그릴 수 없다', '기본 선으로 바꾼다.');
   }
   for (const [side, weight] of Object.entries(node.strokeWeight ?? {})) {
@@ -832,7 +832,7 @@ function checkCorners(node: NodeData, add: Add): void {
  * @param add 위반을 더하는 함수
  */
 function checkEffects(node: NodeData, add: Add): void {
-  const visible = (node.effects ?? []).filter((effect) => effect.visible);
+  const visible = (node.effects ?? []).filter((effect) => effect.isVisible);
   if (visible.length > 0 && node.effectStyle === undefined) {
     add(node, '효과가 효과 스타일에 연결되어 있지 않다', '효과를 효과 스타일로 묶는다.');
   }
@@ -850,7 +850,7 @@ function checkEffects(node: NodeData, add: Add): void {
     if (effect.blurType !== undefined && effect.blurType !== 'NORMAL') {
       add(node, `흐림 ${effect.blurType}는 CSS로 그릴 수 없다`, '흐림 종류를 일반으로 둔다.');
     }
-    if (effect.showShadowBehindNode === true) {
+    if (effect.isShadowShownBehindNode === true) {
       add(
         node,
         '그림자 "투명한 부분 뒤에도 표시"는 CSS로 그릴 수 없다',

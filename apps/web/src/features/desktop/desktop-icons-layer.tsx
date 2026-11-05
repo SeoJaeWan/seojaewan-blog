@@ -124,7 +124,7 @@ export function DesktopIconsLayer(): JSX.Element {
   const [pendingFocus, setPendingFocus] = useState<{ id: string | null } | null>(null);
 
   const iconSize = settings.iconSize;
-  const isAutoArrange = isMobile || settings.autoArrange;
+  const isAutoArrange = isMobile || settings.isAutoArrange;
   const desktopItems = getDesktopItems({ items });
   const grid = workArea === null ? null : getGridSize(workArea, iconSize);
   const cells =
@@ -507,16 +507,16 @@ export function DesktopIconsLayer(): JSX.Element {
     const tabbableId = selection.selection.focusId ?? orderedIds[0];
     return {
       role: 'option',
-      'aria-selected': icon.selected === true,
+      'aria-selected': icon.isSelected === true,
       tabIndex: id === tabbableId ? 0 : -1,
       // 찬 모양(휴지통)은 그림으로만 드러나므로 상태를 속성으로도 남긴다. 잘라냄은 FileItem이 `data-cut`으로 알린다.
-      'data-full': icon.full === undefined ? undefined : String(icon.full),
+      'data-full': icon.isFull === undefined ? undefined : String(icon.isFull),
       [ICON_ATTRIBUTE]: id,
       [DROP_TARGET_ATTRIBUTE]: isDropTarget ? id : undefined,
       [DROP_TARGET_NAME_ATTRIBUTE]: isDropTarget ? icon.name : undefined,
-      renameFieldProps: icon.renaming === true ? rename.renameFieldProps : undefined,
+      renameFieldProps: icon.isRenaming === true ? rename.renameFieldProps : undefined,
       onPointerDown: (event: PointerEvent<HTMLDivElement>) => {
-        if (icon.renaming === true || event.button !== 0) {
+        if (icon.isRenaming === true || event.button !== 0) {
           return;
         }
         const next = selection.handleItemPointerDown(id, event);
@@ -533,7 +533,7 @@ export function DesktopIconsLayer(): JSX.Element {
         }
       },
       onClick: (event: MouseEvent<HTMLDivElement>) => {
-        if (itemDrag.consumeDragEnd() || icon.renaming === true || menu !== null) {
+        if (itemDrag.consumeDragEnd() || icon.isRenaming === true || menu !== null) {
           return;
         }
         selection.handleItemClick(id, event);
@@ -542,7 +542,7 @@ export function DesktopIconsLayer(): JSX.Element {
         }
       },
       onDoubleClick: () => {
-        if (!isMobile && icon.renaming !== true) {
+        if (!isMobile && icon.isRenaming !== true) {
           openItems([id]);
         }
       },
@@ -568,10 +568,10 @@ export function DesktopIconsLayer(): JSX.Element {
               id,
               name: item.name,
               kind: item.kind,
-              full: item.kind === 'recycle-bin' ? isRecycleBinFull({ items }) : undefined,
-              selected: isSelected,
-              renaming: rename.renamingId === id,
-              cut: cutIds.includes(id),
+              isFull: item.kind === 'recycle-bin' ? isRecycleBinFull({ items }) : undefined,
+              isSelected: isSelected,
+              isRenaming: rename.renamingId === id,
+              isCut: cutIds.includes(id),
               cell: cells?.[id],
             },
           ];
@@ -699,7 +699,7 @@ export function DesktopIconsLayer(): JSX.Element {
       {
         id: icon.id,
         name: icon.name,
-        icon: <DesktopIconImage kind={icon.kind} isFull={icon.full} />,
+        icon: <DesktopIconImage kind={icon.kind} isFull={icon.isFull} />,
         origin: { x: dragAreaOrigin.x + origin.x, y: dragAreaOrigin.y + origin.y },
       },
     ];

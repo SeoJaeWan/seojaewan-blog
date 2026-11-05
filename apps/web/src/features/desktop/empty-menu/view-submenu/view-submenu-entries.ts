@@ -39,8 +39,8 @@ export function getDesktopViewMenuEntries(options: DesktopViewMenuOptions): Menu
     {
       kind: 'checkbox',
       label: '아이콘 자동 정렬',
-      checked: options.isAutoArrange,
-      disabled: options.isAutoArrangeLocked,
+      isChecked: options.isAutoArrange,
+      isDisabled: options.isAutoArrangeLocked,
       onCheckedChange: options.onAutoArrangeChange,
     },
   ];

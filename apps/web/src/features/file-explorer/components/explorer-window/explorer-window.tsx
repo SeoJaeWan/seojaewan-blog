@@ -21,7 +21,7 @@ export type ExplorerWindowTab = {
   /** 탭 제목(현재 폴더 이름) */
   title: string;
   /** 지금 고른 탭인지. 모바일은 고른 탭의 제목을 창 제목으로 쓴다 */
-  selected?: boolean;
+  isSelected?: boolean;
   /** 피그마 ExplorerTab Icon. 현재 위치의 아이콘(16px)이다. 주지 않으면 폴더 아이콘(file/Folder)이다 */
   icon?: ReactNode;
 };
@@ -94,7 +94,7 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
     onTitleBarPointerDown: handleFrameTitleBarPointerDown,
     ...frameProps
   } = props;
-  const selectedIndex = tabs.findIndex((tab) => tab.selected === true);
+  const selectedIndex = tabs.findIndex((tab) => tab.isSelected === true);
   const {
     tabListRef,
     startTabDrag,
@@ -152,7 +152,7 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
     </div>
   );
   if (device === 'mobile') {
-    const selectedTab = tabs.find((tab) => tab.selected === true) ?? tabs[0];
+    const selectedTab = tabs.find((tab) => tab.isSelected === true) ?? tabs[0];
     return (
       <WindowFrame
         {...frameProps}
@@ -198,9 +198,9 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
                   return (
                     <ExplorerTab
                       key={tab.id ?? `${String(index)}-${tab.title}`}
-                      isSelected={tab.selected}
+                      isSelected={tab.isSelected}
                       // 선택된 탭 바로 왼쪽 탭은 구분선을 그리지 않는다.
-                      hasSeparator={tabs[index + 1]?.selected !== true}
+                      hasSeparator={tabs[index + 1]?.isSelected !== true}
                       icon={tab.icon ?? folderTabIcon}
                       value={index}
                       title={tab.title}

@@ -60,7 +60,7 @@ export type HeadingBlock = {
 export type ListItemBlock =
   | { type: 'bulleted_list_item'; richText: RichText[]; children?: PostBlock[] }
   | { type: 'numbered_list_item'; richText: RichText[]; children?: PostBlock[] }
-  | { type: 'to_do'; richText: RichText[]; checked: boolean; children?: PostBlock[] };
+  | { type: 'to_do'; richText: RichText[]; isChecked: boolean; children?: PostBlock[] };
 
 /**
  * 본문 블록 하나. 이름은 Notion 블록 종류와 같다. `unsupported`는 지원하지 않는 블록 자리이고 Notion 유형 이름을 담는다.
@@ -114,7 +114,7 @@ export const postBlockSchema: z.ZodType<PostBlock> = z.discriminatedUnion('type'
   z.object({
     type: z.literal('to_do'),
     richText: richTextsSchema,
-    checked: z.boolean(),
+    isChecked: z.boolean(),
     children: childrenSchema,
   }),
   z.object({ type: z.literal('quote'), richText: richTextsSchema }),

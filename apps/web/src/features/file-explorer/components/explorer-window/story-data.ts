@@ -28,7 +28,7 @@ export const WINDOW_SEARCH_PLACEHOLDERS = {
 export const WINDOW_NAVIGATION = {
   blog: [
     { label: '바탕 화면', level: 0, expand: 'expanded', icon: 'desktop' },
-    { label: 'Blog', level: 1, expand: 'expanded', icon: 'folder', selected: true },
+    { label: 'Blog', level: 1, expand: 'expanded', icon: 'folder', isSelected: true },
     { label: 'React', level: 2, expand: 'collapsed', icon: 'folder' },
     { label: 'Next.js', level: 2, expand: 'none', icon: 'folder' },
     { label: 'TypeScript', level: 2, expand: 'none', icon: 'folder' },
@@ -37,7 +37,7 @@ export const WINDOW_NAVIGATION = {
   react: [
     { label: '바탕 화면', level: 0, expand: 'expanded', icon: 'desktop' },
     { label: 'Blog', level: 1, expand: 'expanded', icon: 'folder' },
-    { label: 'React', level: 2, expand: 'expanded', icon: 'folder', selected: true },
+    { label: 'React', level: 2, expand: 'expanded', icon: 'folder', isSelected: true },
     { label: 'Hooks', level: 3, expand: 'none', icon: 'folder' },
     { label: 'Next.js', level: 2, expand: 'none', icon: 'folder' },
     { label: 'TypeScript', level: 2, expand: 'none', icon: 'folder' },
@@ -49,7 +49,7 @@ export const WINDOW_NAVIGATION = {
     { label: 'React', level: 2, expand: 'collapsed', icon: 'folder' },
     { label: 'Next.js', level: 2, expand: 'none', icon: 'folder' },
     { label: 'TypeScript', level: 2, expand: 'none', icon: 'folder' },
-    { label: '휴지통', level: 0, expand: 'none', icon: 'recycle-bin', selected: true },
+    { label: '휴지통', level: 0, expand: 'none', icon: 'recycle-bin', isSelected: true },
   ],
 } as const;
 

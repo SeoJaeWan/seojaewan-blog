@@ -15,7 +15,7 @@ export type MenuPopupCommand = {
   /** 오른쪽에 흐리게 보이는 글자(단축키나 확대 비율) */
   shortcut?: string;
   /** 고를 수 없게 한다 */
-  disabled?: boolean;
+  isDisabled?: boolean;
   /** 항목을 골랐을 때 호출 */
   onClick?: () => void;
 };
@@ -28,7 +28,7 @@ export type MenuPopupSubmenu = {
   /** 이름 앞 아이콘 자산 */
   icon?: MenuItemIcon;
   /** 고를 수 없게 한다 */
-  disabled?: boolean;
+  isDisabled?: boolean;
   /** 실제로 여닫는 하위 메뉴 항목. 있으면 마우스를 올리거나 →·Enter 키로 항목 오른쪽에 하위 메뉴를 연다(앱의 메뉴). 없으면 닫은 모습으로만 그린다(조립 스토리) */
   entries?: readonly MenuPopupEntry[];
 };
@@ -39,9 +39,9 @@ export type MenuPopupCheckbox = {
   /** 항목 이름 */
   label: string;
   /** 켜짐 여부 */
-  checked: boolean;
+  isChecked: boolean;
   /** 고를 수 없게 한다 */
-  disabled?: boolean;
+  isDisabled?: boolean;
   /** 켜짐 여부가 바뀔 때 호출 */
   onCheckedChange?: (checked: boolean) => void;
 };
@@ -210,8 +210,8 @@ function MenuEntry(props: { entry: MenuPopupEntry }): JSX.Element {
         <MenuItem
           variant="checkbox"
           label={entry.label}
-          isChecked={entry.checked}
-          isDisabled={entry.disabled}
+          isChecked={entry.isChecked}
+          isDisabled={entry.isDisabled}
           onCheckedChange={handleCheckedChange}
         />
       );
@@ -247,7 +247,7 @@ function MenuEntry(props: { entry: MenuPopupEntry }): JSX.Element {
           label={entry.label}
           icon={entry.icon}
           shortcut={entry.shortcut}
-          isDisabled={entry.disabled}
+          isDisabled={entry.isDisabled}
           onClick={handleClick}
         />
       );
@@ -271,7 +271,7 @@ function SubmenuEntry(props: { entry: MenuPopupSubmenu }): JSX.Element {
           variant="submenu"
           label={entry.label}
           icon={entry.icon}
-          isDisabled={entry.disabled}
+          isDisabled={entry.isDisabled}
         />
         <BaseMenu.Portal>
           <BaseMenu.Positioner side="inline-end" align="start" sideOffset={SUBMENU_OFFSET}>
@@ -288,7 +288,7 @@ function SubmenuEntry(props: { entry: MenuPopupSubmenu }): JSX.Element {
         variant="submenu"
         label={entry.label}
         icon={entry.icon}
-        isDisabled={entry.disabled}
+        isDisabled={entry.isDisabled}
       />
     </BaseMenu.SubmenuRoot>
   );

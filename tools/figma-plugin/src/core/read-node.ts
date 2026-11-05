@@ -94,12 +94,12 @@ async function readNode(
     fills: null,
     strokes: null,
     dashPattern: 'dashPattern' in node ? node.dashPattern : [],
-    variableWidthStroke: false,
-    complexStroke: false,
+    hasVariableWidthStroke: false,
+    hasComplexStroke: false,
     cornerSmoothing: 'cornerSmoothing' in node ? node.cornerSmoothing : 0,
     effects: null,
     layout: null,
-    strokesIncludedInLayout: 'strokesIncludedInLayout' in node && node.strokesIncludedInLayout,
+    isStrokeIncludedInLayout: 'strokesIncludedInLayout' in node && node.strokesIncludedInLayout,
     aspectRatio: aspectRatioOf(node),
     annotations: annotationTexts(node),
     reactions: parent === null ? await reactionsOf(node) : [],
@@ -121,10 +121,10 @@ async function readNode(
     data.strokeWeight = await strokeWeights(node, bound, names);
     if ('variableWidthStrokeProperties' in node) {
       const profile = node.variableWidthStrokeProperties;
-      data.variableWidthStroke = profile !== null && profile.widthProfile !== 'UNIFORM';
+      data.hasVariableWidthStroke = profile !== null && profile.widthProfile !== 'UNIFORM';
     }
     if ('complexStrokeProperties' in node) {
-      data.complexStroke = node.complexStrokeProperties.type !== 'BASIC';
+      data.hasComplexStroke = node.complexStrokeProperties.type !== 'BASIC';
     }
   }
   if ('cornerRadius' in node) {
@@ -489,7 +489,7 @@ async function paintsData(paints: readonly Paint[], names: NameCache): Promise<P
   for (const paint of paints) {
     result.push({
       type: paint.type,
-      visible: paint.visible ?? true,
+      isVisible: paint.visible ?? true,
       blendMode: paint.blendMode ?? 'NORMAL',
       variable:
         paint.type === 'SOLID' ? await variableName(paint.boundVariables?.color, names) : undefined,
@@ -575,14 +575,14 @@ async function corners(
 function effectData(effect: Effect): EffectData {
   const data: EffectData = {
     type: effect.type,
-    visible: effect.visible,
+    isVisible: effect.visible,
     blendMode: 'blendMode' in effect ? effect.blendMode : 'NORMAL',
   };
   if ('blurType' in effect) {
     data.blurType = effect.blurType;
   }
   if ('showShadowBehindNode' in effect) {
-    data.showShadowBehindNode = effect.showShadowBehindNode;
+    data.isShadowShownBehindNode = effect.showShadowBehindNode;
   }
   return data;
 }

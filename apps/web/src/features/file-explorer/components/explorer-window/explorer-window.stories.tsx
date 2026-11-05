@@ -59,7 +59,7 @@ const meta = {
     const currentTab: ExplorerWindowTab = {
       title: parts.tabTitle,
       icon: parts.tabIcon,
-      selected: true,
+      isSelected: true,
     };
     const tabs: ExplorerWindowTab[] =
       args.tabs === 'single'

@@ -17,7 +17,7 @@ export function sides(value: Bound): Sides<Bound> {
  * @returns 칠
  */
 export function solid(variable?: string): PaintData {
-  return { type: 'SOLID', visible: true, blendMode: 'NORMAL', variable };
+  return { type: 'SOLID', isVisible: true, blendMode: 'NORMAL', variable };
 }
 
 /**
@@ -42,12 +42,12 @@ export function node(overrides: Partial<NodeData> & Pick<NodeData, 'path' | 'typ
     fills: [],
     strokes: [],
     dashPattern: [],
-    variableWidthStroke: false,
-    complexStroke: false,
+    hasVariableWidthStroke: false,
+    hasComplexStroke: false,
     cornerSmoothing: 0,
     effects: [],
     layout: null,
-    strokesIncludedInLayout: false,
+    isStrokeIncludedInLayout: false,
     aspectRatio: null,
     annotations: [],
     reactions: [],
@@ -109,7 +109,7 @@ export function buttonRoot(): NodeData {
     height: { value: 32 },
     minWidth: { value: 120, variable: 'size/button/min-width' },
     fills: [solid('accent-fill/default')],
-    strokes: [{ type: 'GRADIENT_LINEAR', visible: true, blendMode: 'NORMAL' }],
+    strokes: [{ type: 'GRADIENT_LINEAR', isVisible: true, blendMode: 'NORMAL' }],
     strokeStyle: 'Elevation/Accent Control Border',
     strokeWeight: sides({ value: 1, variable: 'stroke-width/default' }),
     radius: {

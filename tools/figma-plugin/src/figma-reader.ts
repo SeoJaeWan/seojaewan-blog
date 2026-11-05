@@ -686,7 +686,7 @@ function effectInput(effect: Effect): EffectInput {
     const bound = effect.boundVariables ?? {};
     return {
       type: effect.type,
-      visible: effect.visible,
+      isVisible: effect.visible,
       color: { ...effect.color },
       offsetX: effect.offset.x,
       offsetY: effect.offset.y,
@@ -707,13 +707,13 @@ function effectInput(effect: Effect): EffectInput {
   ) {
     return {
       type: effect.type,
-      visible: effect.visible,
+      isVisible: effect.visible,
       radius: effect.radius,
       boundVariables: { radius: alias(effect.boundVariables?.radius) },
     };
   }
   const description = 'blurType' in effect ? `${effect.type} ${effect.blurType}` : effect.type;
-  return { ...unsupported(description), visible: effect.visible };
+  return { ...unsupported(description), isVisible: effect.visible };
 }
 
 /**
@@ -728,7 +728,7 @@ function paintInput(paint: Paint): PaintInput {
   if (paint.type === 'SOLID') {
     return {
       type: 'SOLID',
-      visible: isVisible,
+      isVisible,
       opacity,
       blendMode,
       color: { r: paint.color.r, g: paint.color.g, b: paint.color.b },
@@ -738,7 +738,7 @@ function paintInput(paint: Paint): PaintInput {
   if (paint.type === 'IMAGE') {
     return {
       type: 'IMAGE',
-      visible: isVisible,
+      isVisible,
       opacity,
       blendMode,
       imageHash: paint.imageHash,
@@ -754,14 +754,14 @@ function paintInput(paint: Paint): PaintInput {
   ) {
     return {
       type: paint.type,
-      visible: isVisible,
+      isVisible,
       opacity,
       blendMode,
       gradientStops: paint.gradientStops.map(gradientStopInput),
       gradientTransform: paint.gradientTransform.map((row) => [...row]),
     };
   }
-  return { ...unsupported(paint.type), visible: isVisible };
+  return { ...unsupported(paint.type), isVisible };
 }
 
 /**

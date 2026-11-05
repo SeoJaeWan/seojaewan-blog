@@ -125,7 +125,7 @@ export function ChromePostTab(props: ChromePostTabProps): JSX.Element {
       title={post.name}
       toc={headings.map((heading, index) => ({
         label: heading.label,
-        active: index === activeIndex,
+        isActive: index === activeIndex,
       }))}
       onTocItemSelect={handleTocItemSelect}
       isTocExpanded={isTocExpanded}

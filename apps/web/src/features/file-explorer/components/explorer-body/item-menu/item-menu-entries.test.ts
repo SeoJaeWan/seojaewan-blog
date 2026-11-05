@@ -90,7 +90,7 @@ describe('파일 탐색기:우클릭 메뉴', () => {
   it('휴지통으로 보낼 수 없는 항목은 삭제를 고를 수 없다', () => {
     const entries = getItemMenuEntries({ ...ITEM_OPTIONS, canTrash: false });
     expect(entries.find((entry) => 'label' in entry && entry.label === '삭제')).toMatchObject({
-      disabled: true,
+      isDisabled: true,
     });
   });
 });

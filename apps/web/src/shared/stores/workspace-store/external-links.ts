@@ -16,7 +16,7 @@ export const externalLinks = [
     url: 'https://github.com/SeoJaeWan',
     icon: 'illustrations/file-link.svg',
     initialParentId: null,
-    pinnedToStart: true,
+    isPinnedToStart: true,
   },
   {
     id: 'resume',
@@ -24,6 +24,6 @@ export const externalLinks = [
     url: '',
     icon: 'illustrations/file-link.svg',
     initialParentId: null,
-    pinnedToStart: true,
+    isPinnedToStart: true,
   },
 ] as const satisfies readonly ExternalLinkConfig[];

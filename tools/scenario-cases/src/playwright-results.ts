@@ -24,7 +24,7 @@ export type JsonReport = {
 export type ReportedCase = Pick<CaseResult, 'status' | 'durationMs' | 'error'> & {
   tracePath: string | null;
   /** 마지막 시도의 맨 위 단계(기대 결과 `test.step`)와 실패 여부 */
-  steps: { title: string; failed: boolean }[];
+  steps: { title: string; isFailed: boolean }[];
 };
 
 const GREP_TOKEN = /\[[^\]#]+#\d+\]$/u;
@@ -96,7 +96,7 @@ export function readReportedCases(report: JsonReport): Map<string, ReportedCase>
         error: cleanError(last?.errors?.[0]?.message),
         steps: (last?.steps ?? []).map((step) => ({
           title: step.title,
-          failed: step.error !== undefined,
+          isFailed: step.error !== undefined,
         })),
       });
     }
@@ -129,7 +129,7 @@ export function checksOf(expected: readonly string[], steps: ReportedCase['steps
       if (found.length === 0) {
         return { name, status: 'unchecked' };
       }
-      return { name, status: found.some((step) => step.failed) ? 'failed' : 'passed' };
+      return { name, status: found.some((step) => step.isFailed) ? 'failed' : 'passed' };
     },
   );
 }

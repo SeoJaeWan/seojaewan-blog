@@ -192,7 +192,7 @@ function variantAncestors(node: ComponentSetNode | ComponentNode): AncestorData[
       id: current.id,
       name: current.name,
       type: current.type,
-      clipsContent: 'clipsContent' in current && current.clipsContent,
+      isClippingContent: 'clipsContent' in current && current.clipsContent,
     });
     current = current.parent;
   }

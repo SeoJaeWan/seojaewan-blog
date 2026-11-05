@@ -18,8 +18,8 @@ describe('바탕화면 우클릭 메뉴:아이콘', () => {
 // @codocs [[파일 탐색기:구성]]
 describe('파일 탐색기:구성', () => {
   it('휴지통 비우기는 휴지통이 비었을 때 비활성이다', () => {
-    expect(emptyRecycleBinMenuItem(true, vi.fn()).disabled).toBe(true);
-    expect(emptyRecycleBinMenuItem(false, vi.fn()).disabled).toBe(false);
+    expect(emptyRecycleBinMenuItem(true, vi.fn()).isDisabled).toBe(true);
+    expect(emptyRecycleBinMenuItem(false, vi.fn()).isDisabled).toBe(false);
   });
 });
 

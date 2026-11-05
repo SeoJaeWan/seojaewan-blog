@@ -68,7 +68,7 @@ const structureBlocks: PostBlock[] = [
   },
   { type: 'bulleted_list_item', richText: [text('나')] },
   { type: 'numbered_list_item', richText: [text('다')] },
-  { type: 'to_do', richText: [text('끝')], checked: true },
+  { type: 'to_do', richText: [text('끝')], isChecked: true },
   { type: 'unsupported', typeName: 'embed' },
   toggle('펼침'),
   toggle('접힘'),

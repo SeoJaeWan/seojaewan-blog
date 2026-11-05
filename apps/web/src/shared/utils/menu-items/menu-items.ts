@@ -57,7 +57,7 @@ export function copyLinkMenuItem(onClick: () => void, isDisabled = false): MenuP
   return {
     label: '링크 복사',
     icon: MENU_ICONS.link,
-    disabled: isDisabled,
+    isDisabled: isDisabled,
     onClick,
   };
 }
@@ -123,7 +123,7 @@ export function trashMenuItem(canTrash: boolean, onClick: () => void): MenuPopup
     label: '삭제',
     icon: MENU_ICONS.delete,
     shortcut: 'Delete',
-    disabled: !canTrash,
+    isDisabled: !canTrash,
     onClick,
   };
 }
@@ -148,7 +148,7 @@ export function pasteMenuItem(canPaste: boolean, onClick: () => void): MenuPopup
     label: '붙여넣기',
     icon: MENU_ICONS.paste,
     shortcut: 'Ctrl+V',
-    disabled: !canPaste,
+    isDisabled: !canPaste,
     onClick,
   };
 }
@@ -168,7 +168,7 @@ export function emptyRecycleBinMenuItem(
   return {
     label: '휴지통 비우기',
     icon: MENU_ICONS.delete,
-    disabled: isRecycleBinEmpty,
+    isDisabled: isRecycleBinEmpty,
     onClick,
   };
 }
