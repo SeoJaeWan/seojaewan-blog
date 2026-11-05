@@ -42,9 +42,6 @@
                       }
                     ],
                     "component": "CaptionButton",
-                    "fills": [
-                      "color/black/4"
-                    ],
                     "height": "size/caption-button/height",
                     "layout": {
                       "counterAlign": "CENTER",
@@ -60,7 +57,7 @@
                     },
                     "name": "maximize button",
                     "properties": {
-                      "State": "Hover",
+                      "State": "Rest",
                       "Variant": "Default"
                     },
                     "size": {
