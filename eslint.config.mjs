@@ -204,15 +204,6 @@ const testLikeFiles = [
   '**/vitest.setup.ts',
 ];
 
-// @codocs [[코드 작성 규칙:JSDoc]]
-// "JSDoc은 함수·컴포넌트에만" 규칙을 거는 경로. 앱·도구는 따로 바꾸며, 바꿀 때 이 목록에 경로를 더한다.
-// 모든 경로가 들어오면 JSDoc 설정 두 블록을 하나로 합치고 옛 규칙(Props 속성 context, props 예외)을 지운다.
-const jsdocFunctionOnlyFiles = [
-  `${DESIGN_SYSTEM}/**/*.{ts,tsx}`,
-  'apps/web/**/*.{ts,tsx}',
-  'tools/*/**/*.{ts,tsx}',
-];
-
 // 함수·메서드와 5줄 이상인 콜백에 JSDoc을 요구한다.
 const requireJsdocOptions = {
   publicOnly: false,
@@ -682,51 +673,20 @@ export default defineConfig(
   },
 
   // @codocs [[코드 작성 규칙:JSDoc]]
-  // 아래 설정은 아직 새 규칙으로 바꾸지 않은 경로(앱·도구)의 옛 규칙을 포함한다. 새 규칙은 다음 블록이 덮어쓴다.
+  // JSDoc은 함수·컴포넌트에만 쓴다. 객체 하나를 받는 함수는 받는 자리에서 구조 분해하고 속성마다 `@param props.이름`을 단다.
   {
     files: tsFiles,
     ignores: testLikeFiles,
     extends: [jsdoc.configs['flat/recommended-typescript-error']],
     rules: {
-      'jsdoc/require-jsdoc': [
-        'error',
-        {
-          ...requireJsdocOptions,
-          contexts: [
-            ...requireJsdocOptions.contexts,
-            // 옛 규칙: 컴포넌트 props 타입의 각 속성
-            'TSTypeAliasDeclaration[id.name=/Props$/] TSPropertySignature',
-          ],
-        },
-      ],
+      'jsdoc/require-jsdoc': ['error', requireJsdocOptions],
       'jsdoc/require-description': 'error',
-      'jsdoc/require-param': ['error', { checkDestructured: false }],
-      // 옛 규칙: 컴포넌트 함수는 `@param props` 한 줄만 둔다(설명은 Props 타입의 각 속성에 단다).
-      'jsdoc/require-param-description': [
-        'error',
-        {
-          contexts: [
-            'FunctionDeclaration:not([params.0.name="props"])',
-            'FunctionExpression',
-            'ArrowFunctionExpression',
-          ],
-        },
-      ],
+      'jsdoc/require-param': ['error', { checkDestructured: true }],
+      'jsdoc/require-param-description': 'error',
       'jsdoc/require-returns': 'off',
       'jsdoc/require-returns-description': 'error',
       'jsdoc/no-types': 'error',
       'jsdoc/check-tag-names': ['error', { definedTags: ['codocs'] }],
-    },
-  },
-  // @codocs [[코드 작성 규칙:JSDoc]]
-  // JSDoc은 함수·컴포넌트에만 쓴다. 객체 하나를 받는 함수는 받는 자리에서 구조 분해하고 속성마다 `@param props.이름`을 단다.
-  {
-    files: jsdocFunctionOnlyFiles,
-    ignores: testLikeFiles,
-    rules: {
-      'jsdoc/require-jsdoc': ['error', requireJsdocOptions],
-      'jsdoc/require-param': ['error', { checkDestructured: true }],
-      'jsdoc/require-param-description': 'error',
       'jsdoc/no-restricted-syntax': ['error', { contexts: jsdocRestrictions }],
     },
   },

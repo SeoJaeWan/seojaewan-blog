@@ -102,7 +102,7 @@ const MIDDLE_BUTTON = 1;
  * @param props.onBack 뒤로 버튼을 눌렀을 때 부른다
  * @param props.onForward 앞으로 버튼을 눌렀을 때 부른다
  * @param props.onRefresh 새로고침 버튼을 눌렀을 때 부른다
- * @param props.addressBar 주소창 자리. 주소창과 추천 목록을 묶은 조립처럼 쓰는 곳이 채운다. 남는 너비를 채우도록 `min-w-size-none flex-flex-fill`을 준다. 주지 않으면 `url`·`onUrlChange`로 AddressBar를 그린다
+ * @param props.addressBar 주소창 자리. 주소창과 추천 목록을 묶은 조립처럼 쓰는 곳이 채운다. 남는 너비를 채우도록 `min-w-size-none flex-flex-fill`을 준다. 주지 않으면 `url`로 AddressBar를 그린다
  * @param props.moreMenuItems ⋮ 메뉴 항목(피그마 `Menu/ChromeMore`, 모바일은 `Menu/ChromeMoreMobile`). 주지 않으면 메뉴가 없다
  * @param props.isMoreMenuOpen ⋮ 메뉴가 열렸는지
  * @param props.onMoreMenuOpenChange ⋮ 메뉴를 열거나 닫으려 할 때
