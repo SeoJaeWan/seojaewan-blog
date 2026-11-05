@@ -29,7 +29,7 @@ export const behavior = defineBehavior({
       base: 'PC',
     },
   },
-  requires: [{ when: { input: '터치' }, then: { screen: '모바일', command: '없음' } }],
+  requires: [{ when: { input: '터치' }, then: { screen: '모바일' } }],
   cases: [
     {
       id: 'cut-paste-new-delete-details',
@@ -87,6 +87,11 @@ export const behavior = defineBehavior({
       id: 'touch-long-press',
       result: '길게 눌러 메뉴로 옮김',
       change: { input: '터치' },
+      combine: {
+        change: { command: '없음' },
+        reason:
+          '터치 케이스는 새로 만들기·삭제·자세히 보기 같은 이어서 쓰는 명령 단계를 하지 않는다',
+      },
       device: 'Pixel 7',
       scenario:
         '모바일에서 Blog 폴더를 탭해 연 탐색기의 React 폴더를 길게 눌러 메뉴의 잘라내기를 탭하고, Next.js 폴더를 탭해 들어가 빈 곳을 길게 눌러 메뉴의 붙여넣기를 탭한다',

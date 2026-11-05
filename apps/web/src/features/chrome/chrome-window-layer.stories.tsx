@@ -94,12 +94,6 @@ const meta = {
   component: ChromeLayerHost,
   parameters: {
     layout: 'fullscreen',
-    // 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
-    a11y: {
-      config: {
-        rules: [{ id: 'color-contrast', enabled: false }],
-      },
-    },
   },
   beforeEach: resetStoryStores,
   args: { device: 'desktop', onClose: fn() },

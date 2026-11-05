@@ -206,8 +206,6 @@ export const OneWindow: Story = {
 // @codocs [[창 동작:창 조작]]
 /** 창 둘을 연 채로 시작한다. 뒤 창을 누르면 맨 앞으로 온다 */
 export const TwoWindows: Story = {
-  // 비활성 창 제목(text-fill-tertiary)의 색 대비가 모자라다. 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
-  parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
   beforeEach: () => {
     openStoryWindows(['file-explorer', 'chrome']);
   },

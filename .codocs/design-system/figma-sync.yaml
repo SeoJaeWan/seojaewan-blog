@@ -115,7 +115,7 @@ _codocs:
 
   - Stylelint의 `at-rule-disallowed-list`로 `@theme`과 `@utility`를 막고, `overrides`로 `tokens.css`만 풀어 준다. 다른 CSS에서 토큰을 새로 정의하거나 덮어쓰지 못하게 하기 위해서다.
   - class 안의 값은 ESLint `better-tailwindcss`가 막는다. 모르는 클래스(`no-unknown-classes`)와 임의 값(`bg-[#fff]`, `p-[13px]`)은 lint 오류다. 그래서 토큰에 없는 값은 코드에 들어올 수 없다.
-  - `style`의 값 자리에 리터럴(문자열·숫자)을 쓰면 예외 없이 lint 오류다. 끌기 위치처럼 실행 중에 계산하는 값(변수·식)만 허용한다.
+  - JSX `style={{ … }}` 자리에 바로 쓴 객체(조건식·논리식이 고른 객체 포함)의 값 자리에 리터럴(문자열·숫자)을 쓰면 lint 오류다. 끌기 위치처럼 실행 중에 계산하는 값(변수·식)만 허용한다. 변수에 담아 넘긴 객체(`style={widthStyle}`)는 검사에서 빠지므로, 리터럴 값을 담은 style 객체를 변수로 만들지 않는다.
   - 토큰이 될 수 없는 CSS 기능(예: `scrollbar-width: none`)은 디자인 시스템의 `reset.css`(`theme.css`가 불러온다)에 속성 선택자로 둔다(`[data-scrollbar-hidden]`). 컴포넌트는 그 속성만 단다.
   - 토큰 이름의 첫 마디가 Tailwind 기본 이름공간과 겹치면(예: `text-fill/*` 같은 이름은 `--text-*`가 글자 크기 이름공간이다) Tailwind 기본 유틸리티가 그 변수를 다른 속성으로 읽은 클래스(`text-fill-primary`가 글자 크기)를 함께 만든다. 이런 클래스는 `no-restricted-classes`로 막는다. 목록은 `tokens.css`를 Tailwind에 넣어 보고 자동으로 모으며, 테스트가 지킨다.
   - 클래스에 숫자 값을 직접 쓰지 않는다. 모든 값은 피그마 토큰이 붙인 이름으로 온다. 숫자로 끝나는 클래스 가운데 Tailwind 기본 숫자 클래스(`shrink-0`, `rotate-180`, `z-10`, `w-1/2`, `aspect-3/2`, `mask-l-from-50%`), 투명도 덧붙임(`bg-x/50`), 토큰에 없는 이름을 `no-restricted-classes`로 막고, 변형이 붙어도 같다. `tokens.css` 토큰 이름에서 나온 클래스는 이름이 숫자로 끝나도(`text-color-gray-11`, `bg-color-white-70`) 허용한다. 숫자가 그 토큰 이름의 일부이기 때문이다. `rounded-full`, `w-full`처럼 숫자가 아닌 기본 클래스는 해당하지 않는다. 숫자가 필요하면 피그마에 이름 있는 변수를 더한다.
