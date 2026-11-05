@@ -7,12 +7,13 @@ _codocs:
   모노레포에 무엇이 어디에 있고, 패키지와 기능이 어떤 방향으로 의존하며, 패키지와 런타임을 어떻게 관리하는지 정한다.
   패키지를 나눈 근거는 [[기술 스택:저장소 구성]]에서 확인한다.
 구성: |
-  - `apps/web`: Next.js 블로그 앱. 피그마 조립에 대응하는 앱 컴포넌트와 그 스토리를 담는 Storybook도 있다. `src`는 `app → shell → features → shared` 층으로 나눈다([[저장소 구성:앱 폴더 구조]]).
+  - `apps/web`: 배포 대상인 Next.js 블로그 앱. `Dockerfile`과 `Jenkinsfile`을 갖는다([[배포 환경:배포(CD)]]). 피그마 조립에 대응하는 앱 컴포넌트와 그 스토리를 담는 Storybook도 있다. `src`는 `app → shell → features → shared` 층으로 나눈다([[저장소 구성:앱 폴더 구조]]).
+  - `apps/notify`: 배포 대상인 알림 프로세스(`@seojaewan/notify`, [[알림 프로세스]]). 카카오톡 알림을 보내는 별도 프로세스이고 `Dockerfile`과 `Jenkinsfile`을 갖는다. 블로그와 서로 import하지 않는다. 이미지 서버 Firebat은 local-server 저장소에 있어 이 저장소에 없다.
   - `packages/design-system`: 피그마 디자인 시스템과 대응하는 토큰과 컴포넌트. 공개 이름은 `@seojaewan/design-system`이다. 내부 구조는 [[저장소 구성:디자인 시스템 패키지 구조]]에서 정한다.
   - `tools/figma-plugin`: 구조를 검사하고 변형 그림·자산·토큰·애니메이션을 내보내는 피그마 개발용 플러그인([[피그마 연동:피그마 플러그인]]).
   - `tools/figma-parity`: 피그마 그림과 Storybook 스토리를 캡처해 캡처 표와 PR 댓글을 만드는 도구([[피그마 연동:CI]]). 디자인 시스템과 앱의 Storybook을 함께 다루므로 어느 한 패키지에 두지 않는다.
   - `tools/scenario-cases`: E2E 행위 정의에서 시나리오 케이스 화면을 만들어 띄우고, 케이스를 실행해 Trace Viewer로 여는 도구([[테스트 작성 규칙:E2E]]).
-  - `tools/`의 도구는 다른 패키지가 가져다 쓰지 않는 개발 도구라 `apps/`·`packages/`와 나눈다.
+  - `apps/`는 서버에 배포하는 것(`apps/web`, `apps/notify`)이고, `tools/`는 다른 패키지가 가져다 쓰지 않는 개발 도구라 `apps/`·`packages/`와 나눈다. `tools/`의 도구는 배포 대상이 아니므로 `apps/`로 옮기지 않는다.
   - `.codocs`: 기획·정책·컨벤션 문서
   - `.claude/skills`: 피그마 플러그인 PR을 처리하는 스킬처럼 반복 작업의 절차. 규칙은 옮겨 적지 않고 `.codocs`를 가리킨다([[피그마 연동:스킬]]).
   - `stylelint.config.mjs`: CSS lint 설정. 토큰 관련 제약은 [[피그마 연동:토큰 사용 강제]], 모션 정의 위치는 [[피그마 연동:모션 클래스]]에서 정한다.
@@ -203,7 +204,7 @@ _codocs:
   - pnpm 설정(`save-exact`, `engine-strict` 등)은 `pnpm-workspace.yaml`에 둔다. pnpm 12는 `.npmrc`의 이 설정을 읽지 않는다.
   - 공개된 지 하루가 지나지 않은 버전은 설치하지 않는다. pnpm 기본 정책이며 Renovate도 같은 기준을 따른다. 갓 나온 버전의 문제가 바로 들어오지 않게 하기 위해서다.
   - 업데이트는 Renovate가 여는 PR로 받는다. 함께 올려야 하는 패키지(React와 React DOM, Storybook 패키지들)는 한 PR로 묶는다. Renovate는 저장소에 Renovate GitHub App을 설치해야 동작한다.
-  - 이 PC는 Windows 스마트 앱 컨트롤이 Next.js의 네이티브 컴파일러(Turbopack)를 막아, 로컬에서는 `next dev --webpack`, `next build --webpack`을 쓴다. CI와 Vercel은 기본 빌드를 쓴다.
+  - 이 PC는 Windows 스마트 앱 컨트롤이 Next.js의 네이티브 컴파일러(Turbopack)를 막아, 로컬에서는 `next dev --webpack`, `next build --webpack`을 쓴다. CI와 미니 PC의 배포 빌드는 기본 빌드를 쓴다.
 TypeScript: |
   - `strict`, `noUncheckedIndexedAccess`, `noFallthroughCasesInSwitch`, `noImplicitOverride`를 켠다.
   - TypeScript는 typescript-eslint가 지원하는 범위(6.1 미만)의 버전을 쓴다. ESLint는 `eslint-plugin-react`가 지원하는 9를 쓴다. 두 플러그인이 지원 범위를 넓히면 Renovate PR로 올린다.
