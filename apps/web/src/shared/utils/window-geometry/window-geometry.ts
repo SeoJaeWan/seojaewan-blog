@@ -1,12 +1,8 @@
 /** 화면 위 사각형(px). `DOMRect`와 같은 이름을 쓴다 */
 export type ScreenRect = {
-  /** 왼쪽 끝 */
   left: number;
-  /** 위쪽 끝 */
   top: number;
-  /** 너비 */
   width: number;
-  /** 높이 */
   height: number;
 };
 
@@ -59,11 +55,9 @@ export const PREVIEW_CARD_WIDTH = 208;
 const PREVIEW_LIST_CHROME = 10;
 const PREVIEW_CARD_GAP = 4;
 
-/** 모바일 창 미리보기 목록의 크기 */
+/** 모바일 창 미리보기 목록의 크기. cardWidth는 카드 하나의 너비이며 카드가 많으면 같은 비율로 줄어든다. */
 export type MobilePreviewLayout = {
-  /** 목록 판의 너비 */
   listWidth: number;
-  /** 카드 하나의 너비. 카드가 많으면 같은 비율로 줄어든다 */
   cardWidth: number;
 };
 

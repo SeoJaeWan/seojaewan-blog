@@ -6,9 +6,11 @@ import { createChromeContent } from '@/shared/utils/chrome-tabs/chrome-tabs';
 import { createExplorerContent } from '@/shared/utils/window-rules/window-rules';
 import { getItemOpenAction } from '@/shared/utils/workspace-rules/workspace-rules';
 
-/** 항목을 여는 방법 */
+/**
+ * 항목을 여는 방법
+ * - isNewWindow: 새 창에서 열기. 글을 가장 최근 Chrome 창의 새 탭이 아니라 새 Chrome 창으로 연다
+ */
 export type OpenItemOptions = {
-  /** 새 창에서 열기. 글을 가장 최근 Chrome 창의 새 탭이 아니라 새 Chrome 창으로 연다 */
   isNewWindow?: boolean;
 };
 

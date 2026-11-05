@@ -5,30 +5,20 @@ import { FileItem, Tooltip } from '@seojaewan/design-system';
 
 import type { PointerPoint } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
 
-/** 끄는 항목 하나의 복제본 */
+/** 끄는 항목 하나의 복제본. origin은 끌기 시작 때 항목의 화면 자리(px, 왼쪽 위)다. */
 export type ItemDragGhostItem = {
-  /** 항목 id */
   id: string;
-  /** 항목 이름 */
   name: string;
-  /** 항목 아이콘 */
   icon: ReactNode;
-  /** 끌기 시작 때 항목의 화면 자리(px, 왼쪽 위) */
   origin: PointerPoint;
 };
 
 type ItemDragGhostProps = {
-  /** 끄는 항목 */
   items: readonly ItemDragGhostItem[];
-  /** 복제본의 FileItem Surface. 바탕화면 아이콘이면 desktop, 탐색기 항목이면 explorer다 */
   surface: NonNullable<ComponentProps<typeof FileItem>['surface']>;
-  /** 복제본의 FileItem Size */
   view: NonNullable<ComponentProps<typeof FileItem>['size']>;
-  /** 누른 자리에서 움직인 거리(px) */
   delta: PointerPoint;
-  /** 지금 포인터 자리(화면 기준) */
   pointer: PointerPoint;
-  /** 포인터 아래 놓을 곳의 이름. 있으면 `○○(으)로 이동` 툴팁을 띄운다 */
   targetName: string | null;
 };
 
@@ -41,10 +31,22 @@ const TOOLTIP_OFFSET = 16;
  * 창 위로 끌어도 가려지지 않게 문서 끝(body)에 포털해 화면 기준으로 그리고, 포인터 아래의 놓을 곳을 찾을 수 있게 포인터를 받지 않는다.
  * @codocs [[항목 조작:끌기]]
  * @codocs [[파일 탐색기:조작]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.items 끄는 항목
+ * @param props.surface 복제본의 FileItem Surface. 바탕화면 아이콘이면 desktop, 탐색기 항목이면 explorer다
+ * @param props.view 복제본의 FileItem Size
+ * @param props.delta 누른 자리에서 움직인 거리(px)
+ * @param props.pointer 지금 포인터 자리(화면 기준)
+ * @param props.targetName 포인터 아래 놓을 곳의 이름. 있으면 `○○(으)로 이동` 툴팁을 띄운다
  */
-export function ItemDragGhost(props: ItemDragGhostProps): JSX.Element {
-  const { items, surface, view, delta, pointer, targetName } = props;
+export function ItemDragGhost({
+  items,
+  surface,
+  view,
+  delta,
+  pointer,
+  targetName,
+}: ItemDragGhostProps): JSX.Element {
   return createPortal(
     <div className="pointer-events-none fixed inset-spacing-none z-layer-drag-ghost">
       {items.map(

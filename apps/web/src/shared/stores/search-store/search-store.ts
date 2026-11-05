@@ -4,27 +4,25 @@ import { registerStoreReset } from '@/shared/stores/store-reset/store-reset';
 import type { PanelKind } from '@/shared/utils/panel-rules/panel-rules';
 import { moveSearchSelection } from '@/shared/utils/search-rules/search-rules';
 
-/** 패널 하나의 검색어와 결과에서 고른 차례 */
+/** 패널 하나의 검색어와 결과에서 고른 차례. selectedIndex는 결과 화면에서 고른 항목의 차례(보이는 차례)이며 검색어가 바뀌면 최고 일치(0)로 돌아간다. */
 export type PanelSearch = {
-  /** 검색어 */
   query: string;
-  /** 결과 화면에서 고른 항목의 차례(보이는 차례). 검색어가 바뀌면 최고 일치(0)로 돌아간다 */
   selectedIndex: number;
 };
 
-/** 검색 저장소. 패널마다의 검색어와 고른 차례, 바꾸는 동작이다 */
+/**
+ * 검색 저장소. 패널마다의 검색어와 고른 차례, 바꾸는 동작이다
+ * - panels: 패널마다의 검색어. Start(start)는 Start 위쪽 검색칸, 검색 패널(search)은 작업 표시줄 검색칸과 모바일 검색 패널 입력칸이 쓴다
+ * - setQuery: 그 패널의 검색어를 바꾼다. 고른 항목은 최고 일치로 돌아간다
+ * - moveSelection: 그 패널에서 고른 항목을 위·아래로 옮긴다(아래는 양수). 처음과 끝에서 멈춘다
+ * - clear: 그 패널의 검색어를 지운다(패널이 닫힐 때)
+ * - clearAll: 두 검색어를 모두 지운다(다시 시작)
+ */
 export type SearchStore = {
-  /**
-   * 패널마다의 검색어. Start(start)는 Start 위쪽 검색칸, 검색 패널(search)은 작업 표시줄 검색칸과 모바일 검색 패널 입력칸이 쓴다
-   */
   panels: Readonly<Record<PanelKind, PanelSearch>>;
-  /** 그 패널의 검색어를 바꾼다. 고른 항목은 최고 일치로 돌아간다 */
   setQuery: (panel: PanelKind, query: string) => void;
-  /** 그 패널에서 고른 항목을 위·아래로 옮긴다(아래는 양수). 처음과 끝에서 멈춘다 */
   moveSelection: (panel: PanelKind, delta: number, count: number) => void;
-  /** 그 패널의 검색어를 지운다(패널이 닫힐 때) */
   clear: (panel: PanelKind) => void;
-  /** 두 검색어를 모두 지운다(다시 시작) */
   clearAll: () => void;
 };
 

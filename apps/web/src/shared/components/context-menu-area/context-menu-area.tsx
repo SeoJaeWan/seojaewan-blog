@@ -4,38 +4,18 @@ import { useState } from 'react';
 
 import { getMenuPortalContainer, MenuPopup } from '@/shared/components/menu-popup/menu-popup';
 
-/** 메뉴를 영역 요소에 붙이는 자리(피그마 Popover Placement) */
+/** 메뉴를 영역 요소에 붙이는 자리(피그마 Popover Placement). side는 영역의 위(top)나 아래(bottom)에 붙고, align은 영역의 시작(start)·가운데(center)·끝(end)에 맞추며, offset은 영역과 메뉴 사이 간격(px)이다. */
 export type ContextMenuAreaPlacement = {
-  /** 영역의 위(top)나 아래(bottom)에 붙는다 */
   side: 'top' | 'bottom';
-  /** 영역의 시작(start)·가운데(center)·끝(end)에 맞춘다 */
   align: 'start' | 'center' | 'end';
-  /** 영역과 메뉴 사이 간격(px) */
   offset: number;
 };
 
 type ContextMenuAreaProps = Pick<ComponentProps<typeof MenuPopup>, 'items'> & {
-  /**
-   * 우클릭(모바일은 길게 누르기)을 받는 영역 요소. Base UI `ContextMenu.Trigger`가 이 요소에 여는 동작을 합쳐 그린다.
-   * 요소의 ref와 이벤트 속성은 그대로 남는다
-   */
   area: ReactElement;
-  /**
-   * 주면 메뉴를 누른 자리가 아니라 영역 요소에 붙인다(작업 표시줄 앱 버튼처럼 메뉴가 버튼 위 가운데에 붙는 경우).
-   * 주지 않으면 누른 자리 옆에 띄운다
-   */
   placement?: ContextMenuAreaPlacement;
-  /** 메뉴가 열렸는지. 쓰는 곳이 정한다 */
   isOpen: boolean;
-  /**
-   * 메뉴를 열거나 닫으려 할 때 부른다(우클릭, 길게 누르기, Esc, 바깥 클릭, 항목 고르기). 쓰는 곳이 `isOpen`을 바꾼다.
-   * 열 때는 우클릭·길게 누른 자리의 요소(`target`)를 함께 넘겨, 쓰는 곳이 어떤 메뉴를 보일지 정하게 한다
-   */
   onOpenChange: (isOpen: boolean, target: Element | null) => void;
-  /**
-   * 메뉴가 닫힌 뒤 부른다. 메뉴 항목이 다른 곳에 포커스를 줄 일(이름 바꾸기 입력창)은 여기서 시작한다.
-   * 그 뒤 포커스가 갈 곳이 없으면 메뉴를 열 때 포커스가 있던 요소로 돌아간다
-   */
   onCloseComplete?: () => void;
 };
 
@@ -52,10 +32,22 @@ type ContextMenuAreaProps = Pick<ComponentProps<typeof MenuPopup>, 'items'> & {
  * @codocs [[바탕화면 우클릭 메뉴:아이콘]]
  * @codocs [[반응형:입력 차이]]
  * @codocs [[작업 표시줄:우클릭 메뉴]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.area 우클릭(모바일은 길게 누르기)을 받는 영역 요소. Base UI `ContextMenu.Trigger`가 이 요소에 여는 동작을 합쳐 그린다. 요소의 ref와 이벤트 속성은 그대로 남는다
+ * @param props.placement 주면 메뉴를 누른 자리가 아니라 영역 요소에 붙인다(작업 표시줄 앱 버튼처럼 메뉴가 버튼 위 가운데에 붙는 경우). 주지 않으면 누른 자리 옆에 띄운다
+ * @param props.isOpen 메뉴가 열렸는지. 쓰는 곳이 정한다
+ * @param props.onOpenChange 메뉴를 열거나 닫으려 할 때 부른다(우클릭, 길게 누르기, Esc, 바깥 클릭, 항목 고르기). 쓰는 곳이 `isOpen`을 바꾼다. 열 때는 우클릭·길게 누른 자리의 요소(`target`)를 함께 넘겨, 쓰는 곳이 어떤 메뉴를 보일지 정하게 한다
+ * @param props.onCloseComplete 메뉴가 닫힌 뒤 부른다. 메뉴 항목이 다른 곳에 포커스를 줄 일(이름 바꾸기 입력창)은 여기서 시작한다. 그 뒤 포커스가 갈 곳이 없으면 메뉴를 열 때 포커스가 있던 요소로 돌아간다
+ * @param props.items 메뉴 항목과 구분선. 위에서부터 그린다
  */
-export function ContextMenuArea(props: ContextMenuAreaProps): JSX.Element {
-  const { area, placement, isOpen, onOpenChange, onCloseComplete, items } = props;
+export function ContextMenuArea({
+  area,
+  placement,
+  isOpen,
+  onOpenChange,
+  onCloseComplete,
+  items,
+}: ContextMenuAreaProps): JSX.Element {
   const [returnFocusElement, setReturnFocusElement] = useState<HTMLElement | null>(null);
   const [areaElement, setAreaElement] = useState<HTMLElement | null>(null);
 

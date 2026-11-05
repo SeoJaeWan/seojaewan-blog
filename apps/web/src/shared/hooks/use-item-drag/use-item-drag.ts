@@ -20,47 +20,42 @@ export const DROP_TARGET_NAME_ATTRIBUTE = 'data-drop-target-name';
 
 /** 포인터 아래의 놓을 곳 */
 export type DropTarget = {
-  /** 옮길 위치 id */
   id: string;
-  /** 위치 이름 */
   name: string;
 };
 
-/** 끄는 중인 상태. 끄는 복제본·툴팁·놓을 곳 강조를 그리는 데 쓴다 */
+/**
+ * 끄는 중인 상태. 끄는 복제본·툴팁·놓을 곳 강조를 그리는 데 쓴다
+ * - delta: 누른 자리에서 움직인 거리(px)
+ * - pointer: 지금 포인터 자리(화면 기준)
+ * - target: 포인터 아래의 놓을 곳. 끄는 항목 자신이나 놓을 곳이 아니면 null
+ */
 export type ItemDragState = {
-  /** 끄는 항목 id */
   ids: readonly string[];
-  /** 누른 자리에서 움직인 거리(px) */
   delta: PointerPoint;
-  /** 지금 포인터 자리(화면 기준) */
   pointer: PointerPoint;
-  /** 포인터 아래의 놓을 곳. 끄는 항목 자신이나 놓을 곳이 아니면 null */
   target: DropTarget | null;
 };
 
-/** 놓았을 때 넘기는 것 */
+/**
+ * 놓았을 때 넘기는 것
+ * - element: 놓은 자리의 요소. 쓰는 곳이 자기 영역 안에 놓았는지 본다
+ * - rejectedTargetId: 놓은 자리에 놓을 곳이 있었지만 옮길 수 없어(`canDrop`) 놓을 곳으로 보지 않았을 때 그 id. 쓰는 곳이 빈 곳에 놓은 것과 구분해 제자리에 두는 데 쓴다. 놓을 곳이 없었으면 null
+ */
 export type ItemDropResult = ItemDragState & {
-  /** 놓은 자리의 요소. 쓰는 곳이 자기 영역 안에 놓았는지 본다 */
   element: Element | null;
-  /**
-   * 놓은 자리에 놓을 곳이 있었지만 옮길 수 없어(`canDrop`) 놓을 곳으로 보지 않았을 때 그 id. 쓰는 곳이 빈 곳에 놓은 것과
-   * 구분해 제자리에 두는 데 쓴다. 놓을 곳이 없었으면 null
-   */
   rejectedTargetId: string | null;
 };
 
+/**
+ * 항목 끌기 훅의 설정
+ * - onDrop: 놓으면 부른다. 놓을 곳 위면 `target`이 있고, 아니면 쓰는 곳이 놓은 자리(`element`, `delta`)로 할 일을 정한다
+ * - canDrop: 끄는 항목을 그곳으로 옮길 수 있는지. 옮길 수 없는 곳(자기·하위 폴더, 같은 이름 폴더, 끄는 항목이 이미 있는 위치)은 놓을 곳으로 보지 않아 강조·툴팁이 없고, 놓아도 제자리다
+ * - isNeutralTarget: 옮길 수 없지만 막힌 곳으로 보지 않을 놓을 곳인지. 바탕화면 아이콘을 바탕화면 빈 곳에 끌면 옮기기가 아니라 칸 옮기기라 `canDrop`이 거부해도 `not-allowed` 커서를 보이지 않는다
+ */
 type UseItemDragOptions = {
-  /** 놓으면 부른다. 놓을 곳 위면 `target`이 있고, 아니면 쓰는 곳이 놓은 자리(`element`, `delta`)로 할 일을 정한다 */
   onDrop: (result: ItemDropResult) => void;
-  /**
-   * 끄는 항목을 그곳으로 옮길 수 있는지. 옮길 수 없는 곳(자기·하위 폴더, 같은 이름 폴더, 끄는 항목이 이미 있는 위치)은
-   * 놓을 곳으로 보지 않아 강조·툴팁이 없고, 놓아도 제자리다
-   */
   canDrop?: (ids: readonly string[], targetId: string) => boolean;
-  /**
-   * 옮길 수 없지만 막힌 곳으로 보지 않을 놓을 곳인지. 바탕화면 아이콘을 바탕화면 빈 곳에 끌면 옮기기가 아니라 칸 옮기기라
-   * `canDrop`이 거부해도 `not-allowed` 커서를 보이지 않는다
-   */
   isNeutralTarget?: (targetId: string) => boolean;
 };
 
@@ -69,13 +64,15 @@ type UseItemDragOptions = {
  */
 export const DRAG_REJECTED_ATTRIBUTE = 'data-item-drag-rejected';
 
-/** 항목 끌기 상태와 시작 핸들러 */
+/**
+ * 항목 끌기 상태와 시작 핸들러
+ * - drag: 끄는 중인 상태. 끌지 않으면 null
+ * - startItemDrag: 항목 위에서 누르면 그 항목들(선택한 항목)을 끌기 시작할 준비를 한다. 받지 않는 누르기면 false
+ * - consumeDragEnd: 방금 끌기를 끝냈는지. 끌고 놓은 뒤 따라오는 클릭을 무시하는 데 쓰고, 한 번 읽으면 지운다
+ */
 type ItemDragControls = {
-  /** 끄는 중인 상태. 끌지 않으면 null */
   drag: ItemDragState | null;
-  /** 항목 위에서 누르면 그 항목들(선택한 항목)을 끌기 시작할 준비를 한다. 받지 않는 누르기면 false */
   startItemDrag: (event: ReactPointerEvent, ids: readonly string[]) => boolean;
-  /** 방금 끌기를 끝냈는지. 끌고 놓은 뒤 따라오는 클릭을 무시하는 데 쓰고, 한 번 읽으면 지운다 */
   consumeDragEnd: () => boolean;
 };
 

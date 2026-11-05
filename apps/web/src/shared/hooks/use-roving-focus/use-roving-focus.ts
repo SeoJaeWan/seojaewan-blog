@@ -14,30 +14,33 @@ import {
 /** 방향키가 옮기는 방향. `horizontal`은 ←/→, `vertical`은 ↑/↓, `grid`는 네 방향이다 */
 export type RovingOrientation = 'horizontal' | 'vertical' | 'grid';
 
+/**
+ * 묶음 안 방향키 이동 훅의 설정
+ * - orientation: 방향키가 옮기는 방향
+ * - itemSelector: 묶음 안의 항목을 찾는 선택자. 기본은 버튼 역할인 요소다
+ * - selectedSelector: 고른 항목을 찾는 선택자. 아직 포커스한 적이 없으면 Tab이 이 항목에 닿고, 없으면 첫 항목에 닿는다
+ */
 type RovingFocusOptions = {
-  /** 방향키가 옮기는 방향 */
   orientation: RovingOrientation;
-  /** 묶음 안의 항목을 찾는 선택자. 기본은 버튼 역할인 요소다 */
   itemSelector?: string;
-  /** 고른 항목을 찾는 선택자. 아직 포커스한 적이 없으면 Tab이 이 항목에 닿고, 없으면 첫 항목에 닿는다 */
   selectedSelector?: string;
 };
 
-/** 묶음 요소에 다는 속성 */
+/**
+ * 묶음 요소에 다는 속성
+ * - onFocus: 포커스를 받은 항목을 기억한다
+ * - onBlur: 포커스가 묶음 밖으로 나간 것을 기억한다
+ * - onKeyDown: 방향키·Home·End로 항목을 옮긴다
+ */
 type RovingFocusProps = {
-  /** 포커스를 받은 항목을 기억한다 */
   onFocus: (event: FocusEvent<HTMLElement>) => void;
-  /** 포커스가 묶음 밖으로 나간 것을 기억한다 */
   onBlur: (event: FocusEvent<HTMLElement>) => void;
-  /** 방향키·Home·End로 항목을 옮긴다 */
   onKeyDown: (event: KeyboardEvent<HTMLElement>) => void;
 };
 
 /** 항목의 화면 위 자리 */
 type RovingRect = {
-  /** 왼쪽 */
   left: number;
-  /** 위쪽 */
   top: number;
 };
 

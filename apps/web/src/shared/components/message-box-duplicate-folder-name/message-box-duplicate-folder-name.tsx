@@ -13,9 +13,7 @@ export const DUPLICATE_FOLDER_NAME_MESSAGE = {
 } as const;
 
 type MessageBoxDuplicateFolderNameProps = {
-  /** 확인 버튼을 누르면 부른다 */
   onPrimaryClick?: MouseEventHandler<HTMLElement>;
-  /** 바깥 배치 클래스 */
   className?: string;
 };
 
@@ -24,12 +22,14 @@ type MessageBoxDuplicateFolderNameProps = {
  * 바탕화면과 탐색기가 폴더 이름 바꾸기에서 함께 써서 shared에 둔다. 띄우는 위치와 막(모달)은 쓰는 곳이 정한다.
  * @codocs [[항목과 폴더:폴더 이름]]
  * @codocs [[디자인 시스템:조립]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.onPrimaryClick 확인 버튼을 누르면 부른다
+ * @param props.className 바깥 배치 클래스
  */
-export function MessageBoxDuplicateFolderName(
-  props: MessageBoxDuplicateFolderNameProps,
-): JSX.Element {
-  const { onPrimaryClick: handlePrimaryClick, className } = props;
+export function MessageBoxDuplicateFolderName({
+  onPrimaryClick: handlePrimaryClick,
+  className,
+}: MessageBoxDuplicateFolderNameProps): JSX.Element {
   return (
     <MessageBox
       {...DUPLICATE_FOLDER_NAME_MESSAGE}

@@ -6,18 +6,23 @@ import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag
 import type { SelectionRect } from '@/shared/utils/selection-rules/selection-rules';
 import { getRectFromPoints } from '@/shared/utils/selection-rules/selection-rules';
 
+/**
+ * 끄는 사각형 선택 훅의 설정
+ * - onStart: 빈 곳을 누를 때 부른다. Ctrl(맥은 Cmd)을 누른 채면 더하기다
+ * - onChange: 끄는 사각형이 바뀔 때 부른다. 사각형은 영역 왼쪽 위 기준이다
+ */
 type UseMarqueeSelectionOptions = {
-  /** 빈 곳을 누를 때 부른다. Ctrl(맥은 Cmd)을 누른 채면 더하기다 */
   onStart: (isAdditive: boolean) => void;
-  /** 끄는 사각형이 바뀔 때 부른다. 사각형은 영역 왼쪽 위 기준이다 */
   onChange: (rect: SelectionRect) => void;
 };
 
-/** 끄는 사각형과 시작 핸들러 */
+/**
+ * 끄는 사각형과 시작 핸들러
+ * - marquee: 지금 끄는 사각형(영역 왼쪽 위 기준). 끌지 않으면 null
+ * - startMarquee: 영역의 빈 곳을 누르면 부른다. 받지 않는 누르기(터치, 오른쪽 버튼)면 false
+ */
 type MarqueeControls = {
-  /** 지금 끄는 사각형(영역 왼쪽 위 기준). 끌지 않으면 null */
   marquee: SelectionRect | null;
-  /** 영역의 빈 곳을 누르면 부른다. 받지 않는 누르기(터치, 오른쪽 버튼)면 false */
   startMarquee: (event: ReactPointerEvent<HTMLElement>) => boolean;
 };
 

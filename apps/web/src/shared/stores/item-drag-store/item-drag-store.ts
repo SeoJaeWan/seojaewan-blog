@@ -1,10 +1,12 @@
 import { create } from 'zustand';
 
-/** 항목 끌기 저장소. 끄는 동안 포인터 아래의 놓을 곳이다 */
+/**
+ * 항목 끌기 저장소. 끄는 동안 포인터 아래의 놓을 곳이다
+ * - targetId: 포인터 아래의 놓을 곳 id(폴더 id, 휴지통 id, 바탕화면은 `desktop`). 끌지 않거나 놓을 곳이 아니면 null
+ * - setTargetId: 놓을 곳을 바꾼다
+ */
 type ItemDragStore = {
-  /** 포인터 아래의 놓을 곳 id(폴더 id, 휴지통 id, 바탕화면은 `desktop`). 끌지 않거나 놓을 곳이 아니면 null */
   targetId: string | null;
-  /** 놓을 곳을 바꾼다 */
   setTargetId: (targetId: string | null) => void;
 };
 

@@ -7,11 +7,9 @@
  */
 export type RestartPhase = 'idle' | 'covering' | 'showing' | 'revealing';
 
-/** 다시 시작의 진행. 단계와 데스크톱 하위 트리의 세대 번호다 */
+/** 다시 시작의 진행. 단계와 데스크톱 하위 트리의 세대 번호다. generation은 데스크톱 하위 트리의 `key`이며 다시 시작할 때마다 올라가 하위 트리를 다시 마운트한다. */
 export type RestartState = {
-  /** 다시 시작 단계 */
   phase: RestartPhase;
-  /** 데스크톱 하위 트리의 `key`. 다시 시작할 때마다 올라가 하위 트리를 다시 마운트한다 */
   generation: number;
 };
 

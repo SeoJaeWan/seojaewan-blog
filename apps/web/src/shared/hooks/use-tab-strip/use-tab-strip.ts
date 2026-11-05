@@ -9,32 +9,37 @@ import {
 
 import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
 
+/**
+ * 탭 줄 훅의 설정
+ * - selectedIndex: 고른 탭의 차례
+ * - tabCount: 탭 개수
+ * - onTabMove: 탭을 끌어 다른 자리로 옮길 때. 옮길 탭의 차례와 옮길 자리를 받는다
+ * - onTabSelect: 탭을 고를 때. 고를 탭의 차례를 받는다
+ * - onTabClose: 탭을 닫을 때. 닫을 탭의 차례를 받는다
+ */
 type UseTabStripOptions = {
-  /** 고른 탭의 차례 */
   selectedIndex: number;
-  /** 탭 개수 */
   tabCount: number;
-  /** 탭을 끌어 다른 자리로 옮길 때. 옮길 탭의 차례와 옮길 자리를 받는다 */
   onTabMove?: (from: number, to: number) => void;
-  /** 탭을 고를 때. 고를 탭의 차례를 받는다 */
   onTabSelect?: (index: number) => void;
-  /** 탭을 닫을 때. 닫을 탭의 차례를 받는다 */
   onTabClose?: (index: number) => void;
 };
 
-/** 탭 줄 요소와 탭 끌기 핸들러 */
+/**
+ * 탭 줄 요소와 탭 끌기 핸들러
+ * - tabListRef: 탭 줄(`role="tablist"`) 요소에 다는 ref. 탭 요소는 이 요소의 바로 아래 자식이다
+ * - startTabDrag: 탭 위에서 누르면 그 탭을 끌어 순서를 바꾸기 시작한다
+ * - handleValueChange: Base UI 탭 줄이 고른 탭을 알릴 때(키보드 이동, 탭 누르기)
+ * - handleTabClick: 탭 묶음을 눌렀을 때. 탭 바깥 여백을 눌러도 탭을 고른다. 탭 위는 Base UI가 맡는다
+ * - handleTabKeyDown: 탭 묶음에서 누른 키를 받는다. 탭 위의 Delete로 그 탭을 닫는다
+ * - closeTab: 탭을 닫는다. 포커스가 탭 줄에 있었으면 닫은 뒤 고른 탭으로 옮긴다
+ */
 type TabStripControls = {
-  /** 탭 줄(`role="tablist"`) 요소에 다는 ref. 탭 요소는 이 요소의 바로 아래 자식이다 */
   tabListRef: RefObject<HTMLDivElement | null>;
-  /** 탭 위에서 누르면 그 탭을 끌어 순서를 바꾸기 시작한다 */
   startTabDrag: (event: PointerEvent, index: number) => void;
-  /** Base UI 탭 줄이 고른 탭을 알릴 때(키보드 이동, 탭 누르기) */
   handleValueChange: (value: number) => void;
-  /** 탭 묶음을 눌렀을 때. 탭 바깥 여백을 눌러도 탭을 고른다. 탭 위는 Base UI가 맡는다 */
   handleTabClick: (event: MouseEvent, index: number) => void;
-  /** 탭 묶음에서 누른 키를 받는다. 탭 위의 Delete로 그 탭을 닫는다 */
   handleTabKeyDown: (event: KeyboardEvent, index: number) => void;
-  /** 탭을 닫는다. 포커스가 탭 줄에 있었으면 닫은 뒤 고른 탭으로 옮긴다 */
   closeTab: (index: number) => void;
 };
 

@@ -128,73 +128,51 @@ export type LinkIcon = ComponentProps<typeof Asset>['name'];
 
 /** 바탕화면 격자 칸 좌표. 0부터 센다 */
 export type GridCell = {
-  /** 열 */
   column: number;
-  /** 행 */
   row: number;
 };
 
-/** 휴지통으로 보낸 기록. 복원할 위치와 삭제한 날짜다 */
+/** 휴지통으로 보낸 기록. 복원할 위치와 삭제한 날짜다. originalParentId는 휴지통으로 보내기 전의 상위 폴더 id이고 바탕화면이면 null이다. deletedAt은 삭제한 시각(ISO 8601)이다. */
 export type TrashRecord = {
-  /** 휴지통으로 보내기 전의 상위 폴더 id. 바탕화면이면 null */
   originalParentId: string | null;
-  /** 삭제한 시각(ISO 8601) */
   deletedAt: string;
 };
 
-/** 배치가 있는 항목(폴더, 글, 외부 링크)의 공통 속성 */
+/** 배치가 있는 항목(폴더, 글, 외부 링크)의 공통 속성. id는 바뀌지 않는 고유 id이고 name은 글이면 제목이다. parentId는 놓인 위치(상위 폴더 id)이며 바탕화면이면 null, 휴지통으로 보냈으면 휴지통 id다. trash는 휴지통에 바로 들어 있는 항목만 갖는다. date는 수정한 날짜로 쓰는 날짜이며 글은 작성일(YYYY-MM-DD), 방문자가 만든 폴더는 만든 시각(ISO 8601), 그 밖은 null이다. */
 type PlacedItemBase = {
-  /** 바뀌지 않는 고유 id */
   id: string;
-  /** 이름. 글은 제목이다 */
   name: string;
-  /** 놓인 위치(상위 폴더 id). 바탕화면이면 null, 휴지통으로 보냈으면 휴지통 id다 */
   parentId: string | null;
-  /** 휴지통 기록. 휴지통에 바로 들어 있는 항목만 있다 */
   trash: TrashRecord | null;
-  /** 수정한 날짜로 쓰는 날짜. 글은 작성일(YYYY-MM-DD), 방문자가 만든 폴더는 만든 시각(ISO 8601), 그 밖은 null */
   date: string | null;
 };
 
 /** 폴더. Notion `폴더` 속성에서 만들어지거나 방문자가 만든다 */
 export type FolderItem = PlacedItemBase & {
-  /** 종류 */
   kind: 'folder';
 };
 
-/** 글. Notion 글 하나다 */
+/** 글. Notion 글 하나다. slug는 글 주소 `/posts/<slug>`의 slug이고 date는 작성일(YYYY-MM-DD)이다. */
 export type PostItem = PlacedItemBase & {
-  /** 종류 */
   kind: 'post';
-  /** 글 주소 `/posts/<slug>`의 slug */
   slug: string;
-  /** 작성일(YYYY-MM-DD) */
   date: string;
 };
 
-/** 외부 링크. 코드 설정 파일에서 정의한다 */
+/** 외부 링크. 코드 설정 파일에서 정의한다. url은 실제 브라우저 새 탭에서 열 주소다. */
 export type LinkItem = PlacedItemBase & {
-  /** 종류 */
   kind: 'link';
-  /** 실제 브라우저 새 탭에서 열 주소 */
   url: string;
-  /** 아이콘 */
   icon: LinkIcon;
 };
 
-/** 휴지통. 바탕화면에 고정되며 옮기거나 이름을 바꾸거나 지울 수 없다 */
+/** 휴지통. 바탕화면에 고정되며 옮기거나 이름을 바꾸거나 지울 수 없다. parentId는 늘 바탕화면이고 휴지통 기록(trash)과 날짜(date)는 없다. */
 export type RecycleBinItem = {
-  /** 종류 */
   kind: 'recycle-bin';
-  /** 휴지통 id */
   id: typeof RECYCLE_BIN_ID;
-  /** 이름 */
   name: string;
-  /** 늘 바탕화면이다 */
   parentId: null;
-  /** 휴지통 기록이 없다 */
   trash: null;
-  /** 날짜가 없다 */
   date: null;
 };
 
@@ -207,79 +185,53 @@ export type WorkspaceItem = PlacedItem | RecycleBinItem;
 /** 작업 공간 항목 종류 */
 export type WorkspaceItemKind = WorkspaceItem['kind'];
 
-/** 글 색인 한 줄. 서버(`content/`)가 Notion 글 데이터베이스에서 읽어 넘긴다 */
+/** 글 색인 한 줄. 서버(`content/`)가 Notion 글 데이터베이스에서 읽어 넘긴다. folderPath는 `폴더` 속성을 `/`로 나눈 경로이며 비어 있으면 `Blog` 폴더에 넣는다. date는 작성일(YYYY-MM-DD)이다. */
 export type PostSummary = {
-  /** 글 주소의 slug */
   slug: string;
-  /** 제목 */
   title: string;
-  /** `폴더` 속성을 `/`로 나눈 경로. 비어 있으면 `Blog` 폴더에 넣는다 */
   folderPath: readonly string[];
-  /** 작성일(YYYY-MM-DD) */
   date: string;
 };
 
-/** 외부 링크 설정 한 줄 */
+/** 외부 링크 설정 한 줄. id는 설정의 id이며 항목 id는 `link:<id>`다. url이 빈 문자열이면 어디에도 보이지 않는다. initialParentId는 처음 놓일 위치(상위 폴더 id)이며 바탕화면이면 null이다. isPinnedToStart는 처음부터 Start 고정됨에 있는지다. */
 export type ExternalLinkConfig = {
-  /** 설정의 id. 항목 id는 `link:<id>`다 */
   id: string;
-  /** 이름 */
   name: string;
-  /** 주소. 비어 있으면(빈 문자열) 어디에도 보이지 않는다 */
   url: string;
-  /** 아이콘 */
   icon: LinkIcon;
-  /** 처음 놓일 위치(상위 폴더 id). 바탕화면이면 null */
   initialParentId: string | null;
-  /** 처음부터 Start 고정됨에 있는지 */
   isPinnedToStart: boolean;
 };
 
 /** 작업 공간을 만드는 원본. Notion 글 색인과 외부 링크 설정이다 */
 export type WorkspaceCatalog = {
-  /** 글 색인 */
   posts: readonly PostSummary[];
-  /** 외부 링크 설정 */
   links: readonly ExternalLinkConfig[];
 };
 
-/** 바탕화면 설정 */
+/** 바탕화면 설정. positions는 자동 정렬을 끄고 옮긴 아이콘의 격자 칸이며 항목 id로 찾는다. */
 export type DesktopSettings = {
-  /** 아이콘 크기 */
   iconSize: DesktopIconSize;
-  /** 아이콘 자동 정렬 */
   isAutoArrange: boolean;
-  /** 정렬 기준 */
   sortBy: DesktopSortKey;
-  /** 자동 정렬을 끄고 옮긴 아이콘의 격자 칸. 항목 id로 찾는다 */
   positions: Readonly<Record<string, GridCell>>;
 };
 
 /** 탐색기 폴더 하나의 보기와 정렬 */
 export type ExplorerFolderView = {
-  /** 보기 */
   view: ExplorerViewMode;
-  /** 정렬 기준 */
   sortBy: ExplorerSortKey;
-  /** 정렬 방향 */
   sortDirection: SortDirection;
 };
 
-/** 작업 공간 상태. 방문자 브라우저에 저장하는 범위 전체다 */
+/** 작업 공간 상태. 방문자 브라우저에 저장하는 범위 전체다. items는 id로 찾고 넣은 차례를 지킨다. startPins는 Start 고정됨의 항목 id 순서이며 앱은 `APP_ITEM_IDS`의 id다. explorerViews는 폴더 id(바탕화면은 `DESKTOP_LOCATION_KEY`)로 찾는다. recentItemIds는 앞이 가장 최근이다. */
 export type WorkspaceState = {
-  /** 항목. id로 찾는다. 넣은 차례를 지킨다 */
   items: Readonly<Record<string, WorkspaceItem>>;
-  /** 바탕화면 설정 */
   desktop: DesktopSettings;
-  /** Start 고정됨의 항목 id 순서. 앱은 `APP_ITEM_IDS`의 id다 */
   startPins: readonly string[];
-  /** Start 모두 목록의 보기 */
   startAllView: StartAllViewSetting;
-  /** 작업 표시줄에 고정한 앱의 순서 */
   taskbarPins: readonly WindowApp[];
-  /** 탐색기 폴더별 보기와 정렬. 폴더 id(바탕화면은 `DESKTOP_LOCATION_KEY`)로 찾는다 */
   explorerViews: Readonly<Record<string, ExplorerFolderView>>;
-  /** 최근 연 항목 id. 앞이 가장 최근이다 */
   recentItemIds: readonly string[];
 };
 
@@ -313,9 +265,7 @@ export type FolderNameResult = { ok: true } | { ok: false; reason: FolderNameErr
 
 /** 폴더 트리의 칸 하나 */
 export type FolderTreeNode = {
-  /** 폴더 */
   folder: FolderItem;
-  /** 하위 폴더 */
   children: FolderTreeNode[];
 };
 
@@ -522,28 +472,21 @@ export function reconcileWorkspace(
   });
 }
 
-/** 맞추기에 넘기는 저장된 상태. 배치만 담고 이름·주소 같은 원본 값은 색인과 설정에서 다시 채운다 */
+/** 맞추기에 넘기는 저장된 상태. 배치만 담고 이름·주소 같은 원본 값은 색인과 설정에서 다시 채운다. items는 항목 배치이며 폴더만 이름과 날짜를 갖는다. */
 export type SavedWorkspaceShape = Omit<WorkspaceState, 'items'> & {
-  /** 항목 배치. 폴더만 이름과 날짜를 갖는다 */
   items: Readonly<Record<string, SavedItemShape>>;
 };
 
-/** 저장된 항목 하나. 휴지통은 저장하지 않아 휴지통 기록이 없다 */
+/** 저장된 항목 하나. 휴지통은 저장하지 않아 휴지통 기록이 없다. 폴더는 이름(name)과 만든 시각(date)도 저장한다. */
 export type SavedItemShape =
   | {
-      /** 종류 */
       kind: 'folder';
-      /** 이름 */
       name: string;
-      /** 상위 폴더 id */
       parentId: string | null;
-      /** 만든 시각 */
       date: string | null;
     }
   | {
-      /** 종류 */
       kind: 'post' | 'link';
-      /** 상위 폴더 id */
       parentId: string | null;
     };
 
@@ -661,11 +604,9 @@ export function getNewFolderName(siblingNames: readonly string[]): string {
   return getFreeFolderName(NEW_FOLDER_NAME, siblingNames);
 }
 
-/** 이름 입력을 거른 결과 */
+/** 이름 입력을 거른 결과. value는 쓸 수 없는 문자를 빼고 최대 길이까지 남긴 이름이다. hasRemovedInvalidCharacter는 쓸 수 없는 문자를 뺐으면 true이며 말풍선으로 알린다. */
 export type FolderNameInput = {
-  /** 쓸 수 없는 문자를 빼고 최대 길이까지 남긴 이름 */
   value: string;
-  /** 쓸 수 없는 문자를 뺐으면 true(말풍선으로 알린다) */
   hasRemovedInvalidCharacter: boolean;
 };
 

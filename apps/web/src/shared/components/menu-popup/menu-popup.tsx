@@ -5,52 +5,37 @@ import { Menu, MenuItem, MenuSeparator } from '@seojaewan/design-system';
 
 type MenuItemIcon = ComponentProps<typeof MenuItem>['icon'];
 
-/** 고르면 바로 실행하는 항목(피그마 MenuItem `Variant=Default`) */
+/** 고르면 바로 실행하는 항목(피그마 MenuItem `Variant=Default`). shortcut은 오른쪽에 흐리게 보이는 글자(단축키나 확대 비율)다. */
 export type MenuPopupCommand = {
   kind?: 'command';
-  /** 항목 이름 */
   label: string;
-  /** 이름 앞 아이콘 자산 */
   icon?: MenuItemIcon;
-  /** 오른쪽에 흐리게 보이는 글자(단축키나 확대 비율) */
   shortcut?: string;
-  /** 고를 수 없게 한다 */
   isDisabled?: boolean;
-  /** 항목을 골랐을 때 호출 */
   onClick?: () => void;
 };
 
-/** 하위 메뉴를 여는 항목(피그마 MenuItem `Variant=Submenu`) */
+/** 하위 메뉴를 여는 항목(피그마 MenuItem `Variant=Submenu`). entries는 실제로 여닫는 하위 메뉴 항목이다. 있으면 마우스를 올리거나 →·Enter 키로 항목 오른쪽에 하위 메뉴를 열고(앱의 메뉴), 없으면 닫은 모습으로만 그린다(조립 스토리). */
 export type MenuPopupSubmenu = {
   kind: 'submenu';
-  /** 항목 이름 */
   label: string;
-  /** 이름 앞 아이콘 자산 */
   icon?: MenuItemIcon;
-  /** 고를 수 없게 한다 */
   isDisabled?: boolean;
-  /** 실제로 여닫는 하위 메뉴 항목. 있으면 마우스를 올리거나 →·Enter 키로 항목 오른쪽에 하위 메뉴를 연다(앱의 메뉴). 없으면 닫은 모습으로만 그린다(조립 스토리) */
   entries?: readonly MenuPopupEntry[];
 };
 
 /** 켜고 끄는 항목(피그마 MenuItem `Variant=Toggle on/off`) */
 export type MenuPopupCheckbox = {
   kind: 'checkbox';
-  /** 항목 이름 */
   label: string;
-  /** 켜짐 여부 */
   isChecked: boolean;
-  /** 고를 수 없게 한다 */
   isDisabled?: boolean;
-  /** 켜짐 여부가 바뀔 때 호출 */
   onCheckedChange?: (checked: boolean) => void;
 };
 
-/** 라디오 묶음 안의 선택지 하나 */
+/** 라디오 묶음 안의 선택지 하나. value는 묶음 안에서 이 선택지를 가리키는 값이다. */
 export type MenuPopupRadioOption = {
-  /** 묶음 안에서 이 선택지를 가리키는 값 */
   value: string;
-  /** 항목 이름 */
   label: string;
 };
 
@@ -60,26 +45,18 @@ export type MenuPopupRadioOption = {
  */
 export type MenuPopupRadioGroup = {
   kind: 'radio-group';
-  /** 위에서부터 그릴 선택지 */
   options: readonly MenuPopupRadioOption[];
-  /** 지금 고른 선택지의 값 */
   value: string;
-  /** 다른 선택지를 골랐을 때 호출 */
   onValueChange?: (value: string) => void;
 };
 
-/** 확대/축소 조절 줄(피그마 MenuItem `Variant=Zoom`). −·+ 버튼은 메뉴 항목이지만 눌러도 메뉴가 닫히지 않는다 */
+/** 확대/축소 조절 줄(피그마 MenuItem `Variant=Zoom`). −·+ 버튼은 메뉴 항목이지만 눌러도 메뉴가 닫히지 않는다. value는 지금 배율 글자(예: `100%`)다. */
 export type MenuPopupZoom = {
   kind: 'zoom';
-  /** 지금 배율 글자(예: `100%`) */
   value: string;
-  /** 줄이기(−)를 눌렀을 때 호출 */
   onZoomOut?: () => void;
-  /** 키우기(+)를 눌렀을 때 호출 */
   onZoomIn?: () => void;
-  /** 줄이기를 쓸 수 없게 한다 */
   isZoomOutDisabled?: boolean;
-  /** 키우기를 쓸 수 없게 한다 */
   isZoomInDisabled?: boolean;
 };
 
@@ -106,9 +83,7 @@ const menuWidthClassNames = {
 const DEFAULT_MENU_WIDTH: MenuPopupWidth = 'default';
 
 type MenuPanelProps = {
-  /** 메뉴 항목과 구분선. 위에서부터 그린다 */
   items: readonly MenuPopupEntry[];
-  /** 메뉴 바탕 너비(피그마 메뉴 조립의 Menu 너비). 없으면 Menu 기본 너비다 */
   width?: MenuPopupWidth;
 };
 
@@ -125,10 +100,11 @@ type MenuPopupProps = MenuPanelProps &
  * 열 때 `motion-flyout-enter`로 페이드해 나타난다. 사라지는 움직임은 없어 Base UI가 기다리지 않고 바로 닫는다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[피그마 연동:모션 클래스]]
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.items 메뉴 항목과 구분선. 위에서부터 그린다
+ * @param props.width 메뉴 바탕 너비(피그마 메뉴 조립의 Menu 너비). 없으면 Menu 기본 너비다
  */
-export function MenuPopup(props: MenuPopupProps): JSX.Element {
-  const { items, width, ...popupProps } = props;
+export function MenuPopup({ items, width, ...popupProps }: MenuPopupProps): JSX.Element {
   return (
     <BaseMenu.Popup {...popupProps} className="motion-flyout-enter outline-none">
       <MenuPanel items={items} width={width} />
@@ -138,12 +114,14 @@ export function MenuPopup(props: MenuPopupProps): JSX.Element {
 
 /**
  * 메뉴 바탕(Menu)과 그 안의 항목을 그린다. 하위 메뉴도 같은 바탕으로 그린다.
- * @param props
+ * @param props 컴포넌트 속성
+ * @param props.width 메뉴 바탕 너비(피그마 메뉴 조립의 Menu 너비). 없으면 Menu 기본 너비다
+ * @param props.items 메뉴 항목과 구분선. 위에서부터 그린다
  */
-function MenuPanel(props: MenuPanelProps): JSX.Element {
+function MenuPanel({ width, items }: MenuPanelProps): JSX.Element {
   return (
-    <Menu className={menuWidthClassNames[props.width ?? DEFAULT_MENU_WIDTH]}>
-      {props.items.map(
+    <Menu className={menuWidthClassNames[width ?? DEFAULT_MENU_WIDTH]}>
+      {items.map(
         /**
          * 메뉴 한 줄을 그린다.
          * @param entry 메뉴 한 줄
@@ -179,11 +157,10 @@ function entryKey(entry: MenuPopupEntry, index: number): string {
 
 /**
  * 메뉴 한 줄을 종류에 맞는 MenuItem이나 구분선으로 그린다.
- * @param props
+ * @param props 컴포넌트 속성
  * @param props.entry 메뉴 한 줄
  */
-function MenuEntry(props: { entry: MenuPopupEntry }): JSX.Element {
-  const { entry } = props;
+function MenuEntry({ entry }: { entry: MenuPopupEntry }): JSX.Element {
   switch (entry.kind) {
     case 'separator':
       // 메뉴 안쪽 너비를 채우는 구분선(피그마 MenuSeparator)이다. 너비는 메뉴 바탕(Flyout)이 채운다.
@@ -258,11 +235,10 @@ function MenuEntry(props: { entry: MenuPopupEntry }): JSX.Element {
 /**
  * 하위 메뉴 항목을 그린다. 여닫을 하위 메뉴(`entries`)가 있으면 항목 오른쪽에 위를 맞춰 붙이는 실제 하위 메뉴로 그리고,
  * 없으면 닫은 모습으로 그린다. 피그마 조립은 하위 메뉴를 닫은 모양으로만 그린다.
- * @param props
+ * @param props 컴포넌트 속성
  * @param props.entry 하위 메뉴 항목
  */
-function SubmenuEntry(props: { entry: MenuPopupSubmenu }): JSX.Element {
-  const { entry } = props;
+function SubmenuEntry({ entry }: { entry: MenuPopupSubmenu }): JSX.Element {
   if (entry.entries !== undefined) {
     return (
       // 실제 하위 메뉴다. Base UI가 마우스·키보드로 여닫고, 피그마 Popover `Right-Start`처럼 항목 오른쪽에 위를 맞춰 간격(spacing/4)을 두고 붙인다.

@@ -9,31 +9,29 @@ import { type RefObject, useEffectEvent, useLayoutEffect, useState } from 'react
  */
 export type PresenceStatus = 'entering' | 'entered' | 'exiting' | 'exited';
 
-/** usePresence 설정 */
+/**
+ * usePresence 설정
+ * - shouldKeepMounted: 사라진 뒤에도 요소를 빼지 않고 `isHidden`으로 알린다. 쓰는 곳이 `hidden`·`inert`로 숨긴다. 최소화한 창처럼 안의 상태와 스크롤을 지켜야 할 때 쓴다.
+ * - shouldIncludeSubtree: 요소 자신뿐 아니라 안쪽 요소의 애니메이션도 기다린다. 모션 클래스가 안쪽을 움직일 때만 켠다(글자 목록 `motion-start-jump-list-*`의 `[data-jump-list]`).
+ * - onExitComplete: 사라지는 애니메이션이 끝났을 때 부른다. 저장소에서 지운 항목을 화면에서도 놓을 때 쓴다
+ */
 export type PresenceOptions = {
-  /**
-   * 사라진 뒤에도 요소를 빼지 않고 `isHidden`으로 알린다. 쓰는 곳이 `hidden`·`inert`로 숨긴다.
-   * 최소화한 창처럼 안의 상태와 스크롤을 지켜야 할 때 쓴다.
-   */
   shouldKeepMounted?: boolean;
-  /**
-   * 요소 자신뿐 아니라 안쪽 요소의 애니메이션도 기다린다.
-   * 모션 클래스가 안쪽을 움직일 때만 켠다(글자 목록 `motion-start-jump-list-*`의 `[data-jump-list]`).
-   */
   shouldIncludeSubtree?: boolean;
-  /** 사라지는 애니메이션이 끝났을 때 부른다. 저장소에서 지운 항목을 화면에서도 놓을 때 쓴다 */
   onExitComplete?: () => void;
 };
 
-/** usePresence 결과 */
+/**
+ * usePresence 결과
+ * - isMounted: 요소를 그려야 하는지. false면 쓰는 곳이 요소를 빼고 그린다
+ * - isHidden: 사라진 뒤 남겨 둔 상태인지(`shouldKeepMounted`일 때만 그려진 채 true가 된다)
+ * - status: 지금 단계. 들어가는·나가는 모션 클래스를 고를 때 쓴다
+ * - presenceProps: 요소에 펼쳐 넣는 data 속성. Base UI 팝업과 같은 `data-starting-style`·`data-ending-style`이다
+ */
 export type Presence = {
-  /** 요소를 그려야 하는지. false면 쓰는 곳이 요소를 빼고 그린다 */
   isMounted: boolean;
-  /** 사라진 뒤 남겨 둔 상태인지(`shouldKeepMounted`일 때만 그려진 채 true가 된다) */
   isHidden: boolean;
-  /** 지금 단계. 들어가는·나가는 모션 클래스를 고를 때 쓴다 */
   status: PresenceStatus;
-  /** 요소에 펼쳐 넣는 data 속성. Base UI 팝업과 같은 `data-starting-style`·`data-ending-style`이다 */
   presenceProps: { 'data-starting-style'?: ''; 'data-ending-style'?: '' };
 };
 

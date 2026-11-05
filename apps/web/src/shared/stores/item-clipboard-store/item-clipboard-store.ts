@@ -2,13 +2,15 @@ import { create } from 'zustand';
 
 import { registerStoreReset } from '@/shared/stores/store-reset/store-reset';
 
-/** 잘라내기 저장소. 잘라낸 항목과 바꾸는 동작이다 */
+/**
+ * 잘라내기 저장소. 잘라낸 항목과 바꾸는 동작이다
+ * - cutIds: 잘라낸 항목 id. 비어 있으면 붙여넣을 것이 없다
+ * - cut: 항목들을 잘라낸다. 앞서 잘라낸 항목은 잊는다
+ * - clear: 잘라낸 항목을 잊는다(붙여넣은 뒤, 다시 시작)
+ */
 type ItemClipboardStore = {
-  /** 잘라낸 항목 id. 비어 있으면 붙여넣을 것이 없다 */
   cutIds: readonly string[];
-  /** 항목들을 잘라낸다. 앞서 잘라낸 항목은 잊는다 */
   cut: (ids: readonly string[]) => void;
-  /** 잘라낸 항목을 잊는다(붙여넣은 뒤, 다시 시작) */
   clear: () => void;
 };
 

@@ -4,11 +4,9 @@ export type PanelKind = 'start' | 'search';
 /** 열린 패널. Start 메뉴(start)와 검색 패널(search) 중 하나만 열린다 */
 export type OpenPanel = PanelKind | null;
 
-/** Start·검색 패널과 전원 메뉴의 열림 상태 */
+/** Start·검색 패널과 전원 메뉴의 열림 상태. openPanel은 열린 패널이며 없으면 null이다. */
 export type PanelState = {
-  /** 열린 패널. 없으면 null이다 */
   openPanel: OpenPanel;
-  /** Start 아래 줄의 전원 메뉴가 열렸는지 */
   isPowerMenuOpen: boolean;
 };
 

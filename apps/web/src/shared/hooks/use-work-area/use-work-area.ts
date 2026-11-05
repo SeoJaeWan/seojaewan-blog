@@ -3,11 +3,13 @@ import { useSyncExternalStore } from 'react';
 /** 작업 표시줄 높이(px). 작업 영역은 화면에서 이 높이를 뺀 곳이다 */
 export const TASKBAR_HEIGHT = 48;
 
-/** 창을 놓을 수 있는 작업 영역 크기(px). 화면 왼쪽 위가 원점이다 */
+/**
+ * 창을 놓을 수 있는 작업 영역 크기(px). 화면 왼쪽 위가 원점이다
+ * - width: 작업 영역 너비. 화면 너비와 같다
+ * - height: 작업 영역 높이. 화면 높이에서 작업 표시줄 높이를 뺀다
+ */
 export type WorkArea = {
-  /** 작업 영역 너비. 화면 너비와 같다 */
   width: number;
-  /** 작업 영역 높이. 화면 높이에서 작업 표시줄 높이를 뺀다 */
   height: number;
 };
 

@@ -14,9 +14,7 @@ import {
 
 /** 작업 영역 위 한 점(px). 작업 영역 왼쪽 위가 원점이다 */
 export type WindowPoint = {
-  /** 가로 */
   x: number;
-  /** 세로 */
   y: number;
 };
 
@@ -28,9 +26,7 @@ export type DragSnapTarget = { type: 'zone'; zone: SnapZone } | { type: 'maximiz
 
 /** 크기(px) */
 type WindowSize = {
-  /** 너비 */
   width: number;
-  /** 높이 */
   height: number;
 };
 

@@ -43,49 +43,51 @@ import {
 /** 저장소 조작의 결과. 거부되면 이유를 돌려준다(말풍선 등으로 보여 줄 때 쓴다) */
 export type WorkspaceActionResult = { ok: true } | { ok: false; reason: WorkspaceRejectReason };
 
-/** 작업 공간 저장소의 조작 */
+/**
+ * 작업 공간 저장소의 조작
+ * - moveItems: 항목들을 위치(폴더 id, 바탕화면은 null, 휴지통 id)로 옮긴다
+ * - trashItems: 항목들을 휴지통으로 보낸다
+ * - restoreItems: 휴지통의 항목들을 원래 위치로 복원한다
+ * - restoreTrashedPost: 휴지통에 있는 글 하나를 주소로 열 때 복원한다(휴지통에 든 폴더 안의 글이면 그 글만 바탕화면으로)
+ * - createFolder: 위치에 새 폴더를 만든다. 만든 폴더의 id를 돌려준다
+ * - renameFolder: 폴더 이름을 바꾼다
+ * - setDesktopIconSize: 바탕화면 아이콘 크기를 바꾼다
+ * - setDesktopAutoArrange: 바탕화면 아이콘 자동 정렬을 켜거나 끈다
+ * - setDesktopSortBy: 바탕화면 정렬 기준을 바꾼다
+ * - setDesktopIconPositions: 바탕화면 아이콘의 격자 칸을 정한다
+ * - pinToStart: Start 고정됨에 넣는다(맨 뒤)
+ * - unpinFromStart: Start 고정됨에서 뺀다
+ * - moveStartPin: Start 고정됨의 순서를 바꾼다(맨 앞으로 이동은 0)
+ * - setStartAllView: Start 모두 목록의 보기를 바꾼다
+ * - pinToTaskbar: 작업 표시줄에 앱을 고정한다
+ * - unpinFromTaskbar: 작업 표시줄에서 앱 고정을 해제한다
+ * - moveTaskbarPin: 작업 표시줄 고정 앱의 순서를 바꾼다
+ * - setExplorerView: 탐색기 위치(폴더 id, 바탕화면은 null)의 보기와 정렬을 바꾼다
+ * - recordRecentItem: 연 항목을 최근 항목에 넣는다
+ * - reset: 처음 상태(초기 구조)로 돌린다(다시 시작). 브라우저 저장분은 따로 지운다
+ */
 type WorkspaceActions = {
-  /** 항목들을 위치(폴더 id, 바탕화면은 null, 휴지통 id)로 옮긴다 */
   moveItems: (ids: readonly string[], targetId: string | null) => WorkspaceActionResult;
-  /** 항목들을 휴지통으로 보낸다 */
   trashItems: (ids: readonly string[]) => WorkspaceActionResult;
-  /** 휴지통의 항목들을 원래 위치로 복원한다 */
   restoreItems: (ids: readonly string[]) => WorkspaceActionResult;
-  /** 휴지통에 있는 글 하나를 주소로 열 때 복원한다(휴지통에 든 폴더 안의 글이면 그 글만 바탕화면으로) */
   restoreTrashedPost: (id: string) => WorkspaceActionResult;
-  /** 위치에 새 폴더를 만든다. 만든 폴더의 id를 돌려준다 */
   createFolder: (
     parentId: string | null,
   ) => { ok: true; id: string } | { ok: false; reason: WorkspaceRejectReason };
-  /** 폴더 이름을 바꾼다 */
   renameFolder: (id: string, name: string) => WorkspaceActionResult;
-  /** 바탕화면 아이콘 크기를 바꾼다 */
   setDesktopIconSize: (iconSize: DesktopIconSize) => void;
-  /** 바탕화면 아이콘 자동 정렬을 켜거나 끈다 */
   setDesktopAutoArrange: (isAutoArrange: boolean) => void;
-  /** 바탕화면 정렬 기준을 바꾼다 */
   setDesktopSortBy: (sortBy: DesktopSortKey) => void;
-  /** 바탕화면 아이콘의 격자 칸을 정한다 */
   setDesktopIconPositions: (positions: Readonly<Record<string, GridCell>>) => void;
-  /** Start 고정됨에 넣는다(맨 뒤) */
   pinToStart: (id: string) => void;
-  /** Start 고정됨에서 뺀다 */
   unpinFromStart: (id: string) => void;
-  /** Start 고정됨의 순서를 바꾼다(맨 앞으로 이동은 0) */
   moveStartPin: (id: string, index: number) => void;
-  /** Start 모두 목록의 보기를 바꾼다 */
   setStartAllView: (view: StartAllViewSetting) => void;
-  /** 작업 표시줄에 앱을 고정한다 */
   pinToTaskbar: (app: WindowApp) => void;
-  /** 작업 표시줄에서 앱 고정을 해제한다 */
   unpinFromTaskbar: (app: WindowApp) => void;
-  /** 작업 표시줄 고정 앱의 순서를 바꾼다 */
   moveTaskbarPin: (app: WindowApp, index: number) => void;
-  /** 탐색기 위치(폴더 id, 바탕화면은 null)의 보기와 정렬을 바꾼다 */
   setExplorerView: (folderId: string | null, view: Partial<ExplorerFolderView>) => void;
-  /** 연 항목을 최근 항목에 넣는다 */
   recordRecentItem: (id: string) => void;
-  /** 처음 상태(초기 구조)로 돌린다(다시 시작). 브라우저 저장분은 따로 지운다 */
   reset: () => void;
 };
 

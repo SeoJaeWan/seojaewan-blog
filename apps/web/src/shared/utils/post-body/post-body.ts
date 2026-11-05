@@ -66,6 +66,7 @@ export type ListItemBlock =
  * 본문 블록 하나. 이름은 Notion 블록 종류와 같다. `unsupported`는 지원하지 않는 블록 자리이고 Notion 유형 이름을 담는다.
  * 코드 블록의 강조(`highlighted`)와 수식 HTML(`html`, KaTeX)은 서버가 본문을 만들 때 처리해 보낸다([[기술 스택:글 본문 처리]]).
  * 이미지 주소는 [[Notion 이미지 제공]]의 주소다.
+ * `html`은 서버가 KaTeX로 그린 수식 HTML이며 그리지 못한 식이면 없다.
  */
 export type PostBlock =
   | HeadingBlock
@@ -82,7 +83,6 @@ export type PostBlock =
   | {
       type: 'equation';
       expression: string;
-      /** 서버가 KaTeX로 그린 수식 HTML. 그리지 못한 식이면 없다 */
       html?: string;
     }
   | { type: 'unsupported'; typeName: string };
@@ -145,7 +145,6 @@ export const postBlockSchema: z.ZodType<PostBlock> = z.discriminatedUnion('type'
 
 /** 글 본문 */
 export type PostBody = {
-  /** 본문 블록 */
   blocks: PostBlock[];
 };
 
@@ -158,11 +157,9 @@ export const postBodySchema: z.ZodType<PostBody> = z.object({
 /** 목차를 보이는 제목 개수의 최소값([[Chrome:글 화면]]) */
 export const TOC_MIN_HEADINGS = 1;
 
-/** 목차 항목 하나 */
+/** 목차 항목 하나. id는 제목 요소의 id이며 목차에서 그 제목으로 스크롤할 때 쓴다. */
 export type TocHeading = {
-  /** 제목 요소의 id. 목차에서 그 제목으로 스크롤할 때 쓴다 */
   id: string;
-  /** 제목 글자 */
   label: string;
 };
 

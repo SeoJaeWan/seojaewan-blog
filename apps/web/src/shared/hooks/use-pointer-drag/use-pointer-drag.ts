@@ -5,21 +5,21 @@ import { hasPassedDragThreshold } from '@/shared/utils/window-drag-rules/window-
 
 /** 화면 위 포인터 자리(px, 화면 왼쪽 위 기준) */
 export type PointerPoint = {
-  /** 가로 */
   x: number;
-  /** 세로 */
   y: number;
 };
 
-/** 누른 포인터를 따라가며 부를 함수 */
+/**
+ * 누른 포인터를 따라가며 부를 함수
+ * - onStart: 끌기 거리를 넘어 끌기가 시작될 때 부른다
+ * - onMove: 끌기가 시작된 뒤 포인터가 움직일 때마다 부른다
+ * - onDrop: 끌던 포인터를 놓을 때 부른다. 끌기 전에 놓으면(클릭) 부르지 않는다
+ * - onCancel: 끌기가 취소될 때 부른다(포인터를 놓침, 언마운트)
+ */
 export type PointerDragCallbacks = {
-  /** 끌기 거리를 넘어 끌기가 시작될 때 부른다 */
   onStart?: (start: PointerPoint, point: PointerPoint) => void;
-  /** 끌기가 시작된 뒤 포인터가 움직일 때마다 부른다 */
   onMove?: (point: PointerPoint) => void;
-  /** 끌던 포인터를 놓을 때 부른다. 끌기 전에 놓으면(클릭) 부르지 않는다 */
   onDrop?: (point: PointerPoint) => void;
-  /** 끌기가 취소될 때 부른다(포인터를 놓침, 언마운트) */
   onCancel?: () => void;
 };
 
