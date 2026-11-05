@@ -15,8 +15,8 @@ type ListBlockCommonProps = Omit<ComponentProps<'li'>, 'children'> & {
 type MarkerListBlockProps = ListBlockCommonProps & {
   /** 피그마 Variant. 글머리표(`bulleted`)와 번호(`numbered`)는 표시 글자를 쓴다 */
   variant?: 'bulleted' | 'numbered';
-  /** 피그마 `Marker` 글자. 깊이와 순서로 정한 표시(`•`, `1.` 등)를 쓰는 곳이 넣는다 */
-  marker: string;
+  /** 코드 전용. 깊이와 순서로 정한 표시(`•`, `1.` 등)를 쓰는 곳이 넣는다. 피그마에는 없고, 넘기지 않으면 변형 표시(글머리표 `•`, 번호 `1.`)를 그린다 */
+  marker?: string;
   /** 할 일(`to-do`)에서만 쓴다 */
   isChecked?: never;
   /** 할 일(`to-do`)에서만 쓴다 */
@@ -58,6 +58,7 @@ export function ListBlock(props: ListBlockProps): JSX.Element {
     className,
     ...liProps
   } = props;
+  const markerText = marker ?? (variant === 'numbered' ? '1.' : '•');
   const isDone = variant === 'to-do' && isChecked;
   return (
     <li {...liProps} className={cn('flex flex-col gap-spacing-xs', className)}>
@@ -75,7 +76,7 @@ export function ListBlock(props: ListBlockProps): JSX.Element {
               variant === 'numbered' ? 'justify-end' : 'justify-center',
             )}
           >
-            {marker}
+            {markerText}
           </span>
         )}
         <p
