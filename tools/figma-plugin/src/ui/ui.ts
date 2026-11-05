@@ -603,13 +603,13 @@ function groupBlock(group: CatalogGroup, items: CatalogItem[], isFiltering: bool
 }
 
 /**
- * 구분선 묶음(구분선 페이지로 나뉜 페이지 묶음)을 만든다. 접고 펼칠 수 있고, 체크박스와 고른 수 / 전체 수를 둔다.
+ * 묶음 섹션(컴포넌트 섹션을 담은 페이지 바로 아래 섹션)을 만든다. 접고 펼칠 수 있고, 체크박스와 고른 수 / 전체 수를 둔다.
  * @codocs [[피그마 연동:플러그인 화면]]
- * @param band 구분선 묶음
- * @param blocks 그 안의 묶음(페이지) 요소
+ * @param band 묶음 섹션
+ * @param blocks 그 안의 묶음(컴포넌트 섹션) 요소
  * @param keys 체크박스로 고르는 항목 키(보이는 항목)
  * @param isFiltering 목록 안 찾기 중인지(찾는 동안은 모두 펼친다)
- * @returns 구분선 묶음 요소
+ * @returns 묶음 섹션 요소
  */
 function bandBlock(
   band: CatalogBand,
