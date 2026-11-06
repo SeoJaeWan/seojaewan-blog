@@ -14,7 +14,8 @@
     "test": "pnpm test:unit && pnpm test:storybook",
     "test:unit": "vitest run",
     "test:storybook": "vitest run --config vitest.storybook.config.ts",
-    "fetch:notion-fixture": "node --conditions=react-server scripts/fetch-notion-fixture.ts"
+    "fetch:notion-fixture": "node --conditions=react-server scripts/fetch-notion-fixture.ts",
+    "generate:og-default": "node scripts/generate-og-default.ts"
   },
   "dependencies": {
     "@base-ui/react": "1.9.0",

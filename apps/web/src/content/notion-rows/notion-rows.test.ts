@@ -53,6 +53,7 @@ function page(id: string, options: PageOptions = {}): unknown {
   return {
     object: 'page',
     id,
+    last_edited_time: '2026-11-06T02:33:00.000Z',
     cover,
     properties: {
       제목: { type: 'title', title: richText(title) },
@@ -88,7 +89,7 @@ describe('콘텐츠 원천:공개 여부', () => {
 
 // @codocs [[콘텐츠 원천:Notion 속성]]
 describe('콘텐츠 원천:Notion 속성', () => {
-  it('제목, slug, 폴더, 작성일, Summary와 페이지 ID를 읽는다', () => {
+  it('제목, slug, 폴더, 작성일, Summary와 페이지 ID, 고친 시각을 읽는다', () => {
     expect(
       readPostRows([page('react-19-hooks', { title: 'React 19', folder: 'React/Hooks' })]),
     ).toEqual([
@@ -100,6 +101,7 @@ describe('콘텐츠 원천:Notion 속성', () => {
         publishedAt: '2026-10-20',
         cover: null,
         summary: '요약',
+        lastEditedAt: '2026-11-06T02:33:00.000Z',
       },
     ]);
   });

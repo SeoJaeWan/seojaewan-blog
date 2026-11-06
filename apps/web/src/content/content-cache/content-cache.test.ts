@@ -9,6 +9,8 @@ import {
   CONTENT_INDEX_TAG,
   getContentBody,
   getContentIndex,
+  getContentRow,
+  getContentRows,
   getContentSlugs,
   getPageCacheTag,
 } from './content-cache';
@@ -177,6 +179,20 @@ describe('콘텐츠 원천:갱신 방식', () => {
     await getContentBody({ collection: 'project', slug: 'fixture-project' });
     expect(row).toBeDefined();
     expect(vi.mocked(cacheTag)).toHaveBeenCalledWith(getPageCacheTag(row?.pageId ?? ''));
+  });
+
+  it('메타 정보와 sitemap이 읽는 행도 목록 태그로 캐시해 웹훅 때 함께 갱신된다', async () => {
+    expect(
+      await getContentRow({ collection: 'blog', slug: 'notion-blog-migration' }),
+    ).toMatchObject({
+      title: 'Notion 블로그 이전기',
+      summary: 'Notion에서 쓰고 바뀐 글만 다시 만드는 블로그로 옮긴 기록',
+    });
+    expect(await getContentRow({ collection: 'project', slug: 'hidden-project' })).toBeNull();
+    expect((await getContentRows()).map(({ row }) => row.lastEditedAt)).toContain(
+      '2026-11-06T02:33:00.000Z',
+    );
+    expect(new Set(vi.mocked(cacheTag).mock.calls.flat())).toEqual(new Set([CONTENT_INDEX_TAG]));
   });
 
   it('공개하지 않은 항목은 본문을 읽지 않아 페이지 태그도 없다', async () => {

@@ -36,6 +36,12 @@ export function getPageCacheTag(pageId: string): string {
   return `${PAGE_TAG_PREFIX}${pageId.replaceAll('-', '').toLowerCase()}`;
 }
 
+/** 묶음과 그 묶음의 공개 행 하나 */
+export type ContentRow = {
+  collection: PostCollection;
+  row: PostRow;
+};
+
 /**
  * 세 묶음의 공개 항목 색인. 작업 공간(바탕화면 폴더, 탐색기, 검색, Chrome)이 쓴다.
  * 묶음마다 목록 태그(`CONTENT_INDEX_TAG`)로 캐시한다.
@@ -44,10 +50,32 @@ export function getPageCacheTag(pageId: string): string {
  * @returns 색인(묶음 차례, 묶음 안은 최신순)
  */
 export async function getContentIndex(): Promise<PostSummary[]> {
+  return (await getContentRows()).map(({ collection, row }) => toPostSummary(row, collection));
+}
+
+/**
+ * 세 묶음의 공개 행. sitemap이 쓴다. 색인과 같은 목록 태그로 캐시해, 웹훅이 오면 함께 갱신된다.
+ * @codocs [[콘텐츠 원천:갱신 방식]]
+ * @codocs [[SEO와 공유 미리보기:sitemap과 robots]]
+ * @returns 묶음과 공개 행(묶음 차례, 묶음 안은 최신순)
+ */
+export async function getContentRows(): Promise<ContentRow[]> {
   const rowsByCollection = await Promise.all(POST_COLLECTIONS.map(getRows));
   return POST_COLLECTIONS.flatMap((collection, index) =>
-    (rowsByCollection[index] ?? []).map((row) => toPostSummary(row, collection)),
+    (rowsByCollection[index] ?? []).map((row) => ({ collection, row })),
   );
+}
+
+/**
+ * 공개 항목 하나의 행(제목, Summary, 커버 등). 글 주소 페이지의 메타 정보가 쓴다. 목록 태그로 캐시한 목록에서 찾는다.
+ * @codocs [[콘텐츠 원천:갱신 방식]]
+ * @codocs [[콘텐츠 원천:공개 여부]]
+ * @codocs [[SEO와 공유 미리보기:메타 정보]]
+ * @param post 항목(묶음과 slug)
+ * @returns 공개 행. 공개 항목이 아니면 null
+ */
+export async function getContentRow(post: PostRef): Promise<PostRow | null> {
+  return (await getRows(post.collection)).find((row) => row.slug === post.slug) ?? null;
 }
 
 /**
@@ -69,8 +97,8 @@ export async function getContentSlugs(collection: PostCollection): Promise<strin
  * @returns 본문. 공개 항목이 아니면 null
  */
 export async function getContentBody(post: PostRef): Promise<PostBody | null> {
-  const row = (await getRows(post.collection)).find((candidate) => candidate.slug === post.slug);
-  return row === undefined ? null : getPageBody({ pageId: row.pageId, cover: row.cover });
+  const row = await getContentRow(post);
+  return row === null ? null : getPageBody({ pageId: row.pageId, cover: row.cover });
 }
 
 /**
