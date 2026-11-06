@@ -5,6 +5,7 @@ import { createChromeContent } from '@/shared/utils/chrome-tabs/chrome-tabs';
 import type { OpenWindow, WindowState, WindowWorkArea } from './window-rules';
 import {
   closeWindow,
+  createEntryWindow,
   createExplorerContent,
   detachWindow,
   focusWindow,
@@ -507,6 +508,20 @@ describe('창 동작:모바일', () => {
           historyIndex: 1,
         },
       ],
+    });
+  });
+});
+
+// @codocs [[창 동작:새로고침과 첫 진입]]
+describe('창 동작:새로고침과 첫 진입', () => {
+  it('서버가 그리는 첫 창은 처음 상태에서 여는 창과 id·차례·내용이 같고 자리만 비어 있다', () => {
+    const content = createChromeContent({ kind: 'post', slug: 'a' });
+    const opened = openWindow(INITIAL_WINDOW_STATE, 'chrome', WORK_AREA, content);
+    const entry = createEntryWindow('chrome', content);
+    expect(entry.id).toBe(opened.id);
+    expect(entry).toEqual({
+      ...opened.state.windows[opened.id],
+      bounds: { x: 0, y: 0, width: 0, height: 0 },
     });
   });
 });

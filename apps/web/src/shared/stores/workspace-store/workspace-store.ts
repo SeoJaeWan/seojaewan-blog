@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from 'react';
 import { create, type StoreApi } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
@@ -138,6 +139,49 @@ registerStoreReset(() => {
 export function hydrateWorkspaceStore(posts: readonly PostSummary[]): void {
   catalog = { posts, links: externalLinks };
   Promise.resolve(useWorkspaceStore.persist.rehydrate()).catch(resetToInitial);
+}
+
+/**
+ * 작업 공간 항목을 읽는다. 저장분을 읽기 전(서버 HTML과 수화 첫 렌더)의 저장소에는 글이 없으므로, 서버가 읽은 글 색인을 주면
+ * 그 글 색인으로 만든 초기 구조의 항목을 돌려준다. 서버가 그리는 첫 진입 창이 글 제목과 머리(폴더 경로, 작성일)를 그리게 하기 위해서다.
+ * 저장분을 읽은 뒤에는 저장소의 항목이다. 저장분이 없으면 둘은 같다.
+ * @codocs [[창 동작:새로고침과 첫 진입]]
+ * @codocs [[방문자 저장:저장분 읽기]]
+ * @param serverPosts 서버가 읽은 글 색인. 없으면(스토리) 늘 저장소의 항목이다
+ * @returns 작업 공간 항목
+ */
+export function useWorkspaceItems(serverPosts?: readonly PostSummary[]): WorkspaceState['items'] {
+  const items = useWorkspaceStore((state) => state.items);
+  const isRestored = useSyncExternalStore(subscribeRestored, getIsRestored, getIsRestoredOnServer);
+  if (isRestored || serverPosts === undefined) {
+    return items;
+  }
+  return createInitialWorkspace({ posts: serverPosts, links: externalLinks }).items;
+}
+
+/**
+ * 저장분을 다 읽으면 알린다.
+ * @param onChange 다 읽으면 부를 함수
+ * @returns 구독을 끊는 함수
+ */
+function subscribeRestored(onChange: () => void): () => void {
+  return useWorkspaceStore.persist.onFinishHydration(onChange);
+}
+
+/**
+ * 저장분을 다 읽었는지.
+ * @returns 읽었으면 true
+ */
+function getIsRestored(): boolean {
+  return useWorkspaceStore.persist.hasHydrated();
+}
+
+/**
+ * 서버와 수화 첫 렌더에서는 저장분을 읽기 전이다.
+ * @returns false
+ */
+function getIsRestoredOnServer(): boolean {
+  return false;
 }
 
 /**

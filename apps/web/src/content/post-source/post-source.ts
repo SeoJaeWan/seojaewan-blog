@@ -1,5 +1,7 @@
 import 'server-only';
 
+import { cache } from 'react';
+
 import {
   type ContentCollection,
   NOTION_DATABASE_IDS,
@@ -49,15 +51,21 @@ export async function getPostBody(slug: string): Promise<PostBody | null> {
 }
 
 /**
- * 묶음(`blog`, `project`, `about`)의 공개 행을 읽는다. `CONTENT_SOURCE`가 고른 곳(Notion이나 fixture)에서 읽고
- * 같은 변환을 지난다. 공개하지 않은 행은 빠진다.
+ * 묶음(`blog`, `project`, `about`)의 공개 행을 읽는다. 한 번 그리는 동안(요청 하나, 빌드 때는 페이지 하나) 같은 묶음은 한 번만
+ * 읽는다(React `cache`). 글 주소 페이지가 색인과 본문을 함께 읽어도 데이터베이스를 두 번 조회하지 않게 하기 위해서다.
+ * @codocs [[콘텐츠 원천:읽는 곳]]
+ */
+export const getContentRows = cache(readContentRows);
+
+/**
+ * 묶음의 공개 행을 읽는다. `CONTENT_SOURCE`가 고른 곳(Notion이나 fixture)에서 읽고 같은 변환을 지난다. 공개하지 않은 행은 빠진다.
  * @codocs [[콘텐츠 원천:읽는 곳]]
  * @codocs [[콘텐츠 원천:데이터베이스]]
  * @codocs [[콘텐츠 원천:공개 여부]]
  * @param collection 묶음
  * @returns 공개 행(최신순)
  */
-export async function getContentRows(collection: ContentCollection): Promise<PostRow[]> {
+async function readContentRows(collection: ContentCollection): Promise<PostRow[]> {
   const { client, databaseIds } = await getContentReader();
   return readPostRows(await readDatabasePages(client, databaseIds[collection]));
 }

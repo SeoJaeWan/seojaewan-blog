@@ -26,3 +26,25 @@
 ::highlight(chrome-find-current) {
   background-color: var(--color-orange-28);
 }
+
+/*
+ * @codocs [[창 동작:새로고침과 첫 진입]]
+ * 서버가 그린 첫 진입 창(`data-window-entry`)의 자리. 서버는 화면 크기를 모르므로 앱 기본 크기(`:root`의 피그마 `size/window/*`,
+ * 작업 영역보다 크면 줄인다)를 창 층(작업 영역) 가운데에 CSS로 놓는다. 수화한 뒤 창 저장소가 같은 자리(`openWindow`)를 숫자로 넣으므로
+ * 반올림도 `Math.round`처럼 가까운 정수 px(반은 올림)다. 모바일은 전체화면이다.
+ */
+[data-window-entry='chrome'] {
+  --window-entry-width: min(var(--size-window-chrome-width), 100%);
+  --window-entry-height: min(var(--size-window-chrome-height), 100%);
+
+  top: round(nearest, calc((100% - var(--window-entry-height)) / 2), 1px);
+  left: round(nearest, calc((100% - var(--window-entry-width)) / 2), 1px);
+  width: var(--window-entry-width);
+  height: var(--window-entry-height);
+
+  @variant mobile {
+    inset: 0;
+    width: auto;
+    height: auto;
+  }
+}

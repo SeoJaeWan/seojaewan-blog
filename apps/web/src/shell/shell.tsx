@@ -2,12 +2,15 @@
 
 import { type JSX, useEffect, useRef } from 'react';
 
+import type { ChromePreload } from '@/features/chrome/chrome-window-layer';
 import { useBrowserAddressSync } from '@/features/chrome/use-browser-address-sync';
 import { DesktopIconsLayer } from '@/features/desktop/desktop-icons-layer';
 import { StartMenuLayer } from '@/features/start-menu/start-menu-layer';
 import { TaskbarLayer } from '@/features/taskbar/taskbar-layer';
 import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
 import { hydrateWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
+import { createChromeContent } from '@/shared/utils/chrome-tabs/chrome-tabs';
+import { createEntryWindow, type OpenWindow } from '@/shared/utils/window-rules/window-rules';
 import type { PostSummary } from '@/shared/utils/workspace-rules/workspace-rules';
 
 import { DesktopScene } from './components/desktop-scene/desktop-scene';
@@ -29,11 +32,14 @@ import { type InitialPage, useInitialWindow } from './hooks/use-initial-window/u
  * @codocs [[다시 시작:순서]]
  * @codocs [[방문자 저장:저장분 읽기]]
  * 주소로 처음 들어왔으면(`initialPage`) 그 주소의 Chrome 창 하나를 연 채로 시작하고, 그 창을 열 때까지 브라우저 주소를 그대로 둔다.
+ * 글 주소면 그 창을 서버에서 그린다. 저장소에 창이 열리기 전에는 서버가 읽은 글 색인·본문으로 첫 창(`createEntryWindow`)을 그려
+ * 첫 HTML에 Chrome 창과 글 제목·본문 글자가 들어가고, 수화한 뒤 저장소가 같은 창을 열어 이어받는다.
  * @codocs [[창 동작:브라우저 주소]]
  * @codocs [[창 동작:새로고침과 첫 진입]]
+ * @codocs [[SEO와 공유 미리보기:첫 HTML]]
  * @param props 컴포넌트 속성
  * @param props.posts 서버(`content/`)가 읽은 글 색인
- * @param props.initialPage 주소로 처음 들어왔을 때 열어 둘 Chrome 페이지(`/posts/<slug>`, 찾을 수 없음). `/`이면 없다
+ * @param props.initialPage 주소로 처음 들어왔을 때 열어 둘 Chrome 페이지(`/posts/<slug>`와 그 본문, 찾을 수 없음). `/`이면 없다
  */
 export function Shell({ posts, initialPage: initialPageProp }: ShellProps): JSX.Element {
   const generation = useRestartStore((state) => state.generation);
@@ -43,6 +49,15 @@ export function Shell({ posts, initialPage: initialPageProp }: ShellProps): JSX.
   const isRestarting = phase !== 'idle';
   const initialPage = initialPageProp ?? null;
   const isInitialWindowPending = useInitialWindow(initialPage);
+  const entryPost = initialPage?.kind === 'post' ? initialPage : null;
+  const chromePreload: ChromePreload = {
+    posts,
+    entryPost: entryPost === null ? null : { slug: entryPost.slug, blocks: entryPost.body.blocks },
+  };
+  const entryWindow =
+    isInitialWindowPending && entryPost !== null
+      ? createEntryWindow('chrome', createChromeContent({ kind: 'post', slug: entryPost.slug }))
+      : null;
   // 브라우저 주소는 화면 전체에서 한 번만 맞춘다(창 축소 화면이 창을 여러 번 그려도 한 번).
   useBrowserAddressSync(!isInitialWindowPending);
 
@@ -72,7 +87,12 @@ export function Shell({ posts, initialPage: initialPageProp }: ShellProps): JSX.
       aria-label="바탕화면"
       className="fixed inset-spacing-none overflow-hidden outline-none"
     >
-      <ShellDesktop key={generation} isInert={isRestarting} />
+      <ShellDesktop
+        key={generation}
+        isInert={isRestarting}
+        chromePreload={chromePreload}
+        entryWindow={entryWindow}
+      />
       <RestartScreen />
     </main>
   );
@@ -85,6 +105,8 @@ type ShellProps = {
 
 type ShellDesktopProps = {
   isInert: boolean;
+  chromePreload: ChromePreload;
+  entryWindow: OpenWindow | null;
 };
 
 /**
@@ -96,11 +118,13 @@ type ShellDesktopProps = {
  * @codocs [[기술 스택:상태 관리]]
  * @param props 컴포넌트 속성
  * @param props.isInert 다시 시작하는 중이라 데스크톱 하위 트리를 조작할 수 없게 할지
+ * @param props.chromePreload 서버가 읽어 넘긴 글 색인과 처음 들어온 글의 본문. Chrome 창이 쓴다
+ * @param props.entryWindow 서버가 그릴 첫 진입 창. 저장소에 창이 열리기 전에만 있다
  * @returns 데스크톱 하위 트리
  */
-function ShellDesktop({ isInert }: ShellDesktopProps): JSX.Element {
-  const renderWindow = useAppWindowRenderer();
-  const getWindowTitle = useAppWindowTitle();
+function ShellDesktop({ isInert, chromePreload, entryWindow }: ShellDesktopProps): JSX.Element {
+  const renderWindow = useAppWindowRenderer(chromePreload);
+  const getWindowTitle = useAppWindowTitle(chromePreload.posts);
   return (
     <DesktopScene
       isInert={isInert}
@@ -109,7 +133,7 @@ function ShellDesktop({ isInert }: ShellDesktopProps): JSX.Element {
       taskbar={<TaskbarLayer renderWindow={renderWindow} getWindowTitle={getWindowTitle} />}
     >
       {/* 창 층(data-layer="windows"). 아이콘 위, 패널 아래다 */}
-      <ShellWindows />
+      <ShellWindows chromePreload={chromePreload} entryWindow={entryWindow} />
       {/* 패널 층(Start·검색). 창보다 위, 작업 표시줄보다 아래다 */}
       <div data-layer="panels" className="pointer-events-none absolute inset-spacing-none">
         <StartMenuLayer />
