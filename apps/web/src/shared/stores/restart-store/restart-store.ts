@@ -2,22 +2,25 @@ import { create, type StoreApi } from 'zustand';
 
 import { resetRegisteredStores } from '@/shared/stores/store-reset/store-reset';
 import {
+  finishRestartBooting,
   finishRestartCovering,
   finishRestartRevealing,
   finishRestartShowing,
-  initialRestartState,
+  pageLoadRestartState,
   type RestartState,
   startRestart,
 } from '@/shared/utils/restart-rules/restart-rules';
 
 /**
  * 다시 시작 저장소. 다시 시작 단계와 데스크톱 하위 트리의 세대 번호다
+ * - finishBooting: 처음 불러온 화면의 수화와 기기 판단이 끝났다. 재부팅 화면을 바로 걷는다
  * - restart: 전원 메뉴의 `다시 시작`을 눌렀다. 다시 시작하는 중이면 무시한다
  * - finishCovering: 재부팅 화면이 화면을 다 덮었다. 저장소를 처음 상태로 돌리고 세대를 올린다
  * - finishShowing: 재부팅 화면을 보여 주는 시간이 지났다
  * - finishRevealing: 재부팅 화면이 사라졌다
  */
 export type RestartStore = RestartState & {
+  finishBooting: () => void;
   restart: () => void;
   finishCovering: () => void;
   finishShowing: () => void;
@@ -28,7 +31,9 @@ export type RestartStore = RestartState & {
  * 다시 시작의 진행을 담는 저장소. 다시 마운트하는 데스크톱 하위 트리 바깥(shell 최상위와 재부팅 화면)이 읽어,
  * 다시 마운트한 뒤에도 남는다. 다시 시작으로 지우는 대상이 아니고 브라우저에 저장하지도 않는다.
  * 단계 규칙은 `restart-rules.ts`의 순수 함수가 갖는다.
+ * 사이트를 처음 불러올 때도 같은 재부팅 화면이 덮으므로, 저장소는 덮고 있는 상태(`booting`)로 만들어진다.
  * @codocs [[다시 시작:초기화 방법]]
+ * @codocs [[창 동작:새로고침과 첫 진입]]
  * @codocs [[기술 스택:상태 관리]]
  */
 export const useRestartStore = create<RestartStore>()(createRestartStore);
@@ -44,7 +49,10 @@ function createRestartStore(
   get: StoreApi<RestartStore>['getState'],
 ): RestartStore {
   return {
-    ...initialRestartState,
+    ...pageLoadRestartState,
+    finishBooting: () => {
+      set(finishRestartBooting);
+    },
     restart: () => {
       set(startRestart);
     },
