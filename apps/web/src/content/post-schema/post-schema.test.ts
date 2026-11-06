@@ -10,6 +10,7 @@ const ROW = {
   publishedAt: '2026-10-20',
   cover: null,
   summary: '',
+  lastEditedAt: '2026-11-06T02:33:00.000Z',
 } as const;
 
 // @codocs [[콘텐츠 원천:Notion 속성]]
@@ -35,6 +36,10 @@ describe('콘텐츠 원천:Notion 속성', () => {
 
   it('제목이 비어 있으면 거부한다', () => {
     expect(() => parsePostRows([{ ...ROW, title: ' ' }])).toThrow();
+  });
+
+  it('고친 시각이 ISO 시각이 아니면 거부한다', () => {
+    expect(() => parsePostRows([{ ...ROW, lastEditedAt: '2026-11-06' }])).toThrow();
   });
 });
 

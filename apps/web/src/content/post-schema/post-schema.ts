@@ -4,10 +4,11 @@ import type { PostCollection } from '@/shared/utils/post-address/post-address';
 import type { PostSummary } from '@/shared/utils/workspace-rules/workspace-rules';
 
 /**
- * 공개 행 하나(Notion 데이터베이스 한 줄의 속성)의 스키마. 제목, `slug`, `폴더`, 작성일, 커버, Summary와 페이지 ID다.
+ * 공개 행 하나(Notion 데이터베이스 한 줄의 속성)의 스키마. 제목, `slug`, `폴더`, 작성일, 커버, Summary와 페이지 ID, 고친 시각이다.
  * 필수 값 검사는 공개 행에만 한다(`readPostRows`가 공개 행만 넘긴다). 세 묶음(`blog`, `project`, `about`)이 같은 속성을 쓴다.
  * @codocs [[콘텐츠 원천:Notion 속성]]
  * @codocs [[콘텐츠 원천:공개 여부]]
+ * @codocs [[SEO와 공유 미리보기:sitemap과 robots]]
  * @codocs [[코드 작성 규칙:타입]]
  */
 export const postRowSchema = z.object({
@@ -25,6 +26,8 @@ export const postRowSchema = z.object({
   cover: z.url().nullable(),
   /** 페이지 설명. 없으면 빈 문자열 */
   summary: z.string(),
+  /** 페이지를 마지막으로 고친 시각(Notion `last_edited_time`, ISO 시각). sitemap의 `lastModified`다 */
+  lastEditedAt: z.iso.datetime(),
 });
 
 /** 공개 행 하나 */

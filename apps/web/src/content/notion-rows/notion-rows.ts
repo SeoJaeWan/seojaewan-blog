@@ -18,6 +18,7 @@ const PROPERTY_NAMES = {
 const pageSchema = z.object({
   object: z.literal('page'),
   id: z.string(),
+  last_edited_time: z.string(),
   cover: z
     .discriminatedUnion('type', [
       z.object({ type: z.literal('external'), external: z.object({ url: z.string() }) }),
@@ -49,8 +50,10 @@ const datePropertySchema = z.object({
  * - `공개`가 체크된 행만 남긴다. 체크하지 않은 행은 사이트에 없는 것과 같다.
  * - 필수 값(제목, slug, 작성일) 검사는 공개 행에만 한다. 쓰는 중인 글에 slug가 없어도 깨지지 않는다.
  * - 작성일에 시각이 있으면 날짜만 쓴다. 커버는 이미지 서버 주소로 바꾼다.
+ * - 페이지를 고친 시각(`last_edited_time`)은 sitemap의 `lastModified`로 쓴다.
  * @codocs [[콘텐츠 원천:공개 여부]]
  * @codocs [[콘텐츠 원천:Notion 속성]]
+ * @codocs [[SEO와 공유 미리보기:sitemap과 robots]]
  * @param pages 한 데이터베이스의 행(Notion 페이지 응답 그대로)
  * @returns 검증한 공개 행들(최신순)
  */
@@ -76,6 +79,7 @@ function toRowValues(page: NotionPage): Record<keyof PostRow, unknown> {
     publishedAt: readDate(page.properties[PROPERTY_NAMES.publishedAt]),
     cover: toCoverAddress(page.id, page.cover),
     summary: readText(page.properties[PROPERTY_NAMES.summary]),
+    lastEditedAt: page.last_edited_time,
   };
 }
 
