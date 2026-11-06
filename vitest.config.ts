@@ -19,6 +19,15 @@ export default defineConfig({
           include: ['scripts/**/*.test.mjs'],
         },
       },
+      // @codocs [[Notion 이미지 제공:주소]]
+      // 블로그와 이미지 서버가 같은 주소 모양을 쓰는지 두 앱을 함께 불러 보는 시험. 두 앱은 서로 import하지 않는다.
+      {
+        test: {
+          name: 'unit-repo-contracts',
+          environment: 'node',
+          include: ['contracts/**/*.test.ts'],
+        },
+      },
     ],
     passWithNoTests: true,
   },
