@@ -13,7 +13,7 @@ jobs:
   delete-report-branch:
     name: Delete parity report branch
     if: github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     steps:
       - name: Delete branch
         env:

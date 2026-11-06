@@ -24,23 +24,25 @@ env:
 jobs:
   report:
     name: Scenario cases report
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v7
 
+      # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
       - uses: pnpm/action-setup@v6
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
 
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-          cache: pnpm
 
       - run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: pnpm --filter @seojaewan/web exec playwright install --with-deps chromium
+        run: pnpm --filter @seojaewan/web exec playwright install chromium
 
       - name: Build
         run: pnpm build
@@ -84,7 +86,7 @@ jobs:
     needs: report
     # 케이스가 실패해도 보고서는 올린다.
     if: ${{ !cancelled() && needs.report.result != 'skipped' }}
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     permissions:
       pages: write
       id-token: write

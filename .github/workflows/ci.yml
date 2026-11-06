@@ -22,19 +22,21 @@ jobs:
   branch-name:
     # ruleset의 필수 검사 이름과 같아야 한다
     name: Branch name
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     env:
       # PR이면 PR 브랜치, `main` push면 `main`. 값을 스크립트 안에 풀어 쓰지 않고 환경 변수로 넘긴다.
       BRANCH: ${{ github.head_ref || github.ref_name }}
     steps:
       - uses: actions/checkout@v7
 
+      # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
       - uses: pnpm/action-setup@v6
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
 
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-          cache: pnpm
 
       # 종류 목록을 commitlint 설정에서 읽으므로 루트 의존성만 설치한다
       - run: pnpm install --frozen-lockfile --filter seojaewan-blog
@@ -43,16 +45,18 @@ jobs:
 
   verify:
     name: Lint, typecheck, test, build
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     steps:
       - uses: actions/checkout@v7
 
+      # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
       - uses: pnpm/action-setup@v6
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
 
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-          cache: pnpm
 
       - run: pnpm install --frozen-lockfile
 
@@ -67,7 +71,7 @@ jobs:
 
       # 스토리 테스트(`storybook-*` project)가 Chromium에서 돈다
       - name: Install Playwright browsers
-        run: pnpm --filter @seojaewan/web exec playwright install --with-deps chromium
+        run: pnpm --filter @seojaewan/web exec playwright install chromium
 
       - name: Unit and storybook tests
         run: pnpm test
@@ -81,21 +85,23 @@ jobs:
 
   e2e:
     name: E2E
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     steps:
       - uses: actions/checkout@v7
 
+      # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
       - uses: pnpm/action-setup@v6
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
 
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-          cache: pnpm
 
       - run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: pnpm --filter @seojaewan/web exec playwright install --with-deps chromium
+        run: pnpm --filter @seojaewan/web exec playwright install chromium
 
       - name: E2E tests
         run: pnpm test:e2e
