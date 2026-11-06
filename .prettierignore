@@ -21,3 +21,6 @@ packages/design-system/src/nanum-gothic-coding.css
 packages/design-system/figma/
 apps/web/figma/
 **/parity-results/
+
+# 내보내기 스크립트가 만든 글 JSON. 스크립트가 쓰는 모양(키 정렬, 2칸 들여쓰기)을 그대로 둔다
+apps/web/content/
