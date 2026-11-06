@@ -14,8 +14,9 @@ const ROW = {
 
 // @codocs [[콘텐츠 원천:Notion 속성]]
 describe('콘텐츠 원천:Notion 속성', () => {
-  it('공개 행을 제목, slug, 폴더 경로, 작성일의 글 색인으로 바꾼다', () => {
-    expect(toPostSummary(ROW)).toEqual({
+  it('공개 행을 묶음, 제목, slug, 폴더 경로, 작성일의 글 색인으로 바꾼다', () => {
+    expect(toPostSummary(ROW, 'blog')).toEqual({
+      collection: 'blog',
       slug: 'react-19-hooks',
       title: 'React 19 훅 정리',
       folderPath: ['React', 'Hooks'],
@@ -40,11 +41,11 @@ describe('콘텐츠 원천:Notion 속성', () => {
 // @codocs [[작업 공간 맞추기:초기 구조]]
 describe('작업 공간 맞추기:초기 구조', () => {
   it('폴더 속성이 비어 있으면 빈 경로(묶음 폴더 바로 아래)다', () => {
-    expect(toPostSummary({ ...ROW, folder: '' }).folderPath).toEqual([]);
+    expect(toPostSummary({ ...ROW, folder: '' }, 'blog').folderPath).toEqual([]);
   });
 
   it('하위 폴더는 `/`로 나눈 경로이고, 경로 칸의 앞뒤 공백과 빈 칸은 지운다', () => {
-    expect(toPostSummary({ ...ROW, folder: ' React / /Hooks/ ' }).folderPath).toEqual([
+    expect(toPostSummary({ ...ROW, folder: ' React / /Hooks/ ' }, 'blog').folderPath).toEqual([
       'React',
       'Hooks',
     ]);

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { getPostIndex } from '@/content/post-source/post-source';
+import { getContentIndex } from '@/content/content-cache/content-cache';
 import { Shell } from '@/shell/shell';
 
 /**
@@ -10,6 +10,6 @@ import { Shell } from '@/shell/shell';
  * @returns 찾을 수 없음 Chrome 창이 열린 화면
  */
 export default async function NotFoundPage(): Promise<ReactNode> {
-  const posts = await getPostIndex();
+  const posts = await getContentIndex();
   return <Shell posts={posts} initialPage={{ kind: 'not-found' }} />;
 }
