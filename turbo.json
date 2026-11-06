@@ -23,7 +23,13 @@
     "dev": {
       "cache": false,
       "persistent": true,
-      "passThroughEnv": ["CONTENT_SOURCE", "NOTION_TOKEN"]
+      "passThroughEnv": [
+        "CONTENT_SOURCE",
+        "NOTION_TOKEN",
+        "NOTION_WEBHOOK_SECRET",
+        "ALERT_URL",
+        "ALERT_SECRET"
+      ]
     },
     "storybook": {
       "cache": false,
