@@ -99,5 +99,5 @@ React와 Next.js: |
   - React Compiler를 켜고 `useMemo`·`useCallback`·`memo`는 직접 쓰지 않는다. 성능 문제가 측정된 곳에서만 예외로 쓴다.
   - 환경 변수는 Zod로 검증하는 모듈 하나에서만 읽는다. 코드 곳곳에서 `process.env`를 직접 읽지 않는다.
 검토한 대안: |
-  - Server Action을 props로 내려 불러 데이터(글 본문) 받기: Server Action은 POST 요청이라 ISR과 태그 캐시([[콘텐츠 원천:갱신 방식]])를 쓰기 어렵고, 함수 prop을 여러 층 내려야 해 고르지 않았다.
+  - Server Action을 props로 내려 불러 데이터(글 본문) 받기: Server Action은 POST 요청이라 캐시를 쓰기 어렵고(당시 ISR과 태그 캐시를 쓰던 때의 판단이다, 지금은 [[콘텐츠 원천:결정]]), 함수 prop을 여러 층 내려야 해 고르지 않았다.
   - 모든 글 본문을 처음 렌더에 넣기: 글이 늘수록 첫 페이지가 무거워져 고르지 않았다.

@@ -1,0 +1,26 @@
+_codocs:
+  id: discussion-2026-11-06-content-as-json
+  name: 논의 2026-11-06 글을 JSON으로 커밋
+  parent:
+    - 논의 기록
+질문: |
+  글 반영을 ISR과 Notion 웹훅 즉시 갱신(`revalidateTag`)으로 하기로 하고 구현했는데, Cache Components에서 없는 slug가 빈 404 틀(`__next_error__`)을 보내는 문제가 있었고 캐시 태그·즉시 만료·웹훅 서명·확인 토큰 절차가 복잡했다. 글이 하루에 많아야 한 편이고 수정도 드문데 이 구조가 맞는지 owner가 다시 물었다.
+과정: |
+  1. 글이 드물게 바뀌므로 변경마다 다시 배포하는 비용이 작다고 보았다. 예전 "검토한 대안"에서 JSON 커밋을 버린 이유는 "글을 고칠 때마다 커밋과 배포가 필요"였고, 이제 그 비용을 받아들이기로 했다.
+  2. 감지 방법을 비교했다. n8n과 Notion 웹훅은 서비스가 늘고, 인터넷에서 들어오는 길이 생기고, 초안 자동 저장마다 알림이 와서 걸러야 해서 고르지 않았다. GitHub Actions 예약 작업(이 PC의 self-hosted runner)이 1시간마다 확인하는 쪽을 골랐다.
+  3. PR을 만들 때 기본 `GITHUB_TOKEN`으로 만든 PR에는 CI가 돌지 않으므로 사람이 만든 Fine-grained PAT(`CONTENT_SYNC_TOKEN`)을 쓰기로 했다.
+  4. 병합을 LLM이 CI 결과를 보고 판단하는 안은 고르지 않았다. CI 결과는 이미 통과·실패로 정확히 나오기 때문이다. GitHub 자동 병합을 쓰고, 실패하면 notify로 알린다.
+  5. 배포는 글 JSON만 바뀐 병합은 Changesets 버전 PR 없이 바로 블로그를 배포하고, 코드는 Changesets로 모았다가 버전 PR 병합 때 바뀐 앱만 배포한다. Renovate PR은 changeset 없이 머지되어 다음 배포에 함께 나간다.
+검토한 대안: |
+  - ISR과 Notion 웹훅 즉시 갱신: 기존 결정이다. 즉시 반영되지만 구조가 복잡하고 빈 404 틀 문제가 있어 버렸다.
+  - 시간 기반 갱신: 늦고, 바뀐 것이 없어도 Notion을 부르므로 고르지 않았다.
+  - 감지를 n8n·Notion 웹훅으로: 위 과정 2의 이유로 고르지 않았다.
+  - LLM으로 CI 결과 판단: 위 과정 4의 이유로 고르지 않았다.
+결정: |
+  - Notion 공개 글을 저장소 JSON으로 커밋하고 블로그는 완전한 SSG로 낸다. 빌드는 Notion을 부르지 않는다. 모르는 주소는 미리 만든 404로 보낸다([[콘텐츠 원천:결정]]).
+  - 감지는 1시간마다 도는 GitHub Actions 예약 작업이 한다. 초안만 고친 경우 PR이 없다. PR은 `CONTENT_SYNC_TOKEN`으로 만들고 GitHub 자동 병합으로 병합한다([[콘텐츠 원천:갱신 방식]]).
+  - 동기화 실패와 글 PR CI 실패는 notify로 알린다([[알림 프로세스]]).
+  - 글 JSON만 바뀐 병합은 바로 블로그를 배포하고, 코드는 Changesets 버전 PR 병합 때 바뀐 앱만 배포한다([[배포 환경:배포(CD)]]).
+  - 반영 지연(최대 1시간 + CI + 배포)을 받아들인다.
+남은 일: |
+  구현은 [[구현 순서]] 9단계에서 한다. 파일 경로, 워크플로 이름, JSON 모양, `CONTENT_SOURCE`·fixture와 JSON의 관계, 이미지 크기를 JSON에 넣는 방식, 블로그 환경 변수 정리는 구현 PR에서 정한다. 사람이 할 일: Actions 비밀값 `CONTENT_SYNC_TOKEN`·`NOTION_TOKEN`·`ALERT_SECRET`, 저장소 "Allow auto-merge".
