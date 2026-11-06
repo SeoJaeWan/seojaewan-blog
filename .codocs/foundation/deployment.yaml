@@ -10,23 +10,24 @@ _codocs:
   Vercel이 아니라 집의 리눅스 미니 PC에 직접 배포한다. 미니 PC는 AMD 미니 PC(7845 계열)에 RAM 32GB다.
   [[콘텐츠 원천]]에서 정한 ISR과 웹훅 기반 즉시 갱신에는 서버 런타임이 필요하고, 블로그는 Next.js standalone 출력을 Docker 컨테이너로 돌려 이를 제공한다.
 
-  배포 흐름과 구성 요소는 아래 섹션에서 정한다. 블로그(`apps/web`)와 이미지 서버(`apps/images`, [[Notion 이미지 제공]])가 앱마다 Dockerfile과 Jenkinsfile을 갖는다([[저장소 구성:구성]]).
+  배포 흐름과 구성 요소는 아래 섹션에서 정한다. 블로그(`apps/web`)와 이미지 서버(`apps/images`, [[Notion 이미지 제공]])가 앱마다 Dockerfile을 갖고, 저장소 루트에 Jenkinsfile과 Docker Compose 설정을 둔다([[저장소 구성:구성]]). 배포는 local-server가 운영하는 공용 젠킨스가 한다.
 검토한 대안: |
   - Vercel: 서버 운영이 필요 없고 ISR과 미리보기 배포를 기본으로 제공하지만 고르지 않았다. 이유는 둘이다. 이미지를 내려주는 이미지 서버가 꺼지면 이미지가 깨져 어차피 글을 읽는 데 문제가 되므로, Vercel을 써도 가용성이 크게 나아지지 않는다. 또 배포 파이프라인을 직접 만들어 보며 공부하려는 목적이 있다. Vercel을 쓰지 않으므로 미리보기 배포는 없고, 로컬과 CI로 확인한다.
   - Cloudflare(OpenNext): ISR을 쓰려면 추가 설정이 필요하다.
   - 서버에서 이미지를 GHCR에 올렸다 받기: 서버에서 직접 빌드하므로 레지스트리를 두지 않는다.
+  - 블로그 저장소가 젠킨스를 설치·운영하기: 원래 계획이었다. 2026-11-06에 local-server가 공용 젠킨스를 두기로 해 바꿨다. 서버에서 도는 서비스가 늘어 실행 계정·권한·GitHub 연결을 한 곳에서 관리하는 편이 낫기 때문이다.
   - 공개 전에 Cloudflare Access로 사이트를 막아 두기: 준비 전에는 `seojaewan.com`을 터널에 연결하지 않으면 되어 필요 없다([[배포 환경:공개 절차]]).
 배포(CD): |
-  `main`에 병합하면 GitHub 웹훅이 젠킨스(미니 PC)를 깨우고, 젠킨스가 해당 앱의 Jenkinsfile을 실행한다.
+  공용 젠킨스(local-server가 운영)가 배포한다. 젠킨스가 1~2분마다 GitHub에 물어 `main`에 병합된 것을 알아내고(웹훅은 쓰지 않는다), 이 저장소 루트의 Jenkinsfile을 실행한다. 블로그 저장소는 루트 Jenkinsfile과 Compose 설정만 갖는다. 젠킨스의 설치·실행 계정·GitHub 연결·알림 규칙은 local-server 저장소의 `.codocs/foundation/auto-deploy.yaml`(자동 배포)을 따르며, 여기에 옮겨 적지 않는다. 아직 구현 전이다.
 
   1. checkout
   2. `docker build`(블로그는 Next.js standalone). 미니 PC에서 빌드하며 이미지를 레지스트리에 올리지 않는다.
   3. 새 컨테이너를 띄워 health check
   4. 통과하면 옛 컨테이너를 새것으로 교체하고, 실패하면 옛 컨테이너를 그대로 둔다.
-  5. 결과를 local-server의 notify로 보내 카카오톡으로 받는다([[알림 프로세스]]).
+  5. 실패했을 때만 local-server의 notify로 보내 카카오톡으로 받는다. 성공은 알리지 않는다([[알림 프로세스]]).
 
-  - 젠킨스 작업은 앱마다 하나씩 둔다(블로그 `apps/web`, 이미지 서버 `apps/images`). 바뀐 앱만 배포한다.
-  - 컨테이너는 포트를 `127.0.0.1`에만 연다(예: `-p 127.0.0.1:3000:3000`). Docker의 포트 공개는 ufw를 건너뛰어 방화벽에 구멍을 내기 때문이다. cloudflared가 같은 머신에서 돌아 터널 연결에는 문제가 없다. 이 PC의 방화벽(ufw)은 local-server가 정한다(local-server 저장소의 `.codocs/foundation/security.yaml`, 보안과 방화벽).
+  - 두 앱(블로그 `apps/web`, 이미지 서버 `apps/images`)을 Docker Compose 하나로 묶는다. 바뀐 앱만 배포할지와 그 기준(배포 대상을 고르는 방법)은 아직 정하지 않았다.
+  - 컨테이너는 포트를 `127.0.0.1`에만 연다(Compose의 `127.0.0.1:3000:3000`). Docker의 포트 공개는 ufw를 건너뛰어 방화벽에 구멍을 내기 때문이다. cloudflared가 같은 머신에서 돌아 터널 연결에는 문제가 없다. 이 PC의 방화벽(ufw)은 local-server가 정한다(local-server 저장소의 `.codocs/foundation/security.yaml`, 보안과 방화벽).
 CI: |
   CI는 GitHub Actions 그대로다. PR 검사이고 병합 전에 통과해야 하는 조건도 같다([[Git 작업 규칙:CI]]).
 
@@ -49,7 +50,6 @@ CI: |
   블로그는 local-server 저장소에 `registry/seojaewan-blog.yaml`을 PR로 올려 등록한다. 등록할 대상은 다음과 같다.
   - 블로그 컨테이너(`127.0.0.1` 포트 HTTP)와 `https://seojaewan.com/`(공개 HTTPS)
   - `apps/images` 컨테이너와 `https://images.seojaewan.com`
-  - 젠킨스
   - runner 서비스 3개
   - 시나리오 케이스 보고서 서버
 
@@ -57,14 +57,14 @@ CI: |
 감시의 검토한 대안: |
   - `uptime.yml`(GitHub 호스티드 러너가 1시간마다 `https://seojaewan.com/` 확인): 만들지 않는다. 알림이 메일로 따로 가고, local-server 감시가 더 빠르게 같은 일을 하기 때문이다.
 환경 변수: |
-  환경 변수의 값은 저장소에 두지 않는다. 저장소에는 값이 빈 `apps/web/.env.example`만 둔다. `apps/images`에는 `.env.example`이 아직 없다. Notion 값은 사용자가 직접 넣고 AI 에이전트에게 주지 않는다.
+  환경 변수의 값은 저장소에 두지 않는다. 저장소에는 값이 빈 `apps/web/.env.example`을 둔다. `apps/images/.env.example`은 아직 없고 배포 파이프라인 작업(구현 순서 9단계 7번)에서 만든다. Notion 값은 사용자가 직접 넣고 AI 에이전트에게 주지 않는다.
 
   | 대상 | 변수 |
   |---|---|
   | 블로그 | `CONTENT_SOURCE`(`notion`·`fixture`, 기본 `notion`), `NOTION_TOKEN`, `NOTION_WEBHOOK_SECRET`(없으면 웹훅 라우트가 모두 거절), `ALERT_URL`(`http://10.88.0.1:8790/notify`), `ALERT_SECRET` |
   | 이미지 서버(`apps/images`) | `NOTION_TOKEN`(`seojaewan-images` 연동 토큰), `IMAGE_STORE_DIR`(기본 `/srv/seojaewan-images`), `HOST`(기본 `127.0.0.1`, 컨테이너는 `0.0.0.0`), `PORT`(기본 3100), `ALERT_URL`·`ALERT_SECRET`(둘은 함께 있어야 하고, 둘 다 없으면 로그만 남긴다) |
 
-  `ALERT_SECRET`은 사람이 넣는 값이 아니다. 배포 때 젠킨스가 Firebat의 local-server `.local/credentials/notify/<이름>.secret`(root, 권한 600)을 읽어 컨테이너에 넣는다. 서비스 이름은 블로그 `blog`, 이미지 서버 `images`, 젠킨스 `jenkins`다([[알림 프로세스]]). 사람이 넣는 값은 Notion 토큰과 `NOTION_WEBHOOK_SECRET`이다.
+  `ALERT_SECRET`은 사람이 넣는 값이 아니다. 배포 때 젠킨스(local-server)가 Firebat의 local-server `.local/credentials/notify/<이름>.secret`(root, 권한 600)을 읽어 컨테이너에 넣는다. 서비스 이름은 블로그 `blog`, 이미지 서버 `images`다. 젠킨스 `jenkins`는 local-server의 젠킨스가 쓴다([[알림 프로세스]]). 사람이 넣는 값은 Notion 토큰과 `NOTION_WEBHOOK_SECRET`이다.
 
   - `CONTENT_SOURCE`가 `notion`이면 `NOTION_TOKEN`이 필수다(Zod `refine`). 환경 변수는 검증 모듈 하나에서만 읽는다([[코드 작성 규칙:React와 Next.js]]). 이미지 서버 주소와 Notion 데이터베이스 ID 세 개는 환경 변수가 아니라 코드 상수다.
   - turbo가 strict env 모드라, 작업에 넘길 변수를 `turbo.json`에 적어야 한다. `build`에는 `CONTENT_SOURCE`·`NOTION_TOKEN`, `test:e2e`에는 `CONTENT_SOURCE`·`E2E_PORT`, `dev`에는 `CONTENT_SOURCE`·`NOTION_TOKEN`·`NOTION_WEBHOOK_SECRET`·`ALERT_URL`·`ALERT_SECRET`이다.
@@ -72,24 +72,25 @@ CI: |
   - 로컬: `apps/web/.env.local`에 직접 둔다(Vercel이 없으므로 `vercel env pull`은 없다).
   - 토큰의 종류와 권한은 [[콘텐츠 원천:연동 토큰]]에서 정한다.
 접근 제한: |
-  Cloudflare Access(로그인으로 막는 기능)는 두 곳에만 쓴다. 젠킨스 관리 화면과 시나리오 케이스 보고서다.
-  젠킨스는 GitHub 웹훅을 받는 `/github-webhook/` 경로만 Cloudflare 터널로 외부에 열고, 관리 화면은 Access 뒤에 둔다. 블로그 `seojaewan.com`에는 Access를 쓰지 않는다.
+  Cloudflare Access(로그인으로 막는 기능)는 이 저장소 쪽에서는 시나리오 케이스 보고서에만 쓴다. 젠킨스 관리 화면(`jenkins.seojaewan.com`)의 Access는 local-server가 맡고 예외를 두지 않는다. 블로그 `seojaewan.com`에는 Access를 쓰지 않는다.
+
+`/github-webhook/` 경로 공개와 `jenkins-webhook` Access 앱(Bypass)은 2026-11-06에 만들었지만, 웹훅을 쓰지 않게 되어 지운다.
 인프라 설정의 위치: |
-  터널, Access, self-hosted runner, 젠킨스 설치와 같은 인프라 설정은 코드가 아니라 서버와 Cloudflare·GitHub 설정이다. 그 절차와 결과(주소, 서비스 이름, 설정 파일 위치)는 이 문서에 적는다. 값(토큰, 비밀번호)은 적지 않는다. 설정이 끝나면 적을 자리가 이 섹션이다.
+  터널, Access, self-hosted runner와 같은 인프라 설정은 코드가 아니라 서버와 Cloudflare·GitHub 설정이다. 그 절차와 결과(주소, 서비스 이름, 설정 파일 위치)는 이 문서에 적는다. 값(토큰, 비밀번호)은 적지 않는다. 설정이 끝나면 적을 자리가 이 섹션이다.
 
   - self-hosted runner: `minipc-1`~`minipc-3`, 라벨 `self-hosted, Linux, X64`, 버전 v2.338.2. 폴더는 `~/actions-runners/runner-1`~`3`, systemd 서비스는 `actions.runner.SeoJaeWan-seojaewan-blog.minipc-<n>.service`(사용자 `seojaewan`)다.
   - 시나리오 케이스 보고서 폴더: `/home/seojaewan/scenario-cases-report`는 가장 최근 실행을 가리키는 심볼릭 링크다. 실행별 사본은 `/home/seojaewan/scenario-cases-report-builds/`에 두고 최근 두 개만 남긴다.
   - 시나리오 케이스 보고서 서버: `scenario-cases-report.service`(유닛 파일은 `~/scenario-cases-report-server/`)가 `python3 -m http.server`로 `127.0.0.1:8470`을 연다. 부팅 시 자동으로 시작한다.
   - 시나리오 케이스 보고서 공개 주소: Cloudflare 터널(local-server 터널, 대시보드에서 관리)의 공개 호스트 이름 `scenario-cases.seojaewan.com`이 `http://127.0.0.1:8470`으로 간다. Service Type은 HTTP다(HTTPS로 두면 502). Cloudflare Access 애플리케이션으로 소유자 이메일만 허용한다.
-  - 포트(2026-11-06 정함): 블로그 컨테이너 `127.0.0.1:3000`, 이미지 서버 컨테이너 `127.0.0.1:3100`, 젠킨스 `127.0.0.1:8090`이다. 8080은 local-server의 Caddy가 `10.88.0.2:8080`에서 쓰고 있어 피했다.
+  - 포트(2026-11-06 정함): 블로그 컨테이너 `127.0.0.1:3000`, 이미지 서버 컨테이너 `127.0.0.1:3100`, 젠킨스(local-server 소유) `127.0.0.1:8090`이다. 8080은 local-server의 Caddy가 `10.88.0.2:8080`에서 쓰고 있어 피했다.
   - 이미지 서버 공개 주소: 같은 터널의 공개 호스트 이름 `images.seojaewan.com`이 `http://127.0.0.1:3100`으로 간다. Access는 걸지 않는다. 방문자와 카카오 미리보기 봇이 받아야 하기 때문이다([[Notion 이미지 제공]]).
-  - 젠킨스 공개 주소: 같은 터널의 `jenkins.seojaewan.com`이 `http://127.0.0.1:8090`으로 간다.
-  - 젠킨스의 Cloudflare Access 애플리케이션은 둘이다. `jenkins`는 `jenkins.seojaewan.com` 전체를 owner 이메일만 허용(Allow)한다. `jenkins-webhook`은 `jenkins.seojaewan.com/github-webhook`을 Everyone에게 Bypass로 열어 GitHub 웹훅이 로그인 없이 들어오게 한다. 경로가 더 구체적인 앱이 먼저 적용된다.
+  - 젠킨스 공개 주소(local-server 소유): 같은 터널의 `jenkins.seojaewan.com`이 `http://127.0.0.1:8090`으로 간다.
+  - 젠킨스의 Cloudflare Access: `jenkins` 앱(local-server 소유)이 `jenkins.seojaewan.com` 전체를 owner 이메일만 허용한다. `jenkins-webhook` 앱(`/github-webhook` Bypass)은 웹훅을 쓰지 않게 되어 지울 대상이다(owner가 Cloudflare에서 지운다).
   - Access 앱을 만들 때 만난 문제: 브라우저 격리 옵션을 켜면 공개 주소에 저장이 안 된다. 같은 주소를 쓰는 앱이 이미 있으면 "destination belongs to another application" 오류가 난다.
-  - 2026-11-06에 확인한 상태: `jenkins.seojaewan.com/`은 Access로 302, `/github-webhook/`은 통과(젠킨스가 아직 없어 502), `images.seojaewan.com`은 서버가 없어 502다.
+  - 2026-11-06에 확인한 상태: `jenkins.seojaewan.com/`은 Access로 302, `images.seojaewan.com`은 서버가 없어 502다.
   - 머신 준비: Playwright Chromium 시스템 라이브러리 설치(`playwright install-deps chromium`), `corepack enable`, 사용자 `seojaewan`을 docker 그룹에 추가.
 공개 절차: |
-  준비되기 전에는 `seojaewan.com`을 터널에 연결하지 않는다. 연결하지 않으면 접속 자체가 되지 않아 막아 둘 필요가 없다. 공개 전에는 사람이 사이트를 미리 보지 않는다. 확인은 젠킨스 health check와 서버 안의 `curl`로만 한다.
+  준비되기 전에는 `seojaewan.com`을 터널에 연결하지 않는다. 연결하지 않으면 접속 자체가 되지 않아 막아 둘 필요가 없다. 공개 전에는 사람이 사이트를 미리 보지 않는다. 확인은 health check와 서버 안의 `curl`로만 한다.
 
   공개는 `seojaewan.com`을 처음 터널에 연결하는 일이다.
   1. 터널에 연결한다.
