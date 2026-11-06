@@ -1,7 +1,7 @@
 # @codocs [[배포 환경:배포(CD)]]
 # 이미지 서버 이미지. 빌드 문맥은 저장소 루트다(`docker compose build images`).
 # 빌드 단계 없이 Node 24가 src/main.ts를 바로 실행한다. sharp는 이 플랫폼(linux x64, glibc)용 바이너리를 lockfile에서 받는다.
-FROM node:24.18.1-bookworm-slim@sha256:235600a8101ab264e117b1768e925532262668dc9b581ef1dd7d96ced463b8e7 AS build
+FROM node:26.13.0-bookworm-slim@sha256:add5c17c14752c54d2f3d519ec46a3815684d41c33f198bcb09fb998f7dcbf68 AS build
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 # pnpm 버전은 루트 package.json의 packageManager를 따른다
 RUN corepack enable
@@ -15,7 +15,7 @@ COPY apps/images ./apps/images
 # 체크아웃의 파일 권한(umask)과 관계없이 실행 계정이 읽을 수 있게 한다
 RUN chmod -R a+rX apps/images
 
-FROM node:24.18.1-bookworm-slim@sha256:235600a8101ab264e117b1768e925532262668dc9b581ef1dd7d96ced463b8e7
+FROM node:26.13.0-bookworm-slim@sha256:add5c17c14752c54d2f3d519ec46a3815684d41c33f198bcb09fb998f7dcbf68
 ENV NODE_ENV=production \
     HOST=0.0.0.0 \
     PORT=3100 \
