@@ -15,6 +15,26 @@
     {
       "matchPackageNames": ["@types/node"],
       "allowedVersions": "<25"
+    },
+    {
+      "description": "typescript-eslint가 지원하는 범위(6.1 미만)만 쓴다",
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<6.1"
+    },
+    {
+      "description": "eslint-plugin-react가 지원하는 ESLint 9만 쓴다",
+      "matchPackageNames": ["eslint", "@eslint/js"],
+      "allowedVersions": "<10"
+    },
+    {
+      "description": "Node는 24로 고정하고 engines·.nvmrc 범위는 손으로 바꾼다",
+      "matchDepTypes": ["engines"],
+      "enabled": false
+    },
+    {
+      "description": "Node는 24로 고정하고 engines·.nvmrc 범위는 손으로 바꾼다",
+      "matchManagers": ["nvm"],
+      "enabled": false
     }
   ]
 }
