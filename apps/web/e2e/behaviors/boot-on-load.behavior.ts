@@ -76,7 +76,10 @@ export const behavior = defineBehavior({
         await page.goto(POST_PATH);
         const firstHtml = await openFirstHtml(page);
         await check('첫 HTML에 재부팅 화면과 글 제목·본문 글자가 모두 있다', async () => {
-          await expect(firstHtml.getByRole('progressbar', BOOT_SCREEN)).toBeAttached();
+          // 안전장치가 이미 숨겼어도(첫 HTML을 4초 넘게 읽음) HTML에 있는지를 본다.
+          await expect(
+            firstHtml.getByRole('progressbar', { ...BOOT_SCREEN, includeHidden: true }),
+          ).toBeAttached();
           const firstWindow = firstHtml.getByRole('region', { name: POST_WINDOW });
           await expect(
             firstWindow.getByRole('heading', { level: 1, name: 'React 19 훅 정리' }),
@@ -147,7 +150,10 @@ export const behavior = defineBehavior({
         await page.goto(POST_PATH);
         const firstHtml = await openFirstHtml(page);
         await check('몇 초 뒤 재부팅 화면이 걷힌다', async () => {
-          await expect(firstHtml.getByRole('progressbar', BOOT_SCREEN)).toBeAttached();
+          // 안전장치가 이미 숨겼어도(첫 HTML을 4초 넘게 읽음) HTML에 있는지를 본다.
+          await expect(
+            firstHtml.getByRole('progressbar', { ...BOOT_SCREEN, includeHidden: true }),
+          ).toBeAttached();
           await expect(firstHtml.getByRole('progressbar', BOOT_SCREEN)).toBeHidden({
             timeout: FALLBACK_TIMEOUT,
           });
