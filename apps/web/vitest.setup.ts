@@ -1,3 +1,4 @@
+import { Blob as NodeBlob } from 'node:buffer';
 import { cleanup } from '@testing-library/react';
 import { afterEach } from 'vitest';
 
@@ -25,4 +26,10 @@ if (typeof Element.prototype.setPointerCapture === 'undefined') {
     releasePointerCapture: { configurable: true, writable: true, value: () => undefined },
     hasPointerCapture: { configurable: true, writable: true, value: () => false },
   });
+}
+
+// jsdom의 Blob에는 `stream()`이 없다. shiki 4.6의 인라인 wasm 로더가 `new Blob(...).stream()`을 부르므로,
+// 없으면 Node의 Blob으로 바꿔 둔다.
+if (typeof Blob.prototype.stream !== 'function') {
+  globalThis.Blob = NodeBlob as typeof Blob;
 }

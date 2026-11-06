@@ -25,5 +25,6 @@ describe('행위 정의 읽기', () => {
         .map((problem) => `${behavior.id}: ${problem}`),
     );
     expect(problems).toEqual([]);
-  });
+    // 저장소의 행위 정의 파일을 모두 읽어 변환하므로, 전체 테스트와 함께 돌면 5초 기본 제한을 넘는다.
+  }, 30_000);
 });
