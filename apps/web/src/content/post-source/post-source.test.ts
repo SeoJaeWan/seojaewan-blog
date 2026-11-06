@@ -114,6 +114,19 @@ describe('콘텐츠 원천:데이터베이스', () => {
   });
 });
 
+// @codocs [[Notion 이미지 제공:크기]]
+describe('Notion 이미지 제공:크기', () => {
+  it('fixture 모드는 이미지 서버에 묻지 않고 커버를 저장소 안의 시험 이미지와 그 원본 크기로 그린다', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch');
+    const body = await getContentBody('project', 'fixture-project');
+    expect(body?.cover?.url).toMatch(/notion-test-image\.png$/u);
+    expect(body?.cover).toMatchObject({ width: 16, height: 9 });
+    expect((await getPostBody('react-19-hooks'))?.cover).toBeNull();
+    expect(fetchSpy).not.toHaveBeenCalled();
+    fetchSpy.mockRestore();
+  });
+});
+
 // @codocs [[콘텐츠 원천:공개 여부]]
 describe('콘텐츠 원천:공개 여부', () => {
   it('공개하지 않은 행은 목록에 없고 본문도 없다(null)', async () => {

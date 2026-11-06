@@ -3,6 +3,8 @@
 // Chrome 페이지 조립 스토리가 함께 쓰는 고정 데이터다. 피그마 조립과 같은 값을 둔다.
 // 글 하나(React 19 훅 정리)는 Chrome 창(Window/Chrome)과 그 창을 줄여 넣는 창 축소 화면(Window/SnapAssist 등) 스토리도 그린다.
 
+import { getImageAsset } from '@seojaewan/design-system';
+
 import type { PostBlock } from '@/shared/utils/post-body/post-body';
 
 /** 피그마 `file/Document` 인스턴스(글 아이콘)의 자산 */
@@ -101,13 +103,16 @@ const postCode: PostBlock = {
 
 const postFigure: PostBlock = {
   type: 'image',
-  url: 'https://seojaewan.com/images/bloom.png',
+  // 스토리에는 이미지 서버가 없어 저장소 안의 배경화면 Bloom과 그 원본 크기를 둔다
+  url: getImageAsset('images/wallpaper-bloom').src,
+  width: getImageAsset('images/wallpaper-bloom').width,
+  height: getImageAsset('images/wallpaper-bloom').height,
   caption: [{ text: 'Bloom 배경화면', link: null }],
 };
 
 /**
  * 피그마 Chrome/Page `Page=Post`의 본문 블록(PostBlocks로 그린다). 넓은 창은 코드 블록 뒤에 제목·문단·그림까지,
- * 좁은 창은 코드 블록 뒤에 그림 하나를 둔다. 이미지는 임시 이미지(배경화면 Bloom)다.
+ * 좁은 창은 코드 블록 뒤에 그림 하나를 둔다. 이미지는 배경화면 Bloom이다.
  */
 export const postPageBlocks: Record<'wide' | 'narrow', PostBlock[]> = {
   wide: [

@@ -38,7 +38,7 @@ type BlockInput = {
  * 구분선, 토글, 표, 북마크, 수식)을 옮긴다.
  * - 지원하지 않는 블록은 그 자리에 `unsupported`(Notion 유형 이름)를 두고 서버 로그에 경고를 남긴다. 조용히 버리거나 멈추지 않는다.
  * - 목록·할 일·토글은 하위 블록을 그대로 품는다. 하위 블록을 품지 못하는 블록(문단 등)의 하위 블록은 그 블록 바로 뒤에 둔다.
- * - 이미지 주소는 Notion 주소가 아니라 이미지 서버 주소다.
+ * - 이미지 주소는 Notion 주소가 아니라 이미지 서버 주소다. 크기는 비워 두고 본문을 만들 때 `resolvePostImages`가 채운다.
  * - 코드 강조와 수식 HTML은 여기서 채우지 않는다. 본문을 보낼 때 `renderPostBlocks`가 채운다.
  * @codocs [[Notion 블록:지원 블록]]
  * @codocs [[Notion 블록:지원하지 않는 블록]]
@@ -112,6 +112,8 @@ function toPostBlock(node: NotionBlockNode): PostBlock[] {
         {
           type: 'image',
           url: getNotionImageAddress(head.id, head.last_edited_time),
+          width: null,
+          height: null,
           caption: toRichText(imageBodySchema.parse(body).caption),
         },
       ];

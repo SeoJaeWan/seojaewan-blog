@@ -52,7 +52,7 @@ export function Shell({ posts, initialPage: initialPageProp }: ShellProps): JSX.
   const entryPost = initialPage?.kind === 'post' ? initialPage : null;
   const chromePreload: ChromePreload = {
     posts,
-    entryPost: entryPost === null ? null : { slug: entryPost.slug, blocks: entryPost.body.blocks },
+    entryPost: entryPost === null ? null : { slug: entryPost.slug, body: entryPost.body },
   };
   const entryWindow =
     isInitialWindowPending && entryPost !== null

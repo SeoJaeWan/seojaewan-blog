@@ -1,6 +1,6 @@
 import { spyOn } from 'storybook/test';
 
-import type { PostBlock } from '@/shared/utils/post-body/post-body';
+import type { PostBlock, PostBody } from '@/shared/utils/post-body/post-body';
 
 import { clearPostBodyCache } from './hooks/use-post-body/use-post-body';
 
@@ -21,11 +21,11 @@ export function getPostBodyRequests(): readonly string[] {
 /**
  * 스토리가 글 본문 서버 경로(`/api/posts/<slug>`)를 가짜 본문으로 대신하게 한다. 다른 요청은 그대로 보낸다.
  * 받아 둔 본문 기억도 비운다. 스토리 `beforeEach`에서 부르고, 돌려준 함수를 정리 함수로 돌려준다.
- * @param bodies slug마다의 본문. null이면 404, 적지 않은 slug는 빈 본문이다
+ * @param bodies slug마다의 본문(블록만 주면 커버가 없는 본문이다). null이면 404, 적지 않은 slug는 빈 본문이다
  * @returns 진짜 `fetch`로 돌려놓는 함수
  */
 export function mockPostBodies(
-  bodies: Readonly<Record<string, readonly PostBlock[] | null>>,
+  bodies: Readonly<Record<string, readonly PostBlock[] | PostBody | null>>,
 ): () => void {
   clearPostBodyCache();
   postBodyRequests.length = 0;
@@ -47,10 +47,11 @@ export function mockPostBodies(
       const slug = decodeURIComponent(path.slice(POST_BODY_PATH.length));
       const found = bodies[slug];
       const body = found === undefined ? [] : found;
+      if (body === null) {
+        return Promise.resolve(Response.json({ error: 'not-found' }, { status: 404 }));
+      }
       return Promise.resolve(
-        body === null
-          ? Response.json({ error: 'not-found' }, { status: 404 })
-          : Response.json({ blocks: body }),
+        Response.json('blocks' in body ? body : { blocks: body, cover: null }),
       );
     },
   );
