@@ -106,7 +106,7 @@ export async function runCase(token: string, onChange: (run: CaseRun) => void): 
   if (!existsSync(fromRepo(`${WEB_DIR}/.next/BUILD_ID`))) {
     finish(
       'error',
-      '앱 빌드가 없다. 먼저 `pnpm build`(Windows는 `next build --webpack`)로 빌드한다.',
+      '앱 빌드가 없다. 먼저 `CONTENT_SOURCE=fixture pnpm build`(Windows는 `next build --webpack`)로 빌드한다.',
       null,
     );
     return;
@@ -133,6 +133,8 @@ export async function runCase(token: string, onChange: (run: CaseRun) => void): 
       path.join(dir, 'results'),
     ],
     {
+      // E2E는 fixture를 읽는다([[콘텐츠 원천:읽는 곳]]). 앱 빌드도 fixture로 만들어 둔다.
+      CONTENT_SOURCE: 'fixture',
       SCENARIO_CASES_SLOW_MO: String(SLOW_MO_MS),
       SCENARIO_CASES_ACTION_MS: String(ACTION_ANNOTATION_MS),
       PLAYWRIGHT_JSON_OUTPUT_NAME: reportPath,

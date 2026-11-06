@@ -17,6 +17,9 @@ permissions:
 env:
   NEXT_TELEMETRY_DISABLED: 1
   TURBO_TELEMETRY_DISABLED: 1
+  # @codocs [[콘텐츠 원천:읽는 곳]]
+  # CI와 E2E는 Notion이 아니라 저장소의 fixture를 읽는다(빌드와 앱 실행 모두)
+  CONTENT_SOURCE: fixture
 
 jobs:
   branch-name:

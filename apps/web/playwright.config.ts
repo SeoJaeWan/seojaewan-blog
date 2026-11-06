@@ -12,6 +12,15 @@ const isCi = Boolean(process.env.CI);
 const slowMo = Number(process.env.SCENARIO_CASES_SLOW_MO ?? 0);
 const actionAnnotationMs = Number(process.env.SCENARIO_CASES_ACTION_MS ?? 100);
 
+// @codocs [[콘텐츠 원천:읽는 곳]]
+// E2E는 fixture를 읽는 빌드로 돈다. 앱 빌드(`pnpm build`)와 시험 모두 `CONTENT_SOURCE=fixture`로 실행해야
+// 첫 화면의 글 색인과 본문 경로가 같은 fixture를 읽는다. 기본값(notion)으로 조용히 돌지 않게 막는다.
+if (process.env.CONTENT_SOURCE !== 'fixture') {
+  throw new Error(
+    'E2E는 CONTENT_SOURCE=fixture로 빌드하고 실행한다. 예: CONTENT_SOURCE=fixture pnpm test:e2e',
+  );
+}
+
 // @codocs [[테스트 작성 규칙:E2E]]
 // 스크린샷 비교 없이 사용자 흐름만 확인하고, 동작 줄이기 상태에서 돈다. 시험은 행위 정의 파일에서 만든다(e2e/behaviors.test.ts).
 export default defineConfig<BehaviorOptions>({
