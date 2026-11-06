@@ -29,7 +29,7 @@ jobs:
   motion-check:
     # ruleset의 필수 검사 이름과 같아야 한다
     name: Motion check
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     permissions:
       contents: read
       # 결과 표 댓글을 남기고 고친다
@@ -74,21 +74,23 @@ jobs:
             echo "motion-args=$(jq -r '[.motions[] | "--motion " + .] | join(" ")' <<< "$range")"
           } >> "$GITHUB_OUTPUT"
 
+      # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
       - uses: pnpm/action-setup@v6
         if: steps.range.outputs.has-range == 'true'
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
 
       - uses: actions/setup-node@v7
         if: steps.range.outputs.has-range == 'true'
         with:
           node-version-file: .nvmrc
-          cache: pnpm
 
       - if: steps.range.outputs.has-range == 'true'
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
         if: steps.range.outputs.has-range == 'true'
-        run: pnpm --filter @seojaewan/figma-parity exec playwright install --with-deps chromium
+        run: pnpm --filter @seojaewan/figma-parity exec playwright install chromium
 
       # 디자인 시스템 Storybook을 정적으로 빌드하고 범위 안 견본의 모션 스토리를 검사한다.
       # 결과는 tools/figma-parity/parity-results/motion/<이름>.json에 남는다

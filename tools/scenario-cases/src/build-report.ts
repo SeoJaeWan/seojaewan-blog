@@ -9,11 +9,12 @@ import { defaultReportDir, pageDir } from './paths.ts';
 import { checksOf, type JsonReport, readReportedCases } from './playwright-results.ts';
 import { readBehaviors } from './read-behaviors.ts';
 import type { CaseResult, ResultStatus } from './table-types.ts';
+import { copyTraceViewer } from './trace-viewer.ts';
 
 // @codocs [[테스트 작성 규칙:E2E]]
 // CI가 모든 케이스를 돌린 Playwright JSON 보고서와 trace를 화면 데이터에 붙여 정적 보고서를 만든다.
-// trace zip은 보고서와 함께 올려 실행해보기가 trace.playwright.dev 뷰어로 그 주소를 연다.
-// 실행 기록은 앞서 올린 보고서의 history.json에 이번 실행을 더해 쌓는다.
+// trace zip과 Playwright Trace Viewer(`trace/`)를 보고서와 함께 두어, 실행해보기가 같은 주소의 뷰어로 그 zip을 연다.
+// 실행 기록은 지금 보고서의 history.json에 이번 실행을 더해 쌓는다.
 const { values } = parseArgs({
   options: {
     results: { type: 'string' },
@@ -101,8 +102,7 @@ writeFileSync(path.join(outDir, 'history.json'), JSON.stringify(history));
 for (const file of ['index.html', 'app.js', 'style.css']) {
   copyFileSync(path.join(pageDir, file), path.join(outDir, file));
 }
-// GitHub Pages가 Jekyll로 처리하지 않게 한다.
-writeFileSync(path.join(outDir, '.nojekyll'), '');
+copyTraceViewer(outDir);
 console.log(
   `시나리오 케이스 보고서: ${outDir} (케이스 ${String(table.totals.cases)}, 통과 ${String(table.totals.passed)}, 실패 ${String(table.totals.failed)}, 기록 ${String(history.length)}번)`,
 );

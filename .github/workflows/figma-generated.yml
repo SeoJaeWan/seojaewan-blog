@@ -27,7 +27,7 @@ jobs:
   figma-generated:
     # ruleset의 필수 검사 이름과 같아야 한다
     name: Figma generated
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     env:
       EVENT: ${{ github.event_name }}
     steps:
@@ -68,14 +68,16 @@ jobs:
             if [ "$tokens" = true ] || [ "$assets" = true ]; then echo "any=true"; else echo "any=false"; fi
           } >> "$GITHUB_OUTPUT"
 
+      # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
       - uses: pnpm/action-setup@v6
         if: steps.range.outputs.any == 'true'
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
 
       - uses: actions/setup-node@v7
         if: steps.range.outputs.any == 'true'
         with:
           node-version-file: .nvmrc
-          cache: pnpm
 
       - if: steps.range.outputs.any == 'true'
         run: pnpm install --frozen-lockfile

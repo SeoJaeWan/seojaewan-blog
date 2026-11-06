@@ -1,10 +1,11 @@
-// 시나리오 케이스 화면. 같은 폴더의 table.json을 읽어 그린다. 로컬 도구와 GitHub Pages 보고서가 같은 코드를 쓴다.
+// 시나리오 케이스 화면. 같은 폴더의 table.json을 읽어 그린다. 로컬 도구와 CI 보고서가 같은 코드를 쓴다.
 // 로컬(`mode: local`)의 실행해보기는 그 자리에서 케이스를 돌리고 Trace Viewer를 열고,
-// 보고서(`mode: report`)의 실행해보기는 그 케이스의 CI trace를 trace.playwright.dev로 연다.
+// 보고서(`mode: report`)의 실행해보기는 그 케이스의 CI trace를 보고서와 함께 복사한 Trace Viewer(`trace/`)로 연다.
+// 보고서는 Cloudflare Access(로그인) 뒤에 있어 외부 뷰어는 trace zip을 받지 못한다.
 
 const POLL_MS = 1000;
-const TRACE_VIEWER = 'https://trace.playwright.dev/?trace=';
-const REPORT_URL = 'https://seojaewan.github.io/seojaewan-blog/';
+const TRACE_VIEWER = 'trace/?trace=';
+const REPORT_URL = 'https://scenario-cases.seojaewan.com/';
 const CHEVRON =
   '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>';
 

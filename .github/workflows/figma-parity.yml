@@ -26,7 +26,7 @@ env:
 jobs:
   figma-parity:
     name: Figma parity
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     permissions:
       # 댓글 이미지(parity-report/pr-<번호>)와 main 캡처(parity-captures)를 브랜치에 올린다
       contents: write
@@ -90,21 +90,23 @@ jobs:
             gh api -X DELETE "repos/$REPOSITORY/issues/$PR_NUMBER/labels/figma" > /dev/null 2>&1 || true
           fi
 
+      # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
       - uses: pnpm/action-setup@v6
         if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
 
       - uses: actions/setup-node@v7
         if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
         with:
           node-version-file: .nvmrc
-          cache: pnpm
 
       - if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
         if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
-        run: pnpm --filter @seojaewan/figma-parity exec playwright install --with-deps chromium
+        run: pnpm --filter @seojaewan/figma-parity exec playwright install chromium
 
       # 1·2. 빌드와 캡처: 범위에 컴포넌트가 있으면 디자인 시스템 Storybook을, 조립이 있으면 앱 Storybook을
       # 정적으로 빌드하고, 범위 안 대상을 캡처해 차이 그림을 만든다. 조립은 origin/parity-captures에서 범위와 같은 기준의

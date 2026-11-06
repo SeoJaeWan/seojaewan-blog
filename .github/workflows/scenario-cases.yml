@@ -1,8 +1,9 @@
 # @codocs [[테스트 작성 규칙:E2E]]
 # 시나리오 케이스 보고서. `main` push마다 모든 케이스를 trace와 함께 돌려, 결과(통과·실패), 기대 결과별 확인,
-# trace zip을 화면 데이터에 붙인 정적 페이지(tools/scenario-cases)를 GitHub Pages에 올린다.
-# trace는 trace.playwright.dev 뷰어가 Pages 주소로 연다. 실행 기록은 앞서 올린 보고서의 history.json에 이어 쌓는다.
-# 필수 검사가 아니라 실패해도 다른 CI와 병합을 막지 않는다. E2E가 실패해도 보고서는 만들어 올리고, 마지막에 이 작업을 실패로 표시한다.
+# trace zip을 화면 데이터에 붙인 정적 페이지(tools/scenario-cases)를 만들어 미니 PC의 보고서 폴더로 옮긴다([[배포 환경:CI]]).
+# 보고서는 그 폴더를 내주는 정적 서버와 Cloudflare 터널·Access 뒤에서 연다. trace는 보고서와 함께 복사한
+# Playwright Trace Viewer(`trace/`)가 같은 주소에서 연다. 실행 기록은 지금 보고서의 history.json에 이어 쌓는다.
+# 필수 검사가 아니라 실패해도 다른 CI와 병합을 막지 않는다. E2E가 실패해도 보고서는 만들어 옮기고, 마지막에 이 작업을 실패로 표시한다.
 name: Scenario cases
 
 on:
@@ -10,9 +11,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# 배포는 하나씩 하고, 진행 중인 배포는 끊지 않는다(GitHub Pages 예시와 같다).
+# 보고서 폴더를 하나씩 바꾸고, 진행 중인 실행은 끊지 않는다.
 concurrency:
-  group: scenario-cases-pages
+  group: scenario-cases-report
   cancel-in-progress: false
 
 permissions: {}
@@ -20,30 +21,40 @@ permissions: {}
 env:
   NEXT_TELEMETRY_DISABLED: 1
   TURBO_TELEMETRY_DISABLED: 1
+  # 정적 서버(scenario-cases-report.service)가 내주는 보고서 폴더. 지금 보고서를 가리키는 심볼릭 링크다
+  REPORT_DIR: /home/seojaewan/scenario-cases-report
+  # 실행마다 만든 보고서를 두는 폴더. 지금 것과 바로 앞 것만 남긴다
+  REPORT_BUILDS_DIR: /home/seojaewan/scenario-cases-report-builds
 
 jobs:
   report:
     name: Scenario cases report
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v7
 
+      # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
       - uses: pnpm/action-setup@v6
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
 
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-          cache: pnpm
 
       - run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: pnpm --filter @seojaewan/web exec playwright install --with-deps chromium
+        run: pnpm --filter @seojaewan/web exec playwright install chromium
 
       - name: Build
         run: pnpm build
+
+      # 한 머신에서 job이 동시에 돌아 runner마다 다른 포트로 앱을 띄운다(scripts/runner-port.mjs)
+      - name: Pick E2E port
+        run: echo "E2E_PORT=$(node scripts/runner-port.mjs 4100)" >> "$GITHUB_ENV"
 
       # 모든 케이스의 trace를 남긴다. 실패해도 보고서를 만들도록 다음 단계로 넘어간다.
       - name: Run scenario cases
@@ -54,43 +65,31 @@ jobs:
           PLAYWRIGHT_JSON_OUTPUT_NAME: ${{ github.workspace }}/tools/scenario-cases/results.json
         run: pnpm exec playwright test --trace on --reporter=json,line
 
-      - uses: actions/configure-pages@v6
-        id: pages
-
-      # 앞서 올린 보고서의 실행 기록을 읽는다. 처음이거나 읽지 못하면 이번 실행부터 쌓는다.
-      # Pages는 응답을 10분 캐시하므로, 바로 앞 배포의 기록을 받도록 실행마다 다른 쿼리를 붙인다.
-      - name: Download run history
-        env:
-          PAGES_URL: ${{ steps.pages.outputs.base_url }}
-          RUN_ID: ${{ github.run_id }}
-        run: |
-          curl -fsSL -H 'Cache-Control: no-cache' "$PAGES_URL/history.json?run=$RUN_ID" -o tools/scenario-cases/history.json || echo '[]' > tools/scenario-cases/history.json
-
+      # 실행 기록은 지금 보고서의 history.json에서 읽는다. 처음이거나 읽지 못하면 이번 실행부터 쌓는다.
       - name: Build report page
         env:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: pnpm --filter @seojaewan/scenario-cases build:report --results results.json --history history.json --run-url "$RUN_URL"
+        run: |
+          pnpm --filter @seojaewan/scenario-cases build:report --results results.json \
+            --history "$REPORT_DIR/history.json" --run-url "$RUN_URL"
 
-      - uses: actions/upload-pages-artifact@v5
-        with:
-          path: tools/scenario-cases/report
+      # 이번 보고서를 실행마다 새 폴더에 복사한 뒤, 보고서 폴더 링크를 새 링크로 이름 바꿔(rename) 한 번에 바꾼다.
+      # 서버는 바꾸는 도중에도 이전 보고서나 새 보고서 중 하나를 온전히 내준다.
+      - name: Publish report
+        env:
+          RUN_KEY: ${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          mkdir -p "${REPORT_BUILDS_DIR:?}"
+          next="$REPORT_BUILDS_DIR/${RUN_KEY:?}"
+          rm -rf "$next"
+          cp -R tools/scenario-cases/report "$next"
+          ln -sfn "$next" "$REPORT_DIR.next"
+          mv -T "$REPORT_DIR.next" "$REPORT_DIR"
+          echo "보고서: $REPORT_DIR -> $(readlink "$REPORT_DIR")"
+          # 열려 있는 화면이 trace를 마저 받을 수 있게 바로 앞 보고서까지 남긴다
+          find "$REPORT_BUILDS_DIR" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' |
+            sort -rn | tail -n +3 | cut -d' ' -f2- | xargs -r rm -rf --
 
       - name: Fail when cases failed
         if: steps.cases.outcome != 'success'
         run: exit 1
-
-  deploy:
-    name: Deploy scenario cases
-    needs: report
-    # 케이스가 실패해도 보고서는 올린다.
-    if: ${{ !cancelled() && needs.report.result != 'skipped' }}
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v5
