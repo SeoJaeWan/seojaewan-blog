@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { getContentIndex } from '@/content/content-cache/content-cache';
+import { getContentIndex } from '@/content/content-store/content-store';
 import { Shell } from '@/shell/shell';
 
 /**

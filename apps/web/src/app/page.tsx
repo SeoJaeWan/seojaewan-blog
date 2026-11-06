@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
-import { getContentIndex } from '@/content/content-cache/content-cache';
+import { getContentIndex } from '@/content/content-store/content-store';
 import { getHomeMetadata } from '@/content/site-metadata/site-metadata';
 import { Shell } from '@/shell/shell';
 

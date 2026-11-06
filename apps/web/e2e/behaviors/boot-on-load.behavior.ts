@@ -7,6 +7,9 @@ import { defineBehavior } from './define-behavior.ts';
 const POST_PATH = '/posts/react-19-hooks';
 const POST_WINDOW = 'React 19 훅 정리 - Chrome';
 const POST_TEXT = 'React 19에는 폼과 비동기 상태를 다루는 새 훅이 여럿 들어왔다.';
+// 없는 글 주소와 그 주소로 들어오면 열리는 찾을 수 없음 창 이름이다.
+const MISSING_PATH = '/posts/none';
+const MISSING_WINDOW = '페이지를 찾을 수 없음 - Chrome';
 // 처음 불러올 때 덮는 재부팅 화면의 진행 링 이름이다. 다시 시작의 `다시 시작하는 중`과 구별한다.
 const BOOT_SCREEN = { name: '시작하는 중', exact: true } as const;
 // 스크립트 없이도 재부팅 화면이 스스로 걷히기까지 기다리는 상한(ms). 안전장치는 4초 뒤 걷히기 시작한다.
@@ -40,13 +43,6 @@ export const behavior = defineBehavior({
     },
   },
   noCase: {
-    address: {
-      '없는 글 주소': {
-        reason:
-          '없는 주소의 404 첫 HTML은 Next.js가 빈 본문으로 보내 재부팅 화면이 가릴 서버 화면이 없고, 화면 전체를 스크립트가 한 번에 그린다',
-        docs: ['[[창 동작:새로고침과 첫 진입]]'],
-      },
-    },
     screen: {
       노트북: {
         reason:
@@ -105,6 +101,49 @@ export const behavior = defineBehavior({
                 .evaluate((region) => region.contains(document.activeElement)),
             )
             .toBe(true);
+        });
+      },
+    },
+    {
+      id: 'missing-post',
+      result: '404여도 첫 HTML부터 재부팅 화면과 바탕화면, 걷힐 때 찾을 수 없음 창',
+      change: { address: '없는 글 주소' },
+      scenario: '주소창에 없는 글 주소 /posts/none을 입력해 처음 들어온다',
+      expected: [
+        '404로 응답한다',
+        '첫 HTML에 재부팅 화면과 바탕화면·작업 표시줄이 있다',
+        '첫 HTML부터 재부팅 화면이 덮고 있다가, 수화한 뒤 걷힌다',
+        '걷힐 때 찾을 수 없음 Chrome 창이 떠 있다',
+      ],
+      docs: [
+        '[[창 동작:새로고침과 첫 진입]]',
+        '[[콘텐츠 원천:결정]]',
+        '[[SEO와 공유 미리보기:첫 HTML]]',
+      ],
+      async run({ page, check }) {
+        await watchBootScreen(page);
+        const response = await page.goto(MISSING_PATH);
+        await check('404로 응답한다', () => {
+          expect(response?.status()).toBe(404);
+        });
+        const firstHtml = await openFirstHtml(page);
+        await check('첫 HTML에 재부팅 화면과 바탕화면·작업 표시줄이 있다', async () => {
+          // 미리 만든 404 페이지다. 서버가 빈 본문을 보내고 스크립트가 화면 전체를 그리는 것이 아니다.
+          await expect(
+            firstHtml.getByRole('progressbar', { ...BOOT_SCREEN, includeHidden: true }),
+          ).toBeAttached();
+          await expect(firstHtml.getByRole('main', { name: '바탕화면' })).toBeAttached();
+          await expect(firstHtml.getByRole('button', { name: '시작' })).toBeAttached();
+        });
+        await firstHtml.context().close();
+
+        const record = await readBootRecord(page);
+        await check('첫 HTML부터 재부팅 화면이 덮고 있다가, 수화한 뒤 걷힌다', () => {
+          expect(record.isShownFromFirstHtml).toBe(true);
+          expect(record.revealedScreen).not.toBeNull();
+        });
+        await check('걷힐 때 찾을 수 없음 Chrome 창이 떠 있다', () => {
+          expect(record.revealedScreen?.windows).toEqual([MISSING_WINDOW]);
         });
       },
     },

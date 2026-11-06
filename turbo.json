@@ -6,8 +6,7 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", "!e2e/**", "!**/*.test.{ts,tsx}", "!**/*.stories.tsx"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
-      "env": ["CONTENT_SOURCE"],
-      "passThroughEnv": ["NOTION_TOKEN"]
+      "env": ["CONTENT_SOURCE"]
     },
     "build-storybook": {
       "outputs": ["storybook-static/**"]
@@ -23,13 +22,7 @@
     "dev": {
       "cache": false,
       "persistent": true,
-      "passThroughEnv": [
-        "CONTENT_SOURCE",
-        "NOTION_TOKEN",
-        "NOTION_WEBHOOK_SECRET",
-        "ALERT_URL",
-        "ALERT_SECRET"
-      ]
+      "passThroughEnv": ["CONTENT_SOURCE"]
     },
     "storybook": {
       "cache": false,

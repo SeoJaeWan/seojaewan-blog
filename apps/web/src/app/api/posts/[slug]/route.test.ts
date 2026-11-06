@@ -5,7 +5,6 @@ import { postBodySchema } from '@/shared/utils/post-body/post-body';
 import { GET } from './route';
 
 vi.mock('server-only', () => ({}));
-vi.mock('next/cache', () => ({ cacheLife: vi.fn(), cacheTag: vi.fn() }));
 
 /**
  * 글 본문 경로를 부른다.

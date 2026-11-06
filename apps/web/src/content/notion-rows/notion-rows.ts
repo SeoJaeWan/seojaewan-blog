@@ -58,11 +58,19 @@ const datePropertySchema = z.object({
  * @returns 검증한 공개 행들(최신순)
  */
 export function readPostRows(pages: readonly unknown[]): PostRow[] {
-  const rows = pages
-    .map((page) => pageSchema.parse(page))
-    .filter((page) => readCheckbox(page.properties[PROPERTY_NAMES.isPublic]))
-    .map(toRowValues);
+  const rows = pages.filter(isPublicNotionPage).map((page) => toRowValues(pageSchema.parse(page)));
   return parsePostRows(rows);
+}
+
+/**
+ * 행(Notion 페이지 응답 그대로)이 공개 행인지. `공개`가 체크된 행만 공개 행이다. 내보내기가 비공개 행(쓰는 중인 초안)을
+ * 저장소 JSON에 넣지 않으려고 쓴다. 초안만 바뀌면 JSON도 바뀌지 않는다.
+ * @codocs [[콘텐츠 원천:공개 여부]]
+ * @param page 행
+ * @returns 공개 행이면 true
+ */
+export function isPublicNotionPage(page: unknown): boolean {
+  return readCheckbox(pageSchema.parse(page).properties[PROPERTY_NAMES.isPublic]);
 }
 
 /**

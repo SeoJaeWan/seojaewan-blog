@@ -7,7 +7,7 @@ import {
   getContentIndex,
   getContentRow,
   getContentSlugs,
-} from '@/content/content-cache/content-cache';
+} from '@/content/content-store/content-store';
 import { getEntryMetadata } from '@/content/site-metadata/site-metadata';
 import type { PostCollection } from '@/shared/utils/post-address/post-address';
 import { Shell } from '@/shell/shell';
@@ -17,30 +17,24 @@ export type ContentEntryParams = {
   slug: string;
 };
 
-// 공개 항목이 하나도 없는 묶음에서 빌드할 때 넘기는 slug다. Cache Components는 경로 값이 하나 이상이어야 빌드되기 때문이다.
-// slug 규칙(영어 소문자·숫자·하이픈)에 맞지 않아 실제 항목과 겹치지 않고, 그 주소는 404다.
-const EMPTY_COLLECTION_SLUG = '_none';
-
 /**
- * 빌드할 때 묶음의 공개 항목마다 글 주소 페이지의 HTML을 만들어 둘 경로 값. 목록에 없던 slug는 처음 들어올 때 서버가 그린다
- * (공개하지 않은 항목이면 404다).
+ * 빌드할 때 묶음의 공개 항목마다 글 주소 페이지(와 본문 경로)를 만들어 둘 경로 값. 사이트는 완전한 정적 생성이라 이 밖의 slug는
+ * 서버가 그리지 않고 미리 만든 404 페이지로 답한다(각 페이지의 `dynamicParams = false`).
  * @codocs [[SEO와 공유 미리보기:첫 HTML]]
+ * @codocs [[콘텐츠 원천:결정]]
  * @param collection 묶음
- * @returns 공개 항목의 slug. 공개 항목이 없으면 404가 되는 slug 하나
+ * @returns 공개 항목의 slug
  */
 export async function getContentEntryParams(
   collection: PostCollection,
 ): Promise<ContentEntryParams[]> {
-  const slugs = await getContentSlugs(collection);
-  return (slugs.length === 0 ? [EMPTY_COLLECTION_SLUG] : slugs).map((slug) => ({ slug }));
+  return (await getContentSlugs(collection)).map((slug) => ({ slug }));
 }
 
 /**
- * 글 주소 페이지의 메타 정보(제목, 설명, canonical, 공유 그림). 목록과 본문을 화면과 같은 캐시(목록 태그, 페이지 태그)로 읽어,
- * 웹훅이 오면 화면과 함께 갱신된다. 본문은 Summary가 비어 있을 때만 읽는다. 공개 항목이 아니면 루트 레이아웃 것을 그대로 쓴다
- * (화면이 404로 답한다).
+ * 글 주소 페이지의 메타 정보(제목, 설명, canonical, 공유 그림). 본문은 Summary가 비어 있을 때만 읽는다. 공개 항목이 아니면
+ * 루트 레이아웃 것을 그대로 쓴다(화면이 404로 답한다).
  * @codocs [[SEO와 공유 미리보기:메타 정보]]
- * @codocs [[콘텐츠 원천:갱신 방식]]
  * @param collection 묶음
  * @param params 경로 값
  * @returns 메타 정보
