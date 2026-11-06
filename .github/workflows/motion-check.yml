@@ -43,12 +43,12 @@ jobs:
       # 포크에서 온 PR은 쓰기 토큰이 없어 검사만 하고 댓글을 남기지 않는다
       CAN_WRITE: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
         with:
           # 바뀐 파일을 보려면 기준 브랜치와의 merge-base가 필요하다
           fetch-depth: 0
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@v7.1.0
         with:
           node-version-file: .nvmrc
 
@@ -75,12 +75,12 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v6.1.1
         if: steps.range.outputs.has-range == 'true'
         with:
           dest: ${{ runner.temp }}/setup-pnpm
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@v7.1.0
         if: steps.range.outputs.has-range == 'true'
         with:
           node-version-file: .nvmrc
@@ -114,7 +114,7 @@ jobs:
           node tools/figma-parity/src/motion-post-comment.ts --repository "$REPOSITORY" --server "$SERVER" \
             --run-id "$RUN_ID" --pr "$PR_NUMBER"
 
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@v7.0.2
         if: always() && steps.range.outputs.has-range == 'true'
         with:
           name: motion-check-results

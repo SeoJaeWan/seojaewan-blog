@@ -30,14 +30,14 @@ jobs:
       # PR이면 PR 브랜치, `main` push면 `main`. 값을 스크립트 안에 풀어 쓰지 않고 환경 변수로 넘긴다.
       BRANCH: ${{ github.head_ref || github.ref_name }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
 
       # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v6.1.1
         with:
           dest: ${{ runner.temp }}/setup-pnpm
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@v7.1.0
         with:
           node-version-file: .nvmrc
 
@@ -50,14 +50,14 @@ jobs:
     name: Lint, typecheck, test, build
     runs-on: [self-hosted, linux]
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
 
       # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v6.1.1
         with:
           dest: ${{ runner.temp }}/setup-pnpm
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@v7.1.0
         with:
           node-version-file: .nvmrc
 
@@ -90,14 +90,14 @@ jobs:
     name: E2E
     runs-on: [self-hosted, linux]
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
 
       # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v6.1.1
         with:
           dest: ${{ runner.temp }}/setup-pnpm
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@v7.1.0
         with:
           node-version-file: .nvmrc
 
@@ -113,7 +113,7 @@ jobs:
       - name: E2E tests
         run: pnpm test:e2e
 
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@v7.0.2
         if: failure()
         with:
           name: playwright-report

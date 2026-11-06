@@ -41,12 +41,12 @@ jobs:
       # 포크에서 온 PR은 쓰기 토큰이 없어 캡처하지 않는다
       CAN_WRITE: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
         with:
           # 캡처 범위를 정하려면 기준 브랜치와의 merge-base가 필요하다. 모든 브랜치를 받아 조립의 이전 코드 그림(origin/parity-captures)도 읽는다
           fetch-depth: 0
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@v7.1.0
         with:
           node-version-file: .nvmrc
 
@@ -91,12 +91,12 @@ jobs:
           fi
 
       # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v6.1.1
         if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
         with:
           dest: ${{ runner.temp }}/setup-pnpm
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@v7.1.0
         if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
         with:
           node-version-file: .nvmrc
@@ -143,7 +143,7 @@ jobs:
           gh auth setup-git
           node tools/figma-parity/src/publish-captures.ts --repository "$REPOSITORY" --server "$SERVER" --sha "$GITHUB_SHA"
 
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@v7.0.2
         if: always() && steps.range.outputs.has-range == 'true'
         with:
           name: figma-parity-results
