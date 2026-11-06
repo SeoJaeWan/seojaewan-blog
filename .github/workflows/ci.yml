@@ -50,7 +50,10 @@ jobs:
     name: Lint, typecheck, test, build
     runs-on: [self-hosted, linux]
     steps:
+      # changeset 검사가 `main`과 갈라진 지점을 찾아야 해서 전체 기록을 받는다
       - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
 
       # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
       - uses: pnpm/action-setup@v6.1.1
@@ -62,6 +65,17 @@ jobs:
           node-version-file: .nvmrc
 
       - run: pnpm install --frozen-lockfile
+
+      # @codocs [[Git 작업 규칙:Changesets]]
+      # 앱이나 패키지를 바꾼 PR에 changeset이 있는지 본다. `main` push에서는 건너뛴다(버전 PR 병합 포함).
+      # 글 동기화·Renovate·버전 PR 브랜치와 문서만 바꾼 PR은 스크립트가 통과시킨다.
+      - name: Changeset check
+        if: github.event_name == 'pull_request'
+        env:
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          node scripts/check-changeset.mjs "$BRANCH" origin/main
 
       - name: Format check
         run: pnpm format:check
