@@ -8,10 +8,8 @@ import {
 } from 'react';
 
 import type { ChromePageLayout } from '@/features/chrome/components/chrome-page/chrome-page';
-import {
-  type PostImageBlock,
-  renderTemporaryImage,
-} from '@/features/chrome/components/post-blocks/post-blocks';
+import type { PostImageBlock } from '@/features/chrome/components/post-blocks/post-blocks';
+import { ResponsiveImage } from '@/features/chrome/components/responsive-image/responsive-image';
 import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
 import { getPlainText } from '@/shared/utils/post-body/post-body';
 
@@ -164,7 +162,8 @@ export function ChromePageArea({
         <ChromeImageViewer
           ref={viewerRef}
           layout={layout}
-          image={renderTemporaryImage(image.block)}
+          // 크게 보기는 페이지 영역을 채우므로 화면 폭 기준으로 크기별 사본을 고른다
+          image={<ResponsiveImage image={image.block} alt={caption} sizes="100vw" />}
           caption={caption.length > 0 ? caption : undefined}
           onClose={handleImageClose}
           className="absolute inset-spacing-none"
