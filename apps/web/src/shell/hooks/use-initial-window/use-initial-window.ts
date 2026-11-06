@@ -3,16 +3,18 @@ import { useEffect, useState } from 'react';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { createChromeContent } from '@/shared/utils/chrome-tabs/chrome-tabs';
+import type { PostBody } from '@/shared/utils/post-body/post-body';
 
-/** 주소로 처음 들어왔을 때 열어 둘 Chrome 페이지. 글 주소면 그 글, 해당하는 글이 없으면 찾을 수 없음 화면이다 */
-export type InitialPage = { kind: 'post'; slug: string } | { kind: 'not-found' };
+/** 주소로 처음 들어왔을 때 열어 둘 Chrome 페이지. 글 주소면 그 글과 서버가 읽은 본문, 해당하는 글이 없으면 찾을 수 없음 화면이다 */
+export type InitialPage = { kind: 'post'; slug: string; body: PostBody } | { kind: 'not-found' };
 
 // 찾을 수 없음 화면에 보일 주소의 호스트다(주소창의 글 주소와 같다).
 const BLOG_HOST = 'seojaewan.com';
 
 /**
  * 주소로 처음 들어오거나 새로고침했을 때, 주소에 해당하는 Chrome 창 하나를 열어 둔 채로 시작한다.
- * 창은 작업 영역 크기를 안 뒤(마운트 뒤) 한 번만 연다. 찾을 수 없음 화면에는 들어온 주소(`seojaewan.com/<경로>`)를 보이고,
+ * 창은 작업 영역 크기를 안 뒤(마운트 뒤) 한 번만 연다. 글 주소면 그 전에는 서버가 그린 첫 창(`createEntryWindow`)이 보이고,
+ * 여기서 연 창이 같은 id로 그 자리를 숫자로 이어받는다. 찾을 수 없음 화면에는 들어온 주소(`seojaewan.com/<경로>`)를 보이고,
  * 들어온 경로를 기억해 그 화면을 보는 동안 브라우저 주소를 그대로 둔다([[창 동작:브라우저 주소]]).
  * 다시 시작해도 다시 열지 않는다(다시 시작하면 바탕화면만 보인다).
  * @codocs [[창 동작:새로고침과 첫 진입]]
@@ -33,7 +35,7 @@ export function useInitialWindow(initialPage: InitialPage | null): boolean {
       }
       const page =
         initialPage.kind === 'post'
-          ? initialPage
+          ? { kind: 'post' as const, slug: initialPage.slug }
           : {
               kind: 'not-found' as const,
               url: `${BLOG_HOST}${window.location.pathname}`,

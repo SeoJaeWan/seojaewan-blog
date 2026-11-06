@@ -23,7 +23,7 @@ function windowContents(): unknown[] {
 // @codocs [[창 동작:새로고침과 첫 진입]]
 describe('창 동작:새로고침과 첫 진입', () => {
   it('글 주소로 들어오면 그 글 탭이 고른 Chrome 창 하나를 연다', () => {
-    renderHook(() => useInitialWindow({ kind: 'post', slug: 'a' }));
+    renderHook(() => useInitialWindow({ kind: 'post', slug: 'a', body: { blocks: [] } }));
     expect(windowContents()).toEqual([createChromeContent({ kind: 'post', slug: 'a' })]);
   });
 
@@ -45,7 +45,9 @@ describe('창 동작:새로고침과 첫 진입', () => {
   });
 
   it('첫 창은 한 번만 연다', () => {
-    const { rerender } = renderHook(() => useInitialWindow({ kind: 'post', slug: 'a' }));
+    const { rerender } = renderHook(() =>
+      useInitialWindow({ kind: 'post', slug: 'a', body: { blocks: [] } }),
+    );
     useWindowStore.getState().reset();
     rerender();
     expect(windowContents()).toEqual([]);

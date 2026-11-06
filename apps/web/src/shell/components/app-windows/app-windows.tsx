@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { ChromeWindowLayer } from '@/features/chrome/chrome-window-layer';
+import { type ChromePreload, ChromeWindowLayer } from '@/features/chrome/chrome-window-layer';
 import { ExplorerWindowLayer } from '@/features/file-explorer/explorer-window-layer';
 import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
 import type { OpenWindow, WindowFrameControls } from '@/shared/utils/window-rules/window-rules';
@@ -13,12 +13,14 @@ import type { OpenWindow, WindowFrameControls } from '@/shared/utils/window-rule
  * @param window 열린 창
  * @param controls 창 층이 넘기는 창 동작 속성
  * @param device 화면 방식
+ * @param chromePreload 서버가 읽어 넘긴 글 색인과 처음 들어온 글의 본문. Chrome 창에 넘긴다
  * @returns 앱 창
  */
 export function renderAppWindow(
   window: OpenWindow,
   controls: WindowFrameControls,
   device: DeviceVariant,
+  chromePreload?: ChromePreload,
 ): ReactNode {
   const { content } = window;
   if (content.app === 'chrome') {
@@ -28,6 +30,7 @@ export function renderAppWindow(
         content={content}
         controls={controls}
         device={device}
+        preload={chromePreload}
       />
     );
   }
