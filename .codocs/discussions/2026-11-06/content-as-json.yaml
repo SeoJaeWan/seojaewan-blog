@@ -18,9 +18,9 @@ _codocs:
   - LLM으로 CI 결과 판단: 위 과정 4의 이유로 고르지 않았다.
 결정: |
   - Notion 공개 글을 저장소 JSON으로 커밋하고 블로그는 완전한 SSG로 낸다. 빌드는 Notion을 부르지 않는다. 모르는 주소는 미리 만든 404로 보낸다([[콘텐츠 원천:결정]]).
-  - 감지는 1시간마다 도는 GitHub Actions 예약 작업이 한다. 초안만 고친 경우 PR이 없다. PR은 `CONTENT_SYNC_TOKEN`으로 만들고 GitHub 자동 병합으로 병합한다([[콘텐츠 원천:갱신 방식]]).
+  - 감지는 1시간마다 도는 GitHub Actions 예약 작업이 한다. 초안만 고친 경우 PR이 없다. PR은 `CONTENT_SYNC_TOKEN`으로 만들고, 병합은 처음에 GitHub 자동 병합으로 계획했으나 Free 비공개 저장소에서 동작하지 않아 워크플로가 직접 한다([[콘텐츠 원천:갱신 방식]]).
   - 동기화 실패와 글 PR CI 실패는 notify로 알린다([[알림 프로세스]]).
   - 글 JSON만 바뀐 병합은 바로 블로그를 배포하고, 코드는 Changesets 버전 PR 병합 때 바뀐 앱만 배포한다([[배포 환경:배포(CD)]]).
   - 반영 지연(최대 1시간 + CI + 배포)을 받아들인다.
 남은 일: |
-  구현은 [[구현 순서]] 9단계에서 한다. 파일 경로, 워크플로 이름, JSON 모양, `CONTENT_SOURCE`·fixture와 JSON의 관계, 이미지 크기를 JSON에 넣는 방식, 블로그 환경 변수 정리는 구현 PR에서 정한다. 사람이 할 일: Actions 비밀값 `CONTENT_SYNC_TOKEN`·`NOTION_TOKEN`·`ALERT_SECRET`, 저장소 "Allow auto-merge".
+  구현은 [[구현 순서]] 9단계에서 했다(PR #676). 파일 경로, 워크플로 이름, JSON 모양, `CONTENT_SOURCE`와 fixture, 이미지 크기, 블로그 환경 변수는 [[콘텐츠 원천:읽는 곳]]과 [[콘텐츠 원천:갱신 방식]]에 정리했다. 사람이 할 일이던 Actions 비밀값 `CONTENT_SYNC_TOKEN`·`NOTION_TOKEN`·`ALERT_SECRET`은 등록했다.

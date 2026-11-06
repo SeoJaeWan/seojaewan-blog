@@ -46,7 +46,8 @@ CI: |
 
   미리보기 배포가 없으므로([[배포 환경]]) 깨진 빌드를 PR에서 바로 잡기 위해 CI에서 빌드한다. Storybook 빌드는 디자인 시스템 카탈로그와 앱 조립 스토리가 깨지지 않았는지 확인한다.
 
-  GitHub ruleset(`main: CI 통과 필수`)이 기본 브랜치(`main`)에 여섯 작업(`Branch name`, `Lint, typecheck, test, build`, `E2E`, `Figma generated`, `Figma parity`, `Motion check`)의 통과를 요구해, CI가 통과하지 않은 PR은 병합할 수 없다.
-  - 관리자 우회는 두지 않는다. `main`에 직접 push하는 커밋도 같은 검사를 통과해야 한다.
+  병합 전에 여섯 작업(`Branch name`, `Lint, typecheck, test, build`, `E2E`, `Figma generated`, `Figma parity`, `Motion check`)이 통과해야 한다. 이것이 필수 검사다.
+  - 2026-11-06에 저장소를 비공개로 전환한 뒤로는 GitHub가 병합을 막지 않는다. GitHub Free 비공개 저장소에서는 ruleset(필수 검사)과 auto-merge가 동작하지 않기 때문이다. 사람과 AI는 CI 통과를 확인한 뒤 병합한다. 글 PR은 `Content sync merge` 워크플로가 같은 기준으로 병합한다([[콘텐츠 원천:갱신 방식]]).
+  - GitHub Pro(월 4달러)로 올리면 ruleset이 다시 병합을 막지만, 올리지 않고 무료로 유지하기로 했다. 검토한 대안이다.
   - `Figma generated`, `Figma parity`, `Motion check`는 늘 시작해 검사할 범위가 없으면 통과로 끝나므로([[피그마 연동:CI]]), 생성 파일이 어긋났거나 빌드·캡처·모션 검사가 깨졌을 때만 병합을 막는다.
   - 최신 `main` 기준 재검사(strict)는 요구하지 않는다. `main`이 바뀔 때마다 PR 브랜치를 갱신해야 하기 때문이다.

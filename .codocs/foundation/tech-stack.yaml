@@ -9,10 +9,7 @@ _codocs:
 프레임워크: |
   Next.js App Router로 만든다.
   [[콘텐츠 원천]]의 저장소 JSON 기반 SSG, [[제품 정의:블로그 기능]]의 SEO와 글별 공유 링크, [[배포 환경]]의 자체 배포(standalone 출력)를 모두 지원하기 때문이다.
-  지금 코드는 Cache Components(`cacheComponents`)를 켜고 Notion 목록과 본문을 `'use cache'`로 캐시하지만, 글을 저장소 JSON으로 커밋해 SSG로 바꾸기로 했으므로([[콘텐츠 원천:결정]]) 구현 PR에서 걷어낼 예정이다. 아래 `partialPrefetching`, `_none`, 빌드 제한 시간 항목도 그때 함께 다시 본다.
-  - `partialPrefetching`은 끈다. 켜면 빌드 때 없던 slug에 미리 만든 틀을 200으로 보내, 공개하지 않은 항목 주소가 404가 되지 못하기 때문이다.
-  - 공개 항목이 없는 묶음은 `generateStaticParams`에 `_none` 하나를 넘겨 404 페이지로 만든다. Cache Components는 `generateStaticParams`가 하나 이상을 돌려야 빌드되기 때문이다.
-  - 빌드 페이지 제한 시간은 180초다. 블록이 많은 글의 본문 캐시가 기본 한도(60초)를 넘었기 때문이다.
+  글을 저장소 JSON으로 커밋해 SSG로 내므로 Cache Components(`cacheComponents`)와 `'use cache'`, 캐시 태그는 쓰지 않는다. 세 묶음 페이지와 `/api/{posts,projects,about}/[slug]`는 `dynamicParams = false`와 `generateStaticParams`로 빌드 때 만든 것만 내고, 없는 slug는 미리 만든 404다. `partialPrefetching`, 공개 항목이 없는 묶음의 `_none` slug, 빌드 페이지 제한 시간 180초도 Cache Components 때문에 있던 장치라 없앴다.
 저장소 구성: |
   pnpm + Turborepo 모노레포다.
   폴더 구성은 [[저장소 구성:구성]], 패키지와 기능 사이의 import 경계는 [[저장소 구성:의존 방향]]에서 정한다.
