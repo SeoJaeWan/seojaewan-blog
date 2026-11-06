@@ -3,6 +3,8 @@
 # 동기화 브랜치에서 검사 워크플로 하나가 끝날 때마다 필수 검사 6개를 확인해 모두 성공이면 병합한다.
 # 실패한 워크플로가 있으면 병합하지 않고 notify로 카카오톡을 보낸다(scripts/content-sync-merge.sh).
 # 검사가 끝나기를 기다리며 runner를 붙잡지 않는다. 끝날 때마다 잠깐 돌고 끝난다(runner가 셋뿐이라 CI와 다투지 않게).
+# 이 경로가 놓친 PR(일시적인 API 오류 등)은 매시 동기화 작업(content-sync.yml)이 시작할 때 같은 스크립트로 병합한다.
+# workflow_run 실행은 기본 브랜치(main)에서 돈다. 실행 목록의 head_branch도 main이므로 동기화 브랜치로 걸러 찾으면 안 나온다.
 name: Content sync merge
 
 on:
@@ -11,9 +13,11 @@ on:
     workflows: [CI, Figma generated, Figma parity, Motion check]
     types: [completed]
 
-# 한 번에 하나만 돌아 같은 PR을 두 번 병합하지 않는다
+# 끝난 워크플로마다 따로 줄을 세운다. 한 그룹에 묶으면 대기 중인 실행이 새 실행에 밀려 취소되어(concurrency의 pending은
+# 하나뿐이다) 그 워크플로의 실패 알림을 잃는다. 두 실행이 함께 병합하려 해도 GitHub는 한 번만 병합하고, 스크립트는 이미
+# 병합된 PR을 성공으로 본다.
 concurrency:
-  group: content-sync-merge
+  group: content-sync-merge-${{ github.event.workflow_run.name }}
   cancel-in-progress: false
 
 permissions:
@@ -43,13 +47,15 @@ jobs:
           RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
           GH_REPO: ${{ github.repository }}
+          # 읽기는 GITHUB_TOKEN으로 한다. Fine-grained PAT에는 Checks 권한이 없어 check run 목록이 403이다
+          GH_TOKEN: ${{ github.token }}
           # 병합은 PAT로 한다. main push의 CI가 돌게 하기 위해서다(GITHUB_TOKEN이 만든 이벤트는 워크플로를 부르지 않는다)
-          GH_TOKEN: ${{ secrets.CONTENT_SYNC_TOKEN }}
+          MERGE_TOKEN: ${{ secrets.CONTENT_SYNC_TOKEN }}
           # @codocs [[알림 프로세스:결정]]
           ALERT_URL: http://10.88.0.1:8790/notify
           ALERT_SECRET: ${{ secrets.ALERT_SECRET }}
         run: |
-          if [ -z "$GH_TOKEN" ]; then
+          if [ -z "$MERGE_TOKEN" ]; then
             echo "::error::저장소 비밀값 CONTENT_SYNC_TOKEN이 없다. Settings > Secrets and variables > Actions에 등록한다."
             exit 1
           fi

@@ -3,6 +3,7 @@
 # 바뀌었으면 고정 브랜치에 커밋해 PR을 만들거나 갱신한다(scripts/content-sync-pr.sh).
 # 초안(비공개 행)만 바뀌었거나 결과가 같으면 아무것도 하지 않는다. 실패하면 notify로 카카오톡을 보낸다.
 # 병합은 content-sync-merge.yml이 PR의 검사 결과를 보고 한다. 실패한 검사의 알림도 그쪽이 보낸다.
+# 그쪽이 놓친 PR은 이 워크플로가 시작할 때(merge-ready) 같은 스크립트로 병합한다. 늦어도 다음 시간에는 병합된다.
 #
 # 저장소 비밀값(사람이 등록한다)
 # - CONTENT_SYNC_TOKEN: push, PR 만들기, 병합용 Fine-grained PAT(Contents·Pull requests 쓰기). 기본 GITHUB_TOKEN으로 만든
@@ -24,6 +25,8 @@ concurrency:
 
 permissions:
   contents: read
+  checks: read
+  pull-requests: read
 
 env:
   TURBO_TELEMETRY_DISABLED: 1
@@ -42,8 +45,42 @@ env:
   HUSKY: 0
 
 jobs:
+  # 필수 검사가 모두 통과한 채 열려 있는 동기화 PR을 병합한다. 내보내기 전에 해야 다음 작업이 병합된 main에서 시작한다
+  merge-ready:
+    name: Merge ready sync PR
+    runs-on: [self-hosted, linux]
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          sparse-checkout: scripts
+
+      - name: Merge if ready
+        env:
+          GH_REPO: ${{ github.repository }}
+          # 읽기는 GITHUB_TOKEN(Fine-grained PAT에는 Checks 권한이 없다), 병합은 PAT(main push의 CI가 돌게)
+          GH_TOKEN: ${{ github.token }}
+          MERGE_TOKEN: ${{ secrets.CONTENT_SYNC_TOKEN }}
+        run: |
+          if [ -z "$MERGE_TOKEN" ]; then
+            echo "::error::저장소 비밀값 CONTENT_SYNC_TOKEN이 없다. Settings > Secrets and variables > Actions에 등록한다."
+            exit 1
+          fi
+          bash scripts/content-sync-merge.sh
+
+      - name: Alert on failure
+        if: failure()
+        env:
+          ALERT_SECRET: ${{ secrets.ALERT_SECRET }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          bash scripts/notify-alert.sh '글 동기화 PR 병합 작업이 실패했다' \
+            'Content sync의 Merge ready sync PR 작업이 실패했다. 실행 기록을 확인한다.' "$RUN_URL"
+
   sync:
     name: Content sync
+    needs: merge-ready
+    # 병합 확인이 실패해도 동기화는 한다
+    if: ${{ !cancelled() }}
     runs-on: [self-hosted, linux]
     steps:
       - uses: actions/checkout@v7.0.1

@@ -36,12 +36,14 @@ _codocs:
   - 감지: `Content sync`(`.github/workflows/content-sync.yml`)가 이 PC의 self-hosted runner에서 매시 17분(UTC)에 돈다. 수동 실행도 된다. 정각은 예약 작업이 몰려 늦어지기 쉬워 피했다. Notion의 공개 글(`공개`가 체크된 행, [[콘텐츠 원천:공개 여부]])을 내려받아 저장소 JSON에 쓰고, 결과가 main의 JSON과 같으면 아무것도 하지 않는다. 열린 동기화 PR이 있는데 결과가 main과 같아졌으면 그 PR을 닫는다.
   - 초안(비공개)만 고친 경우에는 JSON이 바뀌지 않으므로 PR을 만들지 않는다.
   - PR 만들기: 브랜치는 `chore/notion-content-sync`이고 브랜치 규칙을 그대로 따른다([[Git 작업 규칙:브랜치]]). main 위에 커밋 하나로 다시 만들고, 이미 열린 PR이 있으면 그 브랜치만 갱신한다. 커밋 제목은 `chore(content): sync notion content`이고 작성자·커미터는 저장소 주인 계정이다. 워크플로 안의 커밋은 `HUSKY=0`으로 Git 훅을 끈다. PR의 CI가 같은 검사를 하기 때문이다.
-  - PR과 병합은 비밀값 `CONTENT_SYNC_TOKEN`으로 한다. 사람이 만든 Fine-grained PAT이며 `seojaewan-blog` 저장소만, Contents·Pull requests 쓰기 권한이다. 기본 `GITHUB_TOKEN`으로 만든 PR과 병합에는 CI가 돌지 않기 때문이다.
-  - 병합: `Content sync merge`(`content-sync-merge.yml`)가 한다. GitHub Free 비공개 저장소라 ruleset과 auto-merge가 동작하지 않기 때문이다. CI 워크플로(`CI`, `Figma generated`, `Figma parity`, `Motion check`)가 동기화 브랜치의 PR에서 끝날 때마다(`workflow_run`) 잠깐 돈다. PR의 지금 커밋에서 필수 검사 여섯 개([[Git 작업 규칙:CI]])가 모두 성공이면 `gh pr merge --merge --match-head-commit <sha>`로 병합한다. 검사가 끝나기를 기다리며 runner를 붙잡지 않는다. runner가 셋뿐이라 CI와 다투지 않게 하기 위해서다.
-    - 병합 작업은 `concurrency`로 하나씩 돈다. 열린 PR이 없거나, 끝난 실행의 커밋이 PR의 head가 아니면 넘어간다.
+  - PR과 병합은 비밀값 `CONTENT_SYNC_TOKEN`으로 한다. 사람이 만든 Fine-grained PAT이며 `seojaewan-blog` 저장소만, Contents·Pull requests 쓰기 권한이다. 기본 `GITHUB_TOKEN`으로 만든 PR과 병합에는 CI가 돌지 않기 때문이다. 검사 결과 읽기는 워크플로의 `GITHUB_TOKEN`(checks·pull-requests 읽기)으로 한다. 이 PAT로 check run 목록을 읽으면 403이 났기 때문이다(2026-11-06 시험).
+  - 병합: GitHub Free 비공개 저장소라 ruleset과 auto-merge가 동작하지 않아 워크플로가 직접 한다. 두 경로가 같은 스크립트(`scripts/content-sync-merge.sh`)를 부른다. 어느 경로든 PR의 지금 커밋에서 필수 검사 여섯 개([[Git 작업 규칙:CI]])가 모두 성공일 때만 `gh pr merge --merge --match-head-commit <sha>`로 병합하고, 검사가 끝나기를 기다리며 runner를 붙잡지 않는다. runner가 셋뿐이라 CI와 다투지 않게 하기 위해서다.
+    - 주 경로: `Content sync merge`(`content-sync-merge.yml`)가 CI 워크플로(`CI`, `Figma generated`, `Figma parity`, `Motion check`)가 동기화 브랜치의 PR에서 끝날 때마다(`workflow_run`) 잠깐 돈다. 마지막으로 끝난 워크플로의 실행이 병합한다. 끝난 실행의 커밋이 PR의 head가 아니면 넘어간다. `workflow_run` 실행은 main에서 돌므로 실행 목록의 브랜치도 main이다.
+    - 보조 경로: 매시 동기화 작업이 내보내기 전에(`Merge ready sync PR` 작업) 열린 동기화 PR을 같은 기준으로 병합한다. 주 경로가 일시적인 API 오류 등으로 놓친 PR도 늦어도 다음 시간에는 병합된다. 동기화 작업은 그 뒤에 main을 받으므로 병합된 내용 위에서 이어 간다.
+    - 병합 작업은 끝난 워크플로마다 따로 `concurrency`로 줄을 세운다. 하나로 묶으면 대기 중인 실행이 새 실행에 밀려 취소되어 그 워크플로의 실패 알림을 잃기 때문이다. 두 실행이 함께 병합하려 해도 GitHub는 한 번만 병합하고, 병합이 실패했는데 PR이 이미 병합되어 있으면 성공으로 본다.
     - 필수 검사는 이름마다 가장 나중 실행을 본다. 하나라도 진행 중이거나 없으면 병합하지 않는다.
     - `--match-head-commit` 때문에 그 사이 push가 있었다면 병합되지 않는다.
-  - 실패 알림: 동기화 작업이 실패하거나, 동기화 PR의 검사 워크플로가 실패하면 notify로 알려([[알림 프로세스]]) 카카오톡으로 받는다. 검사 실패 알림은 실패로 끝난 워크플로마다 한 번이다. 새 push로 취소된 실행은 무시한다.
+  - 실패 알림: 동기화 작업이 실패하거나, 동기화 PR의 검사 워크플로가 실패하면 notify로 알려([[알림 프로세스]]) 카카오톡으로 받는다. 검사 실패 알림은 주 경로가 실패로 끝난 워크플로마다 한 번 보낸다. 보조 경로는 검사 실패를 다시 알리지 않는다. 새 push로 취소된 실행은 무시한다. 병합 작업 자체가 실패해도 알린다.
   - 배포: 글 JSON만 바뀐 병합은 Changesets 버전 PR 없이 바로 블로그를 다시 배포한다([[배포 환경:배포(CD)]]).
   - 반영 지연은 최대 1시간 + CI + 배포다.
 
