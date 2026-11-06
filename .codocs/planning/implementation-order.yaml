@@ -87,13 +87,12 @@ _codocs:
   | 3 | 첫 진입 창 SSR([[SEO와 공유 미리보기:첫 HTML]]) | 미니 PC |
   | 4 | Notion 연결과 SEO: 공개 필터, 세 묶음 주소, 웹훅 라우트, 환경 변수 검증, 메타·공유 이미지·sitemap·robots, 이미지 `srcset`과 크기 | 미니 PC |
   | 5 | 이미지 서버 `apps/images`(이 저장소): 저장, WebP 720·1440, 크기 헤더([[Notion 이미지 제공]]). 2~4와 동시에 할 수 있다 | 미니 PC |
-  | 6 | (선행 조건) local-server의 notify가 VPS에 배포되고 블로그·이미지 서버·젠킨스용 `ALERT_SECRET`이 발급되어야 4번 웹훅 실패 알림과 7번 배포 알림을 실제로 확인할 수 있다([[알림 프로세스:선행 조건]]) | local-server 저장소 |
+  | 6 | (선행 조건, 완료 2026-11-06) local-server의 notify 배포와 카카오 연결, 블로그·이미지 서버·젠킨스용 `ALERT_SECRET` 발급. 4번 웹훅 실패 알림과 7번 배포 알림을 실제로 확인할 수 있다([[알림 프로세스:선행 조건]]) | local-server 저장소 |
   | 7 | 배포 파이프라인: Dockerfile(블로그와 이미지 서버 두 개, 블로그는 standalone), 젠킨스와 Access, Jenkinsfile, 컨테이너 배포와 health check([[배포 환경:배포(CD)]]) | 미니 PC |
-  | 8 | 공개: 터널 연결과 확인, 검색 엔진 등록([[배포 환경:공개 절차]]) | 미니 PC. Notion 웹훅 구독과 검색 엔진 등록은 사람 |
+  | 8 | 공개: 터널 연결과 확인, 재부팅한 뒤 runner·보고서 서버·터널·컨테이너가 스스로 뜨는지 확인(커널 업데이트 적용 포함), 검색 엔진 등록([[배포 환경:공개 절차]]) | 미니 PC. Notion 웹훅 구독과 검색 엔진 등록은 사람 |
 
-  감시는 `registry/seojaewan-blog.yaml` 등록으로 한다. local-server의 등록 형식이 정해지고 `infra`가 배포된 뒤에 등록 PR을 올린다([[배포 환경:감시]]).
+  감시는 `registry/seojaewan-blog.yaml` 등록으로 한다. 등록 PR은 local-server 저장소에서 따로 진행 중이다. infra 재배포(`sudo ./deploy/deploy.sh infra`)는 실제 구성이 끝난 뒤 마지막에 owner가 한다([[배포 환경:감시]]).
 
   사람이 직접 하는 일(토큰·비밀번호를 AI 에이전트에게 주지 않는다):
-  - Notion: 연동 두 개(`seojaewan-blog`, `seojaewan-images`)를 만들고 Blog·Project·About 페이지에 연결한다. fixture용 시험용 페이지를 만든다. `blog`·`project`·`about` 데이터베이스에 `slug`·`폴더`·`공개`·작성일 속성을 갖춘다. 이름 없는 데이터베이스와 데이터베이스 밖 페이지의 초안을 `blog` 데이터베이스로 옮겨 `공개`를 끈다([[콘텐츠 원천:데이터베이스]]).
-  - GitHub: 저장소를 비공개로 전환한다.
-  - Notion 웹훅 구독, 그리고 공개 뒤 Google Search Console·네이버 서치어드바이저 등록.
+  - 끝난 일(2026-11-06): Notion 연동 두 개와 연결, 속성 정리, 초안 옮기기, fixture 시험 페이지([[콘텐츠 원천:데이터베이스]], [[콘텐츠 원천:읽는 곳]]). 저장소 비공개 전환. 알림 비밀값 발급([[알림 프로세스:선행 조건]]). 이미지 서버·젠킨스 터널과 젠킨스 Access([[배포 환경:인프라 설정의 위치]]).
+  - 남은 일: Notion 웹훅 구독, 그리고 공개 뒤 Google Search Console·네이버 서치어드바이저 등록.
