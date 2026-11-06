@@ -15,17 +15,24 @@ const LOADING_STATE = { status: 'loading' } as const;
 /**
  * 글 본문을 서버 경로(`/api/posts/<slug>`)에서 받는다. 본문은 서버에서만 읽으므로 브라우저는 이 경로로만 받는다.
  * 받은 JSON은 본문 스키마로 검증한다. 받는 중에는 loading, 없거나 검증에 실패하면 failed다.
+ * 서버가 그리며 넘긴 본문(글 주소로 처음 들어온 글, props로 받는다)이 있으면 받지 않고 처음 렌더부터 loaded다. 서버 HTML에 본문이 들어간다.
  * @codocs [[코드 작성 규칙:React와 Next.js]]
  * @codocs [[Chrome:글 화면]]
+ * @codocs [[SEO와 공유 미리보기:첫 HTML]]
  * @param slug 글 slug
+ * @param preloadedBlocks 서버가 읽어 넘긴 이 글의 본문. 있으면 받지 않는다
  * @returns 본문을 받는 상태
  */
-export function usePostBody(slug: string): PostBodyState {
+export function usePostBody(slug: string, preloadedBlocks?: readonly PostBlock[]): PostBodyState {
   const [result, setResult] = useState<{ slug: string; state: PostBodyState } | null>(null);
+  const isPreloaded = preloadedBlocks !== undefined;
 
   useEffect(
-    /** 본문을 받아 상태에 둔다. 다른 글로 바뀌면 앞의 결과는 버린다. */
+    /** 본문을 받아 상태에 둔다. 다른 글로 바뀌면 앞의 결과는 버린다. 서버가 넘긴 본문이 있으면 받지 않는다. */
     () => {
+      if (isPreloaded) {
+        return undefined;
+      }
       let isCurrent = true;
       loadPostBody(slug)
         .then(
@@ -47,9 +54,12 @@ export function usePostBody(slug: string): PostBodyState {
         isCurrent = false;
       };
     },
-    [slug],
+    [slug, isPreloaded],
   );
 
+  if (preloadedBlocks !== undefined) {
+    return { status: 'loaded', blocks: preloadedBlocks };
+  }
   return result?.slug === slug ? result.state : LOADING_STATE;
 }
 

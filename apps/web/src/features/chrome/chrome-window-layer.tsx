@@ -4,7 +4,10 @@ import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { MessageBoxDialog } from '@/shared/components/message-box-dialog/message-box-dialog';
 import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
-import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
+import {
+  useWorkspaceItems,
+  useWorkspaceStore,
+} from '@/shared/stores/workspace-store/workspace-store';
 import {
   type ChromeTabPage,
   type ChromeWindowContent,
@@ -14,12 +17,14 @@ import {
   openChromeTab,
 } from '@/shared/utils/chrome-tabs/chrome-tabs';
 import { copyItemLink } from '@/shared/utils/item-link/item-link';
+import type { PostBlock } from '@/shared/utils/post-body/post-body';
 import type { WindowFrameControls } from '@/shared/utils/window-rules/window-rules';
 import {
   getLatestPosts,
   getPostItemId,
   isItemInTrash,
   type PostItem,
+  type PostSummary,
   type WorkspaceState,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
@@ -76,11 +81,21 @@ type ImageViewerState = ChromePageImage & {
   pageKey: string;
 };
 
+/**
+ * 서버가 읽어 넘긴 글. posts는 글 색인이고, entryPost는 글 주소로 처음 들어왔을 때 그 글의 본문 블록이다.
+ * 서버가 그리는 첫 진입 창이 저장분을 읽기 전에도 글 제목·머리·본문을 그리는 데 쓴다.
+ */
+export type ChromePreload = {
+  posts: readonly PostSummary[];
+  entryPost: { slug: string; blocks: readonly PostBlock[] } | null;
+};
+
 type ChromeWindowLayerProps = {
   windowId: string;
   content: ChromeWindowContent;
   controls: WindowFrameControls;
   device: DeviceVariant;
+  preload?: ChromePreload;
 };
 
 /**
@@ -101,19 +116,24 @@ type ChromeWindowLayerProps = {
  * @codocs [[Chrome:휴지통에 있는 글]]
  * @codocs [[창 동작:모바일]]
  * @codocs [[Chrome:모바일]]
+ * 서버가 읽은 글(`preload`)을 받으면, 저장분을 읽기 전에도 그 글 색인으로 글을 찾고 처음 들어온 글의 본문은 받지 않고 바로 그린다.
+ * 그래서 서버가 그린 첫 진입 창에 글 제목과 본문이 들어 있다.
+ * @codocs [[창 동작:새로고침과 첫 진입]]
  * @param props 컴포넌트 속성
  * @param props.windowId 창 id. 창 내용(탭과 탭마다의 기록)을 바꿀 때 쓴다
  * @param props.content Chrome 창 내용(탭, 탭마다의 기록, 고른 탭)
  * @param props.controls 창 층이 넘기는 창 동작 속성
  * @param props.device 화면 방식
+ * @param props.preload 서버가 읽어 넘긴 글 색인과 처음 들어온 글의 본문. 스토리처럼 없으면 저장소만 읽는다
  */
 export function ChromeWindowLayer({
   windowId,
   content,
   controls,
   device,
+  preload,
 }: ChromeWindowLayerProps): JSX.Element {
-  const items = useWorkspaceStore((state) => state.items);
+  const items = useWorkspaceItems(preload?.posts);
   const restoreTrashedPost = useWorkspaceStore((state) => state.restoreTrashedPost);
   const setContent = useWindowStore((state) => state.setContent);
   const zoom = useChromeZoomStore((state) => state.zoom);
@@ -210,7 +230,7 @@ export function ChromeWindowLayer({
    * @returns 블로그 안의 페이지. 외부 주소면 null
    */
   function resolveLink(href: string): ChromeTabPage | null {
-    const action = resolveAddress(href, workspace, window.location.host);
+    const action = resolveAddress(href, workspace, getCurrentHost());
     return action?.type === 'page' && action.page.kind !== 'search' ? action.page : null;
   }
 
@@ -476,6 +496,7 @@ export function ChromeWindowLayer({
           resolveLink={resolveLink}
           onReload={handleRefresh}
           onImageOpen={handleImageOpen}
+          entryPost={preload?.entryPost ?? null}
         />
       </ChromePageArea>
       <MessageBoxDialog
@@ -501,7 +522,18 @@ type ChromeTabContentProps = {
   onReload: () => void;
   resolveLink: (href: string) => ChromeTabPage | null;
   onImageOpen: (block: PostImageBlock, trigger: HTMLElement) => void;
+  entryPost: ChromePreload['entryPost'];
 };
+
+/**
+ * 지금 블로그가 열린 호스트(`location.host`). 글 본문 링크는 그리는 동안 판단하므로 서버에서도 부른다. 서버는 호스트를 몰라 빈 값이고,
+ * 그래도 `seojaewan.com` 주소와 사이트 안 경로(`/posts/x`)는 블로그 주소로 본다.
+ * @codocs [[Chrome:글 화면]]
+ * @returns 호스트. 서버에서는 빈 값
+ */
+function getCurrentHost(): string {
+  return typeof window === 'undefined' ? '' : window.location.host;
+}
 
 /**
  * 고른 탭의 페이지를 그린다. 새 탭 페이지는 휴지통에 없는 최신 글 바로가기와 주소창처럼 동작하는 검색창,
@@ -523,6 +555,7 @@ type ChromeTabContentProps = {
  * @param props.onReload 찾을 수 없음 화면의 새로고침 버튼을 눌렀을 때
  * @param props.resolveLink 글 본문 링크 주소가 블로그 안의 페이지면 그 페이지를 돌려준다. 외부 주소면 null이다
  * @param props.onImageOpen 글 본문 이미지를 눌렀을 때(크게 보기)
+ * @param props.entryPost 처음 들어온 글의 본문. 그 글이면 받지 않고 이 본문을 그린다
  * @returns 탭 내용
  */
 function ChromeTabContent({
@@ -538,6 +571,7 @@ function ChromeTabContent({
   onReload: handleReload,
   resolveLink,
   onImageOpen: handleImageOpen,
+  entryPost,
 }: ChromeTabContentProps): JSX.Element {
   const posts =
     page.kind === 'new-tab'
@@ -608,6 +642,7 @@ function ChromeTabContent({
           onNavigate={handleNavigate}
           onReload={handleReload}
           onImageOpen={handleImageOpen}
+          preloadedBlocks={entryPost?.slug === post.slug ? entryPost.blocks : undefined}
         />
       );
     case 'not-found':
