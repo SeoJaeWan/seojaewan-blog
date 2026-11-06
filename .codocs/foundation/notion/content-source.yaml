@@ -23,6 +23,7 @@ _codocs:
   - ISR과 Notion 웹훅 즉시 갱신(`revalidateTag`): 처음에 고른 안이었으나 버렸다. 고치자마자 반영되는 장점이 있지만, 글이 하루에 한 편 안팎이라 즉시성이 필요 없고, 캐시 태그·웹훅 서명·확인 토큰 절차와 서버 런타임에서의 빈 404 틀 문제를 감당할 값어치가 없다.
   - 배포할 때만 반영: 글을 올리려면 사람이 직접 다시 배포해야 해서 고르지 않았다. 지금 안은 감지와 PR, 병합, 배포를 자동으로 잇는다.
   - 시간 기반 갱신(ISR 주기): 고친 글이 주기만큼 늦고, 바뀐 것이 없어도 Notion을 계속 호출해 고르지 않았다.
+  - GitHub 자동 병합(auto-merge)과 ruleset으로 글 PR을 병합하기: 처음에 계획했으나 동작하지 않는다. 저장소가 GitHub Free 비공개라 ruleset의 필수 검사와 auto-merge를 쓸 수 없기 때문이다. GitHub Pro(월 4달러)로 올리면 다시 강제할 수 있지만, 올리지 않고 무료로 유지하기로 했다. 그래서 워크플로가 검사 결과를 보고 직접 병합한다([[콘텐츠 원천:갱신 방식]]).
   - 감지를 n8n이나 Notion 웹훅으로 하기: 고르지 않았다. 서비스가 늘고, 인터넷에서 들어오는 길이 생기고, 초안 자동 저장마다 알림이 와서 걸러야 하기 때문이다.
   - LLM으로 글 PR의 CI 결과를 판단해 병합하기: 고르지 않았다. CI 결과는 이미 통과·실패로 정확히 나오기 때문이다.
   - 공식 SDK `@notionhq/client`: 쓰지 않고 `fetch`로 부른다. 쓰는 엔드포인트가 셋뿐이고, 응답은 어차피 Zod로 검증하며, 새 패키지가 늘기 때문이다.
@@ -32,15 +33,19 @@ _codocs:
 갱신 방식: |
   GitHub Actions 예약 작업(동기화 작업)이 Notion의 공개 글을 확인해, 바뀌었으면 저장소 JSON을 갱신하는 PR을 만든다. 웹훅은 쓰지 않는다.
 
-  - 감지: 이 PC의 self-hosted runner에서 1시간마다 돈다. Notion의 공개 글(`공개`가 체크된 행, [[콘텐츠 원천:공개 여부]])을 내려받아 저장소 JSON과 비교한다.
-  - 초안(비공개)만 고친 경우에는 바뀐 JSON이 없으므로 PR을 만들지 않는다.
-  - PR 만들기: 비밀값 `CONTENT_SYNC_TOKEN`으로 만든다. 사람이 만든 Fine-grained PAT이며 `seojaewan-blog` 저장소만, Contents·Pull requests 쓰기 권한이다. 기본 `GITHUB_TOKEN`으로 만든 PR에는 CI가 돌지 않기 때문이다.
-  - 병합: 글 PR은 GitHub 자동 병합(auto-merge)이다. 필수 검사가 통과하면 병합된다. 저장소의 "Allow auto-merge"를 켜야 한다.
-  - 실패 알림: 동기화 작업이 실패하거나 글 PR의 CI가 실패하면 notify로 알려([[알림 프로세스]]) 카카오톡으로 받는다.
+  - 감지: `Content sync`(`.github/workflows/content-sync.yml`)가 이 PC의 self-hosted runner에서 매시 17분(UTC)에 돈다. 수동 실행도 된다. 정각은 예약 작업이 몰려 늦어지기 쉬워 피했다. Notion의 공개 글(`공개`가 체크된 행, [[콘텐츠 원천:공개 여부]])을 내려받아 저장소 JSON에 쓰고, 결과가 main의 JSON과 같으면 아무것도 하지 않는다. 열린 동기화 PR이 있는데 결과가 main과 같아졌으면 그 PR을 닫는다.
+  - 초안(비공개)만 고친 경우에는 JSON이 바뀌지 않으므로 PR을 만들지 않는다.
+  - PR 만들기: 브랜치는 `chore/notion-content-sync`이고 브랜치 규칙을 그대로 따른다([[Git 작업 규칙:브랜치]]). main 위에 커밋 하나로 다시 만들고, 이미 열린 PR이 있으면 그 브랜치만 갱신한다. 커밋 제목은 `chore(content): sync notion content`이고 작성자·커미터는 저장소 주인 계정이다. 워크플로 안의 커밋은 `HUSKY=0`으로 Git 훅을 끈다. PR의 CI가 같은 검사를 하기 때문이다.
+  - PR과 병합은 비밀값 `CONTENT_SYNC_TOKEN`으로 한다. 사람이 만든 Fine-grained PAT이며 `seojaewan-blog` 저장소만, Contents·Pull requests 쓰기 권한이다. 기본 `GITHUB_TOKEN`으로 만든 PR과 병합에는 CI가 돌지 않기 때문이다.
+  - 병합: `Content sync merge`(`content-sync-merge.yml`)가 한다. GitHub Free 비공개 저장소라 ruleset과 auto-merge가 동작하지 않기 때문이다. CI 워크플로(`CI`, `Figma generated`, `Figma parity`, `Motion check`)가 동기화 브랜치의 PR에서 끝날 때마다(`workflow_run`) 잠깐 돈다. PR의 지금 커밋에서 필수 검사 여섯 개([[Git 작업 규칙:CI]])가 모두 성공이면 `gh pr merge --merge --match-head-commit <sha>`로 병합한다. 검사가 끝나기를 기다리며 runner를 붙잡지 않는다. runner가 셋뿐이라 CI와 다투지 않게 하기 위해서다.
+    - 병합 작업은 `concurrency`로 하나씩 돈다. 열린 PR이 없거나, 끝난 실행의 커밋이 PR의 head가 아니면 넘어간다.
+    - 필수 검사는 이름마다 가장 나중 실행을 본다. 하나라도 진행 중이거나 없으면 병합하지 않는다.
+    - `--match-head-commit` 때문에 그 사이 push가 있었다면 병합되지 않는다.
+  - 실패 알림: 동기화 작업이 실패하거나, 동기화 PR의 검사 워크플로가 실패하면 notify로 알려([[알림 프로세스]]) 카카오톡으로 받는다. 검사 실패 알림은 실패로 끝난 워크플로마다 한 번이다. 새 push로 취소된 실행은 무시한다.
   - 배포: 글 JSON만 바뀐 병합은 Changesets 버전 PR 없이 바로 블로그를 다시 배포한다([[배포 환경:배포(CD)]]).
   - 반영 지연은 최대 1시간 + CI + 배포다.
 
-  비밀값 이름은 [[콘텐츠 원천:연동 토큰]]과 [[배포 환경:환경 변수]]에 있다. 워크플로 이름, 스크립트 위치, JSON 모양, 변경 비교 방법은 구현 PR에서 정한다.
+  비밀값 이름은 [[콘텐츠 원천:연동 토큰]]과 [[배포 환경:환경 변수]]에 있다.
 데이터베이스: |
   Notion에는 데이터베이스 세 개를 두고, 각각 Blog·Project·About 페이지 아래에 있다. 이름은 `blog`, `project`, `about`이다.
 
@@ -66,6 +71,7 @@ Notion 속성: |
   | `공개` | 체크박스. 체크한 행만 사이트에 나온다([[콘텐츠 원천:공개 여부]]) |
   | 작성일 | Date 속성. 최신순 정렬, 검색 패널 추천, 이전·다음 글 |
   | 커버 | 속성이 아니라 Notion 페이지 커버다. 글 화면 제목 위 이미지(있을 때만)이고 공유 미리보기 이미지로도 쓴다([[SEO와 공유 미리보기:공유 미리보기 이미지]]) |
+  | 페이지 `last_edited_time` | 속성이 아니라 Notion 페이지의 값이다. sitemap의 `lastModified`로 쓴다([[SEO와 공유 미리보기:sitemap과 robots]]) |
   | Summary | 페이지 설명(meta description)으로 쓴다. 선택이다([[SEO와 공유 미리보기:메타 정보]]) |
 
   Tags도 Notion에 두지만 지금 쓰는 화면이 없어 사이트는 읽지 않는다.
@@ -79,21 +85,31 @@ Notion 속성: |
 
   - 필수 값(slug, 작성일 등) 검사는 공개 행에만 한다. 쓰는 중인 글에 slug가 없어도 사이트가 깨지거나 빌드가 실패하지 않아야 하기 때문이다.
   - 공개를 취소하면 목록에서 빠지고 그 글 주소는 찾을 수 없음(404)이다.
-  - 공개 필터는 Notion 쿼리가 아니라 코드에서 한다. 비공개 행도 받아 와야 fixture에 비공개 행이 남아 공개 필터와 필수 값 검사를 시험할 수 있기 때문이다. 동기화 작업에서도 이 방식을 그대로 쓸지는 구현 PR에서 정한다.
+  - 공개 필터는 Notion 쿼리가 아니라 코드에서 한다. 비공개 행도 받아 와야 fixture에 비공개 행이 남아 공개 필터와 필수 값 검사를 시험할 수 있기 때문이다. 내보내기도 같은 방식이다. 비공개 행을 받아 코드에서 걸러 공개 행만 글 JSON에 넣는다. 그래서 초안만 바뀌면 글 JSON이 바뀌지 않는다.
   - 초안 미리보기는 두지 않는다. 쓰는 글은 Notion에서 확인한다.
 읽는 곳: |
   빌드는 Notion이 아니라 저장소에 커밋한 글 JSON을 읽는다. 빌드는 Notion을 부르지 않는다([[콘텐츠 원천:결정]]). 동기화 작업만 Notion을 읽는다([[콘텐츠 원천:갱신 방식]]).
 
-  환경 변수 `CONTENT_SOURCE`, fixture 모드, 가짜 Notion 클라이언트를 저장소 JSON과 어떻게 합칠지(fixture를 글 JSON의 시험 사본으로 쓸지, 따로 둘지)는 구현이 정하므로 구현 PR에서 정한다. 아래는 이 결정 전의 구성으로, 구현 PR이 정리하기 전까지 현재 코드의 상태를 적은 것이다.
-
-  글을 어디서 읽을지는 환경 변수 `CONTENT_SOURCE`(`notion` 또는 `fixture`, 기본 `notion`)로 분명히 고른다. Notion이 안 될 때 fixture로 조용히 바꾸지 않는다. 시험 데이터가 운영에 새는 것을 막기 위해서다.
+  글을 어디서 읽을지는 환경 변수 `CONTENT_SOURCE`(`notion` 또는 `fixture`, 기본 `notion`)로 분명히 고른다. 블로그가 런타임에 읽는 환경 변수는 이것 하나다. Notion이 안 될 때 fixture로 조용히 바꾸지 않는다. 시험 데이터가 운영에 새는 것을 막기 위해서다.
 
   | 환경 | 읽는 곳 |
   |---|---|
-  | 운영, 로컬 개발 | Notion. 같은 블로그 토큰으로 공개 글만 읽는다. 운영은 토큰이 없으면 빌드가 실패한다 |
-  | E2E, CI, Storybook | fixture |
+  | 운영, 로컬 개발, CI 검사 작업의 빌드 | `notion`. 저장소에 커밋한 글 JSON(운영 글)이다 |
+  | E2E, Storybook | `fixture`. 시험 응답이다 |
+
+  `notion`은 운영 Notion을 내보낸 커밋 JSON을 뜻한다. 이름과 값은 전과 같게 두어 E2E·CI·Playwright 설정을 바꾸지 않았다. 두 모드 모두 같은 함수(`readNotionExport`)로 읽고, 그 뒤 변환(`readPostRows`, `toPostBlocks`, 코드 강조와 수식, 이미지 크기)도 같다. 시험 데이터를 만드는 길만 다르다.
 
   Notion용 시험 데이터베이스는 두지 않는다. 미리보기 배포도 없어, 화면은 로컬과 CI로 확인한다([[배포 환경]]).
+
+  글 JSON의 모양과 만드는 법은 다음과 같다.
+  - 위치: `apps/web/content/notion.json` 한 파일이다. 글 JSON은 이 폴더에만 둔다. 배포가 "글만 바뀐 병합"을 이 경로로 알아보기 때문이다([[배포 환경:배포(CD)]]).
+  - 모양: `pages`(묶음별 공개 행, Notion 페이지 응답 그대로), `blocks`(페이지 ID별 블록 나무), `imageSizes`(이미지 서버 주소별 크기. 알 수 없으면 null)이다.
+  - Notion 응답을 변환하지 않고 그대로 둔다. 운영과 시험이 같은 변환 코드를 지나야 하고, 변환을 고치면 다시 내보내지 않아도 다음 빌드에 반영되기 때문이다. 변환한 모양을 두면 코드 강조 HTML이 JSON diff를 덮는 문제도 있다.
+  - 같은 입력이면 같은 파일이 나온다. 행은 페이지 ID 차례, 키는 정렬, 들여쓰기는 2칸이다. Notion 파일 주소의 서명 쿼리와 `expiry_time`은 뺀다. 요청마다 바뀌어 diff에 잡음이 생기기 때문이다.
+  - 초안은 넣지 않는다([[콘텐츠 원천:공개 여부]]).
+  - 만드는 명령: `pnpm --filter @seojaewan/web export:notion-content`(`NOTION_TOKEN` 환경 변수나 `--token-file <파일>`). 스크립트는 `apps/web/scripts/export-notion-content.ts`이고 로직은 `src/content/notion-export`에 있다. Node의 `module.registerHooks`로 `@/` 별칭을 푸는 훅(`apps/web/scripts/app-alias-hooks.ts`)을 두어 앱의 변환 코드를 그대로 쓴다. tsx 같은 실행기를 새로 들이지 않았다. 내보낼 때 공개 행의 필수 값 검사도 같이 돌아, 잘못된 공개 행은 내보내기에서 바로 실패한다.
+  - 생성 파일이라 Prettier와 Tailwind 소스 검색(`@source not`)에서 뺀다. 스크립트가 쓰는 모양을 그대로 두어야 하고, 글에 적힌 CSS 예시를 Tailwind가 클래스로 읽으면 빌드가 깨지기 때문이다.
+  - 이미지 크기는 내보낼 때 이미지 서버에 묻는다([[Notion 이미지 제공:크기]]).
 
   fixture는 Notion API 응답 JSON 그대로다(데이터베이스 조회 결과, 자식을 포함한 블록 목록). `fixture` 모드에서는 가짜 Notion 클라이언트가 이 JSON을 돌려주고, 운영과 같은 변환 코드를 지난다. 변환한 뒤의 모양을 직접 적어 두면 변환 코드가 시험에서 빠지기 때문이다.
   - 내용: [[Notion 블록]]이 지원하는 블록 12종 전부(목록 3단계 중첩, 할 일 켬·끔, 토글 안의 제목·목록, 바른·잘못된 수식), 글자 서식과 겹침, 무시할 Notion 색, 지원하지 않는 블록, 속성(공개 켬·끔, `폴더` 경로, slug, 작성일, 커버 있음·없음)을 Blog·Project·About 세 묶음 모두에 둔다. `폴더` 경로는 지금 E2E가 쓰는 폴더 그대로 둔다. 이미지는 저장소 안의 시험 이미지다.
@@ -101,7 +117,7 @@ Notion 속성: |
   - 위치: `apps/web/src/content/notion-fixture/notion-responses.json`. 요청 이름마다 응답이 들어 있다.
   - 받는 명령: `pnpm --filter @seojaewan/web fetch:notion-fixture --token-file <파일>`
   - API 버전은 `2025-09-03`이다. 데이터베이스 ID로 데이터 소스 ID를 받고, 그 데이터 소스를 조회한다.
-  - E2E와 CI는 `CONTENT_SOURCE=fixture`로 빌드하고 실행한다.
+  - E2E는 `CONTENT_SOURCE=fixture`로 빌드하고 실행한다. CI 검사 작업의 빌드는 커밋한 글 JSON(운영 글)으로 한다. 운영 글로 빌드가 되는지 PR에서 확인하기 위해서다.
   - 시험 페이지 위치: Blog 페이지 아래, `blog` 데이터베이스 밖의 `fixture` 페이지다. 사이트는 데이터베이스 행만 읽으므로 나오지 않는다. Notion API는 워크스페이스 최상위에 페이지를 만들 수 없어 이 자리에 뒀다.
   - 본문: 지원 블록 12종과 지원하지 않는 블록(임베드)이 있다. 글자 서식과 겹침, Notion 색, 3단계 중첩 목록, 할 일 켬·끔, 토글 안 제목·목록, 바른 수식과 잘못된 수식이 들어 있다.
   - 인라인 데이터베이스: `fixture-blog`, `fixture-project`, `fixture-about`이다. `fixture-blog`에는 지금 E2E가 쓰는 임시 글 10개(제목, slug, 폴더, 작성일, 본문)와 비공개 초안 1개가 있다. 나머지 둘에는 공개 1개와 비공개 1개가 있다.
@@ -112,7 +128,7 @@ Notion 속성: |
 
   | 연동 | 쓰는 곳 | 웹훅 |
   |---|---|---|
-  | `seojaewan-blog` | 동기화 작업(GitHub Actions 비밀값 `NOTION_TOKEN`) | 쓰지 않는다 |
+  | `seojaewan-blog` | 내보내기(동기화 작업, GitHub Actions 비밀값 `NOTION_TOKEN`) | 쓰지 않는다 |
   | `seojaewan-images` | 이미지 서버(`apps/images`, [[Notion 이미지 제공]]) | 없음 |
 
   `seojaewan-blog` 토큰은 GitHub Actions 비밀값으로 동기화 작업이 쓴다. 블로그 컨테이너에는 두지 않는다. 블로그는 빌드와 실행 때 Notion을 부르지 않기 때문이다.

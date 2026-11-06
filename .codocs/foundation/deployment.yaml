@@ -8,7 +8,7 @@ _codocs:
   이 문서는 AI 에이전트가 이 문서만 보고 인프라 작업을 이어갈 수 있게, 무엇을 어디서 하고 무엇은 사람이 직접 하는지도 적는다.
 결정: |
   Vercel이 아니라 집의 리눅스 미니 PC에 직접 배포한다. 미니 PC는 AMD 미니 PC(7845 계열)에 RAM 32GB다.
-  [[콘텐츠 원천]]에서 글을 저장소 JSON으로 커밋해 완전한 SSG로 내기로 했다. 블로그는 빌드 때 만든 페이지만 내주고 모르는 주소는 미리 만든 404로 보낸다. 글이 바뀌면 다시 배포하므로 ISR과 웹훅 갱신은 쓰지 않는다. 블로그는 지금처럼 Next.js standalone 출력을 Docker 컨테이너로 돌린다. SSG로 바뀐 뒤에도 standalone을 유지할지는 구현 PR에서 확인한다.
+  [[콘텐츠 원천]]에서 글을 저장소 JSON으로 커밋해 완전한 SSG로 내기로 했다. 블로그는 빌드 때 만든 페이지만 내주고 모르는 주소는 미리 만든 404로 보낸다. 글이 바뀌면 다시 배포하므로 ISR과 웹훅 갱신은 쓰지 않는다. 블로그는 지금처럼 Next.js standalone 출력을 Docker 컨테이너로 돌린다.
 
   배포 흐름과 구성 요소는 아래 섹션에서 정한다. 블로그(`apps/web`)와 이미지 서버(`apps/images`, [[Notion 이미지 제공]])가 앱마다 Dockerfile을 갖고, 저장소 루트에 Jenkinsfile과 Docker Compose 설정을 둔다([[저장소 구성:구성]]). 배포는 local-server가 운영하는 공용 젠킨스가 한다.
 검토한 대안: |
@@ -28,10 +28,11 @@ _codocs:
   5. 실패했을 때만 local-server의 notify로 보내 카카오톡으로 받는다. 성공은 알리지 않는다([[알림 프로세스]]).
 
   배포 경로는 둘이다(2026-11-06 결정).
-  - 글 배포 경로: 동기화 작업이 만든 글 PR이 자동 병합되면([[콘텐츠 원천:갱신 방식]]), 글 JSON만 바뀐 병합이므로 Changesets 버전 PR 없이 바로 블로그를 다시 배포한다.
+  - 글 배포 경로: 동기화 작업이 만든 글 PR이 병합되면([[콘텐츠 원천:갱신 방식]]), 글 JSON만 바뀐 병합이므로 Changesets 버전 PR 없이 바로 블로그를 다시 배포한다.
   - 코드 배포 경로: 코드 변경은 Changesets로 모았다가 버전 PR을 머지할 때 배포한다. 버전 PR은 누가 병합해도 된다. 앱이나 패키지를 바꾼 PR에는 changeset을 넣고, CI가 `changeset status`로 빠뜨린 것을 잡는다. Renovate PR은 changeset 없이 머지되고, 다음 배포 때 함께 나간다.
   - 두 경로 모두 바뀐 앱(`apps/web`, `apps/images`)만 배포한다. 글 JSON만 바뀌면 블로그만 배포한다.
-  - 글 JSON만 바뀐 병합을 알아보는 방법, 바뀐 앱을 고르는 구체적 방법, Changesets 설정과 Jenkinsfile의 모양은 구현 PR에서 정한다.
+  - 글 JSON만 바뀐 병합을 알아보는 방법: 병합에서 바뀐 파일이 모두 `apps/web/content/**`이면 글만 바뀐 병합으로 보고 Changesets 없이 바로 배포한다.
+  - 바뀐 앱을 고르는 구체적 방법, Changesets 설정과 Jenkinsfile의 모양은 구현 PR에서 정한다.
 
   - 두 앱(블로그 `apps/web`, 이미지 서버 `apps/images`)을 Docker Compose 하나로 묶는다.
   - 컨테이너는 포트를 `127.0.0.1`에만 연다(Compose의 `127.0.0.1:3000:3000`). Docker의 포트 공개는 ufw를 건너뛰어 방화벽에 구멍을 내기 때문이다. cloudflared가 같은 머신에서 돌아 터널 연결에는 문제가 없다. 이 PC의 방화벽(ufw)은 local-server가 정한다(local-server 저장소의 `.codocs/foundation/security.yaml`, 보안과 방화벽).
@@ -42,10 +43,11 @@ CI: |
   - 워크플로의 `runs-on`은 `[self-hosted, linux]`로 바꾼다. 워크플로, PR 검사, 병합 조건은 바뀌지 않는다.
   - 비공개 저장소에서는 시나리오 케이스 보고서를 GitHub Pages로 올리지 못한다(무료 계정). 보고서는 미니 PC로 옮겨 Cloudflare 터널과 Access 뒤에서 연다([[테스트 작성 규칙:E2E]]). 캡처 표 댓글의 그림(`parity-report`, `parity-captures` 브랜치)은 비공개 전환 뒤 로그인 없이는 404다. GitHub에 로그인한 브라우저에서는 보인다(그림이 많으면 느리게 뜬다). 2026-11-06에 PR #654로 확인했다([[피그마 연동:CI]]).
   - 한 머신에서 runner 셋이 동시에 job을 돌린다. E2E 서버 포트는 runner 번호로 나눈다(`4100 + n`, `scripts/runner-port.mjs`). 3000번은 블로그 컨테이너 자리라 쓰지 않는다.
-  - 워크플로가 시험용 데이터를 어떻게 쓸지(지금은 `CONTENT_SOURCE=fixture`)는 구현 PR에서 정리한다([[콘텐츠 원천:읽는 곳]]).
+  - 시험용 데이터는 E2E만 `CONTENT_SOURCE=fixture`로 쓰고, 검사 작업의 빌드는 커밋한 글 JSON으로 한다([[콘텐츠 원천:읽는 곳]]).
   - 앱이나 패키지를 바꾼 PR에는 changeset이 있어야 하고, CI가 `changeset status`로 빠뜨린 것을 잡는다([[배포 환경:배포(CD)]]).
-  - 글 PR은 위 필수 검사를 통과해야 자동 병합된다([[콘텐츠 원천:갱신 방식]]).
-  - 글 동기화 작업은 이 self-hosted runner에서 1시간마다 돈다. 워크플로 이름과 위치는 구현 PR에서 정한다.
+  - 글 PR은 위 필수 검사를 모두 통과해야 `Content sync merge` 워크플로가 병합한다([[콘텐츠 원천:갱신 방식]]).
+  - 글 동기화 작업(`Content sync`, `.github/workflows/content-sync.yml`)은 이 self-hosted runner에서 매시 17분(UTC)에 돈다.
+  - 저장소는 GitHub Free 비공개라 ruleset과 auto-merge가 동작하지 않는다. 이것을 그대로 두기로 했다. GitHub Pro(월 4달러)로 올리면 ruleset이 다시 병합을 막지만, 올리지 않는다([[Git 작업 규칙:CI]]).
   - 이전에는 `E2E_PORT`가 turbo에서 걸러져 runner별 포트가 실제로 적용되지 않았다. PR #659부터 적용된다.
   - pnpm은 job마다 `runner.temp`에 설치한다. 기본 위치를 runner끼리 함께 쓰면 서로 덮어쓰기 때문이다. Actions의 pnpm 캐시는 쓰지 않는다. 저장소가 머신에 남아 있기 때문이다.
 도메인과 캐시: |
@@ -71,14 +73,14 @@ CI: |
 
   | 대상 | 변수 |
   |---|---|
-  | 블로그 | 현재 코드는 `CONTENT_SOURCE`, `NOTION_TOKEN`, `NOTION_WEBHOOK_SECRET`, `ALERT_URL`, `ALERT_SECRET`을 쓴다. 웹훅을 쓰지 않고 블로그가 Notion을 부르지 않으므로 `CONTENT_SOURCE`·`NOTION_TOKEN`·`NOTION_WEBHOOK_SECRET`의 처리는 구현 PR에서 정리한다. `ALERT_URL`(`http://10.88.0.1:8790/notify`)·`ALERT_SECRET`을 블로그에 남길지도 구현 PR에서 정한다 |
-| GitHub Actions 비밀값 | `NOTION_TOKEN`(`seojaewan-blog` 연동 토큰, 동기화 작업이 Notion을 읽는다), `CONTENT_SYNC_TOKEN`(글 PR을 만드는 Fine-grained PAT, `seojaewan-blog`만, Contents·Pull requests 쓰기), `ALERT_SECRET`(notify 클라이언트 `blog`의 비밀값, 동기화 실패 알림용) |
+  | 블로그 | `CONTENT_SOURCE`(`notion` 또는 `fixture`, 기본 `notion`) 하나다. 블로그는 Notion을 부르지 않고 알림도 보내지 않으므로 `NOTION_TOKEN`·`NOTION_WEBHOOK_SECRET`·`ALERT_URL`·`ALERT_SECRET`은 필요 없다 |
+  | GitHub Actions 비밀값 | `NOTION_TOKEN`(`seojaewan-blog` 연동 토큰, 동기화 작업이 Notion을 읽는다), `CONTENT_SYNC_TOKEN`(글 PR을 만드는 Fine-grained PAT, `seojaewan-blog`만, Contents·Pull requests 쓰기), `ALERT_SECRET`(notify 클라이언트 `blog`의 비밀값, 동기화 실패와 동기화 PR 검사 실패 알림용) |
   | 이미지 서버(`apps/images`) | `NOTION_TOKEN`(`seojaewan-images` 연동 토큰), `IMAGE_STORE_DIR`(기본 `/srv/seojaewan-images`), `HOST`(기본 `127.0.0.1`, 컨테이너는 `0.0.0.0`), `PORT`(기본 3100), `ALERT_URL`·`ALERT_SECRET`(둘은 함께 있어야 하고, 둘 다 없으면 로그만 남긴다) |
 
-  `ALERT_SECRET`은 사람이 넣는 값이 아니다. 배포 때 젠킨스(local-server)가 Firebat의 local-server `.local/credentials/notify/<이름>.secret`(root, 권한 600)을 읽어 컨테이너에 넣는다. 서비스 이름은 블로그 `blog`, 이미지 서버 `images`다. 젠킨스 `jenkins`는 local-server의 젠킨스가 쓴다([[알림 프로세스]]). 사람이 넣는 값은 Notion 토큰과 `CONTENT_SYNC_TOKEN`, Actions의 `ALERT_SECRET`이다.
+  이미지 서버의 `ALERT_SECRET`은 사람이 넣는 값이 아니다. 배포 때 젠킨스(local-server)가 Firebat의 local-server `.local/credentials/notify/<이름>.secret`(root, 권한 600)을 읽어 컨테이너에 넣는다. 서비스 이름은 이미지 서버 `images`다. `blog`는 컨테이너가 아니라 Actions 비밀값 `ALERT_SECRET`으로 쓴다. 젠킨스 `jenkins`는 local-server의 젠킨스가 쓴다([[알림 프로세스]]). 사람이 넣는 값은 Notion 토큰과 `CONTENT_SYNC_TOKEN`, Actions의 `ALERT_SECRET`이다.
 
-  - 지금 코드는 `CONTENT_SOURCE`가 `notion`이면 `NOTION_TOKEN`이 필수다(Zod `refine`). 이 검증의 정리는 구현 PR에서 한다. 환경 변수는 검증 모듈 하나에서만 읽는다([[코드 작성 규칙:React와 Next.js]]). 이미지 서버 주소와 Notion 데이터베이스 ID 세 개는 환경 변수가 아니라 코드 상수다.
-  - turbo가 strict env 모드라, 작업에 넘길 변수를 `turbo.json`에 적어야 한다. `build`에는 `CONTENT_SOURCE`·`NOTION_TOKEN`, `test:e2e`에는 `CONTENT_SOURCE`·`E2E_PORT`, `dev`에는 `CONTENT_SOURCE`·`NOTION_TOKEN`·`NOTION_WEBHOOK_SECRET`·`ALERT_URL`·`ALERT_SECRET`이다. 환경 변수를 구현 PR에서 정리할 때 함께 고친다.
+  - 블로그는 환경 변수를 `src/env.ts`의 Zod 스키마로 검증한다. 환경 변수는 검증 모듈 하나에서만 읽는다([[코드 작성 규칙:React와 Next.js]]). 이미지 서버 주소와 Notion 데이터베이스 ID 세 개는 환경 변수가 아니라 코드 상수다.
+  - turbo가 strict env 모드라, 작업에 넘길 변수를 `turbo.json`에 적어야 한다. `build`와 `dev`에는 `CONTENT_SOURCE`만, `test:e2e`에는 `CONTENT_SOURCE`·`E2E_PORT`를 넘긴다.
   - 미니 PC: systemd `EnvironmentFile` 또는 컨테이너 env 파일에 두고 파일 권한을 600으로 한다. 이것이 운영의 기준이다.
   - 로컬: `apps/web/.env.local`에 직접 둔다(Vercel이 없으므로 `vercel env pull`은 없다).
   - Actions 비밀값은 저장소 Settings의 Secrets에 사람이 넣는다.
@@ -86,7 +88,7 @@ CI: |
 접근 제한: |
   Cloudflare Access(로그인으로 막는 기능)는 이 저장소 쪽에서는 시나리오 케이스 보고서에만 쓴다. 젠킨스 관리 화면(`jenkins.seojaewan.com`)의 Access는 local-server가 맡고 예외를 두지 않는다. 블로그 `seojaewan.com`에는 Access를 쓰지 않는다.
 
-`/github-webhook/` 경로 공개와 `jenkins-webhook` Access 앱(Bypass)은 2026-11-06에 만들었지만, 웹훅을 쓰지 않게 되어 지운다. Notion 웹훅도 쓰지 않는다.
+  `/github-webhook/` 경로 공개와 `jenkins-webhook` Access 앱(Bypass)은 2026-11-06에 만들었지만, 웹훅을 쓰지 않게 되어 지운다. Notion 웹훅도 쓰지 않는다.
 인프라 설정의 위치: |
   터널, Access, self-hosted runner와 같은 인프라 설정은 코드가 아니라 서버와 Cloudflare·GitHub 설정이다. 그 절차와 결과(주소, 서비스 이름, 설정 파일 위치)는 이 문서에 적는다. 값(토큰, 비밀번호)은 적지 않는다. 설정이 끝나면 적을 자리가 이 섹션이다.
 
@@ -106,7 +108,7 @@ CI: |
 
   공개는 `seojaewan.com`을 처음 터널에 연결하는 일이다.
   1. 터널에 연결한다.
-  2. 확인한다: 사이트 접속, 글 동기화 작업(글을 고치거나 `공개`를 체크하면 PR이 만들어지고, CI를 통과해 자동 병합되고, 다시 배포되는지. 초안만 고친 경우 PR이 없는지), 동기화 실패와 글 PR CI 실패 때 카카오톡 알림(notify는 준비됐다, [[알림 프로세스:선행 조건]]), 카카오톡으로 링크를 공유했을 때의 미리보기([[SEO와 공유 미리보기:공유 미리보기 이미지]]).
+  2. 확인한다: 사이트 접속, 글 동기화 작업(글을 고치거나 `공개`를 체크하면 PR이 만들어지고, CI를 통과해 워크플로가 병합하고, 다시 배포되는지. 초안만 고친 경우 PR이 없는지), 동기화 실패와 글 PR CI 실패 때 카카오톡 알림(notify는 준비됐다, [[알림 프로세스:선행 조건]]), 카카오톡으로 링크를 공유했을 때의 미리보기([[SEO와 공유 미리보기:공유 미리보기 이미지]]).
   3. 문제가 있으면 고치거나 터널 연결을 끊는다.
   4. 확인되면 Google Search Console과 네이버 서치어드바이저에 등록한다([[SEO와 공유 미리보기:검색 엔진 등록]]).
 
