@@ -3,9 +3,10 @@ import './globals.css';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
-export const metadata: Metadata = {
-  title: 'seojaewan',
-};
+import { getSiteMetadata } from '@/content/site-metadata/site-metadata';
+
+// @codocs [[SEO와 공유 미리보기:메타 정보]]
+export const metadata: Metadata = getSiteMetadata();
 
 type RootLayoutProps = {
   children: ReactNode;

@@ -1,11 +1,14 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 
 import {
   getContentBody,
   getContentIndex,
+  getContentRow,
   getContentSlugs,
 } from '@/content/content-cache/content-cache';
+import { getEntryMetadata } from '@/content/site-metadata/site-metadata';
 import type { PostCollection } from '@/shared/utils/post-address/post-address';
 import { Shell } from '@/shell/shell';
 
@@ -30,6 +33,30 @@ export async function getContentEntryParams(
 ): Promise<ContentEntryParams[]> {
   const slugs = await getContentSlugs(collection);
   return (slugs.length === 0 ? [EMPTY_COLLECTION_SLUG] : slugs).map((slug) => ({ slug }));
+}
+
+/**
+ * 글 주소 페이지의 메타 정보(제목, 설명, canonical, 공유 그림). 목록과 본문을 화면과 같은 캐시(목록 태그, 페이지 태그)로 읽어,
+ * 웹훅이 오면 화면과 함께 갱신된다. 본문은 Summary가 비어 있을 때만 읽는다. 공개 항목이 아니면 루트 레이아웃 것을 그대로 쓴다
+ * (화면이 404로 답한다).
+ * @codocs [[SEO와 공유 미리보기:메타 정보]]
+ * @codocs [[콘텐츠 원천:갱신 방식]]
+ * @param collection 묶음
+ * @param params 경로 값
+ * @returns 메타 정보
+ */
+export async function getContentEntryMetadata(
+  collection: PostCollection,
+  params: Promise<ContentEntryParams>,
+): Promise<Metadata> {
+  const { slug } = await params;
+  const post = { collection, slug };
+  const row = await getContentRow(post);
+  if (row === null) {
+    return {};
+  }
+  const blocks = row.summary.trim() === '' ? ((await getContentBody(post))?.blocks ?? []) : [];
+  return getEntryMetadata({ post, row, blocks });
 }
 
 /**
