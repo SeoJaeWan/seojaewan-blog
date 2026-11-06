@@ -7,7 +7,7 @@ describe('배포 환경:환경 변수', () => {
   it('Notion 토큰만 있으면 나머지는 기본값을 쓴다', () => {
     expect(parseEnv({ NOTION_TOKEN: 'token' })).toEqual({
       NOTION_TOKEN: 'token',
-      IMAGE_STORE_DIR: '/srv/seojaewan-images',
+      IMAGE_STORE_DIR: '/srv/seojaewan-blog/images',
       HOST: '127.0.0.1',
       PORT: 3100,
     });
@@ -23,7 +23,7 @@ describe('배포 환경:환경 변수', () => {
         ALERT_SECRET: '',
       }),
     ).toMatchObject({
-      IMAGE_STORE_DIR: '/srv/seojaewan-images',
+      IMAGE_STORE_DIR: '/srv/seojaewan-blog/images',
       PORT: 3100,
     });
   });
