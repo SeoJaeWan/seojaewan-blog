@@ -23,6 +23,10 @@ export async function generateMetadata({ params }: ProjectEntryPageProps): Promi
   return getContentEntryMetadata('project', params);
 }
 
+// @codocs [[콘텐츠 원천:결정]]
+// 완전한 정적 생성이다. 빌드 때 만든 slug만 내주고, 모르는 slug는 서버가 그리지 않고 미리 만든 404 페이지로 답한다.
+export const dynamicParams = false;
+
 /**
  * 빌드할 때 공개 Project 항목마다 `/projects/<slug>` 페이지의 HTML을 만들어 둔다.
  * @codocs [[SEO와 공유 미리보기:첫 HTML]]

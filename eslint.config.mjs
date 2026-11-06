@@ -397,6 +397,10 @@ const CONSTANT_INIT = 'init.type=/^(Literal|TemplateLiteral|UnaryExpression)$/';
 const AS_CONST_INIT = 'init.type="TSAsExpression"][init.typeAnnotation.typeName.name="const"';
 const UPPER_SNAKE = 'name=/^[A-Z][A-Z0-9_]*$/';
 const CONSTANT_MESSAGE = '모듈 최상위의 고정 값 상수는 UPPER_SNAKE_CASE로 쓴다.';
+// Next.js 라우트 설정(`export const dynamicParams = false` 등)은 이름을 Next.js가 정하므로 상수 이름 규칙에서 뺀다.
+const NEXT_SEGMENT_CONFIG_NAMES =
+  '^(dynamic|dynamicParams|revalidate|fetchCache|runtime|preferredRegion|maxDuration)$';
+const NEXT_SEGMENT_CONFIG = `name=/${NEXT_SEGMENT_CONFIG_NAMES}/`;
 const COMPUTED_MESSAGE =
   '계산 값(함수 호출 결과, 객체·배열 등)은 UPPER_SNAKE_CASE가 아니라 camelCase로 쓴다.';
 const topLevelConst = [
@@ -407,11 +411,11 @@ const namingSyntaxRestrictions = [
   ...typeBooleanRestrictions,
   ...topLevelConst.flatMap((declaration) => [
     {
-      selector: `${declaration} > VariableDeclarator[${CONSTANT_INIT}] > Identifier.id:not([${UPPER_SNAKE}])`,
+      selector: `${declaration} > VariableDeclarator[${CONSTANT_INIT}] > Identifier.id:not([${UPPER_SNAKE}]):not([${NEXT_SEGMENT_CONFIG}])`,
       message: CONSTANT_MESSAGE,
     },
     {
-      selector: `${declaration} > VariableDeclarator[${AS_CONST_INIT}] > Identifier.id:not([${UPPER_SNAKE}])`,
+      selector: `${declaration} > VariableDeclarator[${AS_CONST_INIT}] > Identifier.id:not([${UPPER_SNAKE}]):not([${NEXT_SEGMENT_CONFIG}])`,
       message: CONSTANT_MESSAGE,
     },
     {
@@ -449,6 +453,14 @@ const namingConventionOptions = [
   {
     selector: ['variable', 'parameter'],
     modifiers: ['destructured'],
+    format: null,
+  },
+  // Next.js 라우트 설정 이름은 Next.js가 정한다.
+  {
+    selector: 'variable',
+    modifiers: ['const', 'global', 'exported'],
+    types: ['boolean', 'string', 'number'],
+    filter: { regex: NEXT_SEGMENT_CONFIG_NAMES, match: true },
     format: null,
   },
   { selector: 'typeLike', format: ['PascalCase'] },

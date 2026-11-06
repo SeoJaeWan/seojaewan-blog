@@ -3,6 +3,8 @@
 
 /* @codocs [[피그마 연동:토큰 생성]] 앱의 CSS가 디자인 시스템 소스의 클래스도 읽게 한다. */
 @source '../../../../packages/design-system/src';
+/* 글 JSON(`apps/web/content/`)은 Notion 글 내용이라 클래스로 읽지 않는다. 글에 적힌 CSS 예시가 클래스로 잡혀 빌드가 깨진다. */
+@source not '../../content';
 
 /*
  * @codocs [[항목 조작:끌기]]

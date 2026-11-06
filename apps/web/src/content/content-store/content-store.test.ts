@@ -1,27 +1,18 @@
-import { cacheTag } from 'next/cache';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { readContentRows } from '@/content/post-source/post-source';
 import { getTocHeadings, type PostBlock } from '@/shared/utils/post-body/post-body';
 import type { PostSummary } from '@/shared/utils/workspace-rules/workspace-rules';
 
 import {
-  CONTENT_INDEX_TAG,
   getContentBody,
   getContentIndex,
   getContentRow,
   getContentRows,
   getContentSlugs,
-  getPageCacheTag,
-} from './content-cache';
+} from './content-store';
 
 vi.mock('server-only', () => ({}));
-// 캐시 함수(`'use cache'`)는 Next.js 밖에서 그냥 함수로 돈다. 붙인 태그만 기록한다.
-vi.mock('next/cache', () => ({ cacheLife: vi.fn(), cacheTag: vi.fn() }));
-
-beforeEach(() => {
-  vi.mocked(cacheTag).mockClear();
-});
 
 /**
  * Blog 묶음의 색인.
@@ -163,25 +154,9 @@ describe('콘텐츠 원천:데이터베이스', () => {
   });
 });
 
-// @codocs [[콘텐츠 원천:갱신 방식]]
-describe('콘텐츠 원천:갱신 방식', () => {
-  it('목록은 세 묶음 모두 목록 태그로 캐시한다', async () => {
-    await getContentIndex();
-    expect(vi.mocked(cacheTag).mock.calls).toEqual([
-      [CONTENT_INDEX_TAG],
-      [CONTENT_INDEX_TAG],
-      [CONTENT_INDEX_TAG],
-    ]);
-  });
-
-  it('본문은 그 페이지의 태그로 캐시해, 웹훅이 그 페이지만 다시 만들게 한다', async () => {
-    const [row] = await readContentRows('project');
-    await getContentBody({ collection: 'project', slug: 'fixture-project' });
-    expect(row).toBeDefined();
-    expect(vi.mocked(cacheTag)).toHaveBeenCalledWith(getPageCacheTag(row?.pageId ?? ''));
-  });
-
-  it('메타 정보와 sitemap이 읽는 행도 목록 태그로 캐시해 웹훅 때 함께 갱신된다', async () => {
+// @codocs [[SEO와 공유 미리보기:메타 정보]]
+describe('SEO와 공유 미리보기:메타 정보', () => {
+  it('메타 정보와 sitemap은 공개 행의 제목, Summary, 고친 시각을 읽는다', async () => {
     expect(
       await getContentRow({ collection: 'blog', slug: 'notion-blog-migration' }),
     ).toMatchObject({
@@ -191,18 +166,6 @@ describe('콘텐츠 원천:갱신 방식', () => {
     expect(await getContentRow({ collection: 'project', slug: 'hidden-project' })).toBeNull();
     expect((await getContentRows()).map(({ row }) => row.lastEditedAt)).toContain(
       '2026-11-06T02:33:00.000Z',
-    );
-    expect(new Set(vi.mocked(cacheTag).mock.calls.flat())).toEqual(new Set([CONTENT_INDEX_TAG]));
-  });
-
-  it('공개하지 않은 항목은 본문을 읽지 않아 페이지 태그도 없다', async () => {
-    await getContentBody({ collection: 'project', slug: 'hidden-project' });
-    expect(vi.mocked(cacheTag).mock.calls.flat()).toEqual([CONTENT_INDEX_TAG]);
-  });
-
-  it('페이지 태그는 하이픈과 대소문자가 달라도 같은 페이지면 같다', () => {
-    expect(getPageCacheTag('410C97BA-FD89-8146-A87A-ECA9B3451C50')).toBe(
-      getPageCacheTag('410c97bafd898146a87aeca9b3451c50'),
     );
   });
 });
