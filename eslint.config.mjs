@@ -367,6 +367,7 @@ const configFiles = [
   '**/*.config.{ts,mjs,js,cjs}',
   '**/.storybook/**',
   'scripts/**',
+  'deploy/**',
   'apps/web/scripts/**',
   'tools/figma-parity/src/**',
   'tools/scenario-cases/src/**',
@@ -608,7 +609,7 @@ export default defineConfig(
       globals: { ...globals.browser, ...globals.node },
       parserOptions: {
         projectService: {
-          allowDefaultProject: ['*.mjs', 'scripts/*.mjs', 'apps/web/*.mjs'],
+          allowDefaultProject: ['*.mjs', 'scripts/*.mjs', 'deploy/*.mjs', 'apps/web/*.mjs'],
         },
         tsconfigRootDir: rootDir,
       },
@@ -662,6 +663,7 @@ export default defineConfig(
           'contracts/**/': 'KEBAB_CASE',
           'packages/*/src/**/': 'KEBAB_CASE',
           'scripts/**/': 'KEBAB_CASE',
+          'deploy/**/': 'KEBAB_CASE',
           'tools/*/src/**/': 'KEBAB_CASE',
         },
       ],

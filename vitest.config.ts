@@ -19,6 +19,15 @@ export default defineConfig({
           include: ['scripts/**/*.test.mjs'],
         },
       },
+      // @codocs [[배포 환경:배포(CD)]]
+      // 젠킨스 배포 스크립트(deploy/)의 테스트. 명령은 흉내 내고 판단과 순서만 본다.
+      {
+        test: {
+          name: 'unit-repo-deploy',
+          environment: 'node',
+          include: ['deploy/**/*.test.mjs'],
+        },
+      },
       // @codocs [[Notion 이미지 제공:주소]]
       // 블로그와 이미지 서버가 같은 주소 모양을 쓰는지 두 앱을 함께 불러 보는 시험. 두 앱은 서로 import하지 않는다.
       {

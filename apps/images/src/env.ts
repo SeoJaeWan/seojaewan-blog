@@ -20,7 +20,7 @@ function optional<T extends z.ZodType>(schema: T) {
 const envSchema = z
   .object({
     NOTION_TOKEN: z.string().min(1),
-    IMAGE_STORE_DIR: optional(z.string().default('/srv/seojaewan-images')),
+    IMAGE_STORE_DIR: optional(z.string().default('/srv/seojaewan-blog/images')),
     HOST: optional(z.string().default('127.0.0.1')),
     PORT: optional(z.coerce.number().int().min(1).max(65535).default(3100)),
     ALERT_URL: optional(z.url({ protocol: /^https?$/u }).optional()),

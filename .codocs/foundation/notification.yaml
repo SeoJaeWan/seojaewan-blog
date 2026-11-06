@@ -13,8 +13,8 @@ _codocs:
   - 글 동기화 워크플로(GitHub Actions)는 동기화 실패와 동기화 PR의 검사 실패를 notify로 보낸다. 보내는 곳은 `scripts/notify-alert.sh`이고, Actions 비밀값 `ALERT_SECRET`(서비스 이름 `blog`)을 쓴다([[콘텐츠 원천:갱신 방식]], [[배포 환경:환경 변수]]). 이미지 크기를 받지 못한 일은 알리지 않고 경고 로그만 남긴다. 이미지 서버가 없는 동안 매시간 알림이 가지 않게 하기 위해서다.
   - 이미지 서버(`apps/images`), 젠킨스(배포 실패만), 글 동기화 워크플로는 `ALERT_URL=http://10.88.0.1:8790/notify`로 보낸다. 블로그 런타임은 알림을 보내지 않는다. 요청 형식(헤더, 본문 필드, 응답 코드)은 블로그 문서에 다시 적지 않는다. local-server 저장소의 `.codocs/foundation/notify.yaml` '다른 저장소에서 쓰기' 절을 따른다.
   - 서비스 이름은 `blog`(글 동기화 워크플로), `images`(이미지 서버), `jenkins`(배포 실패만)다. 젠킨스는 local-server의 공용 젠킨스이고 성공한 배포는 알리지 않는다(local-server `.codocs/foundation/auto-deploy.yaml`). 메시지 앞에 `[blog]`처럼 붙는다.
-  - `ALERT_SECRET`은 서비스마다 local-server가 발급한다. 원문은 Firebat(미니 PC)의 local-server `.local/credentials/notify/<서비스>.secret`(root, 권한 600)에 있고, 배포 때 젠킨스(local-server)가 이 파일을 읽어 넣는다. `blog`는 컨테이너가 아니라 사람이 Actions 비밀값으로 넣는다.
-  - 이미지 서버 컨테이너에서 `10.88.0.1`에 닿는지는 배포 파이프라인 작업 때 시험한다. 같은 절이 첫 컨테이너를 띄울 때 `curl http://10.88.0.1:8790/healthz`로 확인하라고 한다.
+  - `ALERT_SECRET`은 서비스마다 local-server가 발급한다. 원문은 Firebat(미니 PC)의 local-server `.local/credentials/notify/<서비스>.secret`(root, 권한 600)에 있다. 이미지 서버의 비밀값은 local-server가 블로그 실행 계정에 `/run/secrets/notify/images`로 넣고, 배포 스크립트가 읽어 컨테이너에 넣는다([[배포 환경:배포(CD)]]). `blog`는 컨테이너가 아니라 사람이 Actions 비밀값으로 넣는다.
+  - 이미지 서버 컨테이너(compose 기본 네트워크)에서 `http://10.88.0.1:8790/healthz`가 200인 것을 2026-11-06 배포 파이프라인 작업 때 확인했다.
   - notify는 VPS에서 따로 떠 있으므로 블로그가 죽어도 알릴 수 있다.
 카카오 토큰: |
   카카오 토큰의 운영 규칙(갱신 주기, 재로그인 알림 등)은 local-server 저장소의 `.codocs/foundation/notify.yaml`(알림 서비스)이 정한다. 블로그 문서에는 옮겨 적지 않는다.

@@ -14,6 +14,7 @@ _codocs:
   종류는 커밋 종류와 같은 단어를 쓴다.
   피그마 플러그인이 여는 브랜치의 고정 이름과 재내보내기 시 브랜치 재사용은 [[피그마 연동:피그마 플러그인]]에서 정한다.
   `main`과 Renovate가 여는 `renovate/...` 브랜치는 이 형식 검사에서 제외한다.
+  젠킨스가 여는 버전 PR 브랜치 `chore/release`는 이 형식이고, 사람이 쓰지 않는 예약 이름이다([[Git 작업 규칙:Changesets]]).
   CI 작업 `Branch name`과 push 훅(pre-push)이 이름을 검사한다. 설명은 소문자·숫자·하이픈이고, 종류 목록은 commitlint 설정(`type-enum`)에서 읽는다.
 커밋: |
   - 제목은 영어로, Conventional Commits 형식을 따른다. 예: `feat(design-system): add Button component`
@@ -60,5 +61,6 @@ Changesets: |
   - 모든 패키지가 private이라 npm에 publish하지 않는다. 설정(`.changeset/config.json`)은 버전만 올리고 태그는 만들지 않는다(`privatePackages`).
   - `tools/*`(`figma-parity`, `figma-plugin`, `scenario-cases`)는 배포 대상이 아니라 버전 관리에서 뺀다(`ignore`).
   - CI의 검사 작업(`Lint, typecheck, test, build`)이 `scripts/check-changeset.mjs`로 PR을 검사한다. 필수 검사 이름은 늘리지 않고 이 작업 안의 단계로 둔다. 앱이나 패키지에서 `*.md`와 `apps/web/content/**`가 아닌 파일이 바뀐 PR에만 `changeset status --since=origin/main`을 돌려 changeset이 빠졌으면 실패시킨다. 그 밖의 PR은 통과한다.
-  - 검사에서 빼는 PR: 글 동기화 PR(`chore/notion-content-sync`, Changesets 없이 바로 배포한다), Renovate PR(`renovate/*`, changeset 없이 머지되고 다음 배포 때 함께 나간다), 버전 PR(`changeset-release/*`). `main` push에서는 돌지 않는다.
+  - 검사에서 빼는 PR: 글 동기화 PR(`chore/notion-content-sync`, Changesets 없이 바로 배포한다), Renovate PR(`renovate/*`, changeset 없이 머지되고 다음 배포 때 함께 나간다), 버전 PR(`chore/release`). `main` push에서는 돌지 않는다.
   - 버전 PR은 `changeset version`이 만든다. 버전 PR을 만들고 바뀐 앱만 배포하는 일은 공용 젠킨스가 한다([[배포 환경:배포(CD)]]).
+  - 버전 PR 브랜치는 `chore/release` 하나로 고정한다. 브랜치 이름 형식(`종류/설명`)에 맞아 `Branch name` 검사에는 예외가 필요 없고, changeset 검사에서만 뺀다. 젠킨스가 이 브랜치를 강제로 덮어쓰므로 사람이 이 이름으로 작업하지 않는다. local-server가 쓰는 `changeset-release/main`은 이 형식에 맞지 않아 쓰지 않는다.

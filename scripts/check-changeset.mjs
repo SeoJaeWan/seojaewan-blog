@@ -6,9 +6,8 @@ import { pathToFileURL } from 'node:url';
 // 배포에 영향이 있는 파일이 바뀐 PR에만 `changeset status`를 돌려 changeset이 빠졌으면 실패시킨다.
 
 // 검사하지 않는 브랜치: 글 동기화 PR(Changesets 없이 바로 배포한다), Renovate(changeset 없이 머지되고 다음 배포 때 함께 나간다),
-// 버전 PR(Jenkins가 changeset을 소비해 만든다).
-const EXEMPT_BRANCH_PATTERN =
-  /^(?:chore\/notion-content-sync|renovate\/.+|changeset-release\/.+)$/u;
+// 버전 PR(`chore/release`, Jenkins가 changeset을 소비해 만든다. deploy/version-pr.mjs).
+const EXEMPT_BRANCH_PATTERN = /^(?:chore\/notion-content-sync|chore\/release|renovate\/.+)$/u;
 // 버전을 관리하는 곳(배포 대상 앱과 패키지). `tools/*`는 버전 관리에서 뺐다(.changeset/config.json의 ignore).
 const RELEASE_DIR_PATTERN = /^(?:apps\/(?:web|images)|packages\/[^/]+)\//u;
 // 그 안에서도 배포에 영향이 없는 파일: 문서(`*.md`)와 글 JSON(`apps/web/content/**`, 글만 바뀐 병합은 따로 배포한다).

@@ -4,14 +4,20 @@ import { isExemptBranch, needsChangeset } from './check-changeset.mjs';
 
 // @codocs [[Git 작업 규칙:Changesets]]
 describe('isExemptBranch', () => {
-  it.each(['chore/notion-content-sync', 'renovate/react', 'changeset-release/main'])(
+  it.each(['chore/notion-content-sync', 'renovate/react', 'chore/release'])(
     '%s는 뺀다',
     (branch) => {
       expect(isExemptBranch(branch)).toBe(true);
     },
   );
 
-  it.each(['feat/taskbar-pin', 'chore/changesets', 'main'])('%s는 검사한다', (branch) => {
+  it.each([
+    'feat/taskbar-pin',
+    'chore/changesets',
+    'chore/release-notes',
+    'changeset-release/main',
+    'main',
+  ])('%s는 검사한다', (branch) => {
     expect(isExemptBranch(branch)).toBe(false);
   });
 });

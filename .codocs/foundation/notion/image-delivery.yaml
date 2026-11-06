@@ -9,7 +9,7 @@ _codocs:
 결정: |
   이미지는 이 저장소의 이미지 서버(`apps/images`)가 저장하고 Cloudflare를 CDN으로 삼아 제공한다. 이미지 서버는 Firebat(미니 PC)에서 Docker 컨테이너로 돌고, 블로그와 같은 공용 젠킨스 파이프라인으로 배포한다([[배포 환경:배포(CD)]]).
 
-  - 저장소: 컨테이너 밖 볼륨(예: `/srv/seojaewan-images`)에 Notion 블록 ID(커버는 페이지 ID) 기준으로 저장한다. 원본은 따로 저장하지 않고 WebP 크기별 사본만 둔다([[Notion 이미지 제공:최적화]]).
+  - 저장소: 컨테이너 밖 볼륨 `/srv/seojaewan-blog/images`(Firebat 호스트, 컨테이너 안에서도 같은 경로)에 Notion 블록 ID(커버는 페이지 ID) 기준으로 저장한다. 프로젝트 데이터는 `/srv/<저장소 이름>/` 아래에 둔다는 local-server의 공통 규칙(local-server 저장소 `.codocs/foundation/project-deploy.yaml`)을 따른다([[배포 환경:배포(CD)]]). 원본은 따로 저장하지 않고 WebP 크기별 사본만 둔다([[Notion 이미지 제공:최적화]]).
   - 공개 주소: `images.seojaewan.com`을 Cloudflare 터널에서 이미지 서버 컨테이너 포트로 연결한다. 포트 `127.0.0.1:3100`과 터널은 준비됐다([[배포 환경:인프라 설정의 위치]]).
   - 캐시: 응답에 변하지 않는 리소스(`immutable`)와 긴 캐시 기간을 주어 Cloudflare 엣지가 응답하고 이미지 서버까지 오는 요청을 줄인다.
   - 오류 응답: 잘못된 주소·폭과 없는 이미지는 4xx를 `max-age=60`으로 답한다. 가져오기 실패는 502를 `no-store`로 답하고 notify로 알린다(같은 제목은 10분에 한 번, [[알림 프로세스]]). 모든 응답에 `nosniff`와 CSP를 붙여, SVG를 바로 열어도 스크립트가 돌지 않게 한다.
