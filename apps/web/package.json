@@ -13,7 +13,8 @@
     "build-storybook": "storybook build",
     "test": "pnpm test:unit && pnpm test:storybook",
     "test:unit": "vitest run",
-    "test:storybook": "vitest run --config vitest.storybook.config.ts"
+    "test:storybook": "vitest run --config vitest.storybook.config.ts",
+    "fetch:notion-fixture": "node --conditions=react-server scripts/fetch-notion-fixture.ts"
   },
   "dependencies": {
     "@base-ui/react": "1.9.0",

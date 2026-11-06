@@ -367,6 +367,7 @@ const configFiles = [
   '**/*.config.{ts,mjs,js,cjs}',
   '**/.storybook/**',
   'scripts/**',
+  'apps/web/scripts/**',
   'tools/figma-parity/src/**',
   'tools/scenario-cases/src/**',
 ];
@@ -791,6 +792,15 @@ export default defineConfig(
       ...nextPlugin.configs['core-web-vitals'].rules,
       // @codocs [[코드 작성 규칙:export와 import]]
       'no-restricted-imports': restrictedImports(webImportPatterns),
+    },
+  },
+  // apps/web/scripts: Node로 바로 돌리는 개발 스크립트라 `@/` 별칭을 풀지 못한다. 앱 코드를 `../src/`로 가져온다.
+  {
+    files: ['apps/web/scripts/**/*.ts'],
+    rules: {
+      'no-restricted-imports': restrictedImports(
+        webImportPatterns.filter((pattern) => !('regex' in pattern)),
+      ),
     },
   },
   // 스토리 파일·스토리 데이터는 스토리와 테스트에서만 import한다. boundaries는 같은 칸 안의 import를 검사하지 않아

@@ -5,7 +5,9 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", "!e2e/**", "!**/*.test.{ts,tsx}", "!**/*.stories.tsx"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "env": ["CONTENT_SOURCE"],
+      "passThroughEnv": ["NOTION_TOKEN"]
     },
     "build-storybook": {
       "outputs": ["storybook-static/**"]
@@ -15,12 +17,13 @@
     },
     "test:e2e": {
       "dependsOn": ["build"],
-      "passThroughEnv": ["CI", "PLAYWRIGHT_*"],
+      "passThroughEnv": ["CI", "PLAYWRIGHT_*", "E2E_PORT", "CONTENT_SOURCE"],
       "cache": false
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "passThroughEnv": ["CONTENT_SOURCE", "NOTION_TOKEN"]
     },
     "storybook": {
       "cache": false,
