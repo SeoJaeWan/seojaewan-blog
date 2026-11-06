@@ -79,8 +79,13 @@ jobs:
       - name: Unit and storybook tests
         run: pnpm test
 
+      # @codocs [[콘텐츠 원천:읽는 곳]]
+      # 이 빌드는 fixture가 아니라 저장소에 커밋한 글 JSON(운영 글)으로 한다. 글 동기화 PR이 깨진 글을 병합하지 못하게 하려는 것이다.
+      # E2E는 fixture로 빌드한다(e2e 작업).
       - name: Build
         run: pnpm build
+        env:
+          CONTENT_SOURCE: notion
 
       # 디자인 시스템 카탈로그와 앱 조립 스토리
       - name: Build Storybook
