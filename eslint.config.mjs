@@ -509,7 +509,8 @@ const memoPropertyRestrictions = ['useMemo', 'useCallback', 'memo'].map((propert
 const processEnvRestriction = {
   object: 'process',
   property: 'env',
-  message: '환경 변수는 Zod로 검증하는 env 모듈(apps/web/src/env.ts)에서만 읽는다.',
+  message:
+    '환경 변수는 Zod로 검증하는 env 모듈(apps/web/src/env.ts, apps/images/src/env.ts)에서만 읽는다.',
 };
 
 const webImportPatterns = [
@@ -524,6 +525,11 @@ const webImportPatterns = [
       '!@seojaewan/design-system/story',
     ],
     message: '디자인 시스템은 공개 이름 `@seojaewan/design-system`으로만 import한다.',
+  },
+  // @codocs [[저장소 구성:구성]]
+  {
+    group: ['@seojaewan/images', '@seojaewan/images/*', '**/apps/images/**'],
+    message: '블로그는 이미지 서버(apps/images)를 import하지 않는다.',
   },
 ];
 const storyImportPattern = {
@@ -640,6 +646,8 @@ export default defineConfig(
           'apps/web/src/app/**/': 'NEXT_JS_APP_ROUTER_CASE',
           'apps/web/src/!(app)/**/': 'KEBAB_CASE',
           'apps/web/e2e/**/': 'KEBAB_CASE',
+          'apps/images/src/**/': 'KEBAB_CASE',
+          'contracts/**/': 'KEBAB_CASE',
           'packages/*/src/**/': 'KEBAB_CASE',
           'scripts/**/': 'KEBAB_CASE',
           'tools/*/src/**/': 'KEBAB_CASE',
@@ -792,6 +800,19 @@ export default defineConfig(
       ...nextPlugin.configs['core-web-vitals'].rules,
       // @codocs [[코드 작성 규칙:export와 import]]
       'no-restricted-imports': restrictedImports(webImportPatterns),
+    },
+  },
+  // @codocs [[저장소 구성:구성]]
+  // apps/images: 블로그와 서로 import하지 않는다. 주소 모양이 맞는지는 저장소 루트 contracts/의 시험이 두 앱을 함께 불러 본다.
+  {
+    files: ['apps/images/**/*.ts'],
+    rules: {
+      'no-restricted-imports': restrictedImports([
+        {
+          group: ['@seojaewan/web', '@seojaewan/web/*', '**/apps/web/**', '**/web/src/**'],
+          message: '이미지 서버는 블로그(apps/web)를 import하지 않는다.',
+        },
+      ]),
     },
   },
   // apps/web/scripts: Node로 바로 돌리는 개발 스크립트라 `@/` 별칭을 풀지 못한다. 앱 코드를 `../src/`로 가져온다.
@@ -1074,7 +1095,7 @@ export default defineConfig(
 
   // 경로 단위 예외: process.env를 읽는 곳
   {
-    files: [`${WEB_SRC}/env.ts`, ...configFiles],
+    files: [`${WEB_SRC}/env.ts`, 'apps/images/src/env.ts', ...configFiles],
     rules: {
       'no-restricted-properties': restrictedProperties([]),
     },
