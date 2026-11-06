@@ -76,7 +76,7 @@ _codocs:
 8단계 E2E: |
   핵심 사용 흐름을 E2E로 검증한다([[테스트 작성 규칙:E2E]]).
 9단계 콘텐츠와 공개: |
-  Notion 연동([[콘텐츠 원천]]), 이미지 서버([[Notion 이미지 제공]]), SEO와 항목별 공유 링크([[SEO와 공유 미리보기]]), 알림([[알림 프로세스]]), 자체 배포([[배포 환경]])를 만들고 공개한다.
+  Notion 연동([[콘텐츠 원천]]), 이미지 서버([[Notion 이미지 제공]]), SEO와 항목별 공유 링크([[SEO와 공유 미리보기]]), 알림 보내기([[알림 프로세스]]), 자체 배포([[배포 환경]])를 만들고 공개한다.
 
   이 단계의 작업은 미니 PC(배포 서버)에서 AI 에이전트가 문서만 보고 이어서 한다. 아래 순서로 하고, 각 일은 해당 문서가 기준이다. 사람이 직접 하는 일은 AI 에이전트가 대신하지 않고 표시해 둔다.
 
@@ -86,13 +86,14 @@ _codocs:
   | 2 | 블로그 fixture와 변환: Notion API 응답 JSON fixture, 가짜 Notion 클라이언트, `CONTENT_SOURCE`([[콘텐츠 원천:읽는 곳]]) | 미니 PC. fixture를 받을 시험용 Notion 페이지는 사람이 만든다 |
   | 3 | 첫 진입 창 SSR([[SEO와 공유 미리보기:첫 HTML]]) | 미니 PC |
   | 4 | Notion 연결과 SEO: 공개 필터, 세 묶음 주소, 웹훅 라우트, 환경 변수 검증, 메타·공유 이미지·sitemap·robots, 이미지 `srcset`과 크기 | 미니 PC |
-  | 5 | Firebat 이미지 앱(local-server 저장소): 저장, WebP 720·1440, 크기 헤더([[Notion 이미지 제공]]). 2~4와 동시에 할 수 있다 | 미니 PC |
-  | 6 | 알림 프로세스(`apps/notify`). 2~4와 동시에 할 수 있다 | 미니 PC. 카카오 앱과 첫 로그인은 사람 |
-  | 7 | 배포 파이프라인: Dockerfile(standalone), 젠킨스와 Access, Jenkinsfile, 집 안 주소로 배포, `uptime.yml`([[배포 환경:배포(CD)]]) | 미니 PC |
+  | 5 | 이미지 서버 `apps/images`(이 저장소): 저장, WebP 720·1440, 크기 헤더([[Notion 이미지 제공]]). 2~4와 동시에 할 수 있다 | 미니 PC |
+  | 6 | (선행 조건) local-server의 notify가 VPS에 배포되고 블로그·이미지 서버·젠킨스용 `ALERT_SECRET`이 발급되어야 4번 웹훅 실패 알림과 7번 배포 알림을 실제로 확인할 수 있다([[알림 프로세스:선행 조건]]) | local-server 저장소 |
+  | 7 | 배포 파이프라인: Dockerfile(블로그와 이미지 서버 두 개, 블로그는 standalone), 젠킨스와 Access, Jenkinsfile, 컨테이너 배포와 health check([[배포 환경:배포(CD)]]) | 미니 PC |
   | 8 | 공개: 터널 연결과 확인, 검색 엔진 등록([[배포 환경:공개 절차]]) | 미니 PC. Notion 웹훅 구독과 검색 엔진 등록은 사람 |
+
+  감시는 `registry/seojaewan-blog.yaml` 등록으로 한다. local-server의 등록 형식이 정해지고 `infra`가 배포된 뒤에 등록 PR을 올린다([[배포 환경:감시]]).
 
   사람이 직접 하는 일(토큰·비밀번호를 AI 에이전트에게 주지 않는다):
   - Notion: 연동 두 개(`seojaewan-blog`, `seojaewan-images`)를 만들고 Blog·Project·About 페이지에 연결한다. fixture용 시험용 페이지를 만든다. `blog`·`project`·`about` 데이터베이스에 `slug`·`폴더`·`공개`·작성일 속성을 갖춘다. 이름 없는 데이터베이스와 데이터베이스 밖 페이지의 초안을 `blog` 데이터베이스로 옮겨 `공개`를 끈다([[콘텐츠 원천:데이터베이스]]).
   - GitHub: 저장소를 비공개로 전환한다.
-  - 카카오: 앱을 만들어 `talk_message` 동의를 설정하고 처음 한 번 로그인한다([[알림 프로세스:사람이 준비할 것]]).
   - Notion 웹훅 구독, 그리고 공개 뒤 Google Search Console·네이버 서치어드바이저 등록.
