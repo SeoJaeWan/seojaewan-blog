@@ -8,18 +8,31 @@ import type { PostSummary } from '@/shared/utils/workspace-rules/workspace-rules
 
 /** 동작 스토리가 쓰는 글 색인. 폴더가 있는 글과 없는 글, 날짜가 다른 글을 섞었다 */
 const startStoryPosts: readonly PostSummary[] = [
-  { slug: 'react-19-hooks', title: 'React 19 훅 정리', folderPath: ['React'], date: '2026-10-20' },
   {
+    collection: 'blog',
+    slug: 'react-19-hooks',
+    title: 'React 19 훅 정리',
+    folderPath: ['React'],
+    date: '2026-10-20',
+  },
+  {
+    collection: 'blog',
     slug: 'react-compiler',
     title: 'React Compiler 도입기',
     folderPath: ['React'],
     date: '2026-09-28',
   },
-  { slug: 'nextjs-cache', title: 'Next.js 캐시', folderPath: ['Next.js'], date: '2026-10-03' },
-  { slug: 'p1', title: '글 하나', folderPath: [], date: '2026-08-01' },
-  { slug: 'p2', title: '글 둘', folderPath: [], date: '2026-08-02' },
-  { slug: 'p3', title: '글 셋', folderPath: [], date: '2026-08-03' },
-  { slug: 'p4', title: '글 넷', folderPath: [], date: '2026-08-04' },
+  {
+    collection: 'blog',
+    slug: 'nextjs-cache',
+    title: 'Next.js 캐시',
+    folderPath: ['Next.js'],
+    date: '2026-10-03',
+  },
+  { collection: 'blog', slug: 'p1', title: '글 하나', folderPath: [], date: '2026-08-01' },
+  { collection: 'blog', slug: 'p2', title: '글 둘', folderPath: [], date: '2026-08-02' },
+  { collection: 'blog', slug: 'p3', title: '글 셋', folderPath: [], date: '2026-08-03' },
+  { collection: 'blog', slug: 'p4', title: '글 넷', folderPath: [], date: '2026-08-04' },
 ];
 
 /** 글 색인이 저장소에 채워졌는지 본다. 아직이면 오류를 던져 다시 보게 한다. */

@@ -4,9 +4,11 @@ import {
   hydrateWorkspaceStore,
   useWorkspaceStore,
 } from '@/shared/stores/workspace-store/workspace-store';
+import type { PostCollection } from '@/shared/utils/post-address/post-address';
 
 /** 스토리용 글 하나 */
 type StoryPost = {
+  collection: PostCollection;
   slug: string;
   title: string;
   folderPath: readonly string[];

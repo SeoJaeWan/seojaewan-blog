@@ -1,6 +1,11 @@
 // Chrome 주소창이 보여 주는 주소와, 주소창에 입력한 글자를 어디로 보낼지 정하는 규칙이다.
 
 import type { ChromeTabPage } from '@/shared/utils/chrome-tabs/chrome-tabs';
+import {
+  parsePostPath,
+  postPathSegments,
+  type PostRef,
+} from '@/shared/utils/post-address/post-address';
 import { rankItems } from '@/shared/utils/search-rules/search-rules';
 import {
   getPostItemId,
@@ -46,17 +51,14 @@ const SCHEME_PATTERN = /^[a-z][a-z\d+.-]*:\/\//iu;
 const DOMAIN_PATTERN =
   /^(?:[^\s/?#.]+(?:\.[^\s/?#.]+)*\.(?:com|net|org|io|dev|app|kr|co|me|ai|gg|xyz|info|edu|gov|blog|page|site)|localhost)(?::\d+)?(?:[/?#]\S*)?$/iu;
 
-// 글 주소의 경로다(`/posts/<slug>`).
-const POST_PATH_PATTERN = /^\/posts\/([^/]+)\/?$/u;
-
 /**
- * 글 주소(주소창에 보이는 모양). 예: `seojaewan.com/posts/react-19-hooks`
+ * 글 주소(주소창에 보이는 모양). 묶음마다 경로가 다르다. 예: `seojaewan.com/posts/react-19-hooks`, `seojaewan.com/about/resume`
  * @codocs [[Chrome:글 주소]]
- * @param slug 글 slug
+ * @param post 글(묶음과 slug)
  * @returns 글 주소
  */
-export function getPostAddress(slug: string): string {
-  return `${BLOG_HOST}/posts/${slug}`;
+export function getPostAddress(post: PostRef): string {
+  return `${BLOG_HOST}/${postPathSegments[post.collection]}/${post.slug}`;
 }
 
 /**
@@ -71,7 +73,7 @@ export function getPageAddress(page: ChromeTabPage): string {
     case 'new-tab':
       return '';
     case 'post':
-      return getPostAddress(page.slug);
+      return getPostAddress(page);
     case 'search':
       return page.query;
     case 'not-found':
@@ -81,7 +83,7 @@ export function getPageAddress(page: ChromeTabPage): string {
 
 /**
  * 주소창에 입력한 글자를 어디로 보낼지 정한다.
- * - 블로그 글 주소(`seojaewan.com/posts/x`, `https://seojaewan.com/posts/x`, `/posts/x`): 그 글. 없는 글이면 찾을 수 없음 화면
+ * - 블로그 글 주소(`seojaewan.com/posts/x`, `https://seojaewan.com/projects/x`, `/about/x`): 그 글. 없는 글이면 찾을 수 없음 화면
  * - 블로그의 다른 주소: 첫 화면(`/`)은 새 탭 페이지, 그 밖은 찾을 수 없음 화면
  * - 외부 주소(`http(s)://…`, `example.com`처럼 도메인 꼴): 실제 브라우저의 새 탭
  * - 그 밖의 글자: 검색 결과 페이지
@@ -147,8 +149,8 @@ export function getAddressSuggestions(
       (post): AddressSuggestionTarget => ({
         kind: 'post',
         title: post.name,
-        url: getPostAddress(post.slug),
-        page: { kind: 'post', slug: post.slug },
+        url: getPostAddress(post),
+        page: { kind: 'post', collection: post.collection, slug: post.slug },
       }),
     ),
     { kind: 'search', title: `${text} 검색`, page: { kind: 'search', query: text } },
@@ -182,10 +184,9 @@ function resolveBlogPath(path: string, typed: string, workspace: AddressWorkspac
   if (pathname === '' || pathname === '/') {
     return { kind: 'new-tab' };
   }
-  const encodedSlug = POST_PATH_PATTERN.exec(pathname)?.[1];
-  const slug = encodedSlug === undefined ? null : decodeSlug(encodedSlug);
-  if (slug !== null && workspace.items[getPostItemId(slug)]?.kind === 'post') {
-    return { kind: 'post', slug };
+  const post = parsePostPath(pathname);
+  if (post !== null && workspace.items[getPostItemId(post)]?.kind === 'post') {
+    return { kind: 'post', ...post };
   }
   return { kind: 'not-found', url: typed };
 }
@@ -208,17 +209,4 @@ function isBlogHost(host: string, currentHost: string): boolean {
  */
 function parseUrl(text: string): URL | null {
   return URL.canParse(text) ? new URL(text) : null;
-}
-
-/**
- * 주소에 인코딩된 slug를 푼다.
- * @param encoded 인코딩된 slug
- * @returns slug. 풀 수 없으면 null
- */
-function decodeSlug(encoded: string): string | null {
-  try {
-    return decodeURIComponent(encoded);
-  } catch {
-    return null;
-  }
 }

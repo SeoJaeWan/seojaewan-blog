@@ -2,13 +2,14 @@ import { useEffect } from 'react';
 
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { getActiveChromePage } from '@/shared/utils/chrome-tabs/chrome-tabs';
+import { getPostPath } from '@/shared/utils/post-address/post-address';
 import { getFrontWindowId, type WindowState } from '@/shared/utils/window-rules/window-rules';
 
 // 글을 보는 Chrome 탭이 맨 앞이 아닐 때의 브라우저 주소다.
 const HOME_PATH = '/';
 
 /**
- * 브라우저 주소창이 글만 따라가게 한다. 맨 앞 창이 글을 보는 Chrome 탭이면 그 글의 주소(`/posts/<slug>`),
+ * 브라우저 주소창이 글만 따라가게 한다. 맨 앞 창이 글을 보는 Chrome 탭이면 그 글의 주소(`/posts/<slug>`, `/projects/<slug>`, `/about/<slug>`),
  * 없는 주소로 들어와 연 찾을 수 없음 화면이면 들어온 경로, 그 밖은 `/`다.
  * 주소만 바꾸고 브라우저 기록에는 쌓지 않는다(`history.replaceState`). 다시 시작하면 창이 모두 닫혀 `/`로 돌아간다.
  * 창 하나마다가 아니라 화면 전체에서 한 번만 써야 해서(작업 표시줄 미리보기·Snap Assist가 창을 여러 번 그린다) shell이 부른다.
@@ -48,5 +49,5 @@ export function getBrowserPath(state: Pick<WindowState, 'windows' | 'order'>): s
   if (page.kind === 'not-found') {
     return page.entryPath ?? HOME_PATH;
   }
-  return page.kind === 'post' ? `/posts/${encodeURIComponent(page.slug)}` : HOME_PATH;
+  return page.kind === 'post' ? getPostPath(page) : HOME_PATH;
 }

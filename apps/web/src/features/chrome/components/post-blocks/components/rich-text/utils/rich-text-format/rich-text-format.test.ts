@@ -55,9 +55,13 @@ describe('글자 조각의 링크', () => {
   it('블로그 안의 페이지로 풀리는 주소는 같은 탭에서 그 페이지로 간다', () => {
     expect(
       getRichTextLinkTarget('/posts/react', (href) =>
-        href === '/posts/react' ? { kind: 'post', slug: 'react' } : null,
+        href === '/posts/react' ? { kind: 'post', collection: 'blog', slug: 'react' } : null,
       ),
-    ).toEqual({ kind: 'page', href: '/posts/react', page: { kind: 'post', slug: 'react' } });
+    ).toEqual({
+      kind: 'page',
+      href: '/posts/react',
+      page: { kind: 'post', collection: 'blog', slug: 'react' },
+    });
   });
 
   it('블로그 안의 페이지가 아닌 주소는 외부 주소다', () => {

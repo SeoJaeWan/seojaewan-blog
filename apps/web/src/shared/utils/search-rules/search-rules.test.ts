@@ -17,11 +17,29 @@ import {
 
 const workspace = createInitialWorkspace({
   posts: [
-    { slug: 'a', title: '리액트 훅', folderPath: ['React'], date: '2026-10-20' },
-    { slug: 'b', title: '훅 정리', folderPath: ['React', 'Hooks'], date: '2026-10-22' },
-    { slug: 'c', title: '훅', folderPath: [], date: '2026-10-01' },
-    { slug: 'd', title: '훅 모음', folderPath: ['Next.js'], date: '2026-10-25' },
-    { slug: 'e', title: '리액트 쿼리', folderPath: [], date: '2026-10-10' },
+    {
+      collection: 'blog',
+      slug: 'a',
+      title: '리액트 훅',
+      folderPath: ['React'],
+      date: '2026-10-20',
+    },
+    {
+      collection: 'blog',
+      slug: 'b',
+      title: '훅 정리',
+      folderPath: ['React', 'Hooks'],
+      date: '2026-10-22',
+    },
+    { collection: 'blog', slug: 'c', title: '훅', folderPath: [], date: '2026-10-01' },
+    {
+      collection: 'blog',
+      slug: 'd',
+      title: '훅 모음',
+      folderPath: ['Next.js'],
+      date: '2026-10-25',
+    },
+    { collection: 'blog', slug: 'e', title: '리액트 쿼리', folderPath: [], date: '2026-10-10' },
   ],
   links: [GITHUB_LINK, { ...GITHUB_LINK, id: 'hook-study', name: '훅 스터디' }],
 });
@@ -56,8 +74,20 @@ describe('검색:일치 규칙', () => {
   it('같은 단계 안에서 폴더와 외부 링크는 이름순이다', () => {
     const state = createInitialWorkspace({
       posts: [
-        { slug: 'x', title: '정리 노트', folderPath: ['정리 B'], date: '2026-10-01' },
-        { slug: 'y', title: '정리 모음', folderPath: ['정리 A'], date: '2026-10-02' },
+        {
+          collection: 'blog',
+          slug: 'x',
+          title: '정리 노트',
+          folderPath: ['정리 B'],
+          date: '2026-10-01',
+        },
+        {
+          collection: 'blog',
+          slug: 'y',
+          title: '정리 모음',
+          folderPath: ['정리 A'],
+          date: '2026-10-02',
+        },
       ],
       links: [],
     });
@@ -93,7 +123,7 @@ describe('검색:검색 대상', () => {
   });
 
   it('휴지통에 들어간 항목은 찾지 않는다', () => {
-    const trashed = trashItems(workspace, [getPostItemId('c')], NOW);
+    const trashed = trashItems(workspace, [getPostItemId({ collection: 'blog', slug: 'c' })], NOW);
     if (!trashed.ok) {
       throw new Error(`거부됨: ${trashed.reason}`);
     }

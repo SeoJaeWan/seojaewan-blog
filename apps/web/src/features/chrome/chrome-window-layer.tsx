@@ -17,6 +17,7 @@ import {
   openChromeTab,
 } from '@/shared/utils/chrome-tabs/chrome-tabs';
 import { copyItemLink } from '@/shared/utils/item-link/item-link';
+import { isSamePost, type PostRef } from '@/shared/utils/post-address/post-address';
 import type { PostBody } from '@/shared/utils/post-body/post-body';
 import type { WindowFrameControls } from '@/shared/utils/window-rules/window-rules';
 import {
@@ -87,7 +88,7 @@ type ImageViewerState = ChromePageImage & {
  */
 export type ChromePreload = {
   posts: readonly PostSummary[];
-  entryPost: { slug: string; body: PostBody } | null;
+  entryPost: (PostRef & { body: PostBody }) | null;
 };
 
 type ChromeWindowLayerProps = {
@@ -144,7 +145,7 @@ export function ChromeWindowLayer({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [find, setFind] = useState<FindState | null>(null);
   const [imageViewer, setImageViewer] = useState<ImageViewerState | null>(null);
-  const [trashedSlug, setTrashedSlug] = useState<string | null>(null);
+  const [trashedPost, setTrashedPost] = useState<PostRef | null>(null);
   // ⋮ 메뉴에서 찾기를 열면 메뉴가 닫힌 뒤 포커스를 ⋮ 버튼으로 돌리지 않는다(찾기 입력칸에 둔다).
   const menuFocusKeeper = useMenuFocusKeeper();
   const workspace = { items };
@@ -154,7 +155,7 @@ export function ChromeWindowLayer({
   const pageKey = `${activeTab?.id ?? ''}-${String(activeTab?.historyIndex ?? 0)}`;
   const isMobile = device === 'mobile';
   const { areaRef, layout } = useChromePageLayout();
-  const post = page.kind === 'post' ? findPost(workspace, page.slug) : undefined;
+  const post = page.kind === 'post' ? findPost(workspace, page) : undefined;
   // 다른 페이지로 가면(창 밖에서 창 내용을 바꾼 경우 포함) 찾기 막대와 크게 보기를 닫는다.
   const activeFind = find?.pageKey === pageKey ? find : null;
   const activeImageViewer = imageViewer?.pageKey === pageKey ? imageViewer : null;
@@ -175,8 +176,8 @@ export function ChromeWindowLayer({
    * @param target 갈 페이지
    */
   function handleNavigate(target: ChromeTabPage): void {
-    if (target.kind === 'post' && isTrashedPost(workspace, target.slug)) {
-      setTrashedSlug(target.slug);
+    if (target.kind === 'post' && isTrashedPost(workspace, target)) {
+      setTrashedPost({ collection: target.collection, slug: target.slug });
       return;
     }
     update(navigateChromeTab(content, target));
@@ -187,12 +188,12 @@ export function ChromeWindowLayer({
    * @codocs [[Chrome:휴지통에 있는 글]]
    */
   function handleTrashedPostRestore(): void {
-    if (trashedSlug === null) {
+    if (trashedPost === null) {
       return;
     }
-    const result = restoreTrashedPost(getPostItemId(trashedSlug));
+    const result = restoreTrashedPost(getPostItemId(trashedPost));
     if (result.ok) {
-      update(navigateChromeTab(content, { kind: 'post', slug: trashedSlug }));
+      update(navigateChromeTab(content, { kind: 'post', ...trashedPost }));
     }
   }
 
@@ -202,7 +203,7 @@ export function ChromeWindowLayer({
    */
   function handleTrashedDialogOpenChange(isOpen: boolean): void {
     if (!isOpen) {
-      setTrashedSlug(null);
+      setTrashedPost(null);
     }
   }
 
@@ -501,7 +502,7 @@ export function ChromeWindowLayer({
       </ChromePageArea>
       <MessageBoxDialog
         {...TRASHED_POST_MESSAGE}
-        isOpen={trashedSlug !== null}
+        isOpen={trashedPost !== null}
         onOpenChange={handleTrashedDialogOpenChange}
         onPrimaryClick={handleTrashedPostRestore}
       />
@@ -587,7 +588,7 @@ function ChromeTabContent({
   function handlePostOpen(index: number): void {
     const target = posts[index];
     if (target !== undefined) {
-      handleNavigate({ kind: 'post', slug: target.slug });
+      handleNavigate({ kind: 'post', collection: target.collection, slug: target.slug });
     }
   }
 
@@ -627,7 +628,7 @@ function ChromeTabContent({
             page="not-found"
             layout={layout}
             zoom={zoom}
-            url={getPostAddress(page.slug)}
+            url={getPostAddress(page)}
             onReload={handleReload}
           />
         );
@@ -642,7 +643,9 @@ function ChromeTabContent({
           onNavigate={handleNavigate}
           onReload={handleReload}
           onImageOpen={handleImageOpen}
-          preloadedBody={entryPost?.slug === post.slug ? entryPost.body : undefined}
+          preloadedBody={
+            entryPost !== null && isSamePost(entryPost, post) ? entryPost.body : undefined
+          }
         />
       );
     case 'not-found':
@@ -673,17 +676,17 @@ function toLatestPost(post: PostItem): ChromePageLatestPost {
  * @returns 검색 결과
  */
 function toSearchResult(post: PostItem): ChromePageSearchResult {
-  return { id: post.id, title: post.name, date: post.date, url: getPostAddress(post.slug) };
+  return { id: post.id, title: post.name, date: post.date, url: getPostAddress(post) };
 }
 
 /**
  * 글 색인에서 글을 찾는다.
  * @param workspace 작업 공간
- * @param slug 글 slug
+ * @param target 글(묶음과 slug)
  * @returns 글. 없으면 undefined
  */
-function findPost(workspace: Pick<WorkspaceState, 'items'>, slug: string): PostItem | undefined {
-  const item = workspace.items[getPostItemId(slug)];
+function findPost(workspace: Pick<WorkspaceState, 'items'>, target: PostRef): PostItem | undefined {
+  const item = workspace.items[getPostItemId(target)];
   return item?.kind === 'post' ? item : undefined;
 }
 
@@ -691,12 +694,12 @@ function findPost(workspace: Pick<WorkspaceState, 'items'>, slug: string): PostI
  * 글이 휴지통에 있는지(휴지통에 든 폴더 안 포함) 본다.
  * @codocs [[Chrome:휴지통에 있는 글]]
  * @param workspace 작업 공간
- * @param slug 글 slug
+ * @param target 글(묶음과 slug)
  * @returns 휴지통에 있으면 true
  */
-function isTrashedPost(workspace: Pick<WorkspaceState, 'items'>, slug: string): boolean {
-  const target = findPost(workspace, slug);
-  return target !== undefined && isItemInTrash(workspace, target.id);
+function isTrashedPost(workspace: Pick<WorkspaceState, 'items'>, target: PostRef): boolean {
+  const item = findPost(workspace, target);
+  return item !== undefined && isItemInTrash(workspace, item.id);
 }
 
 /**

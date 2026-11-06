@@ -7,9 +7,15 @@ import {
 /** 이전·다음 글이 있는 글 색인(작성일: 오래된 글 < 가운데 글 < 새 글) */
 export const postTabWorkspace = createInitialWorkspace({
   posts: [
-    { slug: 'old', title: '오래된 글', folderPath: [], date: '2026-01-01' },
-    { slug: 'mid', title: '가운데 글', folderPath: ['React'], date: '2026-05-01' },
-    { slug: 'new', title: '새 글', folderPath: [], date: '2026-10-01' },
+    { collection: 'blog', slug: 'old', title: '오래된 글', folderPath: [], date: '2026-01-01' },
+    {
+      collection: 'blog',
+      slug: 'mid',
+      title: '가운데 글',
+      folderPath: ['React'],
+      date: '2026-05-01',
+    },
+    { collection: 'blog', slug: 'new', title: '새 글', folderPath: [], date: '2026-10-01' },
   ],
   links: [],
 });

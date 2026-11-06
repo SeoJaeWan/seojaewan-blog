@@ -7,7 +7,14 @@ const BASE = { name: '항목', parentId: null, trash: null, date: null } as cons
 // @codocs [[파일 탐색기:우클릭 메뉴]]
 describe('파일 탐색기:우클릭 메뉴', () => {
   it('글의 링크는 공유 링크다', () => {
-    const post = { ...BASE, id: 'post:a', kind: 'post', slug: 'a', date: '2026-10-20' } as const;
+    const post = {
+      ...BASE,
+      id: 'post:a',
+      kind: 'post',
+      collection: 'blog',
+      slug: 'a',
+      date: '2026-10-20',
+    } as const;
     expect(getItemLink(post, 'https://blog.test')).toBe('https://blog.test/posts/a');
   });
 

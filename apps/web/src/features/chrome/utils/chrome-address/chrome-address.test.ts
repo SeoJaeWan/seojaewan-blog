@@ -11,9 +11,27 @@ import {
 
 const workspace = createInitialWorkspace({
   posts: [
-    { slug: 'react-19-hooks', title: '리액트 19 훅 정리', folderPath: [], date: '2026-10-20' },
-    { slug: 'rsc', title: '리액트 서버 컴포넌트', folderPath: [], date: '2026-10-12' },
-    { slug: 'next-cache', title: 'Next.js 캐시', folderPath: [], date: '2026-09-01' },
+    {
+      collection: 'blog',
+      slug: 'react-19-hooks',
+      title: '리액트 19 훅 정리',
+      folderPath: [],
+      date: '2026-10-20',
+    },
+    {
+      collection: 'blog',
+      slug: 'rsc',
+      title: '리액트 서버 컴포넌트',
+      folderPath: [],
+      date: '2026-10-12',
+    },
+    {
+      collection: 'blog',
+      slug: 'next-cache',
+      title: 'Next.js 캐시',
+      folderPath: [],
+      date: '2026-09-01',
+    },
   ],
   links: [],
 });
@@ -23,7 +41,9 @@ const HOST = 'localhost:3000';
 // @codocs [[Chrome:주소창]]
 describe('Chrome:주소창', () => {
   it('평소 주소창은 글 주소를 보이고 새 탭 페이지에서는 비어 있다', () => {
-    expect(getPageAddress({ kind: 'post', slug: 'a' })).toBe('seojaewan.com/posts/a');
+    expect(getPageAddress({ kind: 'post', collection: 'blog', slug: 'a' })).toBe(
+      'seojaewan.com/posts/a',
+    );
     expect(getPageAddress({ kind: 'new-tab' })).toBe('');
   });
 
@@ -33,11 +53,37 @@ describe('Chrome:주소창', () => {
   });
 
   it('블로그 글 주소를 입력하면 그 글로 간다', () => {
-    const post = { type: 'page', page: { kind: 'post', slug: 'rsc' } };
+    const post = { type: 'page', page: { kind: 'post', collection: 'blog', slug: 'rsc' } };
     expect(resolveAddress('seojaewan.com/posts/rsc', workspace, HOST)).toEqual(post);
     expect(resolveAddress('https://seojaewan.com/posts/rsc/', workspace, HOST)).toEqual(post);
     expect(resolveAddress('/posts/rsc', workspace, HOST)).toEqual(post);
     expect(resolveAddress(`http://${HOST}/posts/rsc`, workspace, HOST)).toEqual(post);
+  });
+
+  it('Project·About 주소는 그 묶음의 항목으로 가고, 주소창은 묶음별 주소를 보인다', () => {
+    const projectWorkspace = createInitialWorkspace({
+      links: [],
+      posts: [
+        {
+          collection: 'project',
+          slug: 'rsc',
+          title: '프로젝트',
+          folderPath: [],
+          date: '2026-10-01',
+        },
+      ],
+    });
+    expect(resolveAddress('seojaewan.com/projects/rsc', projectWorkspace, HOST)).toEqual({
+      type: 'page',
+      page: { kind: 'post', collection: 'project', slug: 'rsc' },
+    });
+    expect(resolveAddress('/posts/rsc', projectWorkspace, HOST)).toEqual({
+      type: 'page',
+      page: { kind: 'not-found', url: '/posts/rsc' },
+    });
+    expect(getPageAddress({ kind: 'post', collection: 'about', slug: 'resume' })).toBe(
+      'seojaewan.com/about/resume',
+    );
   });
 
   it('없는 글 주소는 입력한 주소의 찾을 수 없음 화면이다', () => {
@@ -52,7 +98,7 @@ describe('Chrome:주소창', () => {
     const state = trashed.ok ? trashed.state : workspace;
     expect(resolveAddress('/posts/rsc', state, HOST)).toEqual({
       type: 'page',
-      page: { kind: 'post', slug: 'rsc' },
+      page: { kind: 'post', collection: 'blog', slug: 'rsc' },
     });
   });
 

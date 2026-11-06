@@ -34,7 +34,7 @@ export function getChromeTabTitle(
     case 'new-tab':
       return NEW_TAB_TITLE;
     case 'post':
-      return workspace.items[getPostItemId(page.slug)]?.name ?? NOT_FOUND_TITLE;
+      return workspace.items[getPostItemId(page)]?.name ?? NOT_FOUND_TITLE;
     case 'search':
       return `${page.query}${SEARCH_TITLE_SUFFIX}`;
     case 'not-found':

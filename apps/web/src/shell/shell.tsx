@@ -38,8 +38,8 @@ import { type InitialPage, useInitialWindow } from './hooks/use-initial-window/u
  * @codocs [[창 동작:새로고침과 첫 진입]]
  * @codocs [[SEO와 공유 미리보기:첫 HTML]]
  * @param props 컴포넌트 속성
- * @param props.posts 서버(`content/`)가 읽은 글 색인
- * @param props.initialPage 주소로 처음 들어왔을 때 열어 둘 Chrome 페이지(`/posts/<slug>`와 그 본문, 찾을 수 없음). `/`이면 없다
+ * @param props.posts 서버(`content/`)가 읽은 세 묶음(Blog·Project·About)의 색인
+ * @param props.initialPage 주소로 처음 들어왔을 때 열어 둘 Chrome 페이지(글 주소의 항목과 그 본문, 찾을 수 없음). `/`이면 없다
  */
 export function Shell({ posts, initialPage: initialPageProp }: ShellProps): JSX.Element {
   const generation = useRestartStore((state) => state.generation);
@@ -52,11 +52,21 @@ export function Shell({ posts, initialPage: initialPageProp }: ShellProps): JSX.
   const entryPost = initialPage?.kind === 'post' ? initialPage : null;
   const chromePreload: ChromePreload = {
     posts,
-    entryPost: entryPost === null ? null : { slug: entryPost.slug, body: entryPost.body },
+    entryPost:
+      entryPost === null
+        ? null
+        : { collection: entryPost.collection, slug: entryPost.slug, body: entryPost.body },
   };
   const entryWindow =
     isInitialWindowPending && entryPost !== null
-      ? createEntryWindow('chrome', createChromeContent({ kind: 'post', slug: entryPost.slug }))
+      ? createEntryWindow(
+          'chrome',
+          createChromeContent({
+            kind: 'post',
+            collection: entryPost.collection,
+            slug: entryPost.slug,
+          }),
+        )
       : null;
   // 브라우저 주소는 화면 전체에서 한 번만 맞춘다(창 축소 화면이 창을 여러 번 그려도 한 번).
   useBrowserAddressSync(!isInitialWindowPending);

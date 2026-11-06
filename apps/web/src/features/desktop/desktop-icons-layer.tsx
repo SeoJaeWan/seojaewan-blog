@@ -135,7 +135,7 @@ export function DesktopIconsLayer(): JSX.Element {
           (item) => item.id,
         )
       : getGridOrder(cells, grid);
-  const pasteIds = getPasteIds(getWorkspace(), cutIds, null, new Date().toISOString());
+  const pasteIds = getPasteIds(getWorkspace(), cutIds, null);
 
   const rename = useFolderRename({ onKeyboardEnd: focusIcon });
   const selection = useSelection({

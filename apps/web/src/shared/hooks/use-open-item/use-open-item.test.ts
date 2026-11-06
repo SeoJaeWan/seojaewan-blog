@@ -16,7 +16,9 @@ import {
 
 import { useOpenItem } from './use-open-item';
 
-const POSTS = [{ slug: 'a', title: '가', folderPath: ['React'], date: '2026-10-20' }] as const;
+const POSTS = [
+  { collection: 'blog', slug: 'a', title: '가', folderPath: ['React'], date: '2026-10-20' },
+] as const;
 
 beforeEach(() => {
   localStorage.clear();
@@ -70,7 +72,11 @@ describe('창 동작:열기 규칙', () => {
     openItem('post:a');
     openItem('post:a');
     expect(windowContents()).toEqual([
-      openChromeTab(createChromeContent({ kind: 'post', slug: 'a' }), { kind: 'post', slug: 'a' }),
+      openChromeTab(createChromeContent({ kind: 'post', collection: 'blog', slug: 'a' }), {
+        kind: 'post',
+        collection: 'blog',
+        slug: 'a',
+      }),
     ]);
   });
 
@@ -81,8 +87,8 @@ describe('창 동작:열기 규칙', () => {
       result.current('post:a', { isNewWindow: true });
     });
     expect(windowContents()).toEqual([
-      createChromeContent({ kind: 'post', slug: 'a' }),
-      createChromeContent({ kind: 'post', slug: 'a' }),
+      createChromeContent({ kind: 'post', collection: 'blog', slug: 'a' }),
+      createChromeContent({ kind: 'post', collection: 'blog', slug: 'a' }),
     ]);
   });
 

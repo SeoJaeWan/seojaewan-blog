@@ -11,7 +11,9 @@ import {
 import { restoreWorkspace } from './workspace-storage';
 
 const catalog: WorkspaceCatalog = {
-  posts: [{ slug: 'a', title: '가', folderPath: ['React'], date: '2026-10-20' }],
+  posts: [
+    { collection: 'blog', slug: 'a', title: '가', folderPath: ['React'], date: '2026-10-20' },
+  ],
   links: [],
 };
 

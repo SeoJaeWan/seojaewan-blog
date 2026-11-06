@@ -17,8 +17,12 @@ const optionalValue = z.preprocess(
 /**
  * 블로그가 읽는 환경 변수의 스키마. `CONTENT_SOURCE`가 `notion`(기본)이면 `NOTION_TOKEN`이 있어야 한다.
  * Notion이 안 될 때 fixture로 조용히 바꾸지 않는다.
+ * `NOTION_WEBHOOK_SECRET`이 없으면 웹훅 라우트가 모든 갱신 요청을 거절하고, `ALERT_URL`·`ALERT_SECRET`이 없으면 알림을 보내지 않는다.
+ * 셋 다 없어도 빌드와 페이지는 돈다(로컬 개발, E2E, CI).
  * @codocs [[배포 환경:환경 변수]]
  * @codocs [[콘텐츠 원천:읽는 곳]]
+ * @codocs [[콘텐츠 원천:갱신 방식]]
+ * @codocs [[알림 프로세스:환경 변수]]
  */
 const envSchema = z
   .object({
@@ -27,6 +31,9 @@ const envSchema = z
       z.enum(CONTENT_SOURCES).default('notion'),
     ),
     NOTION_TOKEN: optionalValue,
+    NOTION_WEBHOOK_SECRET: optionalValue,
+    ALERT_URL: z.preprocess((value) => (value === '' ? undefined : value), z.url().optional()),
+    ALERT_SECRET: optionalValue,
   })
   .refine((value) => value.CONTENT_SOURCE !== 'notion' || value.NOTION_TOKEN !== undefined, {
     message: 'CONTENT_SOURCE가 notion이면 NOTION_TOKEN이 있어야 한다',

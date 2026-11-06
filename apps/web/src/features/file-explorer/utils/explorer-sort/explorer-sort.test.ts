@@ -27,7 +27,7 @@ function item(id: string, kind: 'folder' | 'post', date: string | null = null): 
   const base = { id, name: id, parentId: null, trash: null };
   return kind === 'folder'
     ? { ...base, kind, date }
-    : { ...base, kind, slug: id, date: date ?? '2026-01-01' };
+    : { ...base, kind, collection: 'blog', slug: id, date: date ?? '2026-01-01' };
 }
 
 /**

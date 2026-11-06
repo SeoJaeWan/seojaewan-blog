@@ -24,9 +24,16 @@ function windowContents(): unknown[] {
 describe('창 동작:새로고침과 첫 진입', () => {
   it('글 주소로 들어오면 그 글 탭이 고른 Chrome 창 하나를 연다', () => {
     renderHook(() =>
-      useInitialWindow({ kind: 'post', slug: 'a', body: { blocks: [], cover: null } }),
+      useInitialWindow({
+        kind: 'post',
+        collection: 'blog',
+        slug: 'a',
+        body: { blocks: [], cover: null },
+      }),
     );
-    expect(windowContents()).toEqual([createChromeContent({ kind: 'post', slug: 'a' })]);
+    expect(windowContents()).toEqual([
+      createChromeContent({ kind: 'post', collection: 'blog', slug: 'a' }),
+    ]);
   });
 
   it('해당하는 글이 없으면 들어온 주소의 찾을 수 없음 Chrome 창 하나를 연다', () => {
@@ -48,7 +55,12 @@ describe('창 동작:새로고침과 첫 진입', () => {
 
   it('첫 창은 한 번만 연다', () => {
     const { rerender } = renderHook(() =>
-      useInitialWindow({ kind: 'post', slug: 'a', body: { blocks: [], cover: null } }),
+      useInitialWindow({
+        kind: 'post',
+        collection: 'blog',
+        slug: 'a',
+        body: { blocks: [], cover: null },
+      }),
     );
     useWindowStore.getState().reset();
     rerender();

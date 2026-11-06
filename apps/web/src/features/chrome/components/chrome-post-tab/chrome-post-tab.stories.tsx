@@ -18,7 +18,9 @@ import { getPostBodyRequests, mockPostBodies } from './story-fetch';
  * @returns 글 페이지. 외부 주소면 null
  */
 function resolveStoryLink(href: string): ChromeTabPage | null {
-  return href.startsWith('/posts/') ? { kind: 'post', slug: href.slice(7) } : null;
+  return href.startsWith('/posts/')
+    ? { kind: 'post', collection: 'blog', slug: href.slice(7) }
+    : null;
 }
 
 // @codocs [[테스트 작성 규칙:스토리 테스트]]
@@ -107,7 +109,11 @@ export const Wide: Story = {
 
     await step('다른 글 링크를 누르면 같은 탭에서 그 글로 간다', async () => {
       await userEvent.click(canvas.getByRole('link', { name: '앞 글' }));
-      await expect(args.onNavigate).toHaveBeenLastCalledWith({ kind: 'post', slug: 'old' });
+      await expect(args.onNavigate).toHaveBeenLastCalledWith({
+        kind: 'post',
+        collection: 'blog',
+        slug: 'old',
+      });
     });
 
     await step('외부 링크는 실제 브라우저의 새 탭(noopener)에서 연다', async () => {
@@ -124,12 +130,20 @@ export const Wide: Story = {
 
     await step('이전 글 카드를 누르면 작성일이 앞선 글로 간다', async () => {
       await userEvent.click(canvas.getByRole('button', { name: /이전 글/ }));
-      await expect(args.onNavigate).toHaveBeenLastCalledWith({ kind: 'post', slug: 'old' });
+      await expect(args.onNavigate).toHaveBeenLastCalledWith({
+        kind: 'post',
+        collection: 'blog',
+        slug: 'old',
+      });
     });
 
     await step('다음 글 카드를 누르면 작성일이 뒤인 글로 간다', async () => {
       await userEvent.click(canvas.getByRole('button', { name: /다음 글/ }));
-      await expect(args.onNavigate).toHaveBeenLastCalledWith({ kind: 'post', slug: 'new' });
+      await expect(args.onNavigate).toHaveBeenLastCalledWith({
+        kind: 'post',
+        collection: 'blog',
+        slug: 'new',
+      });
     });
   },
 };

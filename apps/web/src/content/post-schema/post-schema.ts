@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import type { PostCollection } from '@/shared/utils/post-address/post-address';
 import type { PostSummary } from '@/shared/utils/workspace-rules/workspace-rules';
 
 /**
@@ -56,10 +57,12 @@ export function parsePostRows(rows: unknown): PostRow[] {
  * @codocs [[콘텐츠 원천:Notion 속성]]
  * @codocs [[작업 공간 맞추기:초기 구조]]
  * @param row 검증한 공개 행
+ * @param collection 행이 속한 묶음
  * @returns 글 색인 한 줄
  */
-export function toPostSummary(row: PostRow): PostSummary {
+export function toPostSummary(row: PostRow, collection: PostCollection): PostSummary {
   return {
+    collection,
     slug: row.slug,
     title: row.title,
     folderPath: row.folder

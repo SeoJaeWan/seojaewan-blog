@@ -18,8 +18,8 @@ import {
   selectTab,
 } from './chrome-navigation';
 
-const postA: ChromeTabPage = { kind: 'post', slug: 'a' };
-const postB: ChromeTabPage = { kind: 'post', slug: 'b' };
+const postA: ChromeTabPage = { kind: 'post', collection: 'blog', slug: 'a' };
+const postB: ChromeTabPage = { kind: 'post', collection: 'blog', slug: 'b' };
 
 /**
  * 새 탭 페이지 하나와 글 탭 둘(a, b)이 있는 창 내용을 만든다. 고른 탭은 마지막 탭이다.

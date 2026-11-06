@@ -16,7 +16,9 @@ import {
 import { externalLinks } from './external-links';
 import { hydrateWorkspaceStore, useWorkspaceStore } from './workspace-store';
 
-const POSTS = [{ slug: 'a', title: '가', folderPath: ['React'], date: '2026-10-20' }] as const;
+const POSTS = [
+  { collection: 'blog', slug: 'a', title: '가', folderPath: ['React'], date: '2026-10-20' },
+] as const;
 
 /**
  * 저장분을 localStorage에 넣는다.
@@ -138,7 +140,13 @@ describe('다시 시작:되돌리는 상태', () => {
 
     const state = useWorkspaceStore.getState();
     expect(isItemInTrash(state, 'post:a')).toBe(false);
-    expect(getDesktopItems(state).map((item) => item.name)).toEqual(['휴지통', 'Blog', 'GitHub']);
+    expect(getDesktopItems(state).map((item) => item.name)).toEqual([
+      '휴지통',
+      'Blog',
+      'Project',
+      'About',
+      'GitHub',
+    ]);
     expect(state.desktop.iconSize).toBe('medium');
     expect(state.taskbarPins).toEqual(['file-explorer', 'chrome']);
     expect(localStorage.getItem(WORKSPACE_STORAGE_KEY)).toBeNull();

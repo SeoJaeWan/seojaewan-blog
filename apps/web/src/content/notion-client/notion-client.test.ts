@@ -154,6 +154,56 @@ describe('콘텐츠 원천:읽는 곳', () => {
     vi.useRealTimers();
   });
 
+  it('요청마다 응답을 기다리는 시간을 정해 둔다', async () => {
+    const fetchMock = vi.fn(() => Promise.resolve(Response.json(list([]))));
+    vi.stubGlobal('fetch', fetchMock);
+    await createNotionHttpClient(TOKEN).request({
+      kind: 'list-block-children',
+      blockId: 'page',
+      startCursor: null,
+    });
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.any(URL),
+      expect.objectContaining({ signal: expect.any(AbortSignal) as unknown }),
+    );
+  });
+
+  it('응답이 없거나 Notion 서버 오류(5xx)면 잠시 기다렸다가 다시 보낸다', async () => {
+    vi.useFakeTimers();
+    const fetchMock = vi
+      .fn<() => Promise<Response>>()
+      .mockRejectedValueOnce(new DOMException('시간 초과', 'TimeoutError'))
+      .mockResolvedValueOnce(new Response('{}', { status: 502 }))
+      .mockResolvedValueOnce(Response.json(list([])));
+    vi.stubGlobal('fetch', fetchMock);
+    const response = createNotionHttpClient(TOKEN).request({
+      kind: 'list-block-children',
+      blockId: 'page',
+      startCursor: null,
+    });
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(await response).toEqual(list([]));
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    vi.useRealTimers();
+  });
+
+  it('다시 보내도 응답이 없으면 어느 요청인지 알리며 실패한다', async () => {
+    vi.useFakeTimers();
+    const fetchMock = vi.fn(() => Promise.reject(new DOMException('시간 초과', 'TimeoutError')));
+    vi.stubGlobal('fetch', fetchMock);
+    const request = createNotionHttpClient(TOKEN).request({
+      kind: 'retrieve-database',
+      databaseId: 'db',
+    });
+    const assertion = expect(request).rejects.toThrow(
+      'GET /v1/databases/db 요청에 응답이 없다(TimeoutError)',
+    );
+    await vi.advanceTimersByTimeAsync(3000);
+    await assertion;
+    expect(fetchMock).toHaveBeenCalledTimes(4);
+    vi.useRealTimers();
+  });
+
   it('실패한 요청은 Notion 오류를 알리고 토큰은 알리지 않는다', async () => {
     vi.stubGlobal(
       'fetch',

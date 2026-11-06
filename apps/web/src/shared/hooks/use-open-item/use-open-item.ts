@@ -55,9 +55,14 @@ export function useOpenItem(): (id: string, options?: OpenItemOptions) => void {
         break;
       case 'post':
         if (options.isNewWindow === true) {
-          openWindow('chrome', workArea, createChromeContent({ kind: 'post', slug: action.slug }));
+          const page = { kind: 'post', collection: action.collection, slug: action.slug } as const;
+          openWindow('chrome', workArea, createChromeContent(page));
         } else {
-          openPost(action.slug, workArea, device === 'mobile');
+          openPost(
+            { collection: action.collection, slug: action.slug },
+            workArea,
+            device === 'mobile',
+          );
         }
         break;
       case 'external':

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  ABOUT_FOLDER_ID,
   APP_ITEM_IDS,
   BLOG_FOLDER_ID,
   createFolder,
@@ -26,6 +27,7 @@ import {
   pinToStart,
   pinToTaskbar,
   type PlacedItem,
+  PROJECT_FOLDER_ID,
   reconcileWorkspace,
   recordRecentItem,
   RECYCLE_BIN_ID,
@@ -84,8 +86,8 @@ function namesIn(state: WorkspaceState, parentId: string | null): string[] {
 
 // @codocs [[작업 공간 맞추기:초기 구조]]
 describe('작업 공간 맞추기:초기 구조', () => {
-  it('바탕화면에 휴지통과 Blog 폴더를 두고, 외부 링크는 설정한 초기 위치에 둔다', () => {
-    expect(namesIn(initial, null)).toEqual(['휴지통', 'Blog', 'GitHub']);
+  it('바탕화면에 휴지통과 Blog·Project·About 폴더를 두고, 외부 링크는 설정한 초기 위치에 둔다', () => {
+    expect(namesIn(initial, null)).toEqual(['휴지통', 'Blog', 'Project', 'About', 'GitHub']);
     expect(initial.items['link:side']?.parentId).toBe(BLOG_FOLDER_ID);
   });
 
@@ -239,7 +241,13 @@ describe('작업 공간 맞추기:Notion과 맞추기', () => {
       ...testCatalog,
       posts: [
         ...testCatalog.posts,
-        { slug: 'new', title: '새 글', folderPath: ['React'], date: '2026-10-27' },
+        {
+          collection: 'blog',
+          slug: 'new',
+          title: '새 글',
+          folderPath: ['React'],
+          date: '2026-10-27',
+        },
       ],
     });
     expect(state.items['post:new']?.parentId).toBe('folder:React');
@@ -252,7 +260,13 @@ describe('작업 공간 맞추기:Notion과 맞추기', () => {
       ...testCatalog,
       posts: [
         ...testCatalog.posts,
-        { slug: 'new', title: '새 글', folderPath: ['React'], date: '2026-10-27' },
+        {
+          collection: 'blog',
+          slug: 'new',
+          title: '새 글',
+          folderPath: ['React'],
+          date: '2026-10-27',
+        },
       ],
     });
     expect(state.items['post:new']?.parentId).toBe('folder:React');
@@ -263,7 +277,13 @@ describe('작업 공간 맞추기:Notion과 맞추기', () => {
       ...testCatalog,
       posts: [
         ...testCatalog.posts,
-        { slug: 'b', title: '나', folderPath: ['없는 폴더'], date: '2026-10-27' },
+        {
+          collection: 'blog',
+          slug: 'b',
+          title: '나',
+          folderPath: ['없는 폴더'],
+          date: '2026-10-27',
+        },
       ],
     });
     expect(state.items['post:b']?.parentId).toBe(BLOG_FOLDER_ID);
@@ -605,7 +625,7 @@ describe('항목과 폴더:위치와 옮기기', () => {
       'Hooks',
     ]);
     const tree = getFolderTree(initial);
-    expect(tree.map((node) => node.folder.name)).toEqual(['Blog']);
+    expect(tree.map((node) => node.folder.name)).toEqual(['Blog', 'Project', 'About']);
     expect(tree[0]?.children.map((node) => node.folder.name)).toEqual(['React', 'Next.js']);
   });
 
@@ -615,7 +635,7 @@ describe('항목과 폴더:위치와 옮기기', () => {
   });
 
   it('잘라낸 항목을 붙여넣을 위치로 옮길 수 있으면 붙여넣을 항목을 돌려준다', () => {
-    expect(getPasteIds(initial, ['link:github', 'folder:Next.js'], 'folder:React', NOW)).toEqual([
+    expect(getPasteIds(initial, ['link:github', 'folder:Next.js'], 'folder:React')).toEqual([
       'link:github',
       'folder:Next.js',
     ]);
@@ -624,15 +644,15 @@ describe('항목과 폴더:위치와 옮기기', () => {
   it('그사이 휴지통에 들어갔거나 사라진 항목은 빼고 붙인다', () => {
     const trashed = expectOk(trashItems(initial, ['post:nextjs-cache'], NOW));
     expect(
-      getPasteIds(trashed, ['post:nextjs-cache', 'post:없음', 'link:github'], 'folder:React', NOW),
+      getPasteIds(trashed, ['post:nextjs-cache', 'post:없음', 'link:github'], 'folder:React'),
     ).toEqual(['link:github']);
   });
 
   it('붙여넣을 것이 없거나 옮길 수 없으면 붙여넣을 수 없다', () => {
-    expect(getPasteIds(initial, [], null, NOW)).toBeNull();
-    expect(getPasteIds(initial, ['link:github'], null, NOW)).toBeNull();
-    expect(getPasteIds(initial, ['folder:React'], 'folder:React/Hooks', NOW)).toBeNull();
-    expect(getPasteIds(initial, ['link:github'], RECYCLE_BIN_ID, NOW)).toBeNull();
+    expect(getPasteIds(initial, [], null)).toBeNull();
+    expect(getPasteIds(initial, ['link:github'], null)).toBeNull();
+    expect(getPasteIds(initial, ['folder:React'], 'folder:React/Hooks')).toBeNull();
+    expect(getPasteIds(initial, ['link:github'], RECYCLE_BIN_ID)).toBeNull();
   });
 });
 
@@ -740,6 +760,7 @@ describe('창 동작:열기 규칙', () => {
     });
     expect(getItemOpenAction(initial, 'post:react-19-hooks')).toEqual({
       type: 'post',
+      collection: 'blog',
       slug: 'react-19-hooks',
     });
     expect(getItemOpenAction(initial, 'link:github')).toEqual({
@@ -807,10 +828,17 @@ describe('바탕화면:표시하는 항목', () => {
     expect(getDesktopItems(initial).map((item) => item.id)).toEqual([
       RECYCLE_BIN_ID,
       BLOG_FOLDER_ID,
+      PROJECT_FOLDER_ID,
+      ABOUT_FOLDER_ID,
       'link:github',
     ]);
     const moved = expectOk(moveItems(initial, ['link:github'], BLOG_FOLDER_ID, NOW));
-    expect(getDesktopItems(moved).map((item) => item.id)).toEqual([RECYCLE_BIN_ID, BLOG_FOLDER_ID]);
+    expect(getDesktopItems(moved).map((item) => item.id)).toEqual([
+      RECYCLE_BIN_ID,
+      BLOG_FOLDER_ID,
+      PROJECT_FOLDER_ID,
+      ABOUT_FOLDER_ID,
+    ]);
   });
 });
 
@@ -838,5 +866,70 @@ describe('Chrome:휴지통에 있는 글', () => {
       ok: false,
       reason: 'not-in-trash',
     });
+  });
+});
+
+// 세 묶음(Blog·Project·About)의 항목이 자기 묶음 폴더로 들어가는지 본다.
+const COLLECTION_CATALOG = {
+  links: [],
+  posts: [
+    { collection: 'blog', slug: 'same', title: '블로그 글', folderPath: [], date: '2026-10-01' },
+    {
+      collection: 'project',
+      slug: 'same',
+      title: '프로젝트',
+      folderPath: ['Web'],
+      date: '2026-10-05',
+    },
+    { collection: 'about', slug: 'resume', title: '이력서', folderPath: [], date: '2026-10-09' },
+  ],
+} as const;
+
+// @codocs [[작업 공간 맞추기:초기 구조]]
+describe('작업 공간 맞추기:초기 구조 - 세 묶음', () => {
+  const state = createInitialWorkspace(COLLECTION_CATALOG);
+
+  it('항목은 자기 묶음 폴더(경로가 있으면 그 아래 폴더)에 들어간다', () => {
+    expect(state.items['post:same']?.parentId).toBe(BLOG_FOLDER_ID);
+    expect(state.items['project:same']?.parentId).toBe('project-folder:Web');
+    expect(state.items['project-folder:Web']?.parentId).toBe(PROJECT_FOLDER_ID);
+    expect(state.items['about:resume']?.parentId).toBe(ABOUT_FOLDER_ID);
+  });
+
+  it('묶음이 다르면 slug가 같아도 다른 항목이고, 열면 그 묶음의 글로 간다', () => {
+    expect(getItemOpenAction(state, 'post:same')).toEqual({
+      type: 'post',
+      collection: 'blog',
+      slug: 'same',
+    });
+    expect(getItemOpenAction(state, 'project:same')).toEqual({
+      type: 'post',
+      collection: 'project',
+      slug: 'same',
+    });
+  });
+});
+
+// @codocs [[검색:입력 전 화면]]
+describe('검색:입력 전 화면 - 세 묶음', () => {
+  it('최신 글은 Blog 글만이다(Project·About은 더 최근이어도 빠진다)', () => {
+    const state = createInitialWorkspace(COLLECTION_CATALOG);
+    expect(getLatestPosts(state, 6).map((post) => post.id)).toEqual(['post:same']);
+  });
+});
+
+// @codocs [[작업 공간 맞추기:Notion과 맞추기]]
+describe('작업 공간 맞추기:Notion과 맞추기 - 세 묶음', () => {
+  it('묶음 폴더가 없는 저장분(예전 저장분)은 Project·About 폴더를 바탕화면에 다시 만든다', () => {
+    const saved = toSavedWorkspace(createInitialWorkspace(COLLECTION_CATALOG));
+    const items = Object.fromEntries(
+      Object.entries(saved.items).filter(
+        ([id]) => id !== PROJECT_FOLDER_ID && id !== ABOUT_FOLDER_ID,
+      ),
+    );
+    const state = reconcileWorkspace({ ...saved, items }, COLLECTION_CATALOG);
+    expect(state.items[PROJECT_FOLDER_ID]).toMatchObject({ name: 'Project', parentId: null });
+    expect(state.items[ABOUT_FOLDER_ID]).toMatchObject({ name: 'About', parentId: null });
+    expect(state.items['about:resume']?.parentId).toBe(ABOUT_FOLDER_ID);
   });
 });

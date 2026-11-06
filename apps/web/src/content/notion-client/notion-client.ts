@@ -17,11 +17,20 @@ const NOTION_API_ORIGIN = 'https://api.notion.com';
 /** 한 번에 받는 행·블록 수. Notion API가 받는 가장 큰 값이다 */
 const NOTION_PAGE_SIZE = 100;
 
-/** 요청이 너무 많다(429)는 응답을 받았을 때 다시 보내는 횟수 */
+/** 요청이 너무 많다(429)거나, 시간 안에 응답이 없거나, Notion 서버 오류(5xx)일 때 다시 보내는 횟수 */
 const NOTION_RETRY_LIMIT = 3;
 
-/** 기다릴 시간을 알려 주지 않은 429 응답 뒤 기다리는 시간(초) */
+/** 기다릴 시간을 알려 주지 않은 429 응답 뒤와, 시간 초과·서버 오류 뒤 기다리는 시간(초) */
 const NOTION_DEFAULT_RETRY_SECONDS = 1;
+
+/**
+ * 요청 하나가 응답을 기다리는 시간(밀리초). Next.js 빌드는 페이지 하나에 60초를 넘기면 다시 만들므로, 그보다 훨씬 짧게 끊고 다시 보낸다.
+ * 첫 운영 빌드에서 응답이 오지 않는 요청 때문에 한 페이지가 60초를 넘긴 적이 있다.
+ */
+const NOTION_REQUEST_TIMEOUT_MS = 15_000;
+
+// 다시 보내는 Notion 서버 오류 응답 코드다.
+const retryableServerStatuses: ReadonlySet<number> = new Set([500, 502, 503, 504]);
 
 /** 블로그가 Notion에 보내는 요청. 이어 받기 위치(`startCursor`)가 없으면 처음부터 받는다 */
 export type NotionRequest =
@@ -88,6 +97,7 @@ export function getNotionRequestKey(request: NotionRequest): string {
 /**
  * Notion API를 부르는 클라이언트를 만든다. 토큰은 요청 머리에만 넣고 오류 메시지에 넣지 않는다.
  * 요청이 너무 많다(429)는 응답은 알려 준 시간만큼 기다렸다가 다시 보낸다.
+ * 정한 시간(15초) 안에 응답이 없거나 연결이 끊기거나 Notion 서버 오류(5xx)면 1초 기다렸다가 다시 보낸다(최대 3번).
  * @codocs [[콘텐츠 원천:읽는 곳]]
  * @param token Notion 연동 토큰
  * @returns Notion 클라이언트
@@ -111,17 +121,36 @@ export function createNotionHttpClient(token: string): NotionClient {
         });
       }
       for (let attempt = 0; ; attempt += 1) {
-        const response = await fetch(url, {
-          method,
-          body,
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Notion-Version': NOTION_API_VERSION,
-            'Content-Type': 'application/json',
-          },
-        });
-        if (response.status === 429 && attempt < NOTION_RETRY_LIMIT) {
+        const canRetry = attempt < NOTION_RETRY_LIMIT;
+        let response: Response;
+        try {
+          response = await fetch(url, {
+            method,
+            body,
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Notion-Version': NOTION_API_VERSION,
+              'Content-Type': 'application/json',
+            },
+            signal: AbortSignal.timeout(NOTION_REQUEST_TIMEOUT_MS),
+          });
+        } catch (error) {
+          if (!canRetry) {
+            const reason =
+              error instanceof Error || error instanceof DOMException ? error.name : 'unknown';
+            throw new Error(
+              `[notion] ${getNotionRequestKey(request)} 요청에 응답이 없다(${reason})`,
+            );
+          }
+          await wait(NOTION_DEFAULT_RETRY_SECONDS);
+          continue;
+        }
+        if (response.status === 429 && canRetry) {
           await wait(Number(response.headers.get('Retry-After') ?? NOTION_DEFAULT_RETRY_SECONDS));
+          continue;
+        }
+        if (retryableServerStatuses.has(response.status) && canRetry) {
+          await wait(NOTION_DEFAULT_RETRY_SECONDS);
           continue;
         }
         const json: unknown = await response.json();

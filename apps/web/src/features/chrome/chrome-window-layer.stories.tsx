@@ -26,9 +26,27 @@ import { mockPostBodies } from './components/chrome-post-tab/story-fetch';
 import { useChromeZoomStore } from './stores/chrome-zoom-store/chrome-zoom-store';
 
 const POSTS = [
-  { slug: 'react-19-hooks', title: '리액트 19 훅 정리', folderPath: ['React'], date: '2026-10-20' },
-  { slug: 'rsc', title: '리액트 서버 컴포넌트', folderPath: ['React'], date: '2026-10-12' },
-  { slug: 'next-cache', title: 'Next.js 캐시', folderPath: ['Next.js'], date: '2026-09-01' },
+  {
+    collection: 'blog',
+    slug: 'react-19-hooks',
+    title: '리액트 19 훅 정리',
+    folderPath: ['React'],
+    date: '2026-10-20',
+  },
+  {
+    collection: 'blog',
+    slug: 'rsc',
+    title: '리액트 서버 컴포넌트',
+    folderPath: ['React'],
+    date: '2026-10-12',
+  },
+  {
+    collection: 'blog',
+    slug: 'next-cache',
+    title: 'Next.js 캐시',
+    folderPath: ['Next.js'],
+    date: '2026-09-01',
+  },
 ] as const;
 
 const WORK_AREA = { width: 1920, height: 1032 } as const;
@@ -253,7 +271,7 @@ async function expectTabTitles(titles: string[]): Promise<void> {
 export const Tabs: Story = {
   beforeEach: async () => {
     await hydratePosts();
-    openChromeWindow({ kind: 'post', slug: 'rsc' });
+    openChromeWindow({ kind: 'post', collection: 'blog', slug: 'rsc' });
     return mockPostBodies({});
   },
   play: async ({ args, step }) => {
@@ -275,7 +293,7 @@ export const Tabs: Story = {
     await step('탭에서 ←를 누르면 앞 탭을 고르고 그 탭에 포커스를 옮긴다', async () => {
       screen.getByRole('tab', { name: /새 탭/ }).focus();
       await userEvent.keyboard('{ArrowLeft}');
-      await expect(currentPage()).toEqual({ kind: 'post', slug: 'rsc' });
+      await expect(currentPage()).toEqual({ kind: 'post', collection: 'blog', slug: 'rsc' });
       await waitFor(async () => {
         await expect(screen.getByRole('tab', { name: /리액트 서버 컴포넌트/ })).toHaveFocus();
       });
@@ -285,7 +303,7 @@ export const Tabs: Story = {
       await userEvent.click(screen.getByRole('tab', { name: /새 탭/ }));
       await expect(currentPage()).toEqual({ kind: 'new-tab' });
       await userEvent.click(screen.getByRole('tab', { name: /리액트 서버 컴포넌트/ }));
-      await expect(currentPage()).toEqual({ kind: 'post', slug: 'rsc' });
+      await expect(currentPage()).toEqual({ kind: 'post', collection: 'blog', slug: 'rsc' });
     });
 
     await step('탭을 끌어 순서를 바꾼다', async () => {
@@ -357,7 +375,7 @@ export const History: Story = {
 
     await step('최신 글 바로가기를 누르면 같은 탭에서 그 글로 간다', async () => {
       await userEvent.click(screen.getByRole('button', { name: '리액트 서버 컴포넌트' }));
-      await expect(currentPage()).toEqual({ kind: 'post', slug: 'rsc' });
+      await expect(currentPage()).toEqual({ kind: 'post', collection: 'blog', slug: 'rsc' });
     });
 
     await step('뒤로를 누르면 탭 기록의 앞 페이지로 간다', async () => {
@@ -367,7 +385,7 @@ export const History: Story = {
 
     await step('앞으로를 누르면 탭 기록의 다음 페이지로 간다', async () => {
       await userEvent.click(screen.getByRole('button', { name: '앞으로' }));
-      await expect(currentPage()).toEqual({ kind: 'post', slug: 'rsc' });
+      await expect(currentPage()).toEqual({ kind: 'post', collection: 'blog', slug: 'rsc' });
     });
   },
 };
@@ -392,7 +410,7 @@ export const NewTabSearch: Story = {
 
     await step('검색창에 주소를 입력하면 주소창과 같이 그 글로 간다', async () => {
       await userEvent.type(getSearch(), '/posts/rsc{Enter}');
-      await expect(currentPage()).toEqual({ kind: 'post', slug: 'rsc' });
+      await expect(currentPage()).toEqual({ kind: 'post', collection: 'blog', slug: 'rsc' });
       await userEvent.click(screen.getByRole('button', { name: '뒤로' }));
     });
 
@@ -402,7 +420,7 @@ export const NewTabSearch: Story = {
       await expect(options).toEqual(['리액트 19 훅 정리', '리액트 서버 컴포넌트', '리액 검색']);
       await expect(getSearch()).not.toHaveAttribute('aria-activedescendant');
       await userEvent.keyboard('{ArrowDown}{ArrowDown}{Enter}');
-      await expect(currentPage()).toEqual({ kind: 'post', slug: 'rsc' });
+      await expect(currentPage()).toEqual({ kind: 'post', collection: 'blog', slug: 'rsc' });
       await userEvent.click(screen.getByRole('button', { name: '뒤로' }));
     });
 
@@ -413,7 +431,7 @@ export const NewTabSearch: Story = {
       await expect(getSearch()).toHaveValue('');
       await userEvent.type(getSearch(), 'Next');
       await userEvent.click(screen.getByRole('option', { name: 'Next.js 캐시' }));
-      await expect(currentPage()).toEqual({ kind: 'post', slug: 'next-cache' });
+      await expect(currentPage()).toEqual({ kind: 'post', collection: 'blog', slug: 'next-cache' });
     });
   },
 };
@@ -423,7 +441,7 @@ export const NewTabSearch: Story = {
 export const AddressBar: Story = {
   beforeEach: async () => {
     await hydratePosts();
-    openChromeWindow({ kind: 'post', slug: 'rsc' });
+    openChromeWindow({ kind: 'post', collection: 'blog', slug: 'rsc' });
     return mockPostBodies({});
   },
   play: async ({ step }) => {
@@ -461,7 +479,7 @@ export const AddressBar: Story = {
 
     await step('블로그 글 주소를 입력하고 Enter를 누르면 그 글로 간다', async () => {
       await userEvent.type(addressBar(), 'seojaewan.com/posts/next-cache{Enter}');
-      await expect(currentPage()).toEqual({ kind: 'post', slug: 'next-cache' });
+      await expect(currentPage()).toEqual({ kind: 'post', collection: 'blog', slug: 'next-cache' });
       await expect(screen.getByRole('tab', { name: /Next.js 캐시/ })).toBeInTheDocument();
     });
 
@@ -486,21 +504,25 @@ export const AddressBar: Story = {
         await userEvent.type(addressBar(), '캐시{Enter}');
         await expect(currentPage()).toEqual({ kind: 'search', query: '캐시' });
         await userEvent.click(screen.getByRole('button', { name: /Next.js 캐시/ }));
-        await expect(currentPage()).toEqual({ kind: 'post', slug: 'next-cache' });
+        await expect(currentPage()).toEqual({
+          kind: 'post',
+          collection: 'blog',
+          slug: 'next-cache',
+        });
       },
     );
 
     await step('↓로 추천을 고르고 Enter를 누르면 현재 탭에서 그 글로 간다', async () => {
       await userEvent.type(addressBar(), '리액');
       await userEvent.keyboard('{ArrowDown}{ArrowDown}{Enter}');
-      await expect(currentPage()).toEqual({ kind: 'post', slug: 'rsc' });
+      await expect(currentPage()).toEqual({ kind: 'post', collection: 'blog', slug: 'rsc' });
       await expect(screen.getAllByRole('tab')).toHaveLength(2);
     });
 
     await step('추천을 누르면 그 글로 간다', async () => {
       await userEvent.type(addressBar(), '캐시');
       await userEvent.click(screen.getByRole('option', { name: /Next.js 캐시/ }));
-      await expect(currentPage()).toEqual({ kind: 'post', slug: 'next-cache' });
+      await expect(currentPage()).toEqual({ kind: 'post', collection: 'blog', slug: 'next-cache' });
     });
   },
 };
@@ -510,7 +532,7 @@ export const AddressBar: Story = {
 export const MoreMenu: Story = {
   beforeEach: async () => {
     await hydratePosts();
-    openChromeWindow({ kind: 'post', slug: 'rsc' });
+    openChromeWindow({ kind: 'post', collection: 'blog', slug: 'rsc' });
     return mockPostBodies({});
   },
   play: async ({ step }) => {
@@ -716,7 +738,7 @@ export const TwoWindows: Story = {
 export const ImageViewer: Story = {
   beforeEach: async () => {
     await hydratePosts();
-    openChromeWindow({ kind: 'post', slug: 'rsc' });
+    openChromeWindow({ kind: 'post', collection: 'blog', slug: 'rsc' });
     return mockPostBodies({ rsc: imageBody });
   },
   play: async ({ step }) => {
@@ -834,7 +856,7 @@ export const TrashedPost: Story = {
       await userEvent.type(addressBar(), '/posts/rsc{Enter}');
       await userEvent.click(await screen.findByRole('button', { name: '복원' }));
       await waitFor(async () => {
-        await expect(currentPage()).toEqual({ kind: 'post', slug: 'rsc' });
+        await expect(currentPage()).toEqual({ kind: 'post', collection: 'blog', slug: 'rsc' });
       });
       await expect(useWorkspaceStore.getState().items['post:rsc']?.trash).toBeNull();
     });
@@ -846,7 +868,7 @@ export const TrashedPost: Story = {
 export const WindowWidthLayout: Story = {
   beforeEach: async () => {
     await hydratePosts();
-    openChromeWindow({ kind: 'post', slug: 'rsc' });
+    openChromeWindow({ kind: 'post', collection: 'blog', slug: 'rsc' });
     return mockPostBodies({});
   },
   play: async ({ canvasElement, step }) => {
@@ -920,7 +942,7 @@ export const Mobile: Story = {
       await userEvent.click(screen.getByRole('button', { name: '뒤로' }));
       await openMoreMenu();
       await userEvent.click(await screen.findByRole('menuitem', { name: '앞으로' }));
-      await expect(currentPage()).toEqual({ kind: 'post', slug: 'rsc' });
+      await expect(currentPage()).toEqual({ kind: 'post', collection: 'blog', slug: 'rsc' });
     });
   },
 };
@@ -942,7 +964,7 @@ export const Preview: Story = {
         replaceStateCalls.push(String(url));
       },
     );
-    openChromeWindow({ kind: 'post', slug: 'rsc' });
+    openChromeWindow({ kind: 'post', collection: 'blog', slug: 'rsc' });
     const restoreBodies = mockPostBodies({});
     return () => {
       replaceState.mockRestore();

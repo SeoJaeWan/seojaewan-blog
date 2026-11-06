@@ -12,13 +12,13 @@ const suggestions = [
     kind: 'post',
     title: '리액트 19 훅 정리',
     url: 'seojaewan.com/posts/react-19-hooks',
-    page: { kind: 'post', slug: 'react-19-hooks' },
+    page: { kind: 'post', collection: 'blog', slug: 'react-19-hooks' },
   },
   {
     kind: 'post',
     title: '리액트 서버 컴포넌트 이해하기',
     url: 'seojaewan.com/posts/react-server-components',
-    page: { kind: 'post', slug: 'react-server-components' },
+    page: { kind: 'post', collection: 'blog', slug: 'react-server-components' },
   },
   { kind: 'search', title: '리액트 검색', page: { kind: 'search', query: QUERY } },
 ] as const satisfies readonly AddressSuggestionTarget[];
