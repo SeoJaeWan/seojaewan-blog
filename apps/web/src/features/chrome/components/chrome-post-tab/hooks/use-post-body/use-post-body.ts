@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { type PostBlock, postBodySchema } from '@/shared/utils/post-body/post-body';
+import { type PostBody, postBodySchema } from '@/shared/utils/post-body/post-body';
 
 /** 글 본문을 받는 상태. 받는 중, 받음, 받지 못함이다 */
 export type PostBodyState =
-  { status: 'loading' } | { status: 'loaded'; blocks: readonly PostBlock[] } | { status: 'failed' };
+  { status: 'loading' } | { status: 'loaded'; body: PostBody } | { status: 'failed' };
 
 // 받은 본문을 slug마다 기억한다. 작업 표시줄 미리보기·Snap Assist가 같은 글 탭을 여러 번 그려도 한 번만 받는다.
-const bodyRequests = new Map<string, Promise<readonly PostBlock[] | null>>();
+const bodyRequests = new Map<string, Promise<PostBody | null>>();
 
 // 받는 중 상태다.
 const LOADING_STATE = { status: 'loading' } as const;
@@ -20,12 +20,12 @@ const LOADING_STATE = { status: 'loading' } as const;
  * @codocs [[Chrome:글 화면]]
  * @codocs [[SEO와 공유 미리보기:첫 HTML]]
  * @param slug 글 slug
- * @param preloadedBlocks 서버가 읽어 넘긴 이 글의 본문. 있으면 받지 않는다
+ * @param preloadedBody 서버가 읽어 넘긴 이 글의 본문. 있으면 받지 않는다
  * @returns 본문을 받는 상태
  */
-export function usePostBody(slug: string, preloadedBlocks?: readonly PostBlock[]): PostBodyState {
+export function usePostBody(slug: string, preloadedBody?: PostBody): PostBodyState {
   const [result, setResult] = useState<{ slug: string; state: PostBodyState } | null>(null);
-  const isPreloaded = preloadedBlocks !== undefined;
+  const isPreloaded = preloadedBody !== undefined;
 
   useEffect(
     /** 본문을 받아 상태에 둔다. 다른 글로 바뀌면 앞의 결과는 버린다. 서버가 넘긴 본문이 있으면 받지 않는다. */
@@ -38,13 +38,13 @@ export function usePostBody(slug: string, preloadedBlocks?: readonly PostBlock[]
         .then(
           /**
            * 받은 본문을 상태에 둔다. 그새 다른 글로 바뀌었으면 버린다.
-           * @param blocks 본문 블록. 받지 못했으면 null
+           * @param body 본문. 받지 못했으면 null
            */
-          (blocks) => {
+          (body) => {
             if (isCurrent) {
               setResult({
                 slug,
-                state: blocks === null ? { status: 'failed' } : { status: 'loaded', blocks },
+                state: body === null ? { status: 'failed' } : { status: 'loaded', body },
               });
             }
           },
@@ -57,8 +57,8 @@ export function usePostBody(slug: string, preloadedBlocks?: readonly PostBlock[]
     [slug, isPreloaded],
   );
 
-  if (preloadedBlocks !== undefined) {
-    return { status: 'loaded', blocks: preloadedBlocks };
+  if (preloadedBody !== undefined) {
+    return { status: 'loaded', body: preloadedBody };
   }
   return result?.slug === slug ? result.state : LOADING_STATE;
 }
@@ -73,9 +73,9 @@ export function clearPostBodyCache(): void {
 /**
  * 글 본문을 받는다. 같은 글은 한 번만 받고, 받지 못했으면 다음에 다시 받는다.
  * @param slug 글 slug
- * @returns 본문 블록. 없거나 받지 못했으면 null
+ * @returns 본문. 없거나 받지 못했으면 null
  */
-function loadPostBody(slug: string): Promise<readonly PostBlock[] | null> {
+function loadPostBody(slug: string): Promise<PostBody | null> {
   const cached = bodyRequests.get(slug);
   if (cached !== undefined) {
     return cached;
@@ -83,14 +83,14 @@ function loadPostBody(slug: string): Promise<readonly PostBlock[] | null> {
   const request = fetchPostBody(slug).then(
     /**
      * 받지 못했으면 기억에서 지워 다음에 다시 받게 한다.
-     * @param blocks 본문 블록. 받지 못했으면 null
-     * @returns 본문 블록
+     * @param body 본문. 받지 못했으면 null
+     * @returns 본문
      */
-    (blocks) => {
-      if (blocks === null) {
+    (body) => {
+      if (body === null) {
         bodyRequests.delete(slug);
       }
-      return blocks;
+      return body;
     },
   );
   bodyRequests.set(slug, request);
@@ -100,16 +100,16 @@ function loadPostBody(slug: string): Promise<readonly PostBlock[] | null> {
 /**
  * 서버 경로에서 본문을 받아 검증한다.
  * @param slug 글 slug
- * @returns 본문 블록. 없거나 받지 못했거나 모양이 다르면 null
+ * @returns 본문. 없거나 받지 못했거나 모양이 다르면 null
  */
-async function fetchPostBody(slug: string): Promise<readonly PostBlock[] | null> {
+async function fetchPostBody(slug: string): Promise<PostBody | null> {
   try {
     const response = await fetch(`/api/posts/${encodeURIComponent(slug)}`);
     if (!response.ok) {
       return null;
     }
     const parsed = postBodySchema.safeParse(await response.json());
-    return parsed.success ? parsed.data.blocks : null;
+    return parsed.success ? parsed.data : null;
   } catch {
     return null;
   }

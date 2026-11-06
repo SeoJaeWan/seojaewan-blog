@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   getBlockVersion,
   getCoverVersion,
+  IMAGE_WIDTHS,
   parseImageRequest,
 } from '../apps/images/src/image-address/image-address.ts';
 import {
@@ -10,6 +11,10 @@ import {
   getNotionImageAddress,
   IMAGE_SERVER_ORIGIN,
 } from '../apps/web/src/content/notion-image-address/notion-image-address.ts';
+import {
+  getPostImageSrcSet,
+  POST_IMAGE_WIDTHS,
+} from '../apps/web/src/shared/utils/post-image/post-image.ts';
 
 // 블로그(apps/web)와 이미지 서버(apps/images)는 서로 import하지 않는다.
 // 두 앱이 같은 주소·버전 모양을 쓰는지는 두 앱 밖의 이 시험이 함께 불러 확인한다.
@@ -77,4 +82,39 @@ describe('Notion 이미지 제공:주소', () => {
     const serverVersion = getCoverVersion({ type: 'file', url: `${file}?X-Amz-Date=2` });
     expect(blogAddress.endsWith(`/${serverVersion}`)).toBe(true);
   });
+});
+
+// @codocs [[Notion 이미지 제공:최적화]]
+describe('Notion 이미지 제공:최적화', () => {
+  it('블로그가 그리는 폭은 이미지 서버가 만드는 폭과 같다', () => {
+    expect(POST_IMAGE_WIDTHS).toEqual(IMAGE_WIDTHS);
+  });
+
+  it.each([
+    ['본문 이미지', getNotionImageAddress(BLOCK_ID, '2026-11-06T02:33:00.000Z')],
+    [
+      '커버',
+      getNotionCoverAddress(PAGE_ID, {
+        type: 'external',
+        url: 'https://www.notion.so/images/page-cover/rijksmuseum_jansz_1636.jpg',
+      }),
+    ],
+  ])(
+    '블로그가 만든 %s의 srcset 주소마다 이미지 서버가 같은 이미지와 그 폭으로 읽는다',
+    (_name, address) => {
+      const base = parseByImageServer(address);
+      const candidates = getPostImageSrcSet(address)
+        .split(', ')
+        .map((candidate) => candidate.split(' '));
+      expect(candidates).toHaveLength(IMAGE_WIDTHS.length);
+      for (const [url = '', descriptor = ''] of candidates) {
+        const parsed = parseByImageServer(url);
+        expect(parsed).toEqual({
+          kind: 'image',
+          key: base.kind === 'image' ? base.key : null,
+          width: Number(descriptor.replace(/w$/u, '')),
+        });
+      }
+    },
+  );
 });

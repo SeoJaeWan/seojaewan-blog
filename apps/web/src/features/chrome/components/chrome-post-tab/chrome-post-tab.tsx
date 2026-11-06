@@ -5,9 +5,10 @@ import {
   PostBlocks,
   type PostImageBlock,
 } from '@/features/chrome/components/post-blocks/post-blocks';
+import { ResponsiveImage } from '@/features/chrome/components/responsive-image/responsive-image';
 import { getPostAddress } from '@/features/chrome/utils/chrome-address/chrome-address';
 import type { ChromeTabPage } from '@/shared/utils/chrome-tabs/chrome-tabs';
-import { getTocHeadings, type PostBlock } from '@/shared/utils/post-body/post-body';
+import { getTocHeadings, type PostBody } from '@/shared/utils/post-body/post-body';
 import {
   getFolderPath,
   type PostItem,
@@ -31,14 +32,15 @@ type ChromePostTabProps = {
   onReload: () => void;
   zoom?: number;
   onImageOpen?: (block: PostImageBlock, trigger: HTMLElement) => void;
-  preloadedBlocks?: readonly PostBlock[];
+  preloadedBody?: PostBody;
 };
 
 /**
  * Chrome 탭의 글 화면. 머리(폴더 경로, 작성일, 제목)와 꼬리(작성일 기준 이전·다음 글)는 글 색인으로 바로 그리고,
  * 본문은 서버 경로에서 받아 그린다. 받는 동안 본문 자리는 비워 두고, 받지 못하면 찾을 수 없음 화면을 보인다
  * (받는 중·실패 화면은 디자인이 없다). 제목이 1개 이상이면 목차를 보이고, 스크롤하는 동안 지금 읽는 제목을 표시한다.
- * 목차 항목을 누르면 그 제목으로 스크롤한다. 서버가 읽어 넘긴 본문(`preloadedBlocks`)이 있으면 받지 않고 바로 그린다.
+ * 목차 항목을 누르면 그 제목으로 스크롤한다. 서버가 읽어 넘긴 본문(`preloadedBody`)이 있으면 받지 않고 바로 그린다.
+ * 커버가 있으면 본문과 같은 방식(크기별 사본과 크기)으로 제목 위에 그린다.
  * @codocs [[Chrome:글 화면]]
  * @codocs [[SEO와 공유 미리보기:첫 HTML]]
  * @param props 컴포넌트 속성
@@ -50,7 +52,7 @@ type ChromePostTabProps = {
  * @param props.onReload 찾을 수 없음 화면의 새로고침 버튼을 눌렀을 때
  * @param props.zoom 페이지 본문 배율(1이 100%). 주지 않으면 배율을 걸지 않는다
  * @param props.onImageOpen 본문 이미지를 눌렀을 때(크게 보기). 누른 이미지 블록과 포커스를 돌려줄 요소를 받는다
- * @param props.preloadedBlocks 서버가 읽어 넘긴 이 글의 본문(글 주소로 처음 들어온 글). 있으면 서버 경로에서 받지 않는다
+ * @param props.preloadedBody 서버가 읽어 넘긴 이 글의 본문(글 주소로 처음 들어온 글). 있으면 서버 경로에서 받지 않는다
  */
 export function ChromePostTab({
   post,
@@ -61,19 +63,20 @@ export function ChromePostTab({
   onReload: handleReload,
   zoom,
   onImageOpen: handleImageOpen,
-  preloadedBlocks,
+  preloadedBody,
 }: ChromePostTabProps): JSX.Element {
-  const body = usePostBody(post.slug, preloadedBlocks);
+  const bodyState = usePostBody(post.slug, preloadedBody);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isTocExpanded, setIsTocExpanded] = useState(false);
-  const headings = body.status === 'loaded' ? getTocHeadings(body.blocks) : [];
+  const headings = bodyState.status === 'loaded' ? getTocHeadings(bodyState.body.blocks) : [];
+  const cover = bodyState.status === 'loaded' ? bodyState.body.cover : null;
   const activeIndex = useReadingPosition(
     scrollRef,
     headings.map((heading) => heading.id),
   );
   const { previous, next } = getPostNeighbors(workspace, post.slug);
 
-  if (body.status === 'failed') {
+  if (bodyState.status === 'failed') {
     return (
       <ChromePage
         page="not-found"
@@ -126,6 +129,7 @@ export function ChromePostTab({
       zoom={zoom}
       meta={getPostMeta(workspace, post)}
       title={post.name}
+      cover={cover === null ? undefined : <ResponsiveImage image={cover} alt="" />}
       toc={headings.map((heading, index) => ({
         label: heading.label,
         isActive: index === activeIndex,
@@ -138,9 +142,9 @@ export function ChromePostTab({
       onPreviousOpen={handlePreviousOpen}
       onNextOpen={handleNextOpen}
     >
-      {body.status === 'loaded' && (
+      {bodyState.status === 'loaded' && (
         <PostBlocks
-          blocks={body.blocks}
+          blocks={bodyState.body.blocks}
           resolveLink={resolveLink}
           onPageOpen={handleNavigate}
           onImageOpen={handleImageOpen}

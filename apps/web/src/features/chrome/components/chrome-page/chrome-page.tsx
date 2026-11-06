@@ -87,7 +87,7 @@ const WORDMARK = 'seojaewan.com';
  * narrow의 접은 목차를 누르면 펼치고, 펼친 목차의 머리(제목)를 누르면 다시 접는다(클릭·Enter·Space).
  * @param props 컴포넌트 속성
  * @param props.layout 피그마 Layout. wide는 넓은 창, narrow는 좁은 창의 배치다. 쓰는 곳이 창 내용 너비로 고른다
- * @param props.cover 커버 이미지(피그마 PostCover `image`). 있으면 제목 위에 그린다. Notion 커버 제공([[Notion 이미지 제공]])은 9단계라 그 전까지는 쓰는 곳이 넣는다
+ * @param props.cover 커버 이미지(피그마 PostCover `image`). 있으면 제목 위에 그린다. 글 화면은 Notion 커버를 이미지 서버의 크기별 사본으로 넣는다([[Notion 이미지 제공]])
  * @param props.meta 제목 위 작은 글자(폴더 경로와 작성일)
  * @param props.title 글 제목
  * @param props.toc 목차 항목. wide는 오른쪽에 펼치고, narrow는 제목 아래 접은 목차로 보인다. 비어 있으면 목차를 그리지 않는다
@@ -366,7 +366,7 @@ function NotFoundPage({
  * @param props.scrollRef 페이지를 스크롤하는 상자. 글 화면이 지금 읽는 위치를 잴 때 쓴다
  * @param props.zoom 페이지 본문 배율(1이 100%, [[Chrome:확대/축소]]). 주면 스크롤 상자 안의 본문만 키우거나 줄인다(스크롤 상자 크기는 그대로다). 주지 않으면 배율을 걸지 않는다(조립 스토리)
  * @param props.page 그릴 화면. post는 글 화면, new-tab은 새 탭 페이지, search-results는 검색 결과 페이지, not-found는 페이지를 찾을 수 없음 화면이다
- * @param props.cover (post) 커버 이미지(피그마 PostCover `image`). 있으면 제목 위에 그린다. Notion 커버 제공([[Notion 이미지 제공]])은 9단계라 그 전까지는 쓰는 곳이 넣는다
+ * @param props.cover (post) 커버 이미지(피그마 PostCover `image`). 있으면 제목 위에 그린다. 글 화면은 Notion 커버를 이미지 서버의 크기별 사본으로 넣는다([[Notion 이미지 제공]])
  * @param props.meta (post) 제목 위 작은 글자(폴더 경로와 작성일)
  * @param props.title (post) 글 제목
  * @param props.toc (post) 목차 항목. wide는 오른쪽에 펼치고, narrow는 제목 아래 접은 목차로 보인다. 비어 있으면 목차를 그리지 않는다

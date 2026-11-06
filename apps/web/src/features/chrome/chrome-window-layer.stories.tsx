@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { JSX } from 'react';
 import { expect, fireEvent, fn, screen, spyOn, userEvent, waitFor, within } from 'storybook/test';
 
-import { BREAKPOINTS } from '@seojaewan/design-system';
+import { BREAKPOINTS, getImageAsset } from '@seojaewan/design-system';
 import { FigmaFrame, StoryStage } from '@seojaewan/design-system/story';
 
 import { dragStoryPointer } from '@/features/window/story-pointer';
@@ -36,7 +36,10 @@ const WORK_AREA = { width: 1920, height: 1032 } as const;
 const imageBody: readonly PostBlock[] = [
   {
     type: 'image',
-    url: 'https://images.seojaewan.com/notion/a',
+    // 스토리에는 이미지 서버가 없어 저장소 안의 배경화면 Bloom과 그 원본 크기를 둔다
+    url: getImageAsset('images/wallpaper-bloom').src,
+    width: getImageAsset('images/wallpaper-bloom').width,
+    height: getImageAsset('images/wallpaper-bloom').height,
     caption: [{ text: '구조 그림', link: null }],
   },
 ];

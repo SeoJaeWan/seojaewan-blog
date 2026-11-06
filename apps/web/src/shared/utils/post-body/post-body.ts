@@ -50,6 +50,23 @@ export const codeTokenSchema = z.object({
 /** 강조된 코드의 글자 조각 하나 */
 export type CodeToken = z.infer<typeof codeTokenSchema>;
 
+/**
+ * 글 이미지(본문 이미지와 커버). 주소는 [[Notion 이미지 제공:주소]]의 이미지 서버 주소이고, 크기는 이미지 서버가 알려준 폭과
+ * 높이(픽셀)다. 이미지 서버가 답하지 않아 모르면 null이다([[Notion 이미지 제공:크기]]).
+ * @codocs [[Notion 이미지 제공:크기]]
+ */
+export const postImageSchema = z.object({
+  /** 이미지 주소 */
+  url: z.string().min(1),
+  /** 폭. 모르면 null */
+  width: z.number().int().positive().nullable(),
+  /** 높이. 모르면 null */
+  height: z.number().int().positive().nullable(),
+});
+
+/** 글 이미지(본문 이미지와 커버) */
+export type PostImage = z.infer<typeof postImageSchema>;
+
 /** 제목 블록 */
 export type HeadingBlock = {
   type: 'heading_1' | 'heading_2' | 'heading_3';
@@ -65,7 +82,7 @@ export type ListItemBlock =
 /**
  * 본문 블록 하나. 이름은 Notion 블록 종류와 같다. `unsupported`는 지원하지 않는 블록 자리이고 Notion 유형 이름을 담는다.
  * 코드 블록의 강조(`highlighted`)와 수식 HTML(`html`, KaTeX)은 서버가 본문을 만들 때 처리해 보낸다([[기술 스택:글 본문 처리]]).
- * 이미지 주소는 [[Notion 이미지 제공]]의 주소다.
+ * 이미지 주소는 [[Notion 이미지 제공]]의 주소이고, 폭·높이는 이미지 서버가 알려준 크기다(모르면 null).
  * `html`은 서버가 KaTeX로 그린 수식 HTML이며 그리지 못한 식이면 없다.
  */
 export type PostBlock =
@@ -75,7 +92,7 @@ export type PostBlock =
   | { type: 'quote'; richText: RichText[] }
   | { type: 'callout'; richText: RichText[] }
   | { type: 'code'; language: string; code: string; highlighted?: CodeToken[][] }
-  | { type: 'image'; url: string; caption: RichText[] }
+  | ({ type: 'image'; caption: RichText[] } & PostImage)
   | { type: 'divider' }
   | { type: 'toggle'; richText: RichText[]; children?: PostBlock[] }
   | { type: 'table'; hasColumnHeader: boolean; rows: RichText[][][] }
@@ -125,7 +142,7 @@ export const postBlockSchema: z.ZodType<PostBlock> = z.discriminatedUnion('type'
     code: z.string(),
     highlighted: z.array(z.array(codeTokenSchema)).optional(),
   }),
-  z.object({ type: z.literal('image'), url: z.string().min(1), caption: richTextsSchema }),
+  postImageSchema.extend({ type: z.literal('image'), caption: richTextsSchema }),
   z.object({ type: z.literal('divider') }),
   z.object({ type: z.literal('toggle'), richText: richTextsSchema, children: childrenSchema }),
   z.object({
@@ -143,15 +160,18 @@ export const postBlockSchema: z.ZodType<PostBlock> = z.discriminatedUnion('type'
   z.object({ type: z.literal('unsupported'), typeName: z.string().min(1) }),
 ]);
 
-/** 글 본문 */
+/** 글 본문. 커버는 Notion 페이지 커버이고 없으면 null이다 */
 export type PostBody = {
   blocks: PostBlock[];
+  cover: PostImage | null;
 };
 
-/** 글 본문. 블록을 차례대로 담는다 */
+/** 글 본문. 블록을 차례대로 담고, 커버가 있으면 함께 담는다 */
 export const postBodySchema: z.ZodType<PostBody> = z.object({
   /** 본문 블록 */
   blocks: z.array(postBlockSchema),
+  /** 커버. 없으면 null */
+  cover: postImageSchema.nullable(),
 });
 
 /** 목차를 보이는 제목 개수의 최소값([[Chrome:글 화면]]) */

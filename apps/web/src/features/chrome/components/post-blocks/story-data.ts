@@ -2,6 +2,8 @@
 // @codocs [[피그마 연동:스토리 규칙]]
 // Notion 블록 견본 조립(Chrome/PostBlocks) 스토리의 고정 데이터다. 피그마 조립과 같은 글자와 블록을 둔다.
 
+import { getImageAsset } from '@seojaewan/design-system';
+
 import { renderEquationHtml } from '@/content/equation-render/equation-render';
 import type { PostBlock, RichText } from '@/shared/utils/post-body/post-body';
 
@@ -88,7 +90,10 @@ export const sampleBlocks: PostBlock[] = [
   },
   {
     type: 'image',
-    url: 'https://seojaewan.com/images/bloom.png',
+    // 스토리에는 이미지 서버가 없어 저장소 안의 배경화면 Bloom과 그 원본 크기를 둔다
+    url: getImageAsset('images/wallpaper-bloom').src,
+    width: getImageAsset('images/wallpaper-bloom').width,
+    height: getImageAsset('images/wallpaper-bloom').height,
     caption: [text('이미지 아래에 붙는 캡션')],
   },
   { type: 'divider' },

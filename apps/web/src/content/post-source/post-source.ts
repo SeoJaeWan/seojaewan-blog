@@ -7,6 +7,7 @@ import {
   NOTION_DATABASE_IDS,
   NOTION_FIXTURE_DATABASE_IDS,
 } from '@/content/content-collections/content-collections';
+import { createImageSizeReader } from '@/content/image-size/image-size';
 import { toPostBlocks } from '@/content/notion-blocks/notion-blocks';
 import {
   createNotionHttpClient,
@@ -17,6 +18,11 @@ import {
 import { loadNotionFixtureClient } from '@/content/notion-fixture/notion-fixture';
 import { readPostRows } from '@/content/notion-rows/notion-rows';
 import { renderPostBlocks } from '@/content/post-body-render/post-body-render';
+import {
+  createServedImageResolver,
+  type ImageResolver,
+  resolvePostImages,
+} from '@/content/post-images/post-images';
 import { type PostRow, toPostSummary } from '@/content/post-schema/post-schema';
 import { env } from '@/env';
 import { type PostBody, postBodySchema } from '@/shared/utils/post-body/post-body';
@@ -70,13 +76,17 @@ async function readContentRows(collection: ContentCollection): Promise<PostRow[]
   return readPostRows(await readDatabasePages(client, databaseIds[collection]));
 }
 
+// 운영에서 이미지 크기를 묻는 함수. 동시 요청 수 제한이 프로세스 전체에 걸리도록 하나만 둔다.
+const servedImageResolver = createServedImageResolver(createImageSizeReader());
+
 /**
  * 묶음의 공개 항목 하나의 본문을 읽는다. Notion 블록을 본문 블록으로 바꾸고, 보내기 전에 코드 강조(Shiki)와 수식(KaTeX)을
- * 서버에서 처리한다.
+ * 서버에서 처리하고, 이미지와 커버의 크기를 채운다.
  * @codocs [[콘텐츠 원천:결정]]
  * @codocs [[콘텐츠 원천:공개 여부]]
  * @codocs [[Notion 블록:지원 블록]]
  * @codocs [[기술 스택:글 본문 처리]]
+ * @codocs [[Notion 이미지 제공:크기]]
  * @param collection 묶음
  * @param slug 항목 slug
  * @returns 본문. 공개 항목이 아니면 null
@@ -91,7 +101,27 @@ export async function getContentBody(
   }
   const { client } = await getContentReader();
   const blocks = await renderPostBlocks(toPostBlocks(await readBlockTree(client, row.pageId)));
-  return postBodySchema.parse({ blocks });
+  const body = await resolvePostImages(
+    { blocks, cover: row.cover },
+    { resolveImage: await getImageResolver() },
+  );
+  return postBodySchema.parse(body);
+}
+
+/**
+ * `CONTENT_SOURCE`대로 이미지 크기를 받는 곳을 고른다. 운영은 이미지 서버에 묻고, fixture는 이미지 서버가 없으므로
+ * 저장소 안의 시험 이미지로 바꾼다.
+ * @codocs [[콘텐츠 원천:읽는 곳]]
+ * @codocs [[Notion 이미지 제공:크기]]
+ * @returns 이미지 바꾸기
+ */
+async function getImageResolver(): Promise<ImageResolver> {
+  if (env.CONTENT_SOURCE === 'fixture') {
+    const { createFixtureImageResolver } =
+      await import('@/content/notion-fixture/notion-fixture-image');
+    return createFixtureImageResolver();
+  }
+  return servedImageResolver;
 }
 
 /**

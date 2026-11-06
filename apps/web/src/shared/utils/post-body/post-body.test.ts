@@ -34,6 +34,7 @@ describe('Notion 블록', () => {
         { type: 'paragraph', richText: [{ text: '글', link: '/posts/a' }] },
         { type: 'code', language: 'ts', code: 'const a = 1;' },
       ],
+      cover: null,
     };
     expect(postBodySchema.safeParse(body).success).toBe(true);
   });
@@ -68,7 +69,13 @@ describe('Notion 블록', () => {
             ],
           ],
         },
-        { type: 'image', url: 'https://example.com/a.png', caption: [text('캡션')] },
+        {
+          type: 'image',
+          url: 'https://example.com/a.png',
+          width: 1440,
+          height: 810,
+          caption: [text('캡션')],
+        },
         { type: 'divider' },
         { type: 'toggle', richText: [text('토글')], children: [{ type: 'divider' }] },
         { type: 'table', hasColumnHeader: true, rows: [[[text('가')], [text('나')]]] },
@@ -76,13 +83,40 @@ describe('Notion 블록', () => {
         { type: 'equation', expression: 'x^2' },
         { type: 'unsupported', typeName: 'embed' },
       ],
+      cover: null,
     };
     expect(postBodySchema.safeParse(body).success).toBe(true);
   });
 
   it('지원하지 않는 블록은 unsupported 블록으로 바꿔 보내야 하고, 모르는 종류는 받지 않는다', () => {
-    const body = { blocks: [{ type: 'embed', url: 'https://example.com' }] };
+    const body = { blocks: [{ type: 'embed', url: 'https://example.com' }], cover: null };
     expect(postBodySchema.safeParse(body).success).toBe(false);
+  });
+});
+
+// @codocs [[Notion 이미지 제공:크기]]
+describe('Notion 이미지 제공:크기', () => {
+  const image = { url: 'https://images.seojaewan.com/notion/a/1', caption: [] };
+
+  it('이미지 블록과 커버는 폭·높이를 갖는다', () => {
+    const cover = {
+      url: 'https://images.seojaewan.com/notion/cover/a/1',
+      width: 1440,
+      height: 480,
+    };
+    const body = { blocks: [{ type: 'image', ...image, width: 720, height: 405 }], cover };
+    expect(postBodySchema.safeParse(body).success).toBe(true);
+  });
+
+  it('크기를 모르면 폭·높이가 null이다', () => {
+    const body = { blocks: [{ type: 'image', ...image, width: null, height: null }], cover: null };
+    expect(postBodySchema.safeParse(body).success).toBe(true);
+  });
+
+  it('폭·높이가 빠진 이미지 블록은 받지 않는다', () => {
+    expect(
+      postBodySchema.safeParse({ blocks: [{ type: 'image', ...image }], cover: null }).success,
+    ).toBe(false);
   });
 });
 

@@ -8,7 +8,6 @@ import {
   CodeBlock,
   Equation,
   Figure,
-  ImageAsset,
   ListBlock,
   Quote,
   Separator,
@@ -18,6 +17,7 @@ import {
   UnsupportedBlock,
 } from '@seojaewan/design-system';
 
+import { ResponsiveImage } from '@/features/chrome/components/responsive-image/responsive-image';
 import type { ChromeTabPage } from '@/shared/utils/chrome-tabs/chrome-tabs';
 import {
   type CodeToken,
@@ -79,7 +79,7 @@ const BULLETS = ['•', '◦', '▪'] as const;
  * @param props.blocks 본문 블록
  * @param props.resolveLink 링크 주소가 블로그 안의 페이지면 그 페이지를 돌려준다. 외부 주소면 null이다. 없으면 모든 링크가 외부 주소다
  * @param props.onPageOpen 블로그 글 링크를 눌렀을 때. 같은 탭에서 그 페이지로 간다
- * @param props.renderImage 이미지 블록의 이미지(피그마 Figure `image`)를 그린다. 없으면 임시 이미지(배경화면 Bloom)를 그린다. Notion 이미지 제공([[Notion 이미지 제공]])이 9단계라 그 전까지의 자리다
+ * @param props.renderImage 이미지 블록의 이미지(피그마 Figure `image`)를 그린다. 없으면 이미지 서버의 크기별 사본과 크기로 그린다([[Notion 이미지 제공]]). 조립 스토리가 피그마의 그림을 넣을 때 쓴다
  * @param props.onImageOpen 이미지를 눌렀을 때(클릭·Enter·Space). 주면 이미지가 크게 보기 버튼이 된다. 누른 이미지 블록과, 크게 보기를 닫은 뒤 포커스를 돌려줄 버튼을 받는다. 주지 않으면 누를 수 없는 이미지다(조립 스토리)
  * @param props.renderEquation 수식 블록의 수식(피그마 Equation `Formula` 슬롯)을 그린다. 없으면 서버가 KaTeX로 그려 보낸 HTML(`html`)을 넣고, HTML이 없으면 식을 코드 글자로 보인다([[기술 스택:글 본문 처리]]). 조립 스토리가 피그마의 수식 그림을 넣을 때 쓴다
  * @param props.expandedToggleIndexes 처음에 펼쳐 둘 토글 블록의 차례(본문 맨 위 차례). 없으면 모든 토글이 접혀 있다
@@ -89,7 +89,7 @@ export function PostBlocks({
   blocks,
   resolveLink,
   onPageOpen: handlePageOpen,
-  renderImage = renderTemporaryImage,
+  renderImage = renderServedImage,
   onImageOpen,
   renderEquation = renderServerEquation,
   expandedToggleIndexes = [],
@@ -481,13 +481,14 @@ function toRoman(number: number): string {
 }
 
 /**
- * 이미지 블록의 임시 이미지. Notion 이미지 제공([[Notion 이미지 제공]])이 9단계라 그 전까지 배경화면 Bloom을 그린다.
- * 글 본문과 이미지 크게 보기가 같은 이미지를 쓴다.
+ * 이미지 블록의 이미지를 이미지 서버의 크기별 사본(`srcset`)과 크기로 그린다. 대체 글자는 캡션이다.
+ * 본문 칸이 너비를 채우므로 높이는 크기 비율을 따른다(`h-auto`).
+ * @codocs [[Notion 이미지 제공:크기]]
  * @param block 이미지 블록
- * @returns 임시 이미지
+ * @returns 이미지
  */
-export function renderTemporaryImage(block: PostImageBlock): ReactNode {
-  return <ImageAsset name="images/wallpaper-bloom" alt={getPlainText(block.caption)} />;
+function renderServedImage(block: PostImageBlock): ReactNode {
+  return <ResponsiveImage image={block} alt={getPlainText(block.caption)} className="h-auto" />;
 }
 
 /**

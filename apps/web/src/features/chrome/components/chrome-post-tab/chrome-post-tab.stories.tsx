@@ -2,9 +2,11 @@ import pageExport from '@figma/patterns/chrome/page/export.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test';
 
+import { getImageAsset } from '@seojaewan/design-system';
 import { figmaFrame } from '@seojaewan/design-system/story';
 
 import type { ChromeTabPage } from '@/shared/utils/chrome-tabs/chrome-tabs';
+import type { PostBody } from '@/shared/utils/post-body/post-body';
 
 import { ChromePostTab } from './chrome-post-tab';
 import { fullBody, midPost, noHeadingBody, postTabWorkspace } from './story-data';
@@ -195,5 +197,76 @@ export const BodyFailed: Story = {
         '다음 웹 주소에 대한 웹페이지를 찾을 수 없습니다: seojaewan.com/posts/mid',
       ),
     ).toBeVisible();
+  },
+};
+
+// 스토리에는 이미지 서버가 없어 저장소 안의 배경화면 Bloom을 이미지 주소로 둔다. 크기를 아는 이미지, 모르는 이미지, 커버가 있다.
+const bloom = getImageAsset('images/wallpaper-bloom');
+const imageBody: PostBody = {
+  blocks: [
+    {
+      type: 'image',
+      url: bloom.src,
+      width: bloom.width,
+      height: bloom.height,
+      caption: [{ text: '크기를 아는 그림', link: null }],
+    },
+    {
+      type: 'image',
+      url: bloom.src,
+      width: null,
+      height: null,
+      caption: [{ text: '크기를 모르는 그림', link: null }],
+    },
+  ],
+  cover: { url: bloom.src, width: bloom.width, height: bloom.height },
+};
+
+// @codocs [[Notion 이미지 제공:크기]]
+// @codocs [[Notion 이미지 제공:최적화]]
+/** 글의 이미지와 커버를 이미지 서버의 크기별 사본과 크기로 그린다 */
+export const Images: Story = {
+  beforeEach: () => mockPostBodies({ mid: imageBody }),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const sized = await canvas.findByRole('img', { name: '크기를 아는 그림' });
+
+    await step('본문 이미지는 720w·1440w srcset과 sizes, 크기, 늦게 받기로 그린다', async () => {
+      await expect(sized).toHaveAttribute(
+        'srcset',
+        `${bloom.src}?w=720 720w, ${bloom.src}?w=1440 1440w`,
+      );
+      await expect(sized).toHaveAttribute('sizes', '(max-width: 767px) 100vw, 720px');
+      await expect(sized).toHaveAttribute('width', String(bloom.width));
+      await expect(sized).toHaveAttribute('height', String(bloom.height));
+      await expect(sized).toHaveAttribute('loading', 'lazy');
+    });
+
+    await step('크기를 모르는 이미지는 크기 없이 그린다', async () => {
+      const unsized = canvas.getByRole('img', { name: '크기를 모르는 그림' });
+      await expect(unsized).not.toHaveAttribute('width');
+      await expect(unsized).not.toHaveAttribute('height');
+      await expect(unsized).toHaveAttribute('srcset');
+    });
+
+    await step('커버도 제목 위에 같은 방식으로 그린다', async () => {
+      // 커버는 꾸밈 이미지(대체 글자 없음)라 역할이 presentation이다. 다른 꾸밈 아이콘과는 srcset으로 가른다
+      const cover = canvas
+        .getAllByRole('presentation')
+        .find((element) => element.hasAttribute('srcset'));
+      await expect(cover).toHaveAttribute('srcset', sized.getAttribute('srcset'));
+      await expect(cover).toHaveAttribute('width', String(bloom.width));
+      await expect(cover).toHaveAttribute('loading', 'lazy');
+      const title = canvas.getByRole('heading', { level: 1, name: '가운데 글' });
+      await expect(cover?.compareDocumentPosition(title) === Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+        true,
+      );
+    });
+
+    await step('그린 이미지가 깨지지 않고 받아진다', async () => {
+      await waitFor(async () => {
+        await expect(sized instanceof HTMLImageElement && sized.naturalWidth).toBeGreaterThan(0);
+      });
+    });
   },
 };

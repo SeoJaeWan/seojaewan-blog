@@ -17,7 +17,7 @@ import {
   openChromeTab,
 } from '@/shared/utils/chrome-tabs/chrome-tabs';
 import { copyItemLink } from '@/shared/utils/item-link/item-link';
-import type { PostBlock } from '@/shared/utils/post-body/post-body';
+import type { PostBody } from '@/shared/utils/post-body/post-body';
 import type { WindowFrameControls } from '@/shared/utils/window-rules/window-rules';
 import {
   getLatestPosts,
@@ -82,12 +82,12 @@ type ImageViewerState = ChromePageImage & {
 };
 
 /**
- * 서버가 읽어 넘긴 글. posts는 글 색인이고, entryPost는 글 주소로 처음 들어왔을 때 그 글의 본문 블록이다.
+ * 서버가 읽어 넘긴 글. posts는 글 색인이고, entryPost는 글 주소로 처음 들어왔을 때 그 글의 본문(블록과 커버)이다.
  * 서버가 그리는 첫 진입 창이 저장분을 읽기 전에도 글 제목·머리·본문을 그리는 데 쓴다.
  */
 export type ChromePreload = {
   posts: readonly PostSummary[];
-  entryPost: { slug: string; blocks: readonly PostBlock[] } | null;
+  entryPost: { slug: string; body: PostBody } | null;
 };
 
 type ChromeWindowLayerProps = {
@@ -642,7 +642,7 @@ function ChromeTabContent({
           onNavigate={handleNavigate}
           onReload={handleReload}
           onImageOpen={handleImageOpen}
-          preloadedBlocks={entryPost?.slug === post.slug ? entryPost.blocks : undefined}
+          preloadedBody={entryPost?.slug === post.slug ? entryPost.body : undefined}
         />
       );
     case 'not-found':

@@ -802,6 +802,12 @@ export default defineConfig(
       'no-restricted-imports': restrictedImports(webImportPatterns),
     },
   },
+  // @codocs [[Notion 이미지 제공:최적화]]
+  // 글 이미지는 이미지 서버가 미리 만든 WebP 사본을 `srcset`으로 그린다. `next/image` 최적화는 쓰지 않기로 했다.
+  {
+    files: ['apps/web/src/features/chrome/components/responsive-image/responsive-image.tsx'],
+    rules: { '@next/next/no-img-element': 'off' },
+  },
   // @codocs [[저장소 구성:구성]]
   // apps/images: 블로그와 서로 import하지 않는다. 주소 모양이 맞는지는 저장소 루트 contracts/의 시험이 두 앱을 함께 불러 본다.
   {
