@@ -9,8 +9,9 @@ _codocs:
 구성: |
   - `apps/web`: 배포 대상인 Next.js 블로그 앱. `Dockerfile`과 `Jenkinsfile`을 갖는다([[배포 환경:배포(CD)]]). 피그마 조립에 대응하는 앱 컴포넌트와 그 스토리를 담는 Storybook도 있다. `src`는 `app → shell → features → shared` 층으로 나눈다([[저장소 구성:앱 폴더 구조]]).
   - `apps/web/scripts/`: Node로 바로 도는 개발 스크립트(예: Notion fixture 받기). `../src/`를 import할 수 있다. 이 폴더에만 ESLint 예외가 있다.
-  - `apps/images`: 배포 대상인 이미지 서버([[Notion 이미지 제공]]). Firebat(미니 PC)에서 Docker 컨테이너로 돌고 `Dockerfile`과 `Jenkinsfile`을 갖는다. 블로그와 서로 import하지 않는다. 알림은 local-server의 notify로 보내기만 하므로 알림 앱은 이 저장소에 없다([[알림 프로세스]]).
+  - `apps/images`: 배포 대상인 이미지 서버([[Notion 이미지 제공]]). Firebat(미니 PC)에서 Docker 컨테이너로 돌고 `Dockerfile`과 `Jenkinsfile`을 갖는다. 빌드 없이 Node가 `src/main.ts`를 바로 실행한다. 블로그와 서로 import하지 않는다. 알림은 local-server의 notify로 보내기만 하므로 알림 앱은 이 저장소에 없다([[알림 프로세스]]).
   - `packages/design-system`: 피그마 디자인 시스템과 대응하는 토큰과 컴포넌트. 공개 이름은 `@seojaewan/design-system`이다. 내부 구조는 [[저장소 구성:디자인 시스템 패키지 구조]]에서 정한다.
+  - `contracts/`: 서로 import하지 않는 앱(블로그와 이미지 서버) 사이의 계약(이미지 주소와 버전)을 두 앱을 함께 불러 확인하는 시험이다. vitest project는 `unit-repo-contracts`다.
   - `tools/figma-plugin`: 구조를 검사하고 변형 그림·자산·토큰·애니메이션을 내보내는 피그마 개발용 플러그인([[피그마 연동:피그마 플러그인]]).
   - `tools/figma-parity`: 피그마 그림과 Storybook 스토리를 캡처해 캡처 표와 PR 댓글을 만드는 도구([[피그마 연동:CI]]). 디자인 시스템과 앱의 Storybook을 함께 다루므로 어느 한 패키지에 두지 않는다.
   - `tools/scenario-cases`: E2E 행위 정의에서 시나리오 케이스 화면을 만들어 띄우고, 케이스를 실행해 Trace Viewer로 여는 도구([[테스트 작성 규칙:E2E]]).
@@ -194,6 +195,7 @@ _codocs:
   - 스토리는 경계의 예외다. 어느 기능의 안쪽이든 import한다. 그 대신 앱 코드는 스토리 파일과 스토리 데이터·도우미(`story-*`)를 import하지 않는다. 테스트는 같은 기능(또는 `shell/`)의 칸 안쪽과 부모를 import할 수 있다.
   - 기능과 shell은 `shared/` 안 무엇이든 대상 파일(`@/shared/<종류>/<대상>/<대상>`)로 바로 import한다.
   - `shared/` 안은 종류(`components`, `hooks`, `utils`, `stores`) 사이에 방향을 두지 않고 서로 자유롭게 import하며, 순환 import만 막는다. 공용 훅이 저장소를 감싸는 일이 흔하고, 방향보다 순환이 실제 위험이기 때문이다.
+  - `contracts/`의 시험만 두 앱(`apps/web`, `apps/images`)을 함께 import한다.
   - `tools/`의 도구는 패키지의 공개 코드와 빌드 결과(Storybook 정적 빌드)만 쓰고, 다른 패키지는 `tools/`를 import하지 않는다. 플러그인은 토큰 변환 함수(`packages/design-system/scripts/tokens/`)를 함께 묶어 쓴다. 예외: `tools/scenario-cases`는 E2E 행위 정의를 읽는 것이 목적이라([[저장소 구성:구성]]) 앱의 읽기 함수(`apps/web/e2e/behaviors/load-behaviors.ts`)를 Node로 바로 import한다.
 
   `eslint-plugin-boundaries`가 강제한다. 칸은 깊이별로 설정 코드가 요소를 만든다. 스토리 파일 import는 `no-restricted-imports`가 막는다. 층 사이의 순환은 이 방향 규칙이 막는다.
