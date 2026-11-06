@@ -85,7 +85,7 @@ _codocs:
   | 1 | CI 이전: 저장소 비공개 전환, self-hosted runner 설치, 워크플로 `runs-on` 변경, 시나리오 케이스 보고서를 미니 PC로 옮기고 Cloudflare 터널과 Access 뒤에서 열기, 캡처 표 댓글 그림이 비공개 저장소에서 보이는지 PR로 시험([[배포 환경:CI]]) | 미니 PC. 비공개 전환과 Cloudflare 설정은 사람 |
   | 2 | (완료 2026-11-06, PR #659) 블로그 fixture와 변환: Notion API 응답 JSON fixture, 가짜 Notion 클라이언트, `CONTENT_SOURCE`([[콘텐츠 원천:읽는 곳]]), 환경 변수 검증(`CONTENT_SOURCE`·`NOTION_TOKEN`), Notion 읽기 클라이언트(API `2025-09-03`), 세 묶음 변환 | 미니 PC. fixture를 받을 시험용 Notion 페이지는 사람이 만들었다 |
   | 3 | (완료 2026-11-06, PR #662) 첫 진입 창 SSR([[SEO와 공유 미리보기:첫 HTML]]) | 미니 PC |
-  | 4 | Notion 연결과 SEO: 세 묶음 주소, 웹훅 라우트, 웹훅·알림 환경 변수, 메타·공유 이미지·sitemap·robots, 이미지 `srcset`과 크기. 2번에서 넘어온 것: 캐시 태그와 `revalidateTag`, `/projects`·`/about` 라우트와 작업 공간의 Project·About 폴더 연결, 이미지 `width`·`height` | 미니 PC |
+  | 4 | Notion 연결과 SEO: 세 묶음 주소, 웹훅 라우트, 웹훅·알림 환경 변수, 메타·공유 이미지·sitemap·robots, 이미지 `srcset`과 크기. 2번에서 넘어온 것: 캐시 태그와 `revalidateTag`, `/projects`·`/about` 라우트와 작업 공간의 Project·About 폴더 연결, 이미지 `width`·`height`. 4a(Notion 캐시, 웹훅, 세 묶음 주소)는 완료(2026-11-06, PR #665), 4c(이미지 `srcset`과 크기)는 완료(PR #664), 4b(SEO)는 진행 중 | 미니 PC |
   | 5 | (완료 2026-11-06, PR #661) 이미지 서버 `apps/images`(이 저장소): 저장, WebP 720·1440, 크기 헤더([[Notion 이미지 제공]]). 2~4와 동시에 할 수 있다. 실제 Notion 이미지는 7번 배포 때 운영 토큰으로 확인한다 | 미니 PC |
   | 6 | (선행 조건, 완료 2026-11-06) local-server의 notify 배포와 카카오 연결, 블로그·이미지 서버·젠킨스용 `ALERT_SECRET` 발급. 4번 웹훅 실패 알림과 7번 배포 알림을 실제로 확인할 수 있다([[알림 프로세스:선행 조건]]) | local-server 저장소 |
   | 7 | 배포 파이프라인: Dockerfile(블로그와 이미지 서버 두 개, 블로그는 standalone), 젠킨스와 Access, Jenkinsfile, 컨테이너 배포와 health check([[배포 환경:배포(CD)]]) | 미니 PC |
