@@ -8,6 +8,7 @@ _codocs:
   패키지를 나눈 근거는 [[기술 스택:저장소 구성]]에서 확인한다.
 구성: |
   - `apps/web`: 배포 대상인 Next.js 블로그 앱. `Dockerfile`과 `Jenkinsfile`을 갖는다([[배포 환경:배포(CD)]]). 피그마 조립에 대응하는 앱 컴포넌트와 그 스토리를 담는 Storybook도 있다. `src`는 `app → shell → features → shared` 층으로 나눈다([[저장소 구성:앱 폴더 구조]]).
+  - `apps/web/scripts/`: Node로 바로 도는 개발 스크립트(예: Notion fixture 받기). `../src/`를 import할 수 있다. 이 폴더에만 ESLint 예외가 있다.
   - `apps/images`: 배포 대상인 이미지 서버([[Notion 이미지 제공]]). Firebat(미니 PC)에서 Docker 컨테이너로 돌고 `Dockerfile`과 `Jenkinsfile`을 갖는다. 블로그와 서로 import하지 않는다. 알림은 local-server의 notify로 보내기만 하므로 알림 앱은 이 저장소에 없다([[알림 프로세스]]).
   - `packages/design-system`: 피그마 디자인 시스템과 대응하는 토큰과 컴포넌트. 공개 이름은 `@seojaewan/design-system`이다. 내부 구조는 [[저장소 구성:디자인 시스템 패키지 구조]]에서 정한다.
   - `tools/figma-plugin`: 구조를 검사하고 변형 그림·자산·토큰·애니메이션을 내보내는 피그마 개발용 플러그인([[피그마 연동:피그마 플러그인]]).

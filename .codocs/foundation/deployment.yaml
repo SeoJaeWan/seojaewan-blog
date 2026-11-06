@@ -34,6 +34,8 @@ CI: |
   - 워크플로의 `runs-on`은 `[self-hosted, linux]`로 바꾼다. 워크플로, PR 검사, 병합 조건은 바뀌지 않는다.
   - 비공개 저장소에서는 시나리오 케이스 보고서를 GitHub Pages로 올리지 못한다(무료 계정). 보고서는 미니 PC로 옮겨 Cloudflare 터널과 Access 뒤에서 연다([[테스트 작성 규칙:E2E]]). 캡처 표 댓글의 그림(`parity-report`, `parity-captures` 브랜치)은 비공개 전환 뒤 로그인 없이는 404다. GitHub에 로그인한 브라우저에서는 보인다(그림이 많으면 느리게 뜬다). 2026-11-06에 PR #654로 확인했다([[피그마 연동:CI]]).
   - 한 머신에서 runner 셋이 동시에 job을 돌린다. E2E 서버 포트는 runner 번호로 나눈다(`4100 + n`, `scripts/runner-port.mjs`). 3000번은 블로그 컨테이너 자리라 쓰지 않는다.
+  - 워크플로는 `CONTENT_SOURCE=fixture`를 준다([[콘텐츠 원천:읽는 곳]]).
+  - 이전에는 `E2E_PORT`가 turbo에서 걸러져 runner별 포트가 실제로 적용되지 않았다. PR #659부터 적용된다.
   - pnpm은 job마다 `runner.temp`에 설치한다. 기본 위치를 runner끼리 함께 쓰면 서로 덮어쓰기 때문이다. Actions의 pnpm 캐시는 쓰지 않는다. 저장소가 머신에 남아 있기 때문이다.
 도메인과 캐시: |
   - Cloudflare 터널은 Cloudflare DNS를 쓰는 도메인에서만 쓸 수 있으므로 `seojaewan.com`은 Cloudflare DNS에 둔다.
@@ -65,6 +67,7 @@ CI: |
   `ALERT_SECRET`은 사람이 넣는 값이 아니다. 배포 때 젠킨스가 Firebat의 local-server `.local/credentials/notify/<이름>.secret`(root, 권한 600)을 읽어 컨테이너에 넣는다. 서비스 이름은 블로그 `blog`, 이미지 서버 `images`, 젠킨스 `jenkins`다([[알림 프로세스]]). 사람이 넣는 값은 Notion 토큰과 `NOTION_WEBHOOK_SECRET`이다.
 
   - `CONTENT_SOURCE`가 `notion`이면 `NOTION_TOKEN`이 필수다(Zod `refine`). 환경 변수는 검증 모듈 하나에서만 읽는다([[코드 작성 규칙:React와 Next.js]]). 이미지 서버 주소와 Notion 데이터베이스 ID 세 개는 환경 변수가 아니라 코드 상수다.
+  - turbo가 strict env 모드라, 작업에 넘길 변수를 `turbo.json`에 적어야 한다. `build`에는 `CONTENT_SOURCE`·`NOTION_TOKEN`, `test:e2e`에는 `CONTENT_SOURCE`·`E2E_PORT`, `dev`에는 `CONTENT_SOURCE`·`NOTION_TOKEN`이다.
   - 미니 PC: systemd `EnvironmentFile` 또는 컨테이너 env 파일에 두고 파일 권한을 600으로 한다. 이것이 운영의 기준이다.
   - 로컬: `apps/web/.env.local`에 직접 둔다(Vercel이 없으므로 `vercel env pull`은 없다).
   - 토큰의 종류와 권한은 [[콘텐츠 원천:연동 토큰]]에서 정한다.
