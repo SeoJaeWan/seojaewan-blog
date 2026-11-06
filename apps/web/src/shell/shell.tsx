@@ -7,6 +7,8 @@ import { useBrowserAddressSync } from '@/features/chrome/use-browser-address-syn
 import { DesktopIconsLayer } from '@/features/desktop/desktop-icons-layer';
 import { StartMenuLayer } from '@/features/start-menu/start-menu-layer';
 import { TaskbarLayer } from '@/features/taskbar/taskbar-layer';
+import { focusFrontWindow } from '@/features/window/window-focus';
+import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
 import { hydrateWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import { createChromeContent } from '@/shared/utils/chrome-tabs/chrome-tabs';
@@ -25,7 +27,7 @@ import { type InitialPage, useInitialWindow } from './hooks/use-initial-window/u
  * 다시 시작하면 데스크톱 하위 트리의 `key`(세대)를 바꿔 새로고침 없이 다시 마운트한다. 그래서 저장소 밖의 지역 상태도 사라진다.
  * 세대와 다시 시작 단계는 다시 마운트하는 트리 바깥의 저장소(`useRestartStore`)가 가져 다시 마운트한 뒤에도 남는다.
  * 다시 시작 단계(`idle`이 아닌 동안) 데스크톱 하위 트리는 `inert`라 재부팅 화면 뒤에서 키보드·보조 기술로 닿지 않는다.
- * 다시 시작이 끝나면 포커스가 사라진 자리(다시 마운트한 트리) 대신 바탕화면(`main`)으로 옮긴다.
+ * 재부팅 화면이 걷히면 포커스를 맨 앞 창, 창이 없으면 바탕화면(`main`)으로 옮긴다. 다시 시작한 뒤에는 창이 모두 닫혀 바탕화면이다.
  * 서버가 읽은 글 색인을 받아, 마운트한 뒤 작업 공간 저장소가 브라우저 저장분을 읽고 글 색인과 맞추게 한다.
  * 그래서 서버 HTML과 첫 클라이언트 렌더는 저장분 없이 초기 구조로 같게 그리고(수화 불일치 없음), 저장된 배치는 그 뒤에 보인다.
  * @codocs [[다시 시작:초기화 방법]]
@@ -37,6 +39,9 @@ import { type InitialPage, useInitialWindow } from './hooks/use-initial-window/u
  * @codocs [[창 동작:브라우저 주소]]
  * @codocs [[창 동작:새로고침과 첫 진입]]
  * @codocs [[SEO와 공유 미리보기:첫 HTML]]
+ * 사이트를 처음 불러오면 재부팅 화면이 서버 HTML에서부터 덮고 있다(`booting`). 화면 크기를 알고(수화한 뒤 작업 영역) 첫 창을 연 뒤에
+ * 걷어, 서버가 PC 모양으로 그린 화면이 기기 모양으로 바뀌는 모습을 가린다. 서버 HTML의 바탕화면에는 `inert`를 달지 않는다.
+ * 스크립트 없이 읽는 검색 엔진·보조 기술이 내용을 그대로 읽어야 하기 때문이다. 수화한 뒤 걷힐 때까지만 `inert`다.
  * @param props 컴포넌트 속성
  * @param props.posts 서버(`content/`)가 읽은 세 묶음(Blog·Project·About)의 색인
  * @param props.initialPage 주소로 처음 들어왔을 때 열어 둘 Chrome 페이지(글 주소의 항목과 그 본문, 찾을 수 없음). `/`이면 없다
@@ -44,6 +49,8 @@ import { type InitialPage, useInitialWindow } from './hooks/use-initial-window/u
 export function Shell({ posts, initialPage: initialPageProp }: ShellProps): JSX.Element {
   const generation = useRestartStore((state) => state.generation);
   const phase = useRestartStore((state) => state.phase);
+  const finishBooting = useRestartStore((state) => state.finishBooting);
+  const isScreenKnown = useWorkArea() !== null;
   const mainRef = useRef<HTMLElement>(null);
   const wasRestartingRef = useRef(false);
   const isRestarting = phase !== 'idle';
@@ -80,10 +87,20 @@ export function Shell({ posts, initialPage: initialPageProp }: ShellProps): JSX.
   );
 
   useEffect(
-    /** 다시 시작이 끝나면 포커스를 바탕화면으로 옮긴다. */
+    /** 화면 크기를 알고 첫 창을 열었으면 처음 불러올 때 덮은 재부팅 화면을 걷는다. 처음 불러오는 중이 아니면 저장소가 무시한다. */
     () => {
-      if (wasRestartingRef.current && !isRestarting) {
-        mainRef.current?.focus();
+      if (isScreenKnown && !isInitialWindowPending) {
+        finishBooting();
+      }
+    },
+    [isScreenKnown, isInitialWindowPending, finishBooting],
+  );
+
+  useEffect(
+    /** 재부팅 화면이 걷히면 포커스를 맨 앞 창(없으면 바탕화면)으로 옮긴다. */
+    () => {
+      if (wasRestartingRef.current && !isRestarting && mainRef.current !== null) {
+        focusFrontWindow(mainRef.current);
       }
       wasRestartingRef.current = isRestarting;
     },
@@ -99,7 +116,7 @@ export function Shell({ posts, initialPage: initialPageProp }: ShellProps): JSX.
     >
       <ShellDesktop
         key={generation}
-        isInert={isRestarting}
+        isInert={isRestarting && isScreenKnown}
         chromePreload={chromePreload}
         entryWindow={entryWindow}
       />
@@ -127,7 +144,7 @@ type ShellDesktopProps = {
  * @codocs [[저장소 구성:앱 폴더 구조]]
  * @codocs [[기술 스택:상태 관리]]
  * @param props 컴포넌트 속성
- * @param props.isInert 다시 시작하는 중이라 데스크톱 하위 트리를 조작할 수 없게 할지
+ * @param props.isInert 재부팅 화면이 덮고 있어 데스크톱 하위 트리를 조작할 수 없게 할지
  * @param props.chromePreload 서버가 읽어 넘긴 글 색인과 처음 들어온 글의 본문. Chrome 창이 쓴다
  * @param props.entryWindow 서버가 그릴 첫 진입 창. 저장소에 창이 열리기 전에만 있다
  * @returns 데스크톱 하위 트리

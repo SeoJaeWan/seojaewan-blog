@@ -18,6 +18,7 @@ import { getFrontWindowId, getRemainingSnapZones } from '@/shared/utils/window-r
 
 import { WindowSnapAssist } from './components/window-snap-assist/window-snap-assist';
 import { WindowView } from './components/window-view/window-view';
+import { focusFront } from './window-focus';
 
 type WindowLayerProps = {
   renderWindow: RenderWindow;
@@ -312,40 +313,6 @@ function isFocusLost(layer: HTMLElement, leftId: string | null = null): boolean 
     (leftId !== null &&
       layer.querySelector(`[data-window-id="${leftId}"]`)?.contains(active) === true)
   );
-}
-
-/**
- * 맨 앞 창으로 포커스를 옮긴다. 창이 없으면 바탕화면(`main`)이다. 이미 창 안에 있으면 그대로 둔다.
- * 메뉴가 열려 있으면 바깥이 `inert`라 옮겨지지 않으므로, 메뉴가 닫히며 포커스를 돌려줄 때 다시 옮긴다.
- * @codocs [[접근성:포커스]]
- * @param layer 창 층 요소
- * @param id 맨 앞 창 id. 없으면 null
- * @returns 다시 옮기기를 기다리면 그것을 지우는 정리 함수
- */
-function focusFront(layer: HTMLElement, id: string | null): (() => void) | undefined {
-  if (id === null) {
-    layer.closest('main')?.focus();
-    return undefined;
-  }
-  const region = layer.querySelector<HTMLElement>(`[data-window-id="${id}"]`);
-  if (region === null || region.contains(document.activeElement)) {
-    return undefined;
-  }
-  const target = region.querySelector<HTMLElement>('[data-window-focus]') ?? region;
-  target.focus({ preventScroll: true });
-  if (document.activeElement === target) {
-    return undefined;
-  }
-
-  /** 메뉴가 포커스를 돌려주면 창으로 옮긴다. */
-  function handleFocusIn(): void {
-    target.focus({ preventScroll: true });
-  }
-
-  document.addEventListener('focusin', handleFocusIn, { once: true });
-  return () => {
-    document.removeEventListener('focusin', handleFocusIn);
-  };
 }
 
 /**
