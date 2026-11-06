@@ -147174,10 +147174,10 @@
         "is_archived": false,
         "is_locked": false,
         "last_edited_by": {
-          "id": "410c97ba-fd89-8129-931f-0027c186804c",
+          "id": "16a61bad-d48d-4d46-9b5d-3565362e8c57",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-06T07:03:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-80e5-a934-000b36308178",
@@ -147203,9 +147203,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "2025년이 끝나가고 있습니다. 올해는 개발자로서 유난히 변화가 많았던 한 해였습니다.",
+                "plain_text": "2025년이 끝나가고 있습니다. 올해는 개발자로서 유난히 변화가 많았던 한 해였습니다",
                 "text": {
-                  "content": "2025년이 끝나가고 있습니다. 올해는 개발자로서 유난히 변화가 많았던 한 해였습니다.",
+                  "content": "2025년이 끝나가고 있습니다. 올해는 개발자로서 유난히 변화가 많았던 한 해였습니다",
                   "link": null
                 },
                 "type": "text"
