@@ -23,6 +23,7 @@ type WindowLayerProps = {
   renderWindow: RenderWindow;
   getWindowTitle: (window: OpenWindow) => string;
   renderWindowIcon: (window: OpenWindow) => ReactNode;
+  entryWindow?: OpenWindow | null;
 };
 
 /** 스냅한 뒤 남은 칸을 다른 창으로 채우는 제안(Snap Assist)의 진행. zones는 아직 채우지 않은 칸이며 앞에서부터 하나씩 제안한다. placedIds는 이번 레이아웃에 이미 놓은 창이며 제안에서 뺀다. */
@@ -62,16 +63,21 @@ type WindowSnapshot = Pick<WindowState, 'windows' | 'order'>;
  * @codocs [[창 동작:창 조작]]
  * @codocs [[스냅:끌어서 스냅]]
  * @codocs [[스냅:Snap Assist]]
+ * 주소로 처음 들어왔으면 저장소에 창이 열리기 전(서버 HTML과 수화 첫 렌더)에는 서버가 그린 첫 창(`entryWindow`)을 맨 앞 창으로 그린다.
+ * 저장소가 같은 id의 창을 열면 그 창으로 이어 그린다.
  * @codocs [[접근성:포커스]]
+ * @codocs [[창 동작:새로고침과 첫 진입]]
  * @param props 컴포넌트 속성
  * @param props.renderWindow 앱 창을 그린다. 앱마다 다른 창 조립은 쓰는 곳이 고른다
  * @param props.getWindowTitle 창 제목을 정한다. 창 영역의 접근성 이름이 된다
  * @param props.renderWindowIcon 창 앱 아이콘(16px)을 그린다. Snap Assist 카드에 쓴다
+ * @param props.entryWindow 서버가 그린 첫 진입 창. 저장소에 창이 하나도 열리지 않은 동안만 그린다
  */
 export function WindowLayer({
   renderWindow,
   getWindowTitle,
   renderWindowIcon,
+  entryWindow = null,
 }: WindowLayerProps): JSX.Element {
   const windows = useWindowStore((state) => state.windows);
   const order = useWindowStore((state) => state.order);
@@ -96,9 +102,11 @@ export function WindowLayer({
   const frontId = getFrontWindowId({ windows, order });
   const previousFrontIdRef = useRef(frontId);
   const stack = getStackOrder(order, current);
+  const pendingEntry = entryWindow !== null && order.length === 0 ? entryWindow : null;
   const entries = [
-    ...Object.values(windows).map((item) => ({ window: item, isClosing: false })),
-    ...current.map((item) => ({ window: item.window, isClosing: true })),
+    ...Object.values(windows).map((item) => ({ window: item, isClosing: false, isEntry: false })),
+    ...current.map((item) => ({ window: item.window, isClosing: true, isEntry: false })),
+    ...(pendingEntry === null ? [] : [{ window: pendingEntry, isClosing: false, isEntry: true }]),
   ].sort((left, right) => left.window.serial - right.window.serial);
 
   /**
@@ -250,8 +258,9 @@ export function WindowLayer({
             window={entry.window}
             title={getWindowTitle(entry.window)}
             isClosing={entry.isClosing}
-            isActive={!entry.isClosing && entry.window.id === frontId}
-            zIndex={stack.indexOf(entry.window.id) + 1}
+            isActive={entry.isEntry || (!entry.isClosing && entry.window.id === frontId)}
+            isEntry={entry.isEntry}
+            zIndex={entry.isEntry ? 1 : stack.indexOf(entry.window.id) + 1}
             device={device}
             workArea={workArea}
             renderWindow={renderWindow}

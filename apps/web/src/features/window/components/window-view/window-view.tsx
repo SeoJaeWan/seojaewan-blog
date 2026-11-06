@@ -29,6 +29,7 @@ type WindowViewProps = {
   title: string;
   isClosing: boolean;
   isActive: boolean;
+  isEntry?: boolean;
   zIndex: number;
   device: DeviceVariant;
   workArea: WindowWorkArea | null;
@@ -79,15 +80,19 @@ const windowMotionClassNames: Readonly<Record<WindowMotion, string>> = {
  * - 제목 표시줄을 끌어 옮기고, 떠 있는 창은 가장자리·모서리 핸들로 크기를 조절한다(`useWindowDrag`). 끝으로 끌어 놓으면 스냅·최대화한다.
  *   최대화·스냅한 창은 크기를 조절하지 않는다. 모바일 창은 늘 전체화면이라 끌기·크기 조절이 없다.
  * 위치는 실행 중 값이라 인라인 left·top·width·height로 주고 `transform`은 쓰지 않는다(모션 클래스의 translate·scale과 겹치지 않게).
+ * 서버가 그린 첫 진입 창(`isEntry`)은 아직 숫자 자리가 없어 `data-window-entry`를 달고 CSS(`globals.css`)가 기본 크기·가운데(모바일은
+ * 전체화면)에 놓는다. 저장소에 같은 창이 열리면 같은 요소에 숫자 자리가 들어간다. 그동안은 끌거나 크기를 조절하지 않는다.
  * @codocs [[창 동작:창 조작]]
  * @codocs [[피그마 연동:모션 클래스]]
  * @codocs [[스냅:스냅된 창]]
  * @codocs [[창 동작:모바일]]
+ * @codocs [[창 동작:새로고침과 첫 진입]]
  * @param props 컴포넌트 속성
  * @param props.window 그릴 창. 닫힌 창은 저장소에서 지우기 직전의 모습이다
  * @param props.title 창 제목. 창 영역의 접근성 이름이 된다
  * @param props.isClosing 저장소에서 지워져 닫히는 애니메이션만 남은 창인지
  * @param props.isActive 맨 앞 창인지
+ * @param props.isEntry 서버가 그린 첫 진입 창이라 저장소에 아직 없는지. CSS가 자리를 정한다
  * @param props.zIndex 쌓는 차례. 클수록 위다
  * @param props.device 화면 방식. 모바일은 창이 늘 작업 영역을 채운다
  * @param props.workArea 작업 영역 크기. 최대화·스냅한 창의 자리를 구한다. 마운트 전에는 null이다
@@ -101,6 +106,7 @@ export function WindowView({
   title,
   isClosing,
   isActive,
+  isEntry = false,
   zIndex,
   device,
   workArea,
@@ -136,7 +142,7 @@ export function WindowView({
     window: target,
     rect,
     workArea,
-    isEnabled: !isMobile && !isClosing && !isMinimized,
+    isEnabled: !isMobile && !isClosing && !isMinimized && !isEntry,
     onSnapPreviewChange: (snapTarget) => {
       onSnapPreviewChange(id, snapTarget);
     },
@@ -145,7 +151,7 @@ export function WindowView({
     },
     rememberSnapRect,
   });
-  const isResizable = !isMobile && !isClosing && target.placement === 'default';
+  const isResizable = !isMobile && !isClosing && !isEntry && target.placement === 'default';
 
   // 최소화에서 돌아오는 것인지 기억한다. 처음 나타날 때만 열기 모션이다.
   const [isRestoring, setIsRestoring] = useState(false);
@@ -240,6 +246,7 @@ export function WindowView({
       data-window-id={id}
       data-window-state={isActive ? 'active' : 'inactive'}
       data-window-motion={motion}
+      data-window-entry={isEntry ? app : undefined}
       hidden={presence.isHidden}
       inert={presence.isHidden || isClosing}
       onPointerDown={handlePointerDown}
@@ -249,7 +256,7 @@ export function WindowView({
         isMobile && 'inset-spacing-none',
         windowMotionClassNames[motion],
       )}
-      style={isMobile ? { zIndex } : { zIndex, left: x, top: y, width, height }}
+      style={isMobile || isEntry ? { zIndex } : { zIndex, left: x, top: y, width, height }}
     >
       {/* 최대화·스냅 FLIP 전용 요소. 모션 클래스는 classList로만 붙여 바깥의 열기·최소화 클래스와 겹치지 않는다.
           앱 창은 이 자리를 채운다 */}

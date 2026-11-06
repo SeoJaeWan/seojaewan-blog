@@ -218,7 +218,7 @@ export function openWindow(
   content: WindowContent | null = null,
 ): { state: WindowState; id: string } {
   const serial = state.lastSerial + 1;
-  const id = `window-${String(serial)}`;
+  const id = getWindowId(serial);
   const defaultSize = getDefaultWindowSize(app);
   const width = Math.min(defaultSize.width, workArea.width);
   const height = Math.min(defaultSize.height, workArea.height);
@@ -259,6 +259,39 @@ export function openWindow(
       order: [...state.order, id],
       lastSerial: serial,
     },
+  };
+}
+
+/**
+ * 연 차례로 창 id를 만든다.
+ * @param serial 연 차례(1부터)
+ * @returns 창 id
+ */
+function getWindowId(serial: number): string {
+  return `window-${String(serial)}`;
+}
+
+/**
+ * 주소로 처음 들어왔을 때 서버가 그리는 첫 창이다. 창이 없는 처음 상태에서 `openWindow`로 여는 창과 id·차례·내용이 같아,
+ * 수화한 뒤 그 창을 저장소에 열면 창 층이 같은 요소를 그대로 이어 그린다(다시 마운트하지 않아 열기 모션도 다시 돌지 않는다).
+ * 서버는 화면 크기를 몰라 자리를 숫자로 정할 수 없으므로 bounds는 0이고, 창 층이 CSS로 기본 크기·가운데(모바일은 전체화면)에 놓는다.
+ * @codocs [[창 동작:새로고침과 첫 진입]]
+ * @param app 앱
+ * @param content 창 내용
+ * @returns 첫 창
+ */
+export function createEntryWindow(app: WindowApp, content: WindowContent): OpenWindow {
+  const serial = INITIAL_WINDOW_STATE.lastSerial + 1;
+  return {
+    id: getWindowId(serial),
+    app,
+    serial,
+    bounds: { x: 0, y: 0, width: 0, height: 0 },
+    placement: 'default',
+    snapZone: null,
+    previous: null,
+    isMinimized: false,
+    content,
   };
 }
 
