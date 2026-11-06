@@ -1,5 +1,5 @@
 // @codocs [[저장소 구성:앱 폴더 구조]]
-// 화면 전체 동작 스토리(Features/Shell/Shell)가 서버 대신 넘기는 글 색인이다. 앱의 임시 글 원천과 같은 글 이름을 쓴다.
+// 화면 전체 동작 스토리(Features/Shell/Shell)가 서버 대신 넘기는 글 색인이다. 앱의 blog fixture(`content/notion-fixture`)와 같은 글 이름을 쓴다.
 
 /** 동작 스토리의 글 색인 */
 export const SHELL_STORY_POSTS = [
