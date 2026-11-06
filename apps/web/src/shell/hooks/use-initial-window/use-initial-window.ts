@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
-import { createChromeContent } from '@/shared/utils/chrome-tabs/chrome-tabs';
+import { type ChromeTabPage, createChromeContent } from '@/shared/utils/chrome-tabs/chrome-tabs';
+import type { PostRef } from '@/shared/utils/post-address/post-address';
 import type { PostBody } from '@/shared/utils/post-body/post-body';
 
-/** 주소로 처음 들어왔을 때 열어 둘 Chrome 페이지. 글 주소면 그 글과 서버가 읽은 본문, 해당하는 글이 없으면 찾을 수 없음 화면이다 */
-export type InitialPage = { kind: 'post'; slug: string; body: PostBody } | { kind: 'not-found' };
+/** 주소로 처음 들어왔을 때 열어 둘 Chrome 페이지. 글 주소(세 묶음)면 그 항목과 서버가 읽은 본문, 해당하는 항목이 없으면 찾을 수 없음 화면이다 */
+export type InitialPage = ({ kind: 'post'; body: PostBody } & PostRef) | { kind: 'not-found' };
 
 // 찾을 수 없음 화면에 보일 주소의 호스트다(주소창의 글 주소와 같다).
 const BLOG_HOST = 'seojaewan.com';
@@ -33,9 +34,9 @@ export function useInitialWindow(initialPage: InitialPage | null): boolean {
       if (!isPending || workArea === null) {
         return;
       }
-      const page =
+      const page: ChromeTabPage =
         initialPage.kind === 'post'
-          ? { kind: 'post' as const, slug: initialPage.slug }
+          ? { kind: 'post', collection: initialPage.collection, slug: initialPage.slug }
           : {
               kind: 'not-found' as const,
               url: `${BLOG_HOST}${window.location.pathname}`,

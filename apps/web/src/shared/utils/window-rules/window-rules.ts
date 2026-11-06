@@ -10,6 +10,7 @@ import {
   navigateChromeTab,
   openChromeTab,
 } from '@/shared/utils/chrome-tabs/chrome-tabs';
+import type { PostRef } from '@/shared/utils/post-address/post-address';
 
 /** 창을 여는 앱. 작업 표시줄에 고정된 앱(File Explorer, Chrome)이다 */
 export type WindowApp = 'file-explorer' | 'chrome';
@@ -302,18 +303,18 @@ export function createEntryWindow(app: WindowApp, content: WindowContent): OpenW
  * @codocs [[창 동작:열기 규칙]]
  * @codocs [[창 동작:모바일]]
  * @param state 지금 상태
- * @param slug 글 slug
+ * @param post 글(묶음과 slug)
  * @param workArea 작업 영역 크기(새 창을 열 때)
  * @param isSameTab 새 탭 대신 고른 탭에서 열지(모바일)
  * @returns 새 상태와 글을 연 창의 id
  */
 export function openPostInChrome(
   state: WindowState,
-  slug: string,
+  post: PostRef,
   workArea: WindowWorkArea,
   isSameTab = false,
 ): { state: WindowState; id: string } {
-  const page: ChromeTabPage = { kind: 'post', slug };
+  const page: ChromeTabPage = { kind: 'post', ...post };
   const targetId = state.order.findLast((id) => state.windows[id]?.app === 'chrome');
   const target = targetId === undefined ? undefined : state.windows[targetId];
   if (target?.content.app !== 'chrome') {

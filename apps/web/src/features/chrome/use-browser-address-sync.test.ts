@@ -25,7 +25,7 @@ describe('창 동작:브라우저 주소', () => {
       useBrowserAddressSync();
     });
     act(() => {
-      useWindowStore.getState().openPost('rsc', WORK_AREA);
+      useWindowStore.getState().openPost({ collection: 'blog', slug: 'rsc' }, WORK_AREA);
     });
     expect(window.location.pathname).toBe('/posts/rsc');
   });
@@ -35,7 +35,7 @@ describe('창 동작:브라우저 주소', () => {
       useBrowserAddressSync();
     });
     act(() => {
-      useWindowStore.getState().openPost('rsc', WORK_AREA);
+      useWindowStore.getState().openPost({ collection: 'blog', slug: 'rsc' }, WORK_AREA);
       useWindowStore.getState().open('file-explorer', WORK_AREA);
     });
     expect(window.location.pathname).toBe('/');
@@ -52,7 +52,7 @@ describe('창 동작:브라우저 주소', () => {
       useBrowserAddressSync();
     });
     act(() => {
-      useWindowStore.getState().openPost('rsc', WORK_AREA);
+      useWindowStore.getState().openPost({ collection: 'blog', slug: 'rsc' }, WORK_AREA);
     });
     expect(replaceState).toHaveBeenCalledWith(window.history.state, '', '/posts/rsc');
     expect(pushState).not.toHaveBeenCalled();

@@ -55,7 +55,10 @@ describe('고정:시작 화면 고정', () => {
   });
 
   it('새로 고정한 항목은 맨 뒤에 보인다', () => {
-    const state = pinToStart(initial, getPostItemId('react-19-hooks'));
+    const state = pinToStart(
+      initial,
+      getPostItemId({ collection: 'blog', slug: 'react-19-hooks' }),
+    );
     expect(getPinnedStartItems(state).at(-1)?.title).toBe('React 19 훅 정리');
   });
 
@@ -99,12 +102,14 @@ describe('Start 메뉴:모두', () => {
     const groups = groupStartItems(getAllStartItems(initial), 'list');
     expect(groups.map((group) => group.label)).toEqual([
       '#',
+      'A',
       'B',
       'C',
       'F',
       'G',
       'H',
       'N',
+      'P',
       'R',
       'U',
       'ㅅ',

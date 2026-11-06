@@ -4,6 +4,11 @@
 import type { Asset } from '@seojaewan/design-system';
 import type { ComponentProps } from 'react';
 
+import {
+  POST_COLLECTIONS,
+  type PostCollection,
+  type PostRef,
+} from '@/shared/utils/post-address/post-address';
 import type { WindowApp } from '@/shared/utils/window-rules/window-rules';
 
 /** 휴지통 id. 휴지통은 바탕화면에 고정된 항목이고, 휴지통으로 보낸 항목의 상위 폴더 자리에 이 id가 들어간다 */
@@ -17,6 +22,30 @@ export const BLOG_FOLDER_ID = 'blog';
 
 /** `Blog` 폴더의 처음 이름 */
 export const BLOG_FOLDER_NAME = 'Blog';
+
+/** `Project` 폴더 id */
+export const PROJECT_FOLDER_ID = 'project';
+
+/** `About` 폴더 id */
+export const ABOUT_FOLDER_ID = 'about';
+
+/**
+ * 묶음마다 바탕화면에 두는 폴더의 id와 처음 이름. Notion 폴더 경로의 뿌리이고, 새 글이 들어갈 곳이 없을 때 가는 기본 폴더다.
+ * @codocs [[콘텐츠 원천:데이터베이스]]
+ * @codocs [[작업 공간 맞추기:초기 구조]]
+ */
+export const collectionFolders = {
+  blog: { id: BLOG_FOLDER_ID, name: BLOG_FOLDER_NAME },
+  project: { id: PROJECT_FOLDER_ID, name: 'Project' },
+  about: { id: ABOUT_FOLDER_ID, name: 'About' },
+} as const satisfies Record<PostCollection, { id: string; name: string }>;
+
+// 묶음별 글 항목 id의 머리다. Blog 글은 예전 저장분과 맞도록 `post:`를 그대로 쓴다.
+const postItemIdPrefixes = {
+  blog: 'post:',
+  project: 'project:',
+  about: 'about:',
+} as const satisfies Record<PostCollection, string>;
 
 /** 바탕화면 위치 이름(탐색기 탭 제목, 위치 칸) */
 export const DESKTOP_NAME = '바탕 화면';
@@ -152,9 +181,10 @@ export type FolderItem = PlacedItemBase & {
   kind: 'folder';
 };
 
-/** 글. Notion 글 하나다. slug는 글 주소 `/posts/<slug>`의 slug이고 date는 작성일(YYYY-MM-DD)이다. */
+/** 글. Notion 세 데이터베이스(묶음)의 항목 하나다. collection은 묶음, slug는 글 주소(`/posts/<slug>` 등)의 slug이고 date는 작성일(YYYY-MM-DD)이다. */
 export type PostItem = PlacedItemBase & {
   kind: 'post';
+  collection: PostCollection;
   slug: string;
   date: string;
 };
@@ -185,8 +215,9 @@ export type WorkspaceItem = PlacedItem | RecycleBinItem;
 /** 작업 공간 항목 종류 */
 export type WorkspaceItemKind = WorkspaceItem['kind'];
 
-/** 글 색인 한 줄. 서버(`content/`)가 Notion 글 데이터베이스에서 읽어 넘긴다. folderPath는 `폴더` 속성을 `/`로 나눈 경로이며 비어 있으면 `Blog` 폴더에 넣는다. date는 작성일(YYYY-MM-DD)이다. */
+/** 글 색인 한 줄. 서버(`content/`)가 Notion 세 데이터베이스에서 읽어 넘긴다. collection은 묶음이다. folderPath는 `폴더` 속성을 `/`로 나눈 경로이며 비어 있으면 묶음 폴더(`Blog`, `Project`, `About`)에 넣는다. date는 작성일(YYYY-MM-DD)이다. */
 export type PostSummary = {
+  collection: PostCollection;
   slug: string;
   title: string;
   folderPath: readonly string[];
@@ -279,7 +310,7 @@ export type FolderTreeNode = {
  */
 export type ItemOpenAction =
   | { type: 'explorer'; folderId: string }
-  | { type: 'post'; slug: string }
+  | ({ type: 'post' } & PostRef)
   | { type: 'external'; url: string }
   | { type: 'app'; app: WindowApp }
   | { type: 'none' };
@@ -293,35 +324,33 @@ const recycleBinItem: RecycleBinItem = {
   date: null,
 };
 
-const blogFolderItem: FolderItem = {
-  kind: 'folder',
-  id: BLOG_FOLDER_ID,
-  name: BLOG_FOLDER_NAME,
-  parentId: null,
-  trash: null,
-  date: null,
-};
-
 /**
- * Notion `폴더` 경로에서 만든 폴더의 고정 id를 만든다. 경로가 비어 있으면 `Blog` 폴더다.
+ * Notion `폴더` 경로에서 만든 폴더의 고정 id를 만든다. 경로가 비어 있으면 묶음 폴더(`Blog`, `Project`, `About`)다.
  * 경로가 같으면 늘 같은 id라, 방문자가 이름을 바꾸거나 옮겨도 새 글이 그 폴더를 찾는다.
+ * Blog 폴더 아래는 예전 저장분과 맞도록 `folder:<경로>`이고, Project·About 아래는 `<묶음>-folder:<경로>`다.
  * @codocs [[항목과 폴더:식별]]
  * @codocs [[작업 공간 맞추기:Notion과 맞추기]]
+ * @param collection 묶음
  * @param path 폴더 경로
  * @returns 폴더 id
  */
-export function getNotionFolderId(path: readonly string[]): string {
-  return path.length === 0 ? BLOG_FOLDER_ID : `folder:${path.join('/')}`;
+export function getNotionFolderId(collection: PostCollection, path: readonly string[]): string {
+  if (path.length === 0) {
+    return collectionFolders[collection].id;
+  }
+  const prefix = collection === 'blog' ? 'folder' : `${collection}-folder`;
+  return `${prefix}:${path.join('/')}`;
 }
 
 /**
- * 글 항목 id를 만든다.
+ * 글 항목 id를 만든다. 묶음이 다르면 slug가 같아도 다른 항목이다.
  * @codocs [[항목과 폴더:식별]]
- * @param slug 글 slug
- * @returns `post:<slug>`
+ * @codocs [[Chrome:글 주소]]
+ * @param post 글(묶음과 slug)
+ * @returns Blog는 `post:<slug>`, Project는 `project:<slug>`, About은 `about:<slug>`
  */
-export function getPostItemId(slug: string): string {
-  return `post:${slug}`;
+export function getPostItemId(post: PostRef): string {
+  return `${postItemIdPrefixes[post.collection]}${post.slug}`;
 }
 
 /**
@@ -346,8 +375,8 @@ function getVisibleLinks(catalog: WorkspaceCatalog): readonly ExternalLinkConfig
 }
 
 /**
- * 저장된 상태가 없을 때의 초기 구조를 만든다. 바탕화면에 휴지통과 `Blog` 폴더를 두고, 글의 `폴더` 경로대로
- * `Blog` 아래에 폴더를 만들어 글을 넣는다(경로가 비면 `Blog`). 외부 링크는 설정의 초기 위치에 둔다.
+ * 저장된 상태가 없을 때의 초기 구조를 만든다. 바탕화면에 휴지통과 묶음 폴더(`Blog`, `Project`, `About`)를 두고, 글의 `폴더` 경로대로
+ * 자기 묶음 폴더 아래에 폴더를 만들어 글을 넣는다(경로가 비면 묶음 폴더). 외부 링크는 설정의 초기 위치에 둔다.
  * Start 고정됨은 File Explorer, Chrome, `Blog` 폴더, 처음부터 고정하도록 정한 외부 링크다. Start 모두 목록의 처음 보기는 범주다.
  * @codocs [[작업 공간 맞추기:초기 구조]]
  * @codocs [[고정:시작 화면 고정]]
@@ -357,21 +386,21 @@ function getVisibleLinks(catalog: WorkspaceCatalog): readonly ExternalLinkConfig
  * @returns 초기 상태
  */
 export function createInitialWorkspace(catalog: WorkspaceCatalog): WorkspaceState {
-  const items: Record<string, WorkspaceItem> = {
-    [RECYCLE_BIN_ID]: recycleBinItem,
-    [BLOG_FOLDER_ID]: blogFolderItem,
-  };
+  const items: Record<string, WorkspaceItem> = { [RECYCLE_BIN_ID]: recycleBinItem };
+  for (const collection of POST_COLLECTIONS) {
+    items[collectionFolders[collection].id] = createCollectionFolder(collection);
+  }
   for (const post of catalog.posts) {
-    addNotionFolders(items, post.folderPath);
+    addNotionFolders(items, post.collection, post.folderPath);
   }
   for (const link of getVisibleLinks(catalog)) {
     const parentId = isOpenFolder(items, link.initialParentId) ? link.initialParentId : null;
     items[getLinkItemId(link.id)] = createLinkItem(link, parentId, null);
   }
   for (const post of catalog.posts) {
-    items[getPostItemId(post.slug)] = createPostItem(
+    items[getPostItemId(post)] = createPostItem(
       post,
-      getNotionFolderId(post.folderPath),
+      getNotionFolderId(post.collection, post.folderPath),
       null,
     );
   }
@@ -395,7 +424,8 @@ export function createInitialWorkspace(catalog: WorkspaceCatalog): WorkspaceStat
 
 /**
  * 저장된 상태를 지금 글 색인·외부 링크 설정과 맞춘다. 방문할 때마다 부른다.
- * - 새 글은 `폴더` 경로의 폴더(id로 찾는다)에 넣고, 그 폴더가 없으면 `Blog`에 넣는다.
+ * - 새 글은 `폴더` 경로의 폴더(id로 찾는다)에 넣고, 그 폴더가 없으면 자기 묶음 폴더(`Blog`, `Project`, `About`)에 넣는다.
+ * - 묶음 폴더가 아예 없으면 바탕화면에 다시 만든다.
  *   휴지통은 저장하지 않아(`toSavedWorkspace`) 저장분에는 휴지통에 있는 폴더가 없다.
  * - 방문자가 옮겨 둔 기존 글은 그 자리에 둔다. 제목과 작성일은 색인을 따른다.
  * - 색인에서 사라진 글과 설정에서 사라진 외부 링크는 지운다. 외부 링크의 이름·주소·아이콘은 설정을 따른다.
@@ -410,7 +440,7 @@ export function reconcileWorkspace(
   saved: SavedWorkspaceShape,
   catalog: WorkspaceCatalog,
 ): WorkspaceState {
-  const postsById = new Map(catalog.posts.map((post) => [getPostItemId(post.slug), post]));
+  const postsById = new Map(catalog.posts.map((post) => [getPostItemId(post), post]));
   const linksById = new Map(getVisibleLinks(catalog).map((link) => [getLinkItemId(link.id), link]));
   const items: Record<string, WorkspaceItem> = { [RECYCLE_BIN_ID]: recycleBinItem };
   for (const [id, savedItem] of Object.entries(saved.items)) {
@@ -441,8 +471,11 @@ export function reconcileWorkspace(
       items[id] = createLinkItem(link, savedItem.parentId, null);
     }
   }
-  if (items[BLOG_FOLDER_ID]?.kind !== 'folder') {
-    items[BLOG_FOLDER_ID] = blogFolderItem;
+  for (const collection of POST_COLLECTIONS) {
+    const folderId = collectionFolders[collection].id;
+    if (items[folderId]?.kind !== 'folder') {
+      items[folderId] = createCollectionFolder(collection);
+    }
   }
   const repaired: Record<string, WorkspaceItem> = { ...repairWorkspace({ ...saved, items }).items };
   for (const [id, link] of linksById) {
@@ -453,10 +486,10 @@ export function reconcileWorkspace(
   }
   for (const [id, post] of postsById) {
     if (repaired[id]?.kind !== 'post') {
-      const folderId = getNotionFolderId(post.folderPath);
+      const folderId = getNotionFolderId(post.collection, post.folderPath);
       repaired[id] = createPostItem(
         post,
-        isOpenFolder(repaired, folderId) ? folderId : BLOG_FOLDER_ID,
+        isOpenFolder(repaired, folderId) ? folderId : collectionFolders[post.collection].id,
         null,
       );
     }
@@ -1024,15 +1057,20 @@ export function getDescendantIds(state: Pick<WorkspaceState, 'items'>, folderId:
 }
 
 /**
- * 휴지통에 없는 글을 최신순(작성일이 같으면 이름순)으로 돌려준다. Chrome 새 탭 페이지와 검색 추천에 쓴다.
+ * 휴지통에 없는 Blog 글을 최신순(작성일이 같으면 이름순)으로 돌려준다. Chrome 새 탭 페이지와 검색 추천에 쓴다.
+ * Project·About 항목은 넣지 않는다.
  * @codocs [[검색:입력 전 화면]]
+ * @codocs [[Chrome:새 탭 페이지]]
  * @param state 작업 공간 상태
  * @param count 최대 개수
  * @returns 글
  */
 export function getLatestPosts(state: Pick<WorkspaceState, 'items'>, count: number): PostItem[] {
   return Object.values(state.items)
-    .filter((item): item is PostItem => item.kind === 'post' && !isItemInTrash(state, item.id))
+    .filter(
+      (item): item is PostItem =>
+        item.kind === 'post' && item.collection === 'blog' && !isItemInTrash(state, item.id),
+    )
     .sort((a, b) => b.date.localeCompare(a.date) || a.name.localeCompare(b.name))
     .slice(0, count);
 }
@@ -1064,7 +1102,7 @@ export function getItemOpenAction(
     case 'folder':
       return { type: 'explorer', folderId: item.id };
     case 'post':
-      return { type: 'post', slug: item.slug };
+      return { type: 'post', collection: item.collection, slug: item.slug };
     case 'link':
       return { type: 'external', url: item.url };
   }
@@ -1385,12 +1423,12 @@ function isDescendantOf(
 }
 
 /**
- * 글·외부 링크 항목 id 형식(`post:`, `link:`)인지 본다.
+ * 글·외부 링크 항목 id 형식(`post:`, `project:`, `about:`, `link:`)인지 본다.
  * @param id 항목 id
  * @returns 글·외부 링크 id면 true
  */
 function isSourceItemId(id: string): boolean {
-  return id.startsWith('post:') || id.startsWith('link:');
+  return [...Object.values(postItemIdPrefixes), 'link:'].some((prefix) => id.startsWith(prefix));
 }
 
 /**
@@ -1413,15 +1451,32 @@ function hasParentCycle(items: Readonly<Record<string, WorkspaceItem>>, id: stri
 }
 
 /**
- * Notion 폴더 경로의 폴더를 `Blog` 아래에 차례로 만든다. 이미 있으면 그대로 둔다.
+ * 묶음 폴더(`Blog`, `Project`, `About`) 항목을 만든다. 바탕화면에 놓인다.
+ * @codocs [[작업 공간 맞추기:초기 구조]]
+ * @param collection 묶음
+ * @returns 폴더 항목
+ */
+function createCollectionFolder(collection: PostCollection): FolderItem {
+  const { id, name } = collectionFolders[collection];
+  return { kind: 'folder', id, name, parentId: null, trash: null, date: null };
+}
+
+/**
+ * Notion 폴더 경로의 폴더를 자기 묶음 폴더 아래에 차례로 만든다. 이미 있으면 그대로 둔다.
+ * @codocs [[작업 공간 맞추기:초기 구조]]
  * @param items 항목(바꾼다)
+ * @param collection 묶음
  * @param path 폴더 경로
  */
-function addNotionFolders(items: Record<string, WorkspaceItem>, path: readonly string[]): void {
-  let parentId = BLOG_FOLDER_ID;
+function addNotionFolders(
+  items: Record<string, WorkspaceItem>,
+  collection: PostCollection,
+  path: readonly string[],
+): void {
+  let parentId: string = collectionFolders[collection].id;
   for (let depth = 1; depth <= path.length; depth += 1) {
     const segments = path.slice(0, depth);
-    const id = getNotionFolderId(segments);
+    const id = getNotionFolderId(collection, segments);
     if (items[id] === undefined) {
       items[id] = {
         kind: 'folder',
@@ -1450,8 +1505,9 @@ function createPostItem(
 ): PostItem {
   return {
     kind: 'post',
-    id: getPostItemId(post.slug),
+    id: getPostItemId(post),
     name: post.title,
+    collection: post.collection,
     slug: post.slug,
     parentId,
     trash,

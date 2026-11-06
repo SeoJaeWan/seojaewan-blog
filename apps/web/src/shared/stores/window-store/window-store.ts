@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 import { registerStoreReset } from '@/shared/stores/store-reset/store-reset';
+import type { PostRef } from '@/shared/utils/post-address/post-address';
 import type {
   SnapZone,
   WindowApp,
@@ -57,7 +58,7 @@ type WindowUiState = {
  */
 type WindowActions = {
   open: (app: WindowApp, workArea: WindowWorkArea, content?: WindowContent) => string;
-  openPost: (slug: string, workArea: WindowWorkArea, isSameTab?: boolean) => string;
+  openPost: (post: PostRef, workArea: WindowWorkArea, isSameTab?: boolean) => string;
   focus: (id: string) => void;
   close: (id: string) => void;
   minimize: (id: string) => void;
@@ -95,8 +96,8 @@ export const useWindowStore = create<WindowState & WindowUiState & WindowActions
       set(result.state);
       return result.id;
     },
-    openPost: (slug, workArea, isSameTab) => {
-      const result = openPostInChrome(get(), slug, workArea, isSameTab);
+    openPost: (post, workArea, isSameTab) => {
+      const result = openPostInChrome(get(), post, workArea, isSameTab);
       set(result.state);
       return result.id;
     },

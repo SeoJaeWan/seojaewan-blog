@@ -438,23 +438,27 @@ describe('창 동작:열기 규칙', () => {
   });
 
   it('글은 Chrome 창이 없으면 그 글 탭 하나인 새 창으로 연다', () => {
-    const result = openPostInChrome(INITIAL_WINDOW_STATE, 'a', WORK_AREA);
+    const result = openPostInChrome(
+      INITIAL_WINDOW_STATE,
+      { collection: 'blog', slug: 'a' },
+      WORK_AREA,
+    );
     expect(result.state.windows[result.id]?.content).toEqual(
-      createChromeContent({ kind: 'post', slug: 'a' }),
+      createChromeContent({ kind: 'post', collection: 'blog', slug: 'a' }),
     );
   });
 
   it('글은 가장 최근에 쓴 Chrome 창의 새 탭으로 열고, 같은 글이 열려 있어도 새 탭을 연다', () => {
     const { state, ids } = openAll(['chrome', 'chrome', 'file-explorer']);
     const focused = focusWindow(state, ids[0] ?? '');
-    const first = openPostInChrome(focused, 'a', WORK_AREA);
-    const second = openPostInChrome(first.state, 'a', WORK_AREA);
+    const first = openPostInChrome(focused, { collection: 'blog', slug: 'a' }, WORK_AREA);
+    const second = openPostInChrome(first.state, { collection: 'blog', slug: 'a' }, WORK_AREA);
     expect(second.id).toBe(ids[0]);
     const content = second.state.windows[ids[0] ?? '']?.content;
     expect(content?.app === 'chrome' && content.tabs.map((tab) => tab.history)).toEqual([
       [{ kind: 'new-tab' }],
-      [{ kind: 'post', slug: 'a' }],
-      [{ kind: 'post', slug: 'a' }],
+      [{ kind: 'post', collection: 'blog', slug: 'a' }],
+      [{ kind: 'post', collection: 'blog', slug: 'a' }],
     ]);
     expect(content?.activeTabIndex).toBe(2);
   });
@@ -462,7 +466,7 @@ describe('창 동작:열기 규칙', () => {
   it('최소화된 Chrome 창에 글을 열면 그 창을 복원해 맨 앞으로 가져온다', () => {
     const { state, ids } = openAll(['chrome', 'file-explorer']);
     const minimized = minimizeWindow(state, ids[0] ?? '');
-    const result = openPostInChrome(minimized, 'a', WORK_AREA);
+    const result = openPostInChrome(minimized, { collection: 'blog', slug: 'a' }, WORK_AREA);
     expect(result.state.windows[ids[0] ?? '']?.isMinimized).toBe(false);
     expect(getFrontWindowId(result.state)).toBe(ids[0]);
   });
@@ -498,13 +502,13 @@ describe('파일 탐색기:탭', () => {
 describe('창 동작:모바일', () => {
   it('모바일은 다른 곳에서 연 글을 새 탭 대신 가장 최근 Chrome 창의 고른 탭에서 연다', () => {
     const { state, ids } = openAll(['chrome']);
-    const result = openPostInChrome(state, 'a', WORK_AREA, true);
+    const result = openPostInChrome(state, { collection: 'blog', slug: 'a' }, WORK_AREA, true);
     expect(result.state.windows[ids[0] ?? '']?.content).toEqual({
       ...createChromeContent(),
       tabs: [
         {
           id: 'tab-1',
-          history: [{ kind: 'new-tab' }, { kind: 'post', slug: 'a' }],
+          history: [{ kind: 'new-tab' }, { kind: 'post', collection: 'blog', slug: 'a' }],
           historyIndex: 1,
         },
       ],
@@ -515,7 +519,7 @@ describe('창 동작:모바일', () => {
 // @codocs [[창 동작:새로고침과 첫 진입]]
 describe('창 동작:새로고침과 첫 진입', () => {
   it('서버가 그리는 첫 창은 처음 상태에서 여는 창과 id·차례·내용이 같고 자리만 비어 있다', () => {
-    const content = createChromeContent({ kind: 'post', slug: 'a' });
+    const content = createChromeContent({ kind: 'post', collection: 'blog', slug: 'a' });
     const opened = openWindow(INITIAL_WINDOW_STATE, 'chrome', WORK_AREA, content);
     const entry = createEntryWindow('chrome', content);
     expect(entry.id).toBe(opened.id);

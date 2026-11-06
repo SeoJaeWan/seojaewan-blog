@@ -232,7 +232,7 @@ describe('파일 탐색기:탭', () => {
 describe('파일 탐색기:구성', () => {
   it('탐색 창은 바탕화면 아래 폴더 트리와 휴지통이다', () => {
     const labels = getNavigationRows(visit(BLOG_FOLDER_ID), workspace).map((row) => row.label);
-    expect(labels).toEqual(['바탕 화면', 'Blog', 'React', 'Next.js', '휴지통']);
+    expect(labels).toEqual(['바탕 화면', 'Blog', 'React', 'Next.js', 'Project', 'About', '휴지통']);
   });
 
   it('탐색 창은 현재 위치와 그 조상을 펼치고 나머지는 접는다', () => {
@@ -243,6 +243,8 @@ describe('파일 탐색기:구성', () => {
       ['React', 'expanded'],
       ['Hooks', 'none'],
       ['Next.js', 'none'],
+      ['Project', 'none'],
+      ['About', 'none'],
       ['휴지통', 'none'],
     ]);
   });
@@ -299,6 +301,8 @@ describe('파일 탐색기:구성', () => {
     );
     expect(rows.map((row) => row.label)).toEqual([
       '바탕 화면',
+      'About',
+      'Project',
       'Blog',
       'Next.js',
       'React',

@@ -14,19 +14,33 @@ export const GITHUB_LINK = {
 export const testCatalog = {
   posts: [
     {
+      collection: 'blog',
       slug: 'react-19-hooks',
       title: 'React 19 훅 정리',
       folderPath: ['React'],
       date: '2026-10-20',
     },
     {
+      collection: 'blog',
       slug: 'use-effect',
       title: 'useEffect 정리',
       folderPath: ['React', 'Hooks'],
       date: '2026-08-30',
     },
-    { slug: 'nextjs-cache', title: 'Next.js 캐시', folderPath: ['Next.js'], date: '2026-10-03' },
-    { slug: 'retrospective', title: '2026 상반기 회고', folderPath: [], date: '2026-07-01' },
+    {
+      collection: 'blog',
+      slug: 'nextjs-cache',
+      title: 'Next.js 캐시',
+      folderPath: ['Next.js'],
+      date: '2026-10-03',
+    },
+    {
+      collection: 'blog',
+      slug: 'retrospective',
+      title: '2026 상반기 회고',
+      folderPath: [],
+      date: '2026-07-01',
+    },
   ],
   links: [
     GITHUB_LINK,

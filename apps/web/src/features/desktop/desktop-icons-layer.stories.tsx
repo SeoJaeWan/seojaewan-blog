@@ -33,7 +33,9 @@ import {
 
 import { DesktopIconsLayer } from './desktop-icons-layer';
 
-const POSTS = [{ slug: 'a', title: '가', folderPath: [], date: '2026-10-20' }] as const;
+const POSTS = [
+  { collection: 'blog', slug: 'a', title: '가', folderPath: [], date: '2026-10-20' },
+] as const;
 
 /** 눌러 둔 수정 키(Ctrl, Shift)가 다음 입력까지 이어지는 사용자 입력기 */
 type StoryUser = ReturnType<typeof userEvent.setup>;
@@ -425,7 +427,7 @@ export const SelectIcons: Story = {
       await user.keyboard('{Shift>}');
       await user.click(icon('GitHub'));
       await user.keyboard('{/Shift}');
-      await expect(selectedNames()).toEqual(['휴지통', 'Blog', 'GitHub']);
+      await expect(selectedNames()).toEqual(['휴지통', 'About', 'Blog', 'Project', 'GitHub']);
     });
 
     await step(
@@ -433,10 +435,10 @@ export const SelectIcons: Story = {
       async () => {
         await user.click(icon('휴지통'));
         await user.keyboard('{ArrowDown}');
-        await expect(selectedNames()).toEqual(['Blog']);
-        await expect(icon('Blog')).toHaveFocus();
+        await expect(selectedNames()).toEqual(['About']);
+        await expect(icon('About')).toHaveFocus();
         await user.keyboard('{Control>}a{/Control}');
-        await expect(selectedNames()).toEqual(['휴지통', 'Blog', 'GitHub']);
+        await expect(selectedNames()).toEqual(['휴지통', 'About', 'Blog', 'Project', 'GitHub']);
       },
     );
   },
@@ -469,8 +471,8 @@ export const DeleteIcons: Story = {
       await expect(selectedNames()).toEqual(['가']);
       await expect(icon('가')).toHaveFocus();
       await user.keyboard('{Delete}');
-      await expect(selectedNames()).toEqual(['Blog']);
-      await expect(icon('Blog')).toHaveFocus();
+      await expect(selectedNames()).toEqual(['Project']);
+      await expect(icon('Project')).toHaveFocus();
     });
 
     await step('휴지통은 Delete로 보내지 않고, Blog 폴더는 Delete로 보낸다', async () => {
@@ -765,12 +767,12 @@ export const DragToEmptyCell: Story = {
       await dragGithubRight();
       await expect(useWorkspaceStore.getState().desktop.positions['link:github']).toEqual({
         column: 2,
-        row: 2,
+        row: 4,
       });
       await waitFor(async () => {
         await expect(icon('GitHub').offsetLeft).toBe(192);
       });
-      await expect(icon('GitHub').offsetTop).toBe(188);
+      await expect(icon('GitHub').offsetTop).toBe(368);
     });
   },
 };
@@ -798,7 +800,7 @@ export const DesktopMenu: Story = {
       // 끄는 순간의 자리를 저장해 아이콘이 움직이지 않는다.
       await expect(useWorkspaceStore.getState().desktop.positions[BLOG_FOLDER_ID]).toEqual({
         column: 0,
-        row: 1,
+        row: 2,
       });
 
       await chooseSubmenuItem(user, '정렬 기준', 'menuitemradio', '항목 유형');

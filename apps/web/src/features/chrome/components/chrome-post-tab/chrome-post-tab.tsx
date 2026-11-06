@@ -65,7 +65,7 @@ export function ChromePostTab({
   onImageOpen: handleImageOpen,
   preloadedBody,
 }: ChromePostTabProps): JSX.Element {
-  const bodyState = usePostBody(post.slug, preloadedBody);
+  const bodyState = usePostBody(post, preloadedBody);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isTocExpanded, setIsTocExpanded] = useState(false);
   const headings = bodyState.status === 'loaded' ? getTocHeadings(bodyState.body.blocks) : [];
@@ -74,7 +74,7 @@ export function ChromePostTab({
     scrollRef,
     headings.map((heading) => heading.id),
   );
-  const { previous, next } = getPostNeighbors(workspace, post.slug);
+  const { previous, next } = getPostNeighbors(workspace, post);
 
   if (bodyState.status === 'failed') {
     return (
@@ -82,7 +82,7 @@ export function ChromePostTab({
         page="not-found"
         layout={layout}
         zoom={zoom}
-        url={getPostAddress(post.slug)}
+        url={getPostAddress(post)}
         onReload={handleReload}
       />
     );
@@ -105,14 +105,14 @@ export function ChromePostTab({
   /** 이전 글로 간다. */
   function handlePreviousOpen(): void {
     if (previous !== undefined) {
-      handleNavigate({ kind: 'post', slug: previous.slug });
+      handleNavigate({ kind: 'post', collection: previous.collection, slug: previous.slug });
     }
   }
 
   /** 다음 글로 간다. */
   function handleNextOpen(): void {
     if (next !== undefined) {
-      handleNavigate({ kind: 'post', slug: next.slug });
+      handleNavigate({ kind: 'post', collection: next.collection, slug: next.slug });
     }
   }
 

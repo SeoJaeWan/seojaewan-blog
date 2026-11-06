@@ -12,10 +12,28 @@ import { getItemLocationLabel, searchItems } from './explorer-search';
 
 const workspace = createInitialWorkspace({
   posts: [
-    { slug: 'a', title: '리액트 훅', folderPath: ['React'], date: '2026-10-20' },
-    { slug: 'b', title: '훅 정리', folderPath: ['React', 'Hooks'], date: '2026-10-22' },
-    { slug: 'c', title: '훅', folderPath: [], date: '2026-10-01' },
-    { slug: 'd', title: '훅 모음', folderPath: ['Next.js'], date: '2026-10-25' },
+    {
+      collection: 'blog',
+      slug: 'a',
+      title: '리액트 훅',
+      folderPath: ['React'],
+      date: '2026-10-20',
+    },
+    {
+      collection: 'blog',
+      slug: 'b',
+      title: '훅 정리',
+      folderPath: ['React', 'Hooks'],
+      date: '2026-10-22',
+    },
+    { collection: 'blog', slug: 'c', title: '훅', folderPath: [], date: '2026-10-01' },
+    {
+      collection: 'blog',
+      slug: 'd',
+      title: '훅 모음',
+      folderPath: ['Next.js'],
+      date: '2026-10-25',
+    },
   ],
   links: [],
 });

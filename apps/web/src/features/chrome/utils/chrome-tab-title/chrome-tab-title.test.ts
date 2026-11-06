@@ -6,7 +6,7 @@ import { createInitialWorkspace } from '@/shared/utils/workspace-rules/workspace
 import { getChromeTabTitle, getChromeWindowTitle } from './chrome-tab-title';
 
 const workspace = createInitialWorkspace({
-  posts: [{ slug: 'a', title: '가', folderPath: [], date: '2026-10-20' }],
+  posts: [{ collection: 'blog', slug: 'a', title: '가', folderPath: [], date: '2026-10-20' }],
   links: [],
 });
 
@@ -17,7 +17,9 @@ describe('Chrome:구성', () => {
   });
 
   it('탭 제목은 글이면 글 제목이다', () => {
-    expect(getChromeTabTitle(workspace, { kind: 'post', slug: 'a' })).toBe('가');
+    expect(getChromeTabTitle(workspace, { kind: 'post', collection: 'blog', slug: 'a' })).toBe(
+      '가',
+    );
   });
 
   it('탭 제목은 검색 결과면 "<검색어> - 검색"이다', () => {
@@ -28,13 +30,17 @@ describe('Chrome:구성', () => {
     expect(getChromeTabTitle(workspace, { kind: 'not-found', url: '/posts/x' })).toBe(
       '페이지를 찾을 수 없음',
     );
-    expect(getChromeTabTitle(workspace, { kind: 'post', slug: 'gone' })).toBe(
+    expect(getChromeTabTitle(workspace, { kind: 'post', collection: 'blog', slug: 'gone' })).toBe(
       '페이지를 찾을 수 없음',
     );
   });
 
   it('창 제목은 고른 탭의 제목 뒤에 앱 이름을 붙인다', () => {
-    const content = openChromeTab(createChromeContent(), { kind: 'post', slug: 'a' });
+    const content = openChromeTab(createChromeContent(), {
+      kind: 'post',
+      collection: 'blog',
+      slug: 'a',
+    });
     expect(getChromeWindowTitle(workspace, content)).toBe('가 - Chrome');
   });
 });
