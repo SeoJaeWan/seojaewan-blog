@@ -4,8 +4,9 @@ import { BREAKPOINTS } from '@seojaewan/design-system';
 
 import type { BehaviorOptions } from './e2e/behaviors/behavior-test.ts';
 
-const PORT = 3000;
-const BASE_URL = `http://localhost:${PORT}`;
+// CI는 runner마다 다른 포트를 준다(`E2E_PORT`, scripts/runner-port.mjs). 로컬은 Next.js 기본 포트다.
+const port = Number(process.env.E2E_PORT ?? 3000);
+const BASE_URL = `http://localhost:${String(port)}`;
 const isCi = Boolean(process.env.CI);
 // 시나리오 케이스의 실행해보기(tools/scenario-cases)만 동작 사이를 늦추고 동작 표시를 오래 보여 사람이 따라 볼 수 있게 한다.
 const slowMo = Number(process.env.SCENARIO_CASES_SLOW_MO ?? 0);
@@ -37,8 +38,9 @@ export default defineConfig<BehaviorOptions>({
     },
   ],
   webServer: {
-    command: 'pnpm start',
+    command: `pnpm start --port ${String(port)}`,
     url: BASE_URL,
+    // CI는 같은 머신의 다른 job이 띄운 서버를 쓰지 않도록, 포트가 이미 쓰이고 있으면 실패한다.
     reuseExistingServer: !isCi,
     timeout: 120_000,
   },

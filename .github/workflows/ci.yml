@@ -103,6 +103,10 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm --filter @seojaewan/web exec playwright install chromium
 
+      # 한 머신에서 job이 동시에 돌아 runner마다 다른 포트로 앱을 띄운다(scripts/runner-port.mjs)
+      - name: Pick E2E port
+        run: echo "E2E_PORT=$(node scripts/runner-port.mjs 4100)" >> "$GITHUB_ENV"
+
       - name: E2E tests
         run: pnpm test:e2e
 
