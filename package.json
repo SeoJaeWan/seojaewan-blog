@@ -21,11 +21,13 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "storybook": "turbo run storybook",
+    "changeset": "changeset",
     "cases": "pnpm --filter @seojaewan/scenario-cases cases",
     "verify": "pnpm lint && pnpm typecheck && pnpm test",
     "prepare": "husky"
   },
   "devDependencies": {
+    "@changesets/cli": "3.0.3",
     "@commitlint/cli": "21.2.4",
     "@commitlint/config-conventional": "21.2.4",
     "@eslint/js": "9.39.5",

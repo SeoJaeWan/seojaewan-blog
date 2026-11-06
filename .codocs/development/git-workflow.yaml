@@ -38,7 +38,7 @@ CI: |
   PR과 `main` push마다 GitHub Actions에서 실행한다. 저장소를 비공개로 전환한 뒤에는 미니 PC의 self-hosted runner(`runs-on: [self-hosted, linux]`)에서 돌고, 워크플로와 병합 조건은 그대로다([[배포 환경:CI]]). 워크플로를 나누는 기준과 각 워크플로가 도는 범위는 [[피그마 연동:CI]]에 있다.
 
   - 브랜치 이름 검사(`ci.yml`): PR 브랜치 이름이 규칙에 맞는지 본다([[Git 작업 규칙:브랜치]]).
-  - 검사 작업(`ci.yml`): 포맷 검사, 전체 lint(ESLint와 Stylelint), 타입 검사, Chromium 설치, 단위·스토리 테스트(`pnpm test`), Next.js 빌드, 디자인 시스템과 앱의 Storybook 빌드
+  - 검사 작업(`ci.yml`): changeset 검사([[Git 작업 규칙:Changesets]]), 포맷 검사, 전체 lint(ESLint와 Stylelint), 타입 검사, Chromium 설치, 단위·스토리 테스트(`pnpm test`), Next.js 빌드, 디자인 시스템과 앱의 Storybook 빌드
   - E2E 작업(`ci.yml`)
   - 생성 검사(`figma-generated.yml`): 토큰 생성 확인(`generate:tokens --check`)과 자산 생성 확인(`generate:assets --check`)
   - 피그마 캡처(`figma-parity.yml`): 일반 CI와 나눈 워크플로다. PR(초안 포함)에서 바뀐 파일로 캡처 범위를 정하고, 범위가 있을 때만 캡처 표를 PR 댓글로 남긴다. `main` push에서는 영향받은 컴포넌트와 조립을 캡처해 `parity-captures` 브랜치에 저장한다([[피그마 연동:캡처 범위]], [[피그마 연동:CI]]).
@@ -51,3 +51,14 @@ CI: |
   - GitHub Pro(월 4달러)로 올리면 ruleset이 다시 병합을 막지만, 올리지 않고 무료로 유지하기로 했다. 검토한 대안이다.
   - `Figma generated`, `Figma parity`, `Motion check`는 늘 시작해 검사할 범위가 없으면 통과로 끝나므로([[피그마 연동:CI]]), 생성 파일이 어긋났거나 빌드·캡처·모션 검사가 깨졌을 때만 병합을 막는다.
   - 최신 `main` 기준 재검사(strict)는 요구하지 않는다. `main`이 바뀔 때마다 PR 브랜치를 갱신해야 하기 때문이다.
+Changesets: |
+  배포할 앱의 버전을 Changesets로 관리한다. 배포 흐름은 [[배포 환경:배포(CD)]]에서 정한다.
+
+  - 앱(`apps/web`, `apps/images`)이나 패키지(`packages/*`)를 바꾸는 PR은 `pnpm changeset`으로 만든 `.changeset/*.md`를 함께 넣는다. 바뀐 패키지마다 `patch`(고침), `minor`(새 기능), `major`(쓰는 방법이 바뀜) 중 하나를 고르고, 한 줄로 무엇이 바뀌었는지 적는다.
+  - `packages/design-system`이 바뀌면 그것을 쓰는 `apps/web`의 버전도 함께 오른다(내부 의존 갱신, `patch`).
+  - 문서(`*.md`, `.codocs`)나 루트 설정(`.github`, `package.json`, `scripts` 등)만 바꾼 PR에는 넣지 않는다.
+  - 모든 패키지가 private이라 npm에 publish하지 않는다. 설정(`.changeset/config.json`)은 버전만 올리고 태그는 만들지 않는다(`privatePackages`).
+  - `tools/*`(`figma-parity`, `figma-plugin`, `scenario-cases`)는 배포 대상이 아니라 버전 관리에서 뺀다(`ignore`).
+  - CI의 검사 작업(`Lint, typecheck, test, build`)이 `scripts/check-changeset.mjs`로 PR을 검사한다. 필수 검사 이름은 늘리지 않고 이 작업 안의 단계로 둔다. 앱이나 패키지에서 `*.md`와 `apps/web/content/**`가 아닌 파일이 바뀐 PR에만 `changeset status --since=origin/main`을 돌려 changeset이 빠졌으면 실패시킨다. 그 밖의 PR은 통과한다.
+  - 검사에서 빼는 PR: 글 동기화 PR(`chore/notion-content-sync`, Changesets 없이 바로 배포한다), Renovate PR(`renovate/*`, changeset 없이 머지되고 다음 배포 때 함께 나간다), 버전 PR(`changeset-release/*`). `main` push에서는 돌지 않는다.
+  - 버전 PR은 `changeset version`이 만든다. 버전 PR을 만들고 바뀐 앱만 배포하는 일은 공용 젠킨스가 한다([[배포 환경:배포(CD)]]).
