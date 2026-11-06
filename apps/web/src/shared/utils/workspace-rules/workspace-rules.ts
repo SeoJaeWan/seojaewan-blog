@@ -97,6 +97,9 @@ export const DEFAULT_DESKTOP_SETTINGS = {
   positions: {},
 } as const;
 
+// 붙여넣을 수 있는지 확인할 때 넘기는 시각이다. 결과에 쓰이지 않는다.
+const PASTE_CHECK_TIME = '1970-01-01T00:00:00.000Z';
+
 /** 탐색기 폴더 보기의 처음 값. 보통 아이콘, 이름 오름차순이다 */
 export const DEFAULT_EXPLORER_VIEW = {
   view: 'medium',
@@ -802,22 +805,21 @@ export function moveItems(
  * @codocs [[항목 조작:잘라내기와 붙여넣기]]
  * @param state 작업 공간 상태
  * @param cutIds 잘라낸 항목 id
+ * 그리는 동안 부르므로 지금 시각을 읽지 않는다. 옮길 수 있는지는 시각과 상관없어, 확인에는 고정한 시각을 쓴다.
  * @param targetId 붙여넣을 위치(폴더 id, 바탕화면은 null)
- * @param now 지금 시각(ISO 8601)
  * @returns 붙여넣을 항목 id. 붙여넣을 수 없으면 null
  */
 export function getPasteIds(
   state: WorkspaceState,
   cutIds: readonly string[],
   targetId: string | null,
-  now: string,
 ): string[] | null {
   const ids = cutIds.filter((id) => id in state.items && !isItemInTrash(state, id));
   const isAlreadyThere = ids.every((id) => state.items[id]?.parentId === targetId);
   if (ids.length === 0 || isAlreadyThere || targetId === RECYCLE_BIN_ID) {
     return null;
   }
-  return moveItems(state, ids, targetId, now).ok ? ids : null;
+  return moveItems(state, ids, targetId, PASTE_CHECK_TIME).ok ? ids : null;
 }
 
 /**

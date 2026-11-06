@@ -635,7 +635,7 @@ describe('항목과 폴더:위치와 옮기기', () => {
   });
 
   it('잘라낸 항목을 붙여넣을 위치로 옮길 수 있으면 붙여넣을 항목을 돌려준다', () => {
-    expect(getPasteIds(initial, ['link:github', 'folder:Next.js'], 'folder:React', NOW)).toEqual([
+    expect(getPasteIds(initial, ['link:github', 'folder:Next.js'], 'folder:React')).toEqual([
       'link:github',
       'folder:Next.js',
     ]);
@@ -644,15 +644,15 @@ describe('항목과 폴더:위치와 옮기기', () => {
   it('그사이 휴지통에 들어갔거나 사라진 항목은 빼고 붙인다', () => {
     const trashed = expectOk(trashItems(initial, ['post:nextjs-cache'], NOW));
     expect(
-      getPasteIds(trashed, ['post:nextjs-cache', 'post:없음', 'link:github'], 'folder:React', NOW),
+      getPasteIds(trashed, ['post:nextjs-cache', 'post:없음', 'link:github'], 'folder:React'),
     ).toEqual(['link:github']);
   });
 
   it('붙여넣을 것이 없거나 옮길 수 없으면 붙여넣을 수 없다', () => {
-    expect(getPasteIds(initial, [], null, NOW)).toBeNull();
-    expect(getPasteIds(initial, ['link:github'], null, NOW)).toBeNull();
-    expect(getPasteIds(initial, ['folder:React'], 'folder:React/Hooks', NOW)).toBeNull();
-    expect(getPasteIds(initial, ['link:github'], RECYCLE_BIN_ID, NOW)).toBeNull();
+    expect(getPasteIds(initial, [], null)).toBeNull();
+    expect(getPasteIds(initial, ['link:github'], null)).toBeNull();
+    expect(getPasteIds(initial, ['folder:React'], 'folder:React/Hooks')).toBeNull();
+    expect(getPasteIds(initial, ['link:github'], RECYCLE_BIN_ID)).toBeNull();
   });
 });
 

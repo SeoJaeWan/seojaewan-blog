@@ -218,9 +218,7 @@ export function ExplorerBody({
       );
   const orderedIds = children.map((item) => item.id);
   const cutSet = new Set(cutIds);
-  const pasteIds = isRecycleBin
-    ? null
-    : getPasteIds(getWorkspace(), cutIds, location, new Date().toISOString());
+  const pasteIds = isRecycleBin ? null : getPasteIds(getWorkspace(), cutIds, location);
   const canPaste = pasteIds !== null;
 
   const rename = useFolderRename({ onKeyboardEnd: focusItemAfterRender });
