@@ -43,3 +43,6 @@ tools/scenario-cases/runs/
 tools/scenario-cases/report/
 tools/scenario-cases/results.json
 tools/scenario-cases/history.json
+
+# 배포 스크립트가 잠깐 쓰는 비밀값 파일(deploy/deploy-changed.mjs)
+.deploy-secrets/

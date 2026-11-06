@@ -1,0 +1,21 @@
+# @codocs [[배포 환경:배포(CD)]]
+# 두 앱의 Dockerfile이 저장소 루트를 빌드 문맥으로 쓴다. 빌드에 필요 없는 것과 비밀값은 문맥에 넣지 않는다.
+.git
+.claude
+.codocs
+.deploy-secrets
+**/.env*
+!**/.env.example
+
+**/node_modules
+**/.next
+**/.turbo
+**/storybook-static
+**/coverage
+**/playwright-report
+**/test-results
+**/blob-report
+**/parity-results
+**/*.tsbuildinfo
+tools/scenario-cases/runs
+tools/scenario-cases/report
