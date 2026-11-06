@@ -6,6 +6,7 @@ import {
   NOTION_FIXTURE_DATABASE_IDS,
 } from '@/content/content-collections/content-collections';
 import { createImageSizeReader } from '@/content/image-size/image-size';
+import { notifyAlert } from '@/content/notify-alert/notify-alert';
 import { toPostBlocks } from '@/content/notion-blocks/notion-blocks';
 import {
   createNotionHttpClient,
@@ -18,6 +19,7 @@ import { readPostRows } from '@/content/notion-rows/notion-rows';
 import { renderPostBlocks } from '@/content/post-body-render/post-body-render';
 import {
   createServedImageResolver,
+  type ImageAlert,
   type ImageResolver,
   resolvePostImages,
 } from '@/content/post-images/post-images';
@@ -53,11 +55,13 @@ const servedImageResolver = createServedImageResolver(createImageSizeReader());
 
 /**
  * 공개 행 하나(Notion 페이지)의 본문을 읽는다. Notion 블록을 본문 블록으로 바꾸고, 보내기 전에 코드 강조(Shiki)와 수식(KaTeX)을
- * 서버에서 처리하고, 이미지와 커버의 크기를 채운다. 공개 여부는 보지 않는다. 공개 행만 넘긴다.
+ * 서버에서 처리하고, 이미지와 커버의 크기를 채운다. 크기를 받지 못한 이미지가 있으면 notify로 알린다.
+ * 공개 여부는 보지 않는다. 공개 행만 넘긴다.
  * @codocs [[콘텐츠 원천:결정]]
  * @codocs [[Notion 블록:지원 블록]]
  * @codocs [[기술 스택:글 본문 처리]]
  * @codocs [[Notion 이미지 제공:크기]]
+ * @codocs [[알림 프로세스:결정]]
  * @param page 공개 행의 페이지 ID와 커버
  * @param page.pageId Notion 페이지 ID
  * @param page.cover 커버의 이미지 서버 주소. 없으면 null
@@ -68,9 +72,19 @@ export async function readPageBody({ pageId, cover }: PageSource): Promise<PostB
   const blocks = await renderPostBlocks(toPostBlocks(await readBlockTree(client, pageId)));
   const body = await resolvePostImages(
     { blocks, cover },
-    { resolveImage: await getImageResolver() },
+    { resolveImage: await getImageResolver(), sendAlert: sendImageAlert },
   );
   return postBodySchema.parse(body);
+}
+
+/**
+ * 이미지 크기를 받지 못했다는 알림을 notify로 보낸다. 보내지 못해도 던지지 않는다(`notifyAlert`).
+ * @codocs [[Notion 이미지 제공:크기]]
+ * @codocs [[알림 프로세스:결정]]
+ * @param alert 보낼 알림
+ */
+async function sendImageAlert(alert: ImageAlert): Promise<void> {
+  await notifyAlert(alert);
 }
 
 /**
