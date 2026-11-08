@@ -1,7 +1,7 @@
 {
   "description": "글 본문의 이미지와 캡션으로, 글 페이지에 쓴다.\n@sample-size width",
   "name": "Figure",
-  "nodeId": "1380:1111",
+  "nodeId": "3348:2152",
   "propertyDefinitions": {
     "Caption": {
       "default": "캡션",
@@ -13,10 +13,136 @@
     },
     "Image": {
       "type": "INSTANCE_SWAP"
+    },
+    "State": {
+      "default": "Loaded",
+      "options": [
+        "Loaded",
+        "Loading",
+        "Failed"
+      ],
+      "type": "VARIANT"
     }
   },
   "variants": {
-    "default": {
+    "state=failed": {
+      "node": {
+        "height": 433,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3348:2146",
+      "properties": {
+        "State": "Failed"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "aspectRatio": {
+                  "value": 1.78,
+                  "variable": "ratio/video"
+                },
+                "fills": [
+                  "color/gray/4"
+                ],
+                "name": "placeholder",
+                "radius": [
+                  "radius/overlay",
+                  "radius/overlay",
+                  "radius/overlay",
+                  "radius/overlay"
+                ],
+                "size": {
+                  "h": 405,
+                  "w": 720
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "FRAME"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "VERTICAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "image frame",
+            "size": {
+              "h": 405,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          },
+          {
+            "fills": [
+              "color/black/61"
+            ],
+            "name": "caption",
+            "size": {
+              "h": 20,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "캡션",
+                  "fill": "color/black/61",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/sm",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Failed",
+        "size": {
+          "h": 433,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "state=loaded": {
       "node": {
         "height": 478,
         "width": 720,
@@ -24,7 +150,9 @@
         "y": 0
       },
       "nodeId": "1380:1111",
-      "properties": {},
+      "properties": {
+        "State": "Loaded"
+      },
       "tree": {
         "children": [
           {
@@ -123,9 +251,141 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Figure",
+        "name": "State=Loaded",
         "size": {
           "h": 478,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "state=loading": {
+      "node": {
+        "height": 433,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3348:2141",
+      "properties": {
+        "State": "Loading"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "aspectRatio": {
+                  "value": 1.78,
+                  "variable": "ratio/video"
+                },
+                "children": [
+                  {
+                    "fillStyle": "Skeleton/Shimmer",
+                    "name": "shimmer",
+                    "size": {
+                      "h": 405,
+                      "w": 720
+                    },
+                    "sizing": {
+                      "h": "DERIVED",
+                      "v": "DERIVED"
+                    },
+                    "type": "RECTANGLE"
+                  }
+                ],
+                "fills": [
+                  "color/gray/4"
+                ],
+                "name": "placeholder",
+                "radius": [
+                  "radius/overlay",
+                  "radius/overlay",
+                  "radius/overlay",
+                  "radius/overlay"
+                ],
+                "size": {
+                  "h": 405,
+                  "w": 720
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "FRAME"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "VERTICAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "image frame",
+            "size": {
+              "h": 405,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          },
+          {
+            "fills": [
+              "color/black/61"
+            ],
+            "name": "caption",
+            "size": {
+              "h": 20,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "캡션",
+                  "fill": "color/black/61",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/sm",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Loading",
+        "size": {
+          "h": 433,
           "w": 720
         },
         "sizing": {
