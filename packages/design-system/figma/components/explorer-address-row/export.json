@@ -573,7 +573,9 @@
               "primaryAlign": "MIN"
             },
             "name": "breadcrumb",
-            "properties": {},
+            "properties": {
+              "State": "Rest"
+            },
             "radius": [
               "radius/control",
               "radius/control",
@@ -1100,7 +1102,9 @@
               "primaryAlign": "MIN"
             },
             "name": "breadcrumb",
-            "properties": {},
+            "properties": {
+              "State": "Rest"
+            },
             "radius": [
               "radius/control",
               "radius/control",
