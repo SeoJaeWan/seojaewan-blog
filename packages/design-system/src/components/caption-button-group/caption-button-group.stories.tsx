@@ -2,15 +2,18 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps, ReactNode } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
+import { CaptionButton } from '../caption-button/caption-button';
 import { CaptionButtonGroup } from './caption-button-group';
 
 // 피그마 CaptionButtonGroup의 변형 속성 값이다(정규화한 이름).
 const PLACEMENTS = ['default', 'maximized', 'snapped'] as const;
 const STATES = ['active', 'inactive'] as const;
+const TITLE_BARS = ['default', 'custom'] as const;
 
 type FigmaArgs = {
   placement: (typeof PLACEMENTS)[number];
   state: (typeof STATES)[number];
+  titleBar: (typeof TITLE_BARS)[number];
   /** 동작 스토리가 쓴다 */
   hasMaximize?: boolean;
   maximizeSlot?: ReactNode;
@@ -33,10 +36,11 @@ function buttonNames(root: HTMLElement): (string | null)[] {
 
 const meta = {
   title: 'Components/CaptionButtonGroup',
-  args: { placement: 'default', state: 'active' },
+  args: { placement: 'default', state: 'active', titleBar: 'default' },
   argTypes: {
     placement: { control: 'inline-radio', options: PLACEMENTS },
     state: { control: 'inline-radio', options: STATES },
+    titleBar: { control: 'inline-radio', options: TITLE_BARS },
   },
   render: (args) => {
     const {
@@ -48,6 +52,7 @@ const meta = {
     return (
       <CaptionButtonGroup
         placement={args.placement}
+        titleBar={args.titleBar}
         isInactive={args.state === 'inactive'}
         hasMaximize={args.hasMaximize}
         maximizeSlot={args.maximizeSlot}
@@ -183,5 +188,29 @@ export const CustomMaximize: Story = {
         '닫기',
       ]);
     });
+  },
+};
+
+// @codocs [[창 동작:창 조작]]
+export const CustomTitleBar: Story = {
+  args: {
+    titleBar: 'custom',
+    maximizeSlot: <CaptionButton label="스냅" icon="icons/ic_fluent_maximize_20_regular.svg" />,
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    // @codocs [[창 동작:창 조작]]
+    await step(
+      'custom이면 버튼 높이가 높은 제목 표시줄에 맞고, maximizeSlot의 CaptionButton도 같은 높이다',
+      async () => {
+        const minimize = canvas.getByRole('button', { name: '최소화' });
+        const slot = canvas.getByRole('button', { name: '스냅' });
+        const close = canvas.getByRole('button', { name: '닫기' });
+        await expect(minimize.getBoundingClientRect().height).toBe(40);
+        await expect(slot.getBoundingClientRect().height).toBe(40);
+        await expect(close.getBoundingClientRect().height).toBe(40);
+      },
+    );
   },
 };
