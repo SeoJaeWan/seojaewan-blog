@@ -1,4 +1,5 @@
 import type { ComponentProps, JSX, KeyboardEvent, MouseEventHandler, ReactNode, Ref } from 'react';
+import { useEffect, useRef } from 'react';
 
 import {
   cn,
@@ -16,10 +17,12 @@ import {
 
 import { ChromeNewTabSearch } from '@/features/chrome/components/chrome-new-tab-search/chrome-new-tab-search';
 
+import { getTocScrollTop } from './utils/toc-scroll/toc-scroll';
+
 export type ChromePageLayout = 'wide' | 'narrow';
 
-/** 목차 항목 하나 */
-export type ChromePageTocItem = { label: string; isActive?: boolean };
+/** 목차 항목 하나. level은 들여 쓰기 단계(글에서 가장 높은 제목 단계가 1)이고 없으면 1이다 */
+export type ChromePageTocItem = { label: string; isActive?: boolean; level?: 1 | 2 | 3 };
 
 /** 새 탭 최신 글 바로가기 하나. id는 같은 제목의 글을 구분한다 */
 export type ChromePageLatestPost = { id?: string; title: string };
@@ -119,6 +122,31 @@ function PostPage({
   onNextOpen,
 }: ChromePostPageProps & { layout: ChromePageLayout }): JSX.Element {
   const isWide = layout === 'wide';
+  const tocRef = useRef<HTMLDivElement>(null);
+  const activeTocIndex = toc.findIndex((item) => item.isActive === true);
+
+  useEffect(
+    /**
+     * 지금 읽는 위치 항목이 목차 안에서 가려지면(목차가 최대 높이를 넘어 스크롤할 때) 그 항목이 보이도록 목차만 스크롤한다.
+     * 페이지는 스크롤하지 않는다.
+     * @codocs [[Chrome:글 화면]]
+     */
+    () => {
+      const item = tocRef.current?.querySelector('[aria-current="location"]');
+      const list = item?.parentElement;
+      if (item === null || item === undefined || list === null || list === undefined) {
+        return;
+      }
+      const listRect = list.getBoundingClientRect();
+      const itemRect = item.getBoundingClientRect();
+      list.scrollTop = getTocScrollTop(
+        { top: listRect.top, bottom: listRect.bottom, scrollTop: list.scrollTop },
+        { top: itemRect.top, bottom: itemRect.bottom },
+      );
+    },
+    [activeTocIndex, isWide, isTocExpanded],
+  );
+
   const tocItems = toc.map(
     /**
      * 목차 항목 하나를 그린다.
@@ -131,6 +159,7 @@ function PostPage({
         <TocItem
           key={String(index) + item.label}
           label={item.label}
+          level={item.level}
           isActive={item.isActive}
           {...(onTocItemSelect === undefined
             ? {}
@@ -165,6 +194,7 @@ function PostPage({
         </h1>
         {!isWide && hasToc && (
           <Toc
+            ref={tocRef}
             isExpanded={isTocExpanded}
             className="w-full"
             {...(onTocToggle === undefined ? {} : getTocToggleProps(isTocExpanded, onTocToggle))}
@@ -202,7 +232,10 @@ function PostPage({
         </nav>
       </article>
       {isWide && hasToc && (
-        <Toc className="sticky top-spacing-5xl w-size-toc-width shrink-shrink-none self-start">
+        <Toc
+          ref={tocRef}
+          className="sticky top-spacing-5xl w-size-toc-width shrink-shrink-none self-start"
+        >
           {tocItems}
         </Toc>
       )}

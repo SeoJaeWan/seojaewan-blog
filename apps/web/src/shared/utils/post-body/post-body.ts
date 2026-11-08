@@ -190,7 +190,11 @@ export const TOC_MIN_HEADINGS = 1;
 export type TocHeading = {
   id: string;
   label: string;
+  level: TocLevel;
 };
+
+/** 목차 들여 쓰기 단계. 글에서 가장 높은 제목 단계가 1이다 */
+export type TocLevel = 1 | 2 | 3;
 
 /**
  * 블록이 제목인지 본다.
@@ -288,18 +292,42 @@ export function getPlainText(richText: readonly RichText[]): string {
 }
 
 /**
- * 본문의 목차 항목. 제목(Heading)이 1개 이상일 때 목차를 보이므로, 제목이 없으면 빈 목록이다. 열 안의 제목도 넣는다.
+ * 본문의 목차 항목. 제목(Heading)이 1개 이상일 때 목차를 보이므로, 제목이 없으면 빈 목록이다. 열 안의 제목도 넣는다. 들여 쓰기 단계(`level`)는 가장 높은 제목 단계를 1로 하는 상대 단계다.
  * @codocs [[Chrome:글 화면]]
  * @codocs [[Notion 블록:지원 블록]]
  * @param blocks 본문 블록
  * @returns 목차 항목
  */
 export function getTocHeadings(blocks: readonly PostBlock[]): TocHeading[] {
-  const headings = getOutlineHeadings(blocks).map(({ block, path }) => ({
-    id: getHeadingId(...path),
-    label: getPlainText(block.richText),
-  }));
+  const topLevel = getTopHeadingLevel(blocks);
+  const headings = getOutlineHeadings(blocks).map(
+    /**
+     * 제목 하나를 목차 항목으로 바꾼다.
+     * @param heading 제목과 본문 안 자리
+     * @returns 목차 항목
+     */
+    (heading): TocHeading => ({
+      id: getHeadingId(...heading.path),
+      label: getPlainText(heading.block.richText),
+      level: getTocLevel(getHeadingLevel(heading.block), topLevel),
+    }),
+  );
   return headings.length >= TOC_MIN_HEADINGS ? headings : [];
+}
+
+/**
+ * 목차 들여 쓰기 단계. 글에서 가장 높은 제목 단계를 1로 하는 상대 단계다(가장 높은 단계는 들여 쓰지 않는다).
+ * @codocs [[Chrome:글 화면]]
+ * @param level 제목 단계(제목 1·2·3)
+ * @param topLevel 글에서 가장 높은 제목 단계
+ * @returns 목차 단계(1~3)
+ */
+export function getTocLevel(level: number, topLevel: number): TocLevel {
+  const relative = level - topLevel + 1;
+  if (relative <= 1) {
+    return 1;
+  }
+  return relative === 2 ? 2 : 3;
 }
 
 /**

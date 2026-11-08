@@ -130,10 +130,19 @@ export function ChromePostTab({
       meta={getPostMeta(workspace, post)}
       title={post.name}
       cover={cover === null ? undefined : <ResponsiveImage image={cover} alt="" />}
-      toc={headings.map((heading, index) => ({
-        label: heading.label,
-        isActive: index === activeIndex,
-      }))}
+      toc={headings.map(
+        /**
+         * 목차 제목 하나를 목차 항목으로 바꾼다. 지금 읽는 위치면 표시한다.
+         * @param heading 목차 제목
+         * @param index 순서
+         * @returns 목차 항목
+         */
+        (heading, index) => ({
+          label: heading.label,
+          level: heading.level,
+          isActive: index === activeIndex,
+        }),
+      )}
       onTocItemSelect={handleTocItemSelect}
       isTocExpanded={isTocExpanded}
       onTocToggle={handleTocToggle}
