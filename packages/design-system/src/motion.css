@@ -616,9 +616,35 @@
 }
 
 /*
+ * 이미지 스켈레톤 반짝임(견본 motion-image-skeleton). Figure State=Loading의 반짝임 칠(shimmer 레이어)이 칸 왼쪽 밖
+ * 자리에서 칸 두 개 너비만큼 오른쪽으로 지나가기를 되풀이한다([[Notion 이미지 제공:로딩 표시]]).
+ * 견본의 1440은 견본 칸 너비(720)의 두 배라, px 대신 요소 자기 너비(translate 200%)로 써서 실제 이미지 너비가 달라도
+ * 칸 전체를 지나가게 한다(견본에서는 1440과 같다). 실행 중 값은 없다.
+ * 받는 중에 늘 붙는 움직임이라 Figure가 반짝임 레이어에 붙인다. 정지 자리(칸 왼쪽 밖)는 컴포넌트가 위치(right)로 잡는다.
+ * 받기에 실패하면 반짝임 레이어가 빠져 멈춘다.
+ */
+@keyframes motion-image-skeleton {
+  0% {
+    translate: 0 0;
+  }
+
+  100% {
+    translate: 200% 0;
+  }
+}
+
+@utility motion-image-skeleton {
+  animation-name: motion-image-skeleton;
+  animation-duration: var(--motion-duration-slower);
+  animation-timing-function: var(--motion-easing-fade);
+  animation-iteration-count: infinite;
+}
+
+/*
  * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다.
  * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환, 순서 바꾸기 끌기는 여기서 움직임 없이 바로 바꾼다.
  * hover·pressed 색 전환, 검색 돋보기 페이드, ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
+ * 이미지 스켈레톤 반짝임은 반짝이지 않고 회색 칸만 보인다(반짝임 칠은 칸 밖 정지 자리에 남는다).
  * 애니메이션을 없애면 사라지는 요소는 기다릴 애니메이션이 없어 바로 빠진다([[피그마 연동:모션 클래스]]).
  */
 @media (prefers-reduced-motion: reduce) {
@@ -638,7 +664,8 @@
   .motion-reorder-drop,
   .motion-reorder-slide,
   .motion-start-pinned-move-exit,
-  .motion-start-pinned-move-enter {
+  .motion-start-pinned-move-enter,
+  .motion-image-skeleton {
     animation: none;
   }
 
