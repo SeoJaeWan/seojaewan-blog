@@ -19,10 +19,217 @@
         "Inactive"
       ],
       "type": "VARIANT"
+    },
+    "Title bar": {
+      "default": "Default",
+      "options": [
+        "Custom",
+        "Default"
+      ],
+      "type": "VARIANT"
     }
   },
   "variants": {
-    "placement=default,state=active": {
+    "placement=default,state=active,title-bar=custom": {
+      "node": {
+        "height": 40,
+        "width": 138,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3339:10540",
+      "properties": {
+        "Placement": "Default",
+        "State": "Active",
+        "Title bar": "Custom"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/89",
+                  "path": "icons/ic_fluent_subtract_20_regular"
+                },
+                "component": "ic_fluent_subtract_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "minimize button",
+            "properties": {
+              "State": "Rest",
+              "Title bar": "Custom",
+              "Variant": "Default"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/89",
+                  "path": "icons/ic_fluent_maximize_20_regular"
+                },
+                "component": "ic_fluent_maximize_20_regular",
+                "height": "size/icon/sm",
+                "name": "ic_fluent_maximize_20_regular",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "maximize button",
+            "properties": {
+              "State": "Rest",
+              "Title bar": "Custom",
+              "Variant": "Default"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/89",
+                  "path": "icons/ic_fluent_dismiss_20_regular"
+                },
+                "component": "ic_fluent_dismiss_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "close button",
+            "properties": {
+              "State": "Rest",
+              "Title bar": "Custom",
+              "Variant": "Close"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Default, State=Active, Title bar=Custom",
+        "size": {
+          "h": 40,
+          "w": 138
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "placement=default,state=active,title-bar=default": {
       "node": {
         "height": 32,
         "width": 138,
@@ -32,7 +239,8 @@
       "nodeId": "393:15720",
       "properties": {
         "Placement": "Default",
-        "State": "Active"
+        "State": "Active",
+        "Title bar": "Default"
       },
       "tree": {
         "children": [
@@ -75,6 +283,7 @@
             "name": "minimize button",
             "properties": {
               "State": "Rest",
+              "Title bar": "Default",
               "Variant": "Default"
             },
             "size": {
@@ -127,6 +336,7 @@
             "name": "maximize button",
             "properties": {
               "State": "Rest",
+              "Title bar": "Default",
               "Variant": "Default"
             },
             "size": {
@@ -179,6 +389,7 @@
             "name": "close button",
             "properties": {
               "State": "Rest",
+              "Title bar": "Default",
               "Variant": "Close"
             },
             "size": {
@@ -205,7 +416,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Placement=Default, State=Active",
+        "name": "Placement=Default, State=Active, Title bar=Default",
         "size": {
           "h": 32,
           "w": 138
@@ -217,7 +428,206 @@
         "type": "COMPONENT"
       }
     },
-    "placement=default,state=inactive": {
+    "placement=default,state=inactive,title-bar=custom": {
+      "node": {
+        "height": 40,
+        "width": 138,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3339:10588",
+      "properties": {
+        "Placement": "Default",
+        "State": "Inactive",
+        "Title bar": "Custom"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/36",
+                  "path": "icons/ic_fluent_subtract_20_regular"
+                },
+                "component": "ic_fluent_subtract_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "minimize button",
+            "properties": {
+              "State": "Inactive",
+              "Title bar": "Custom",
+              "Variant": "Default"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/36",
+                  "path": "icons/ic_fluent_maximize_20_regular"
+                },
+                "component": "ic_fluent_maximize_20_regular",
+                "height": "size/icon/sm",
+                "name": "ic_fluent_maximize_20_regular",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "maximize button",
+            "properties": {
+              "State": "Inactive",
+              "Title bar": "Custom",
+              "Variant": "Default"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/36",
+                  "path": "icons/ic_fluent_dismiss_20_regular"
+                },
+                "component": "ic_fluent_dismiss_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "close button",
+            "properties": {
+              "State": "Inactive",
+              "Title bar": "Custom",
+              "Variant": "Close"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Default, State=Inactive, Title bar=Custom",
+        "size": {
+          "h": 40,
+          "w": 138
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "placement=default,state=inactive,title-bar=default": {
       "node": {
         "height": 32,
         "width": 138,
@@ -227,7 +637,8 @@
       "nodeId": "393:15730",
       "properties": {
         "Placement": "Default",
-        "State": "Inactive"
+        "State": "Inactive",
+        "Title bar": "Default"
       },
       "tree": {
         "children": [
@@ -270,6 +681,7 @@
             "name": "minimize button",
             "properties": {
               "State": "Inactive",
+              "Title bar": "Default",
               "Variant": "Default"
             },
             "size": {
@@ -322,6 +734,7 @@
             "name": "maximize button",
             "properties": {
               "State": "Inactive",
+              "Title bar": "Default",
               "Variant": "Default"
             },
             "size": {
@@ -374,6 +787,7 @@
             "name": "close button",
             "properties": {
               "State": "Inactive",
+              "Title bar": "Default",
               "Variant": "Close"
             },
             "size": {
@@ -400,7 +814,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Placement=Default, State=Inactive",
+        "name": "Placement=Default, State=Inactive, Title bar=Default",
         "size": {
           "h": 32,
           "w": 138
@@ -412,7 +826,206 @@
         "type": "COMPONENT"
       }
     },
-    "placement=maximized,state=active": {
+    "placement=maximized,state=active,title-bar=custom": {
+      "node": {
+        "height": 40,
+        "width": 138,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3339:10556",
+      "properties": {
+        "Placement": "Maximized",
+        "State": "Active",
+        "Title bar": "Custom"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/89",
+                  "path": "icons/ic_fluent_subtract_20_regular"
+                },
+                "component": "ic_fluent_subtract_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "minimize button",
+            "properties": {
+              "State": "Rest",
+              "Title bar": "Custom",
+              "Variant": "Default"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/89",
+                  "path": "icons/ic_fluent_square_multiple_20_regular"
+                },
+                "component": "ic_fluent_square_multiple_20_regular",
+                "height": "size/icon/sm",
+                "name": "ic_fluent_square_multiple_20_regular",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "restore button",
+            "properties": {
+              "State": "Rest",
+              "Title bar": "Custom",
+              "Variant": "Default"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/89",
+                  "path": "icons/ic_fluent_dismiss_20_regular"
+                },
+                "component": "ic_fluent_dismiss_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "close button",
+            "properties": {
+              "State": "Rest",
+              "Title bar": "Custom",
+              "Variant": "Close"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Maximized, State=Active, Title bar=Custom",
+        "size": {
+          "h": 40,
+          "w": 138
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "placement=maximized,state=active,title-bar=default": {
       "node": {
         "height": 32,
         "width": 138,
@@ -422,7 +1035,8 @@
       "nodeId": "393:15725",
       "properties": {
         "Placement": "Maximized",
-        "State": "Active"
+        "State": "Active",
+        "Title bar": "Default"
       },
       "tree": {
         "children": [
@@ -465,6 +1079,7 @@
             "name": "minimize button",
             "properties": {
               "State": "Rest",
+              "Title bar": "Default",
               "Variant": "Default"
             },
             "size": {
@@ -517,6 +1132,7 @@
             "name": "restore button",
             "properties": {
               "State": "Rest",
+              "Title bar": "Default",
               "Variant": "Default"
             },
             "size": {
@@ -569,6 +1185,7 @@
             "name": "close button",
             "properties": {
               "State": "Rest",
+              "Title bar": "Default",
               "Variant": "Close"
             },
             "size": {
@@ -595,7 +1212,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Placement=Maximized, State=Active",
+        "name": "Placement=Maximized, State=Active, Title bar=Default",
         "size": {
           "h": 32,
           "w": 138
@@ -607,7 +1224,206 @@
         "type": "COMPONENT"
       }
     },
-    "placement=maximized,state=inactive": {
+    "placement=maximized,state=inactive,title-bar=custom": {
+      "node": {
+        "height": 40,
+        "width": 138,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3339:10604",
+      "properties": {
+        "Placement": "Maximized",
+        "State": "Inactive",
+        "Title bar": "Custom"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/36",
+                  "path": "icons/ic_fluent_subtract_20_regular"
+                },
+                "component": "ic_fluent_subtract_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "minimize button",
+            "properties": {
+              "State": "Inactive",
+              "Title bar": "Custom",
+              "Variant": "Default"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/36",
+                  "path": "icons/ic_fluent_square_multiple_20_regular"
+                },
+                "component": "ic_fluent_square_multiple_20_regular",
+                "height": "size/icon/sm",
+                "name": "ic_fluent_square_multiple_20_regular",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "restore button",
+            "properties": {
+              "State": "Inactive",
+              "Title bar": "Custom",
+              "Variant": "Default"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/36",
+                  "path": "icons/ic_fluent_dismiss_20_regular"
+                },
+                "component": "ic_fluent_dismiss_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "close button",
+            "properties": {
+              "State": "Inactive",
+              "Title bar": "Custom",
+              "Variant": "Close"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Maximized, State=Inactive, Title bar=Custom",
+        "size": {
+          "h": 40,
+          "w": 138
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "placement=maximized,state=inactive,title-bar=default": {
       "node": {
         "height": 32,
         "width": 138,
@@ -617,7 +1433,8 @@
       "nodeId": "393:15735",
       "properties": {
         "Placement": "Maximized",
-        "State": "Inactive"
+        "State": "Inactive",
+        "Title bar": "Default"
       },
       "tree": {
         "children": [
@@ -660,6 +1477,7 @@
             "name": "minimize button",
             "properties": {
               "State": "Inactive",
+              "Title bar": "Default",
               "Variant": "Default"
             },
             "size": {
@@ -712,6 +1530,7 @@
             "name": "restore button",
             "properties": {
               "State": "Inactive",
+              "Title bar": "Default",
               "Variant": "Default"
             },
             "size": {
@@ -764,6 +1583,7 @@
             "name": "close button",
             "properties": {
               "State": "Inactive",
+              "Title bar": "Default",
               "Variant": "Close"
             },
             "size": {
@@ -790,7 +1610,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Placement=Maximized, State=Inactive",
+        "name": "Placement=Maximized, State=Inactive, Title bar=Default",
         "size": {
           "h": 32,
           "w": 138
@@ -802,7 +1622,206 @@
         "type": "COMPONENT"
       }
     },
-    "placement=snapped,state=active": {
+    "placement=snapped,state=active,title-bar=custom": {
+      "node": {
+        "height": 40,
+        "width": 138,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3339:10572",
+      "properties": {
+        "Placement": "Snapped",
+        "State": "Active",
+        "Title bar": "Custom"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/89",
+                  "path": "icons/ic_fluent_subtract_20_regular"
+                },
+                "component": "ic_fluent_subtract_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "minimize button",
+            "properties": {
+              "State": "Rest",
+              "Title bar": "Custom",
+              "Variant": "Default"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/89",
+                  "path": "icons/ic_fluent_maximize_20_regular"
+                },
+                "component": "ic_fluent_maximize_20_regular",
+                "height": "size/icon/sm",
+                "name": "ic_fluent_maximize_20_regular",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "maximize button",
+            "properties": {
+              "State": "Rest",
+              "Title bar": "Custom",
+              "Variant": "Default"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/89",
+                  "path": "icons/ic_fluent_dismiss_20_regular"
+                },
+                "component": "ic_fluent_dismiss_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "close button",
+            "properties": {
+              "State": "Rest",
+              "Title bar": "Custom",
+              "Variant": "Close"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Snapped, State=Active, Title bar=Custom",
+        "size": {
+          "h": 40,
+          "w": 138
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "placement=snapped,state=active,title-bar=default": {
       "node": {
         "height": 32,
         "width": 138,
@@ -812,7 +1831,8 @@
       "nodeId": "605:1493",
       "properties": {
         "Placement": "Snapped",
-        "State": "Active"
+        "State": "Active",
+        "Title bar": "Default"
       },
       "tree": {
         "children": [
@@ -855,6 +1875,7 @@
             "name": "minimize button",
             "properties": {
               "State": "Rest",
+              "Title bar": "Default",
               "Variant": "Default"
             },
             "size": {
@@ -907,6 +1928,7 @@
             "name": "maximize button",
             "properties": {
               "State": "Rest",
+              "Title bar": "Default",
               "Variant": "Default"
             },
             "size": {
@@ -959,6 +1981,7 @@
             "name": "close button",
             "properties": {
               "State": "Rest",
+              "Title bar": "Default",
               "Variant": "Close"
             },
             "size": {
@@ -985,7 +2008,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Placement=Snapped, State=Active",
+        "name": "Placement=Snapped, State=Active, Title bar=Default",
         "size": {
           "h": 32,
           "w": 138
@@ -997,7 +2020,206 @@
         "type": "COMPONENT"
       }
     },
-    "placement=snapped,state=inactive": {
+    "placement=snapped,state=inactive,title-bar=custom": {
+      "node": {
+        "height": 40,
+        "width": 138,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3339:10620",
+      "properties": {
+        "Placement": "Snapped",
+        "State": "Inactive",
+        "Title bar": "Custom"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/36",
+                  "path": "icons/ic_fluent_subtract_20_regular"
+                },
+                "component": "ic_fluent_subtract_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "minimize button",
+            "properties": {
+              "State": "Inactive",
+              "Title bar": "Custom",
+              "Variant": "Default"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/36",
+                  "path": "icons/ic_fluent_maximize_20_regular"
+                },
+                "component": "ic_fluent_maximize_20_regular",
+                "height": "size/icon/sm",
+                "name": "ic_fluent_maximize_20_regular",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "maximize button",
+            "properties": {
+              "State": "Inactive",
+              "Title bar": "Custom",
+              "Variant": "Default"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/36",
+                  "path": "icons/ic_fluent_dismiss_20_regular"
+                },
+                "component": "ic_fluent_dismiss_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/window/tall-title-bar-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "close button",
+            "properties": {
+              "State": "Inactive",
+              "Title bar": "Custom",
+              "Variant": "Close"
+            },
+            "size": {
+              "h": 40,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Snapped, State=Inactive, Title bar=Custom",
+        "size": {
+          "h": 40,
+          "w": 138
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "placement=snapped,state=inactive,title-bar=default": {
       "node": {
         "height": 32,
         "width": 138,
@@ -1007,7 +2229,8 @@
       "nodeId": "605:1497",
       "properties": {
         "Placement": "Snapped",
-        "State": "Inactive"
+        "State": "Inactive",
+        "Title bar": "Default"
       },
       "tree": {
         "children": [
@@ -1050,6 +2273,7 @@
             "name": "minimize button",
             "properties": {
               "State": "Inactive",
+              "Title bar": "Default",
               "Variant": "Default"
             },
             "size": {
@@ -1102,6 +2326,7 @@
             "name": "maximize button",
             "properties": {
               "State": "Inactive",
+              "Title bar": "Default",
               "Variant": "Default"
             },
             "size": {
@@ -1154,6 +2379,7 @@
             "name": "close button",
             "properties": {
               "State": "Inactive",
+              "Title bar": "Default",
               "Variant": "Close"
             },
             "size": {
@@ -1180,7 +2406,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Placement=Snapped, State=Inactive",
+        "name": "Placement=Snapped, State=Inactive, Title bar=Default",
         "size": {
           "h": 32,
           "w": 138
