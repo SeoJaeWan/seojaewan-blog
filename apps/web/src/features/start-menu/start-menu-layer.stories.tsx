@@ -201,17 +201,20 @@ export const PinnedTiles: Story = {
 
     // @codocs [[Start 메뉴:고정됨]]
     await step(
-      '우클릭 메뉴는 열기, 앞으로 이동, 고정 해제이고 글과 외부 링크는 링크 복사도 있다',
+      '우클릭 메뉴는 열기, 칸 위치로 고를 수 있는 이동, 고정 해제이고 글과 외부 링크는 링크 복사도 있다',
       async () => {
         await expect(await openContextMenu(pinnedTile(panel, 'Blog'))).toEqual([
           '열기',
           '앞으로 이동',
+          '왼쪽으로 이동',
+          '오른쪽으로 이동',
           '시작 화면에서 고정 해제',
         ]);
         await closeContextMenu();
         await expect(await openContextMenu(pinnedTile(panel, 'GitHub'))).toEqual([
           '열기',
           '앞으로 이동',
+          '왼쪽으로 이동',
           '링크 복사',
           '시작 화면에서 고정 해제',
         ]);
@@ -220,12 +223,19 @@ export const PinnedTiles: Story = {
     );
 
     // @codocs [[Start 메뉴:고정됨]]
-    await step('맨 앞 칸과 둘째 칸에는 앞으로 이동이 없다', async () => {
-      await expect(await openContextMenu(pinnedTile(panel, 'File Explorer'))).not.toContain(
-        '앞으로 이동',
-      );
+    await step('맨 앞 칸은 오른쪽으로 이동만, 둘째 칸은 왼쪽·오른쪽으로 이동만 있다', async () => {
+      await expect(await openContextMenu(pinnedTile(panel, 'File Explorer'))).toEqual([
+        '열기',
+        '오른쪽으로 이동',
+        '시작 화면에서 고정 해제',
+      ]);
       await closeContextMenu();
-      await expect(await openContextMenu(pinnedTile(panel, 'Chrome'))).not.toContain('앞으로 이동');
+      await expect(await openContextMenu(pinnedTile(panel, 'Chrome'))).toEqual([
+        '열기',
+        '왼쪽으로 이동',
+        '오른쪽으로 이동',
+        '시작 화면에서 고정 해제',
+      ]);
       await closeContextMenu();
     });
 
@@ -251,7 +261,52 @@ export const PinnedTiles: Story = {
     await step('우클릭 메뉴의 앞으로 이동은 그 항목을 고정됨 맨 앞으로 옮긴다', async () => {
       await openContextMenu(pinnedTile(panel, 'Blog'));
       await userEvent.click(screen.getByRole('menuitem', { name: '앞으로 이동' }));
-      await expect(useWorkspaceStore.getState().startPins[0]).toBe('blog');
+      await waitFor(() => expect(useWorkspaceStore.getState().startPins[0]).toBe('blog'));
+      await waitFor(() =>
+        expect(pinnedTile(panel, 'Blog')).not.toHaveAttribute('data-reorder-motion'),
+      );
+    });
+
+    // @codocs [[Start 메뉴:고정됨]]
+    await step(
+      '메뉴로 옮기면 칸이 사라진 뒤 순서가 바뀌고, 나머지가 미끄러진 뒤 새 자리에서 나타난다',
+      async () => {
+        const chrome = pinnedTile(panel, 'Chrome');
+        await openContextMenu(chrome);
+        await userEvent.click(screen.getByRole('menuitem', { name: '왼쪽으로 이동' }));
+        await expect(chrome).toHaveAttribute('data-reorder-motion', 'exit');
+        await waitFor(() =>
+          expect(useWorkspaceStore.getState().startPins.slice(2, 4)).toEqual([
+            'app:chrome',
+            'app:file-explorer',
+          ]),
+        );
+        await waitFor(() =>
+          expect(pinnedTile(panel, 'File Explorer')).toHaveAttribute(
+            'data-reorder-motion',
+            'slide',
+          ),
+        );
+        await waitFor(() => expect(chrome).toHaveAttribute('data-reorder-motion', 'enter'));
+        await waitFor(() => expect(chrome).not.toHaveAttribute('data-reorder-motion'));
+      },
+    );
+
+    // @codocs [[Start 메뉴:고정됨]]
+    await step('왼쪽·오른쪽으로 이동은 옆 칸과 자리를 바꾼다', async () => {
+      await openContextMenu(pinnedTile(panel, 'Blog'));
+      await userEvent.click(screen.getByRole('menuitem', { name: '오른쪽으로 이동' }));
+      await waitFor(() =>
+        expect(useWorkspaceStore.getState().startPins.slice(0, 4)).toEqual([
+          'link:github',
+          'blog',
+          'app:chrome',
+          'app:file-explorer',
+        ]),
+      );
+      await waitFor(() =>
+        expect(pinnedTile(panel, 'Blog')).not.toHaveAttribute('data-reorder-motion'),
+      );
     });
 
     // @codocs [[Start 메뉴:고정됨]]
