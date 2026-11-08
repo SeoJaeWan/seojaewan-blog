@@ -3,7 +3,11 @@ import { expect, fireEvent, userEvent, waitFor, within } from 'storybook/test';
 
 import { StoryStage } from '@seojaewan/design-system/story';
 
-import { dragStoryPointer } from '@/features/window/story-pointer';
+import {
+  dragStoryPointer,
+  pressStoryPointer,
+  storyPointerInit,
+} from '@/features/window/story-pointer';
 import { openStoryWindows, resetStoryStores } from '@/shared/stores/store-reset/story-stores';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
@@ -493,6 +497,28 @@ export const DragOrder: Story = {
         await fireEvent.click(chrome);
         await expect(useWorkspaceStore.getState().taskbarPins).toEqual(['chrome', 'file-explorer']);
         await expect(useWindowStore.getState().order).toEqual([]);
+      },
+    );
+
+    // @codocs [[항목 조작:순서 바꾸기 끌기]]
+    await step(
+      '끄는 버튼은 커지고, 밀려나는 버튼은 미끄러지고, 놓으면 끌던 버튼이 새 자리로 들어간다',
+      async () => {
+        const chrome = body.getByRole('button', { name: 'Chrome' });
+        const explorer = body.getByRole('button', { name: '파일 탐색기' });
+        // 앞 단계의 놓기·미끄러짐이 끝나 버튼이 제자리에 선 뒤에 잰다.
+        await waitFor(() => expect(chrome).not.toHaveAttribute('data-reorder-motion'));
+        await waitFor(() => expect(explorer).not.toHaveAttribute('data-reorder-motion'));
+        const end = getCenter(explorer);
+        await pressStoryPointer(chrome, [getCenter(chrome), end]);
+        await expect(chrome).toHaveAttribute('data-reorder-motion', 'lift');
+        await expect(explorer).toHaveAttribute('data-reorder-motion', 'slide');
+        await expect(useWorkspaceStore.getState().taskbarPins).toEqual(['file-explorer', 'chrome']);
+        await fireEvent.pointerUp(chrome, storyPointerInit(end));
+        await expect(chrome).toHaveAttribute('data-reorder-motion', 'drop');
+        await waitFor(() => expect(chrome).not.toHaveAttribute('data-reorder-motion'));
+        await waitFor(() => expect(explorer).not.toHaveAttribute('data-reorder-motion'));
+        await fireEvent.click(chrome);
       },
     );
 

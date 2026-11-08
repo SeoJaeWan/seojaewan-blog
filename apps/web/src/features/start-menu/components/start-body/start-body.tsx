@@ -21,12 +21,16 @@ import type {
   StartItem,
   StartItemGroup,
 } from '@/features/start-menu/utils/start-items/start-items';
-import { findPinnedIdAt } from '@/features/start-menu/utils/start-items/start-items';
+import {
+  findPinnedIdAt,
+  START_TILE_ID_ATTRIBUTE,
+} from '@/features/start-menu/utils/start-items/start-items';
 import { getAvailableLetters } from '@/features/start-menu/utils/start-letter-rules/start-letter-rules';
 import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
+import { useReorderMotion } from '@/shared/hooks/use-reorder-motion/use-reorder-motion';
 import { useRovingFocus } from '@/shared/hooks/use-roving-focus/use-roving-focus';
 
 import { StartCategoryCards } from './components/start-category-cards/start-category-cards';
@@ -238,6 +242,10 @@ function StartListView({
   const isPinnedDraggedRef = useRef(false);
   const [isViewMenuOpen, setIsViewMenuOpen] = useState(false);
   const startPointerDrag = usePointerDrag();
+  const pinnedMotion = useReorderMotion(pinnedGridRef, {
+    itemAttribute: START_TILE_ID_ATTRIBUTE,
+    axis: 'both',
+  });
   // 격자가 열리거나 닫힌 뒤 포커스를 옮길 글자. 연 머리글의 글자 칸, 닫으면 고른(뒤로면 연) 글자의 머리글로 옮긴다.
   const pendingFocusLetterRef = useRef<string | null>(null);
   const jumpList = usePresence(bodyRef, isGridOpen, { shouldIncludeSubtree: true });
@@ -292,6 +300,8 @@ function StartListView({
 
   /**
    * 고정 칸 위에서 포인터를 누르면 끌어 순서 바꾸기를 시작한다. 끄는 동안 포인터 아래 칸 자리로 바로 옮긴다.
+   * 끄는 칸은 커진 채 포인터를 따라오고, 밀려나는 칸은 새 자리로 미끄러지고, 놓으면 새 자리로 들어간다(`useReorderMotion`).
+   * @codocs [[항목 조작:순서 바꾸기 끌기]]
    * @param event 누르기 이벤트
    * @param item 누른 칸의 항목
    */
@@ -300,16 +310,21 @@ function StartListView({
     if (handlePinnedMove === undefined) {
       return;
     }
+    const tile = event.currentTarget;
     startPointerDrag(event, {
-      onStart: () => {
+      onStart: (start, point) => {
         isPinnedDraggedRef.current = true;
+        pinnedMotion.startDrag(tile, start, point);
       },
       onMove: (point) => {
+        pinnedMotion.moveDrag(point);
         const targetId = findPinnedIdAt(pinnedGridRef.current, point.x, point.y);
         if (targetId !== null && targetId !== item.id) {
           handlePinnedMove(item.id, targetId);
         }
       },
+      onDrop: pinnedMotion.endDrag,
+      onCancel: pinnedMotion.endDrag,
     });
   }
 
