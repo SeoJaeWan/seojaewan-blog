@@ -64,8 +64,9 @@ const inactiveShadowClassNames = {
  * 떠 있는 창의 테두리는 피그마에서 레이아웃에 들어가므로(strokes included in layout) CSS border를 쓴다.
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
  * @codocs [[디자인 기반:재질 효과]]
+ * @codocs [[창 동작:창 조작]]
  * @param props 컴포넌트 속성
- * @param props.titleBar 피그마 Title bar. default는 앱 아이콘과 창 제목, custom은 앱이 채우는 제목 표시줄이다
+ * @param props.titleBar 피그마 Title bar. default는 앱 아이콘과 창 제목, custom은 앱이 채우는 높은 제목 표시줄이다. CaptionButtonGroup의 Title bar로도 넘겨 창 버튼 높이를 제목 표시줄에 맞춘다
  * @param props.appIcon (default 제목 표시줄) 피그마 App icon(WindowTitle에서 노출). 앱마다 다른 아이콘이라 꼭 넘긴다
  * @param props.title (default 제목 표시줄) 피그마 Title(WindowTitle에서 노출). 창 제목 글자다
  * @param props.titleBarContent (custom 제목 표시줄) 피그마 `Title bar content` 슬롯. 탭이나 주소창처럼 앱이 제목 표시줄을 채운다
@@ -172,6 +173,7 @@ export function WindowFrame({
         )}
         <CaptionButtonGroup
           placement={placement}
+          titleBar={titleBar}
           isInactive={isInactive}
           hasMaximize={hasMaximize}
           onMinimize={handleMinimize}
