@@ -23,8 +23,8 @@
     "generate:tokens": "node scripts/tokens/generate-tokens.ts"
   },
   "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
   },
   "devDependencies": {
     "@storybook/addon-a11y": "10.6.5",
