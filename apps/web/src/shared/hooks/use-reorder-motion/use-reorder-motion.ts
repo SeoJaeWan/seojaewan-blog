@@ -18,6 +18,8 @@ const FROM_Y = '--motion-reorder-from-y';
 const DRAGGING_CLASS_NAME = 'z-layer-drag-ghost';
 // 움직임 상태를 드러내는 속성. 동작 스토리가 확인한다.
 const MOTION_ATTRIBUTE = 'data-reorder-motion';
+// 메뉴 이동에서 옮기는 항목이 미끄러짐을 기다리는 동안 숨기는 클래스다.
+const HIDDEN_CLASS_NAME = 'invisible';
 // 이보다 적게 움직인 자리 변화는 움직이지 않은 것으로 본다(px). 소수점 반올림 차이를 거른다.
 const MIN_DISTANCE = 0.5;
 
@@ -39,10 +41,12 @@ type DragState = {
  * 순서 바꾸기 움직임 설정
  * - itemAttribute: 항목 요소에 달린, 항목 id를 담은 속성 이름. 이 속성이 달린 요소가 움직인다
  * - axis: 끄는 항목이 포인터를 따라오는 방향. 작업 표시줄과 탭은 가로(`x`)만, Start 고정됨 격자는 양쪽(`both`)이다
+ * - moveClassNames: 메뉴로 옮길 때(`playMove`) 옮기는 항목이 사라지고 나타나는 모션 클래스. Start 고정됨만 준다
  */
 export type ReorderMotionOptions = {
   itemAttribute: string;
   axis: 'x' | 'both';
+  moveClassNames?: { exit: string; enter: string };
 };
 
 /**
@@ -50,11 +54,13 @@ export type ReorderMotionOptions = {
  * - startDrag: 끌기를 시작한다. 누른 요소(또는 그 안쪽 요소), 누른 자리, 지금 포인터 자리를 받는다
  * - moveDrag: 끄는 항목을 포인터 자리로 옮긴다. 순서를 바꾸기 전에 부른다
  * - endDrag: 놓거나 취소할 때 부른다. 끄는 항목이 새 자리로 미끄러져 들어간다
+ * - playMove: 메뉴로 항목을 옮긴다. 옮기는 항목의 id와 순서를 바꾸는 함수를 받는다
  */
 export type ReorderMotion = {
   startDrag: (element: Element, start: PointerPoint, point: PointerPoint) => void;
   moveDrag: (point: PointerPoint) => void;
   endDrag: () => void;
+  playMove: (key: string, move: () => void) => void;
 };
 
 /**
@@ -67,6 +73,9 @@ export type ReorderMotion = {
  * - 놓기: 끄는 항목의 `translate`와 lift를 떼고, 놓은 자리에서 새 자리까지의 거리로 `motion-reorder-drop`을 재생한다.
  * - 애니메이션이 끝나면 클래스와 값을 뗀다. 클래스는 항목의 className prop에 두지 않고 classList로 다루며, React가 className을
  *   다시 쓰면 그린 뒤에 다시 붙인다(같은 프레임 안이라 애니메이션은 이어진다). 상태는 `data-reorder-motion`(lift·drop·slide)으로 드러낸다.
+ * - 메뉴 이동(`playMove`): 옮기는 항목이 exit 클래스로 제자리에서 사라진 뒤 순서를 바꾸고(숨긴 채), 나머지가 미끄러지기를
+ *   기다렸다가 새 자리에서 enter 클래스로 나타난다. 상태는 `data-reorder-motion`(exit·enter)으로 드러낸다.
+ *   기다릴 애니메이션이 없으면(동작 줄이기, jsdom) 바로 다음 단계로 간다.
  * - 이전 자리는 그릴 때마다 항목의 원래 자리를 목록 바탕 기준으로 기억해 둔다. 목록을 담은 패널이 움직여도(Start 열기) 어긋나지 않게 하기 위해서다.
  * @codocs [[항목 조작:순서 바꾸기 끌기]]
  * @codocs [[피그마 연동:모션 클래스]]
@@ -78,12 +87,15 @@ export function useReorderMotion(
   containerRef: RefObject<HTMLElement | null>,
   options: ReorderMotionOptions,
 ): ReorderMotion {
-  const { itemAttribute, axis } = options;
+  const { itemAttribute, axis, moveClassNames } = options;
   // 항목마다 마지막으로 잰 원래 자리(목록 바탕 기준 가운데)와 그때의 순서다.
   const layoutsRef = useRef(new Map<string, LayoutPoint>());
   const orderRef = useRef<readonly string[]>([]);
   const motionsRef = useRef(new Map<string, SettleMotion>());
   const dragRef = useRef<DragState | null>(null);
+  // 메뉴 이동 중인 항목마다 붙들어 둔 클래스(exit·숨김·enter)와, 순서가 바뀌면 나타날 항목이다.
+  const heldRef = useRef(new Map<string, string>());
+  const arrivingRef = useRef<string | null>(null);
 
   useLayoutEffect(
     /** 그릴 때마다 순서가 바뀌었으면 밀려난 항목을 미끄러뜨리고, 움직임 클래스를 다시 붙이고, 자리를 기억한다. */
@@ -97,9 +109,12 @@ export function useReorderMotion(
       const drag = dragRef.current;
       if (isReordered(orderRef.current, order)) {
         const base = getBaseOrigin(container);
+        const arriving = arrivingRef.current;
+        arrivingRef.current = null;
+        const slid: HTMLElement[] = [];
         for (const [key, element] of items) {
           const previous = layoutsRef.current.get(key);
-          if (key === drag?.key || previous === undefined) {
+          if (key === drag?.key || key === arriving || previous === undefined) {
             continue;
           }
           const layout = subtract(getRectCenter(getLayoutRect(element)), base);
@@ -111,7 +126,18 @@ export function useReorderMotion(
           const from = subtract(add(previous, shown), layout);
           playSettle(element, { className: SLIDE_CLASS_NAME, from });
           motionsRef.current.set(key, { className: SLIDE_CLASS_NAME, from });
+          slid.push(element);
         }
+        if (arriving !== null) {
+          // 나머지 칸이 다 미끄러진 뒤 옮긴 칸이 새 자리에서 나타난다.
+          afterAnimations(slid, SLIDE_CLASS_NAME, () => {
+            enter(arriving);
+          });
+        }
+      }
+      // 메뉴 이동 중인 항목의 클래스도 다시 붙인다.
+      for (const [key, className] of heldRef.current) {
+        items.get(key)?.classList.add(className);
       }
       // React가 className을 다시 썼으면 움직임 클래스를 다시 붙인다.
       for (const [key, motion] of motionsRef.current) {
@@ -262,7 +288,96 @@ export function useReorderMotion(
     layoutsRef.current = layouts;
   }
 
-  return { startDrag, moveDrag, endDrag };
+  /**
+   * 메뉴 이동 중인 항목의 클래스를 바꾼다. 앞서 붙든 클래스는 뗀다.
+   * @param key 항목 id
+   * @param className 붙들 클래스. null이면 모두 뗀다
+   * @param state 드러낼 상태(`data-reorder-motion`). null이면 뗀다
+   * @returns 항목 요소. 없으면 undefined
+   */
+  function hold(
+    key: string,
+    className: string | null,
+    state: string | null,
+  ): HTMLElement | undefined {
+    const container = containerRef.current;
+    const item = container === null ? undefined : getItems(container, itemAttribute).get(key);
+    const previous = heldRef.current.get(key);
+    if (previous !== undefined) {
+      item?.classList.remove(previous);
+    }
+    if (className === null) {
+      heldRef.current.delete(key);
+    } else {
+      heldRef.current.set(key, className);
+      item?.classList.add(className);
+    }
+    if (state === null) {
+      item?.removeAttribute(MOTION_ATTRIBUTE);
+    } else {
+      item?.setAttribute(MOTION_ATTRIBUTE, state);
+    }
+    return item;
+  }
+
+  /**
+   * 옮긴 항목을 새 자리에서 나타나게 하고, 다 나타나면 클래스를 뗀다.
+   * @param key 항목 id
+   */
+  function enter(key: string): void {
+    if (moveClassNames === undefined || heldRef.current.get(key) !== HIDDEN_CLASS_NAME) {
+      return;
+    }
+    const enterClassName = moveClassNames.enter;
+    const item = hold(key, enterClassName, 'enter');
+    afterAnimations(
+      item === undefined ? [] : [item],
+      enterClassName,
+      /** 다 나타나면 붙든 클래스를 뗀다. */
+      () => {
+        if (heldRef.current.get(key) === enterClassName) {
+          hold(key, null, null);
+        }
+      },
+    );
+  }
+
+  /**
+   * 메뉴로 항목을 옮긴다. 옮기는 항목이 제자리에서 사라진 뒤 순서를 바꾸고, 나머지가 미끄러진 뒤 새 자리에서 나타난다.
+   * 사라지는 동안 목록이 사라져도(Start 닫힘) 순서는 바꾼다.
+   * @param key 옮기는 항목 id
+   * @param move 순서를 바꾸는 함수
+   */
+  function playMove(key: string, move: () => void): void {
+    if (moveClassNames === undefined) {
+      move();
+      return;
+    }
+    const item = hold(key, moveClassNames.exit, 'exit');
+    afterAnimations(
+      item === undefined ? [] : [item],
+      moveClassNames.exit,
+      /** 다 사라지면 숨긴 채 순서를 바꾼다. */
+      () => {
+        hold(key, HIDDEN_CLASS_NAME, 'exit');
+        arrivingRef.current = key;
+        move();
+        // 순서가 바뀌지 않았으면(그릴 것이 없음) 기다리지 않고 바로 나타난다.
+        setTimeout(
+          /** 순서가 바뀌지 않아 기다릴 미끄러짐이 없으면 바로 나타난다. */
+          () => {
+            if (arrivingRef.current === key) {
+              arrivingRef.current = null;
+              enter(key);
+            }
+          },
+          0,
+        );
+      },
+    );
+  }
+
+  return { startDrag, moveDrag, endDrag, playMove };
 }
 
 /**
@@ -334,6 +449,42 @@ function clearSettle(element: HTMLElement): void {
   element.style.removeProperty(FROM_X);
   element.style.removeProperty(FROM_Y);
   element.removeAttribute(MOTION_ATTRIBUTE);
+}
+
+/**
+ * 요소들에 걸린, 이름이 주어진 이름으로 시작하는 CSS 애니메이션이 모두 끝나면 부른다. 기다릴 애니메이션이 없으면
+ * (동작 줄이기, jsdom) 바로 부른다. 취소된 애니메이션(`finished` 거부)도 끝난 것으로 본다.
+ * @param elements 요소
+ * @param animationName 애니메이션(키프레임) 이름의 앞부분
+ * @param done 끝나면 부를 함수
+ */
+function afterAnimations(
+  elements: readonly HTMLElement[],
+  animationName: string,
+  done: () => void,
+): void {
+  const animations = elements.flatMap(
+    /**
+     * 요소에 걸린, 이름이 맞는 CSS 애니메이션을 찾는다.
+     * @param element 요소
+     * @returns 애니메이션
+     */
+    (element) =>
+      typeof element.getAnimations === 'function'
+        ? element
+            .getAnimations()
+            .filter(
+              (animation) =>
+                animation instanceof CSSAnimation &&
+                animation.animationName.startsWith(animationName),
+            )
+        : [],
+  );
+  if (animations.length === 0) {
+    done();
+    return;
+  }
+  Promise.allSettled(animations.map((animation) => animation.finished)).then(done, done);
 }
 
 /**

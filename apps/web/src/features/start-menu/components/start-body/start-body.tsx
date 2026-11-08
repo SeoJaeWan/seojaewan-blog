@@ -41,6 +41,9 @@ import { getViewMenuEntries } from './view-menu/view-menu-entries';
 
 export type StartBodyDevice = 'desktop' | 'mobile';
 
+/** 고정 칸을 메뉴로 옮길 때 움직임과 함께 순서를 바꾸는 함수. 순서를 바꾸는 함수를 받아 알맞은 때 부른다 */
+export type PinnedMovePlayer = (move: () => void) => void;
+
 type StartBodyCommonProps = {
   device?: StartBodyDevice;
 };
@@ -50,7 +53,7 @@ type StartListViewProps = StartBodyCommonProps & {
   pinned: readonly StartItem[];
   groups: readonly StartItemGroup[];
   onItemOpen?: (item: StartItem) => void;
-  getPinnedMenuItems?: (item: StartItem) => readonly MenuPopupEntry[];
+  getPinnedMenuItems?: (item: StartItem, playMove: PinnedMovePlayer) => readonly MenuPopupEntry[];
   getListMenuItems?: (item: StartItem) => readonly MenuPopupEntry[];
   onPinnedMove?: (id: string, targetId: string) => void;
   onViewChange?: (view: StartAllView) => void;
@@ -112,7 +115,7 @@ const contentInsetClassNames = {
  * @param props.pinned (list·grid·category) 고정됨 항목
  * @param props.groups (list·grid·category) 모두 목록의 묶음
  * @param props.onItemOpen (list·grid·category) 항목 칸(고정됨, 그리드 보기)과 목록 줄을 눌렀을 때 부른다. 항목을 여는 일은 쓰는 곳이 한다. (results) 항목 줄이나 카드의 `열기`를 눌렀을 때 그 항목의 id로 부른다
- * @param props.getPinnedMenuItems (list·grid·category) 고정됨 칸의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartTile`)을 항목마다 정한다. 주지 않으면 메뉴가 없다
+ * @param props.getPinnedMenuItems (list·grid·category) 고정됨 칸의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartTile`)을 항목마다 정한다. 이동 메뉴는 순서를 바꾸는 함수를 함께 받은 `playMove`에 넘겨 움직임과 함께 옮긴다. 주지 않으면 메뉴가 없다
  * @param props.getListMenuItems (list·grid·category) 모두 목록 줄(그리드 보기는 칸)의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartListApp`·`Menu/StartListPost`)을 항목마다 정한다. 주지 않으면 메뉴가 없다
  * @param props.onPinnedMove (list·grid·category) 고정됨 칸을 끌어 다른 칸 자리에 놓을 때(끄는 동안 칸마다) 끈 항목 id와 놓인 칸의 항목 id로 부른다. 주지 않으면 끌 수 없다
  * @param props.onViewChange (list·grid·category) `보기:` 메뉴에서 보기를 골랐을 때 부른다. 주지 않으면 `보기:`는 메뉴 없는 버튼 모양만 그린다
@@ -213,7 +216,7 @@ function StartJumpListView({
  * @param props.pinned 고정됨 항목
  * @param props.groups 모두 목록의 묶음
  * @param props.onItemOpen 항목 칸(고정됨, 그리드 보기)과 목록 줄을 눌렀을 때 부른다. 항목을 여는 일은 쓰는 곳이 한다
- * @param props.getPinnedMenuItems 고정됨 칸의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartTile`)을 항목마다 정한다. 주지 않으면 메뉴가 없다
+ * @param props.getPinnedMenuItems 고정됨 칸의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartTile`)을 항목마다 정한다. 이동 메뉴는 순서를 바꾸는 함수를 함께 받은 `playMove`에 넘겨 움직임과 함께 옮긴다. 주지 않으면 메뉴가 없다
  * @param props.getListMenuItems 모두 목록 줄(그리드 보기는 칸)의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartListApp`·`Menu/StartListPost`)을 항목마다 정한다. 주지 않으면 메뉴가 없다
  * @param props.onPinnedMove 고정됨 칸을 끌어 다른 칸 자리에 놓을 때(끄는 동안 칸마다) 끈 항목 id와 놓인 칸의 항목 id로 부른다. 주지 않으면 끌 수 없다
  * @param props.onViewChange `보기:` 메뉴에서 보기를 골랐을 때 부른다. 주지 않으면 `보기:`는 메뉴 없는 버튼 모양만 그린다
@@ -245,6 +248,10 @@ function StartListView({
   const pinnedMotion = useReorderMotion(pinnedGridRef, {
     itemAttribute: START_TILE_ID_ATTRIBUTE,
     axis: 'both',
+    moveClassNames: {
+      exit: 'motion-start-pinned-move-exit',
+      enter: 'motion-start-pinned-move-enter',
+    },
   });
   // 격자가 열리거나 닫힌 뒤 포커스를 옮길 글자. 연 머리글의 글자 칸, 닫으면 고른(뒤로면 연) 글자의 머리글로 옮긴다.
   const pendingFocusLetterRef = useRef<string | null>(null);
@@ -430,7 +437,9 @@ function StartListView({
                       item={item}
                       className={tileClassName}
                       onItemOpen={handleItemOpen}
-                      menuItems={getPinnedMenuItems?.(item)}
+                      menuItems={getPinnedMenuItems?.(item, (move) => {
+                        pinnedMotion.playMove(item.id, move);
+                      })}
                       onPointerDown={handlePinnedPointerDown}
                       shouldSuppressClick={shouldSuppressPinnedClick}
                     />

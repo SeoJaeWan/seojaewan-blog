@@ -37,6 +37,7 @@ import {
   restoreTrashedPost,
   setDesktopIconPositions,
   setExplorerView,
+  swapStartPin,
   toSavedWorkspace,
   trashItems,
   unpinFromStart,
@@ -164,6 +165,34 @@ describe('고정:시작 화면 고정', () => {
   it('고정을 해제하고 순서를 바꿀 수 있다(맨 앞으로 이동은 0번 자리)', () => {
     expect(unpinFromStart(initial, BLOG_FOLDER_ID).startPins).not.toContain(BLOG_FOLDER_ID);
     expect(moveStartPin(initial, 'link:github', 0).startPins[0]).toBe('link:github');
+  });
+
+  it('왼쪽·오른쪽으로 이동은 화면에 보이는 옆 칸과 자리를 바꾼다', () => {
+    expect(swapStartPin(initial, BLOG_FOLDER_ID, 'left').startPins).toEqual([
+      APP_ITEM_IDS['file-explorer'],
+      BLOG_FOLDER_ID,
+      APP_ITEM_IDS.chrome,
+      'link:github',
+    ]);
+    expect(swapStartPin(initial, BLOG_FOLDER_ID, 'right').startPins).toEqual([
+      APP_ITEM_IDS['file-explorer'],
+      APP_ITEM_IDS.chrome,
+      'link:github',
+      BLOG_FOLDER_ID,
+    ]);
+    expect(swapStartPin(initial, APP_ITEM_IDS['file-explorer'], 'left')).toBe(initial);
+    expect(swapStartPin(initial, 'link:github', 'right')).toBe(initial);
+  });
+
+  it('왼쪽·오른쪽으로 이동은 휴지통에 있어 보이지 않는 칸을 건너뛰고 제자리에 둔다', () => {
+    const trashed = expectOk(trashItems(initial, [BLOG_FOLDER_ID], NOW));
+    expect(swapStartPin(trashed, 'link:github', 'left').startPins).toEqual([
+      APP_ITEM_IDS['file-explorer'],
+      'link:github',
+      BLOG_FOLDER_ID,
+      APP_ITEM_IDS.chrome,
+    ]);
+    expect(swapStartPin(trashed, BLOG_FOLDER_ID, 'left')).toBe(trashed);
   });
 
   it('휴지통에 들어간 항목은 고정됨에서 보이지 않고, 복원하면 다시 보인다', () => {
