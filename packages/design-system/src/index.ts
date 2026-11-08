@@ -66,6 +66,7 @@ export * from './components/snap-layout-option/snap-layout-option';
 export * from './components/snap-preview/snap-preview';
 export * from './components/snap-zone/snap-zone';
 export * from './components/start-category-card/start-category-card';
+export * from './components/start-category-folder/start-category-folder';
 export * from './components/start-menu-footer/start-menu-footer';
 export * from './components/system-tray/system-tray';
 export * from './components/table/table';
