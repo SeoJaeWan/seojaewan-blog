@@ -29,6 +29,7 @@ import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
 import { useRovingFocus } from '@/shared/hooks/use-roving-focus/use-roving-focus';
 
+import { StartCategoryCards } from './components/start-category-cards/start-category-cards';
 import { StartJumpList } from './components/start-jump-list/start-jump-list';
 import { StartTile } from './components/start-tile/start-tile';
 import { StartViewMenu } from './components/start-view-menu/start-view-menu';
@@ -225,7 +226,7 @@ function StartListView({
   onViewChange: handleViewChange,
 }: StartListViewProps): JSX.Element {
   const tileClassName = tileClassNames[device];
-  // 첫 글자로 묶은 보기(간단히·그리드)만 글자 격자로 이동한다. 범주 보기의 머리글은 종류 이름이라 누를 수 없다.
+  // 첫 글자로 묶은 보기(간단히·그리드)만 글자 격자로 이동한다. 범주 보기는 머리글 대신 범주 카드를 놓는다.
   const isJumpListEnabled = view !== 'category';
   // 격자를 연 머리글의 글자. null이면 격자가 닫혀 있다.
   const [openedLetter, setOpenedLetter] = useState<string | null>(null);
@@ -433,14 +434,23 @@ function StartListView({
                 action={renderViewControl()}
                 className="w-full shrink-shrink-none"
               />
-              <StartAllList
-                view={view}
-                groups={groups}
-                tileClassName={tileClassName}
-                onItemOpen={handleItemOpen}
-                getMenuItems={getListMenuItems}
-                onHeaderClick={handleHeaderClick}
-              />
+              {view === 'category' ? (
+                <StartCategoryCards
+                  device={device}
+                  groups={groups}
+                  onItemOpen={handleItemOpen}
+                  getMenuItems={getListMenuItems}
+                />
+              ) : (
+                <StartAllList
+                  view={view}
+                  groups={groups}
+                  tileClassName={tileClassName}
+                  onItemOpen={handleItemOpen}
+                  getMenuItems={getListMenuItems}
+                  onHeaderClick={handleHeaderClick}
+                />
+              )}
             </section>
           </div>
         </ScrollArea>
