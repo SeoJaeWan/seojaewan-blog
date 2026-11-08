@@ -32,7 +32,11 @@ export function ListGroup({
   return (
     <div {...divProps} className={cn('flex flex-col items-start gap-spacing-2xs', className)}>
       {hasHeader && (
-        <SectionHeader label={label} onClick={handleHeaderClick} className="shrink-shrink-none" />
+        <SectionHeader
+          label={label}
+          onClick={handleHeaderClick}
+          className="w-full shrink-shrink-none"
+        />
       )}
       <div className="flex w-full shrink-shrink-none flex-col gap-spacing-2xs">{children}</div>
     </div>
