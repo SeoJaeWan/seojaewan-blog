@@ -64,12 +64,12 @@ export const behavior = defineBehavior({
     },
     {
       id: 'post-without-summary',
-      result: '본문 첫 문단 설명과 기본 공유 그림',
+      result: '사이트 소개 설명과 기본 공유 그림',
       change: { address: 'Summary와 커버가 없는 글 주소' },
       scenario: 'Summary와 커버가 없는 글 /posts/react-19-hooks의 첫 HTML을 읽는다',
       expected: [
         '제목이 글 제목 | seojaewan이다',
-        '설명이 본문 첫 문단이다',
+        '설명이 사이트 소개 한 줄이다',
         '공유 그림이 기본 그림이다',
       ],
       docs: ['[[SEO와 공유 미리보기:메타 정보]]', '[[SEO와 공유 미리보기:공유 미리보기 이미지]]'],
@@ -78,11 +78,8 @@ export const behavior = defineBehavior({
         await check('제목이 글 제목 | seojaewan이다', async () => {
           await expect(head).toHaveTitle('React 19 훅 정리 | seojaewan');
         });
-        await check('설명이 본문 첫 문단이다', async () => {
-          await expectDescription(
-            head,
-            'React 19에는 폼과 비동기 상태를 다루는 새 훅이 여럿 들어왔다. 이 글은 use, useActionState, useOptimistic을 예제와 함께 정리한다.',
-          );
+        await check('설명이 사이트 소개 한 줄이다', async () => {
+          await expectDescription(head, '서재완의 기술 블로그입니다.');
         });
         await check('공유 그림이 기본 그림이다', async () => {
           await expectShareImage(head, DEFAULT_IMAGE);
@@ -123,7 +120,7 @@ export const behavior = defineBehavior({
       expected: [
         '제목이 항목 제목 | seojaewan이다',
         'canonical이 /about/<slug>다',
-        '설명이 본문 첫 문단이다',
+        '설명이 사이트 소개 한 줄이다',
         '공유 그림이 기본 그림이다',
       ],
       docs: ['[[SEO와 공유 미리보기:메타 정보]]', '[[SEO와 공유 미리보기:공유 미리보기 이미지]]'],
@@ -135,8 +132,8 @@ export const behavior = defineBehavior({
         await check('canonical이 /about/<slug>다', async () => {
           await expectCanonical(head, `${SITE}/about/fixture-about`);
         });
-        await check('설명이 본문 첫 문단이다', async () => {
-          await expectDescription(head, '소개 본문이다.');
+        await check('설명이 사이트 소개 한 줄이다', async () => {
+          await expectDescription(head, '서재완의 기술 블로그입니다.');
         });
         await check('공유 그림이 기본 그림이다', async () => {
           await expectShareImage(head, DEFAULT_IMAGE);
