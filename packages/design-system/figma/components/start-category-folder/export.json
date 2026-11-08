@@ -1,0 +1,1056 @@
+{
+  "description": "범주의 모든 항목을 아이콘과 이름 격자로 펼쳐 보이는 팝업으로, Start 범주 카드를 누르면 카드 자리 위에 연다.\n@sample-size width height",
+  "name": "StartCategoryFolder",
+  "nodeId": "3348:1973",
+  "propertyDefinitions": {
+    "Label": {
+      "default": "범주 이름",
+      "type": "TEXT"
+    }
+  },
+  "variants": {
+    "default": {
+      "node": {
+        "height": 236,
+        "width": 412,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "3348:1973",
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "color/black/89"
+            ],
+            "name": "title",
+            "size": {
+              "h": 20,
+              "w": 380
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "범주 이름",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Body Strong"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "asset": {
+                                  "path": "images/app-file-explorer"
+                                },
+                                "component": "app/File Explorer",
+                                "fills": [
+                                  "IMAGE"
+                                ],
+                                "height": "size/icon/xl",
+                                "name": "item icon",
+                                "size": {
+                                  "h": 32,
+                                  "w": 32
+                                },
+                                "sizing": {
+                                  "h": "FIXED",
+                                  "v": "FIXED"
+                                },
+                                "type": "INSTANCE",
+                                "width": "size/icon/xl"
+                              },
+                              {
+                                "fills": [
+                                  "color/black/89"
+                                ],
+                                "name": "label",
+                                "size": {
+                                  "h": 16,
+                                  "w": 87
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "HUG"
+                                },
+                                "text": {
+                                  "autoResize": "HEIGHT",
+                                  "maxLines": 1,
+                                  "maxLinesVariable": null,
+                                  "segments": [
+                                    {
+                                      "characters": "앱",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Hangul/Caption"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Caption"
+                                    },
+                                    {
+                                      "characters": "이름",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Hangul/Caption"
+                                    }
+                                  ],
+                                  "truncation": "ENDING"
+                                },
+                                "type": "TEXT"
+                              }
+                            ],
+                            "component": "PinnedTile",
+                            "height": "size/pinned-tile/height",
+                            "layout": {
+                              "counterAlign": "CENTER",
+                              "gap": "spacing/sm",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                "spacing/sm",
+                                "spacing/xs",
+                                "spacing/sm",
+                                "spacing/xs"
+                              ],
+                              "primaryAlign": "CENTER"
+                            },
+                            "name": "PinnedTile",
+                            "properties": {
+                              "Label": "앱 이름",
+                              "State": "Rest"
+                            },
+                            "radius": [
+                              "radius/control",
+                              "radius/control",
+                              "radius/control",
+                              "radius/control"
+                            ],
+                            "size": {
+                              "h": 84,
+                              "w": 95
+                            },
+                            "sizing": {
+                              "h": "FIXED",
+                              "v": "FIXED"
+                            },
+                            "type": "INSTANCE",
+                            "width": "size/pinned-tile/width"
+                          },
+                          {
+                            "children": [
+                              {
+                                "asset": {
+                                  "path": "images/app-file-explorer"
+                                },
+                                "component": "app/File Explorer",
+                                "fills": [
+                                  "IMAGE"
+                                ],
+                                "height": "size/icon/xl",
+                                "name": "item icon",
+                                "size": {
+                                  "h": 32,
+                                  "w": 32
+                                },
+                                "sizing": {
+                                  "h": "FIXED",
+                                  "v": "FIXED"
+                                },
+                                "type": "INSTANCE",
+                                "width": "size/icon/xl"
+                              },
+                              {
+                                "fills": [
+                                  "color/black/89"
+                                ],
+                                "name": "label",
+                                "size": {
+                                  "h": 16,
+                                  "w": 87
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "HUG"
+                                },
+                                "text": {
+                                  "autoResize": "HEIGHT",
+                                  "maxLines": 1,
+                                  "maxLinesVariable": null,
+                                  "segments": [
+                                    {
+                                      "characters": "앱",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Hangul/Caption"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Caption"
+                                    },
+                                    {
+                                      "characters": "이름",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Hangul/Caption"
+                                    }
+                                  ],
+                                  "truncation": "ENDING"
+                                },
+                                "type": "TEXT"
+                              }
+                            ],
+                            "component": "PinnedTile",
+                            "height": "size/pinned-tile/height",
+                            "layout": {
+                              "counterAlign": "CENTER",
+                              "gap": "spacing/sm",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                "spacing/sm",
+                                "spacing/xs",
+                                "spacing/sm",
+                                "spacing/xs"
+                              ],
+                              "primaryAlign": "CENTER"
+                            },
+                            "name": "PinnedTile",
+                            "properties": {
+                              "Label": "앱 이름",
+                              "State": "Rest"
+                            },
+                            "radius": [
+                              "radius/control",
+                              "radius/control",
+                              "radius/control",
+                              "radius/control"
+                            ],
+                            "size": {
+                              "h": 84,
+                              "w": 95
+                            },
+                            "sizing": {
+                              "h": "FIXED",
+                              "v": "FIXED"
+                            },
+                            "type": "INSTANCE",
+                            "width": "size/pinned-tile/width"
+                          },
+                          {
+                            "children": [
+                              {
+                                "asset": {
+                                  "path": "images/app-file-explorer"
+                                },
+                                "component": "app/File Explorer",
+                                "fills": [
+                                  "IMAGE"
+                                ],
+                                "height": "size/icon/xl",
+                                "name": "item icon",
+                                "size": {
+                                  "h": 32,
+                                  "w": 32
+                                },
+                                "sizing": {
+                                  "h": "FIXED",
+                                  "v": "FIXED"
+                                },
+                                "type": "INSTANCE",
+                                "width": "size/icon/xl"
+                              },
+                              {
+                                "fills": [
+                                  "color/black/89"
+                                ],
+                                "name": "label",
+                                "size": {
+                                  "h": 16,
+                                  "w": 87
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "HUG"
+                                },
+                                "text": {
+                                  "autoResize": "HEIGHT",
+                                  "maxLines": 1,
+                                  "maxLinesVariable": null,
+                                  "segments": [
+                                    {
+                                      "characters": "앱",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Hangul/Caption"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Caption"
+                                    },
+                                    {
+                                      "characters": "이름",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Hangul/Caption"
+                                    }
+                                  ],
+                                  "truncation": "ENDING"
+                                },
+                                "type": "TEXT"
+                              }
+                            ],
+                            "component": "PinnedTile",
+                            "height": "size/pinned-tile/height",
+                            "layout": {
+                              "counterAlign": "CENTER",
+                              "gap": "spacing/sm",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                "spacing/sm",
+                                "spacing/xs",
+                                "spacing/sm",
+                                "spacing/xs"
+                              ],
+                              "primaryAlign": "CENTER"
+                            },
+                            "name": "PinnedTile",
+                            "properties": {
+                              "Label": "앱 이름",
+                              "State": "Rest"
+                            },
+                            "radius": [
+                              "radius/control",
+                              "radius/control",
+                              "radius/control",
+                              "radius/control"
+                            ],
+                            "size": {
+                              "h": 84,
+                              "w": 95
+                            },
+                            "sizing": {
+                              "h": "FIXED",
+                              "v": "FIXED"
+                            },
+                            "type": "INSTANCE",
+                            "width": "size/pinned-tile/width"
+                          },
+                          {
+                            "children": [
+                              {
+                                "asset": {
+                                  "path": "images/app-file-explorer"
+                                },
+                                "component": "app/File Explorer",
+                                "fills": [
+                                  "IMAGE"
+                                ],
+                                "height": "size/icon/xl",
+                                "name": "item icon",
+                                "size": {
+                                  "h": 32,
+                                  "w": 32
+                                },
+                                "sizing": {
+                                  "h": "FIXED",
+                                  "v": "FIXED"
+                                },
+                                "type": "INSTANCE",
+                                "width": "size/icon/xl"
+                              },
+                              {
+                                "fills": [
+                                  "color/black/89"
+                                ],
+                                "name": "label",
+                                "size": {
+                                  "h": 16,
+                                  "w": 87
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "HUG"
+                                },
+                                "text": {
+                                  "autoResize": "HEIGHT",
+                                  "maxLines": 1,
+                                  "maxLinesVariable": null,
+                                  "segments": [
+                                    {
+                                      "characters": "앱",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Hangul/Caption"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Caption"
+                                    },
+                                    {
+                                      "characters": "이름",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Hangul/Caption"
+                                    }
+                                  ],
+                                  "truncation": "ENDING"
+                                },
+                                "type": "TEXT"
+                              }
+                            ],
+                            "component": "PinnedTile",
+                            "height": "size/pinned-tile/height",
+                            "layout": {
+                              "counterAlign": "CENTER",
+                              "gap": "spacing/sm",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                "spacing/sm",
+                                "spacing/xs",
+                                "spacing/sm",
+                                "spacing/xs"
+                              ],
+                              "primaryAlign": "CENTER"
+                            },
+                            "name": "PinnedTile",
+                            "properties": {
+                              "Label": "앱 이름",
+                              "State": "Rest"
+                            },
+                            "radius": [
+                              "radius/control",
+                              "radius/control",
+                              "radius/control",
+                              "radius/control"
+                            ],
+                            "size": {
+                              "h": 84,
+                              "w": 95
+                            },
+                            "sizing": {
+                              "h": "FIXED",
+                              "v": "FIXED"
+                            },
+                            "type": "INSTANCE",
+                            "width": "size/pinned-tile/width"
+                          },
+                          {
+                            "children": [
+                              {
+                                "asset": {
+                                  "path": "images/app-file-explorer"
+                                },
+                                "component": "app/File Explorer",
+                                "fills": [
+                                  "IMAGE"
+                                ],
+                                "height": "size/icon/xl",
+                                "name": "item icon",
+                                "size": {
+                                  "h": 32,
+                                  "w": 32
+                                },
+                                "sizing": {
+                                  "h": "FIXED",
+                                  "v": "FIXED"
+                                },
+                                "type": "INSTANCE",
+                                "width": "size/icon/xl"
+                              },
+                              {
+                                "fills": [
+                                  "color/black/89"
+                                ],
+                                "name": "label",
+                                "size": {
+                                  "h": 16,
+                                  "w": 87
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "HUG"
+                                },
+                                "text": {
+                                  "autoResize": "HEIGHT",
+                                  "maxLines": 1,
+                                  "maxLinesVariable": null,
+                                  "segments": [
+                                    {
+                                      "characters": "앱",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Hangul/Caption"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Caption"
+                                    },
+                                    {
+                                      "characters": "이름",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Hangul/Caption"
+                                    }
+                                  ],
+                                  "truncation": "ENDING"
+                                },
+                                "type": "TEXT"
+                              }
+                            ],
+                            "component": "PinnedTile",
+                            "height": "size/pinned-tile/height",
+                            "layout": {
+                              "counterAlign": "CENTER",
+                              "gap": "spacing/sm",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                "spacing/sm",
+                                "spacing/xs",
+                                "spacing/sm",
+                                "spacing/xs"
+                              ],
+                              "primaryAlign": "CENTER"
+                            },
+                            "name": "PinnedTile",
+                            "properties": {
+                              "Label": "앱 이름",
+                              "State": "Rest"
+                            },
+                            "radius": [
+                              "radius/control",
+                              "radius/control",
+                              "radius/control",
+                              "radius/control"
+                            ],
+                            "size": {
+                              "h": 84,
+                              "w": 95
+                            },
+                            "sizing": {
+                              "h": "FIXED",
+                              "v": "FIXED"
+                            },
+                            "type": "INSTANCE",
+                            "width": "size/pinned-tile/width"
+                          },
+                          {
+                            "children": [
+                              {
+                                "asset": {
+                                  "path": "images/app-file-explorer"
+                                },
+                                "component": "app/File Explorer",
+                                "fills": [
+                                  "IMAGE"
+                                ],
+                                "height": "size/icon/xl",
+                                "name": "item icon",
+                                "size": {
+                                  "h": 32,
+                                  "w": 32
+                                },
+                                "sizing": {
+                                  "h": "FIXED",
+                                  "v": "FIXED"
+                                },
+                                "type": "INSTANCE",
+                                "width": "size/icon/xl"
+                              },
+                              {
+                                "fills": [
+                                  "color/black/89"
+                                ],
+                                "name": "label",
+                                "size": {
+                                  "h": 16,
+                                  "w": 87
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "HUG"
+                                },
+                                "text": {
+                                  "autoResize": "HEIGHT",
+                                  "maxLines": 1,
+                                  "maxLinesVariable": null,
+                                  "segments": [
+                                    {
+                                      "characters": "앱",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Hangul/Caption"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Caption"
+                                    },
+                                    {
+                                      "characters": "이름",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Hangul/Caption"
+                                    }
+                                  ],
+                                  "truncation": "ENDING"
+                                },
+                                "type": "TEXT"
+                              }
+                            ],
+                            "component": "PinnedTile",
+                            "height": "size/pinned-tile/height",
+                            "layout": {
+                              "counterAlign": "CENTER",
+                              "gap": "spacing/sm",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                "spacing/sm",
+                                "spacing/xs",
+                                "spacing/sm",
+                                "spacing/xs"
+                              ],
+                              "primaryAlign": "CENTER"
+                            },
+                            "name": "PinnedTile",
+                            "properties": {
+                              "Label": "앱 이름",
+                              "State": "Rest"
+                            },
+                            "radius": [
+                              "radius/control",
+                              "radius/control",
+                              "radius/control",
+                              "radius/control"
+                            ],
+                            "size": {
+                              "h": 84,
+                              "w": 95
+                            },
+                            "sizing": {
+                              "h": "FIXED",
+                              "v": "FIXED"
+                            },
+                            "type": "INSTANCE",
+                            "width": "size/pinned-tile/width"
+                          },
+                          {
+                            "children": [
+                              {
+                                "asset": {
+                                  "path": "images/app-file-explorer"
+                                },
+                                "component": "app/File Explorer",
+                                "fills": [
+                                  "IMAGE"
+                                ],
+                                "height": "size/icon/xl",
+                                "name": "item icon",
+                                "size": {
+                                  "h": 32,
+                                  "w": 32
+                                },
+                                "sizing": {
+                                  "h": "FIXED",
+                                  "v": "FIXED"
+                                },
+                                "type": "INSTANCE",
+                                "width": "size/icon/xl"
+                              },
+                              {
+                                "fills": [
+                                  "color/black/89"
+                                ],
+                                "name": "label",
+                                "size": {
+                                  "h": 16,
+                                  "w": 87
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "HUG"
+                                },
+                                "text": {
+                                  "autoResize": "HEIGHT",
+                                  "maxLines": 1,
+                                  "maxLinesVariable": null,
+                                  "segments": [
+                                    {
+                                      "characters": "앱",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Hangul/Caption"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Caption"
+                                    },
+                                    {
+                                      "characters": "이름",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Hangul/Caption"
+                                    }
+                                  ],
+                                  "truncation": "ENDING"
+                                },
+                                "type": "TEXT"
+                              }
+                            ],
+                            "component": "PinnedTile",
+                            "height": "size/pinned-tile/height",
+                            "layout": {
+                              "counterAlign": "CENTER",
+                              "gap": "spacing/sm",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                "spacing/sm",
+                                "spacing/xs",
+                                "spacing/sm",
+                                "spacing/xs"
+                              ],
+                              "primaryAlign": "CENTER"
+                            },
+                            "name": "PinnedTile",
+                            "properties": {
+                              "Label": "앱 이름",
+                              "State": "Rest"
+                            },
+                            "radius": [
+                              "radius/control",
+                              "radius/control",
+                              "radius/control",
+                              "radius/control"
+                            ],
+                            "size": {
+                              "h": 84,
+                              "w": 95
+                            },
+                            "sizing": {
+                              "h": "FIXED",
+                              "v": "FIXED"
+                            },
+                            "type": "INSTANCE",
+                            "width": "size/pinned-tile/width"
+                          },
+                          {
+                            "children": [
+                              {
+                                "asset": {
+                                  "path": "images/app-file-explorer"
+                                },
+                                "component": "app/File Explorer",
+                                "fills": [
+                                  "IMAGE"
+                                ],
+                                "height": "size/icon/xl",
+                                "name": "item icon",
+                                "size": {
+                                  "h": 32,
+                                  "w": 32
+                                },
+                                "sizing": {
+                                  "h": "FIXED",
+                                  "v": "FIXED"
+                                },
+                                "type": "INSTANCE",
+                                "width": "size/icon/xl"
+                              },
+                              {
+                                "fills": [
+                                  "color/black/89"
+                                ],
+                                "name": "label",
+                                "size": {
+                                  "h": 16,
+                                  "w": 87
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "HUG"
+                                },
+                                "text": {
+                                  "autoResize": "HEIGHT",
+                                  "maxLines": 1,
+                                  "maxLinesVariable": null,
+                                  "segments": [
+                                    {
+                                      "characters": "앱",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Hangul/Caption"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Caption"
+                                    },
+                                    {
+                                      "characters": "이름",
+                                      "fill": "color/black/89",
+                                      "textStyle": "Hangul/Caption"
+                                    }
+                                  ],
+                                  "truncation": "ENDING"
+                                },
+                                "type": "TEXT"
+                              }
+                            ],
+                            "component": "PinnedTile",
+                            "height": "size/pinned-tile/height",
+                            "layout": {
+                              "counterAlign": "CENTER",
+                              "gap": "spacing/sm",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                "spacing/sm",
+                                "spacing/xs",
+                                "spacing/sm",
+                                "spacing/xs"
+                              ],
+                              "primaryAlign": "CENTER"
+                            },
+                            "name": "PinnedTile",
+                            "properties": {
+                              "Label": "앱 이름",
+                              "State": "Rest"
+                            },
+                            "radius": [
+                              "radius/control",
+                              "radius/control",
+                              "radius/control",
+                              "radius/control"
+                            ],
+                            "size": {
+                              "h": 84,
+                              "w": 95
+                            },
+                            "sizing": {
+                              "h": "FIXED",
+                              "v": "FIXED"
+                            },
+                            "type": "INSTANCE",
+                            "width": "size/pinned-tile/width"
+                          }
+                        ],
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": "spacing/none",
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none"
+                          ],
+                          "primaryAlign": "MIN",
+                          "wrap": true
+                        },
+                        "name": "Tiles",
+                        "size": {
+                          "h": 168,
+                          "w": 380
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "type": "SLOT"
+                      }
+                    ],
+                    "component": "TileGrid",
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/none",
+                      "mode": "VERTICAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "tile grid",
+                    "properties": {
+                      "Align": "Start"
+                    },
+                    "size": {
+                      "h": 168,
+                      "w": 380
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "type": "INSTANCE"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/none",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "Content",
+                "size": {
+                  "h": 168,
+                  "w": 380
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "SLOT"
+              },
+              {
+                "absolute": {
+                  "horizontal": "MAX",
+                  "vertical": "STRETCH"
+                },
+                "children": [
+                  {
+                    "absolute": {
+                      "horizontal": "CENTER",
+                      "vertical": "MIN"
+                    },
+                    "fills": [
+                      "color/black/45"
+                    ],
+                    "height": "size/scrollbar/thumb-length",
+                    "name": "thumb",
+                    "radius": [
+                      "radius/circular",
+                      "radius/circular",
+                      "radius/circular",
+                      "radius/circular"
+                    ],
+                    "size": {
+                      "h": 119.44,
+                      "w": 2
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "RECTANGLE",
+                    "width": "size/scrollbar/thumb-rest"
+                  }
+                ],
+                "component": "Scrollbar",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/2xs",
+                    "spacing/2xs",
+                    "spacing/2xs",
+                    "spacing/2xs"
+                  ],
+                  "primaryAlign": "SPACE_BETWEEN"
+                },
+                "name": "Scrollbar",
+                "properties": {
+                  "Material": "Acrylic",
+                  "State": "Rest"
+                },
+                "size": {
+                  "h": 160,
+                  "w": 12
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "DERIVED"
+                },
+                "type": "INSTANCE",
+                "width": "size/scrollbar/thickness"
+              }
+            ],
+            "component": "ScrollArea",
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "scroll area",
+            "properties": {
+              "Material": "Acrylic",
+              "State": "Rest"
+            },
+            "size": {
+              "h": 168,
+              "w": 380
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FILL"
+            },
+            "type": "INSTANCE"
+          }
+        ],
+        "effectStyle": "Surface/Flyout (Acrylic)",
+        "fillStyle": "Material/Acrylic Default",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/lg",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/lg",
+            "spacing/lg",
+            "spacing/lg",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "StartCategoryFolder",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 236,
+          "w": 412
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "color/black/6"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
+      }
+    }
+  }
+}

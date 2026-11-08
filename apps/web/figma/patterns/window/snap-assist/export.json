@@ -511,7 +511,7 @@
                                               }
                                             ],
                                             "component": "CaptionButton",
-                                            "height": "size/caption-button/height",
+                                            "height": "size/window/tall-title-bar-height",
                                             "layout": {
                                               "counterAlign": "CENTER",
                                               "gap": 0,
@@ -527,11 +527,12 @@
                                             "name": "minimize button",
                                             "properties": {
                                               "State": "Rest",
+                                              "Title bar": "Custom",
                                               "Variant": "Default"
                                             },
                                             "scaleFactor": 0.13499999046325684,
                                             "size": {
-                                              "h": 4.32,
+                                              "h": 5.4,
                                               "w": 6.21
                                             },
                                             "sizing": {
@@ -549,8 +550,7 @@
                                                   "path": "icons/ic_fluent_maximize_20_regular"
                                                 },
                                                 "component": "ic_fluent_maximize_20_regular",
-                                                "height": "size/icon/sm",
-                                                "name": "icon",
+                                                "name": "ic_fluent_maximize_20_regular",
                                                 "scaleFactor": 0.13499999046325684,
                                                 "size": {
                                                   "h": 2.16,
@@ -560,12 +560,11 @@
                                                   "h": "FIXED",
                                                   "v": "FIXED"
                                                 },
-                                                "type": "INSTANCE",
-                                                "width": "size/icon/sm"
+                                                "type": "INSTANCE"
                                               }
                                             ],
                                             "component": "CaptionButton",
-                                            "height": "size/caption-button/height",
+                                            "height": "size/window/tall-title-bar-height",
                                             "layout": {
                                               "counterAlign": "CENTER",
                                               "gap": 0,
@@ -581,11 +580,12 @@
                                             "name": "maximize button",
                                             "properties": {
                                               "State": "Rest",
+                                              "Title bar": "Custom",
                                               "Variant": "Default"
                                             },
                                             "scaleFactor": 0.13499999046325684,
                                             "size": {
-                                              "h": 4.32,
+                                              "h": 5.4,
                                               "w": 6.21
                                             },
                                             "sizing": {
@@ -619,7 +619,7 @@
                                               }
                                             ],
                                             "component": "CaptionButton",
-                                            "height": "size/caption-button/height",
+                                            "height": "size/window/tall-title-bar-height",
                                             "layout": {
                                               "counterAlign": "CENTER",
                                               "gap": 0,
@@ -635,11 +635,12 @@
                                             "name": "close button",
                                             "properties": {
                                               "State": "Rest",
+                                              "Title bar": "Custom",
                                               "Variant": "Close"
                                             },
                                             "scaleFactor": 0.13499999046325684,
                                             "size": {
-                                              "h": 4.32,
+                                              "h": 5.4,
                                               "w": 6.21
                                             },
                                             "sizing": {
@@ -666,11 +667,12 @@
                                         "name": "caption buttons",
                                         "properties": {
                                           "Placement": "Default",
-                                          "State": "Active"
+                                          "State": "Active",
+                                          "Title bar": "Custom"
                                         },
                                         "scaleFactor": 0.13499999046325684,
                                         "size": {
-                                          "h": 4.32,
+                                          "h": 5.4,
                                           "w": 18.63
                                         },
                                         "sizing": {
@@ -2162,7 +2164,8 @@
                                                 "name": "figure",
                                                 "properties": {
                                                   "Caption": "Bloom 배경화면",
-                                                  "Has caption": true
+                                                  "Has caption": true,
+                                                  "State": "Loaded"
                                                 },
                                                 "scaleFactor": 0.01822499744594097,
                                                 "size": {
@@ -2648,7 +2651,8 @@
                                                     "name": "toc item 1",
                                                     "properties": {
                                                       "Active": "True",
-                                                      "Label": "use 훅"
+                                                      "Label": "use 훅",
+                                                      "Level": "1"
                                                     },
                                                     "scaleFactor": 0.0024603744968771935,
                                                     "size": {
@@ -2724,7 +2728,8 @@
                                                     "name": "toc item 2",
                                                     "properties": {
                                                       "Active": "False",
-                                                      "Label": "useActionState"
+                                                      "Label": "useActionState",
+                                                      "Level": "1"
                                                     },
                                                     "scaleFactor": 0.0024603744968771935,
                                                     "size": {
@@ -2800,7 +2805,8 @@
                                                     "name": "toc item 3",
                                                     "properties": {
                                                       "Active": "False",
-                                                      "Label": "useOptimistic"
+                                                      "Label": "useOptimistic",
+                                                      "Level": "1"
                                                     },
                                                     "scaleFactor": 0.0024603744968771935,
                                                     "size": {
@@ -2876,7 +2882,8 @@
                                                     "name": "toc item 4",
                                                     "properties": {
                                                       "Active": "False",
-                                                      "Label": "마이그레이션"
+                                                      "Label": "마이그레이션",
+                                                      "Level": "1"
                                                     },
                                                     "scaleFactor": 0.0024603744968771935,
                                                     "size": {
@@ -2902,6 +2909,7 @@
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
+                                                "maxHeight": "size/toc/items-max-height",
                                                 "name": "Items",
                                                 "size": {
                                                   "h": 14.04,
