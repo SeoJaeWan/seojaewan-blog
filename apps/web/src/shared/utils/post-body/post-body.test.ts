@@ -131,16 +131,30 @@ describe('Chrome:글 화면', () => {
   it('제목마다 목차 항목을 만든다', () => {
     const blocks = [heading('하나'), paragraph, heading('둘'), heading('셋')];
     expect(getTocHeadings(blocks)).toEqual([
-      { id: 'heading-0', label: '하나' },
-      { id: 'heading-2', label: '둘' },
-      { id: 'heading-3', label: '셋' },
+      { id: 'heading-0', label: '하나', level: 1 },
+      { id: 'heading-2', label: '둘', level: 1 },
+      { id: 'heading-3', label: '셋', level: 1 },
     ]);
   });
 
   it('제목이 1개여도 목차 항목을 만든다', () => {
     expect(getTocHeadings([paragraph, heading('하나')])).toEqual([
-      { id: 'heading-1', label: '하나' },
+      { id: 'heading-1', label: '하나', level: 1 },
     ]);
+  });
+
+  it('목차 단계는 글에서 가장 높은 제목 단계를 1로 하는 상대 단계다', () => {
+    const blocks: PostBlock[] = [
+      { type: 'heading_2', richText: [text('둘')] },
+      { type: 'heading_3', richText: [text('셋')] },
+    ];
+    expect(getTocHeadings(blocks).map((heading) => heading.level)).toEqual([1, 2]);
+    expect(
+      getTocHeadings([
+        { type: 'heading_1', richText: [text('하나')] },
+        { type: 'heading_3', richText: [text('셋')] },
+      ]).map((heading) => heading.level),
+    ).toEqual([1, 3]);
   });
 
   it('제목이 없으면 목차가 없다', () => {
@@ -161,9 +175,9 @@ describe('Chrome:글 화면', () => {
       { type: 'toggle', richText: [text('토글')], children: [heading('토글 안')] },
     ];
     expect(getTocHeadings(blocks)).toEqual([
-      { id: 'heading-0', label: '하나' },
-      { id: 'heading-1-0-1', label: '왼쪽' },
-      { id: 'heading-1-1-0', label: '오른쪽' },
+      { id: 'heading-0', label: '하나', level: 1 },
+      { id: 'heading-1-0-1', label: '왼쪽', level: 1 },
+      { id: 'heading-1-1-0', label: '오른쪽', level: 1 },
     ]);
   });
 });

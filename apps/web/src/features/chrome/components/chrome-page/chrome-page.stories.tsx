@@ -1,7 +1,7 @@
 import pageExport from '@figma/patterns/chrome/page/export.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { JSX } from 'react';
-import { expect, fn, within } from 'storybook/test';
+import { expect, fn, waitFor, within } from 'storybook/test';
 
 import { ImageAsset, ListItem } from '@seojaewan/design-system';
 import { figmaFrame } from '@seojaewan/design-system/story';
@@ -95,6 +95,7 @@ export const Figma: Story = {};
 const handleResultOpen = fn();
 const handleLatestPostOpen = fn();
 const handleImageOpen = fn();
+const handleTocItemSelect = fn();
 
 /**
  * 요소에 실제로 적용된 마우스 커서 모양을 읽는다.
@@ -173,5 +174,54 @@ export const ImageCursor: Story = {
     await expect(getCursor(canvas.getByRole('button', { name: /이미지 크게 보기/ }))).toBe(
       'zoom-in',
     );
+  },
+};
+
+// 목차가 최대 높이를 넘도록 많이 둔 항목이다. 셋째마다 한 단계 들인 항목이고, 마지막 항목이 지금 읽는 위치다.
+const longToc = Array.from({ length: 30 }, (_, index) => ({
+  label: `목차 ${String(index + 1)}`,
+  level: index % 3 === 2 ? (2 as const) : (1 as const),
+  isActive: index === 29,
+}));
+
+// @codocs [[Chrome:글 화면]]
+/** 목차는 상대 단계로 들여 쓰고, 최대 높이를 넘으면 지금 읽는 위치 항목이 보이게 목차 안에서만 스크롤한다 */
+export const TocLevelAndScroll: Story = {
+  args: { page: 'post' },
+  render: () => (
+    <ChromePage
+      page="post"
+      meta={POST_PAGE.meta}
+      title={POST_PAGE.title}
+      toc={longToc}
+      onTocItemSelect={handleTocItemSelect}
+    >
+      <PostBlocks
+        blocks={postPageBlocks.wide}
+        renderImage={() => <ImageAsset name="images/wallpaper-bloom" />}
+      />
+    </ChromePage>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('2단계 항목은 1단계 항목보다 들여 쓴다', async () => {
+      const first = canvas.getByText('목차 1');
+      const third = canvas.getByText('목차 3');
+      await expect(third.offsetLeft).toBeGreaterThan(first.offsetLeft);
+    });
+
+    await step('지금 읽는 위치 항목이 보이도록 목차만 스크롤하고 페이지는 그대로다', async () => {
+      const active = canvas.getByText('목차 30');
+      const list = active.closest('[aria-current="location"]')?.parentElement;
+      if (list === null || list === undefined) {
+        throw new Error('목차 항목 목록이 없다');
+      }
+      await waitFor(() => expect(list.scrollTop).toBeGreaterThan(0));
+      const listRect = list.getBoundingClientRect();
+      const activeRect = active.getBoundingClientRect();
+      await expect(activeRect.bottom).toBeLessThanOrEqual(listRect.bottom + 1);
+      await expect(window.scrollY).toBe(0);
+    });
   },
 };
