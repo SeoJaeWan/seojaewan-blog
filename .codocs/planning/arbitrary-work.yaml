@@ -27,3 +27,13 @@ _codocs:
   - 스토리 화면 크기 도우미(`setStoryScreen`)가 더 이상 읽지 않는 `visualViewport.height` 가짜 값 설정을 뺐다.
   - `use-work-area` 테스트의 `visualViewport` 구독·반올림 시험은 지우고, `visualViewport`가 있어도 `innerHeight`를 쓰는지 보는 시험 하나로 바꿨다.
   - [[반응형:화면 채우기]]에서 `visualViewport`를 말한 문장만 `innerHeight` 기준으로 고쳤다. 인앱 브라우저에서 주소창이 접힐 때 `resize`가 오지 않을 수 있다는 이유 문장은 근거가 없어져 함께 뺐다.
+
+끌어서 순서 바꾸기 모션: |
+  `feat/drag-reorder-motion` PR에서 [[항목 조작:순서 바꾸기 끌기]]를 구현하며 정한 것이다.
+  - 세 곳(작업 표시줄 고정 앱, 탐색기·Chrome 탭, Start 고정됨)이 공용 훅 `useReorderMotion` 하나를 쓴다. 끄는 항목은 `motion-reorder-lift`를 붙인 채 `translate`로 포인터를 따라오고, 놓거나 취소하면 `motion-reorder-drop`, 자리가 바뀐 나머지는 `motion-reorder-slide`를 FLIP으로 재생한다. 포인터를 놓친 취소도 놓기와 같이 새 자리로 들어간다.
+  - 놓일 자리를 찾을 때 항목의 움직이는 모습이 아니라 원래 자리(요소 자신의 `translate`·`scale`을 뺀 자리)로 찾게 바꿨다. 움직이는 모습으로 찾으면 미끄러지는 항목 위에서 순서가 앞뒤로 오가기 때문이다.
+  - 끄는 항목을 옆 항목 위에 그리도록 끄는 동안 `z-layer-drag-ghost`를 붙였다. 미끄러지는 옆 항목도 `translate`로 겹 순서가 올라가 끄는 항목을 가리기 때문이다.
+  - 미끄러지는 도중 순서가 다시 바뀌면 지금 보이는 자리에서 이어서 미끄러진다. 끌기 밖에서 같은 항목들의 순서가 바뀌어도 미끄러지고, 항목이 더해지거나 빠진 경우는 움직이지 않는다.
+  - 끄는 동안 목록 안에서 옮겨진 요소는 CSS 애니메이션이 처음부터 다시 돌아 lift가 다시 커지므로, 옮겨진 뒤 lift를 끝 모습으로 바로 보낸다.
+  - 움직임 상태를 `data-reorder-motion`(lift·drop·slide) 속성으로 드러냈다. 동작 스토리가 확인한다.
+  - 탭이 움직이려면 탭 id가 필요해 탐색기·Chrome 탭 요소에 `data-tab-id`를 달았다. id가 없는 탭(스토리 데이터)은 끌기만 되고 움직이지 않는다.
