@@ -517,6 +517,42 @@ export const AllList: Story = {
     });
 
     // @codocs [[Start 메뉴:모두]]
+    await step(
+      '범주 카드의 묶음이나 빈 곳을 누르면 펼침 팝업이 열리고, Esc나 바깥 누르기로 팝업만 닫힌다',
+      async () => {
+        /**
+         * 범주 카드의 빈 곳(카드 바탕)을 누른다.
+         * @param label 범주 이름
+         */
+        async function clickCard(label: string): Promise<void> {
+          const card = within(all()).getByText(label).parentElement;
+          if (card === null) {
+            throw new Error(`범주 카드가 없다: ${label}`);
+          }
+          await fireEvent.click(card);
+        }
+
+        await clickCard('글');
+        const popup = await screen.findByRole('dialog', { name: '글' });
+        await expect(within(popup).getByRole('button', { name: 'Next.js 캐시' })).toBeVisible();
+        await expect(
+          await openContextMenu(within(popup).getByRole('button', { name: 'Next.js 캐시' })),
+        ).toContain('열기');
+        await closeContextMenu();
+        await expect(screen.getByRole('dialog', { name: '글' })).toBeInTheDocument();
+        await userEvent.keyboard('{Escape}');
+        await waitFor(() => expect(screen.queryByRole('dialog', { name: '글' })).toBeNull());
+        await expect(usePanelStore.getState().openPanel).toBe('start');
+
+        await clickCard('글');
+        await screen.findByRole('dialog', { name: '글' });
+        await userEvent.click(within(panel).getByText('고정됨'));
+        await waitFor(() => expect(screen.queryByRole('dialog', { name: '글' })).toBeNull());
+        await expect(usePanelStore.getState().openPanel).toBe('start');
+      },
+    );
+
+    // @codocs [[Start 메뉴:모두]]
     await step('그리드 보기의 항목 칸도 같은 우클릭 메뉴를 띄운다', async () => {
       useWorkspaceStore.getState().setStartAllView('grid');
       await waitFor(() =>

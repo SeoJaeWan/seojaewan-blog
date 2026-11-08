@@ -5,11 +5,13 @@ import { StartCategoryFolder } from '@seojaewan/design-system';
 import type { StartCategoryDevice } from '@/features/start-menu/components/start-body/components/start-category-cards/start-category-cards';
 import { StartTile } from '@/features/start-menu/components/start-body/components/start-tile/start-tile';
 import type { StartItem } from '@/features/start-menu/utils/start-items/start-items';
+import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 
 type StartCategoryPopupProps = Omit<ComponentProps<typeof StartCategoryFolder>, 'children'> & {
   device: StartCategoryDevice;
   items: readonly StartItem[];
   onItemOpen?: (item: StartItem) => void;
+  getMenuItems?: (item: StartItem) => readonly MenuPopupEntry[];
 };
 
 // 기기별 항목 칸 너비다. 데스크톱은 PinnedTile 기본(95), 모바일은 89로 고정됨 격자와 같다.
@@ -28,11 +30,13 @@ const tileClassNames = {
  * @param props.device 피그마 Device. 모바일은 항목 칸(89)이 좁다
  * @param props.items 범주의 모든 항목. 이름순이다
  * @param props.onItemOpen 항목 칸을 눌렀을 때 부른다
+ * @param props.getMenuItems 항목 칸의 우클릭(모바일은 길게 누르기) 메뉴 항목(모두 목록 줄과 같은 메뉴)을 항목마다 정한다. 주지 않으면 메뉴가 없다
  */
 export function StartCategoryPopup({
   device,
   items,
   onItemOpen: handleItemOpen,
+  getMenuItems,
   ...folderProps
 }: StartCategoryPopupProps): JSX.Element {
   return (
@@ -49,6 +53,7 @@ export function StartCategoryPopup({
             item={item}
             className={tileClassNames[device]}
             onItemOpen={handleItemOpen}
+            menuItems={getMenuItems?.(item)}
           />
         ),
       )}
