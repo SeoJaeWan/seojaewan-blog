@@ -51,9 +51,9 @@ export const MOBILE_PREVIEW_MARGIN = 12;
 /** 창 미리보기 카드의 원래 너비(px). 디자인 시스템 WindowPreview가 정한 값이다 */
 export const PREVIEW_CARD_WIDTH = 208;
 
-// 목록 판의 바깥 여백(안쪽 여백 4 + 테두리 1을 양쪽에), 카드 사이 간격이다.
-const PREVIEW_LIST_CHROME = 10;
-const PREVIEW_CARD_GAP = 4;
+// 목록 판의 바깥 여백(테두리 1을 양쪽에), 카드 사이 간격이다. 판에는 안쪽 여백이 없고 카드는 틈 없이 붙는다([[작업 표시줄:창 미리보기]]).
+const PREVIEW_LIST_CHROME = 2;
+const PREVIEW_CARD_GAP = 0;
 
 /** 모바일 창 미리보기 목록의 크기. cardWidth는 카드 하나의 너비이며 카드가 많으면 같은 비율로 줄어든다. */
 export type MobilePreviewLayout = {
