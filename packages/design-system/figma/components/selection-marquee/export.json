@@ -15,7 +15,7 @@
       "properties": {},
       "tree": {
         "fills": [
-          "color/blue/5"
+          "color/blue/50/25"
         ],
         "name": "SelectionMarquee",
         "size": {
@@ -33,7 +33,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "color/blue/18"
+          "color/blue/50"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT"

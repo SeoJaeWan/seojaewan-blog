@@ -525,8 +525,8 @@ export const Mobile: Story = {
         await expect(cards).toHaveLength(3);
         // 실제 브라우저라 여는 애니메이션의 scale이 getBoundingClientRect에 들어가므로 배치 크기를 본다.
         const listWidth = window.innerWidth - 12 * 2;
-        // 카드 사이 간격 4px 둘, 목록 판 여백 합 10px (예: 390폭이면 (366 - 10 - 4 * 2) / 3 = 116)
-        const cardWidth = Math.floor((listWidth - 10 - 4 * 2) / 3);
+        // 카드는 틈 없이 붙고 목록 판은 테두리 합 2px만 갖는다 (예: 390폭이면 (366 - 2) / 3 = 121)
+        const cardWidth = Math.floor((listWidth - 2) / 3);
         await expect(cards[0]?.parentElement?.offsetWidth).toBe(listWidth);
         await expect(cards.map((card) => card.offsetWidth)).toEqual([
           cardWidth,
