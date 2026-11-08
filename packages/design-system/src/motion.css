@@ -583,6 +583,39 @@
 }
 
 /*
+ * Start 고정됨 메뉴 이동의 나타남(견본 motion-start-pinned-move-enter). 나머지 칸이 motion-reorder-slide로 미끄러진 뒤,
+ * 옮기는 칸 전체(PinnedTile)가 도착할 자리에서 배율 0.5 → 1로 커지며 투명도 0 → 1로 나타난다([[Start 메뉴:고정됨]]).
+ * 배율(direct-entrance)과 투명도(fade)는 이징이 달라 animation을 쉼표로 나눈다. 실행 중 값은 없다.
+ * 시작 모습(투명도 0)을 재생 전에도 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-start-pinned-move-enter-scale {
+  0% {
+    scale: var(--motion-scale-half);
+  }
+
+  100% {
+    scale: 1;
+  }
+}
+
+@keyframes motion-start-pinned-move-enter-fade {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@utility motion-start-pinned-move-enter {
+  animation:
+    motion-start-pinned-move-enter-scale var(--motion-duration-normal)
+      var(--motion-easing-direct-entrance) both,
+    motion-start-pinned-move-enter-fade var(--motion-duration-normal) var(--motion-easing-fade) both;
+}
+
+/*
  * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다.
  * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환, 순서 바꾸기 끌기는 여기서 움직임 없이 바로 바꾼다.
  * hover·pressed 색 전환, 검색 돋보기 페이드, ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
@@ -604,7 +637,8 @@
   .motion-reorder-lift,
   .motion-reorder-drop,
   .motion-reorder-slide,
-  .motion-start-pinned-move-exit {
+  .motion-start-pinned-move-exit,
+  .motion-start-pinned-move-enter {
     animation: none;
   }
 
