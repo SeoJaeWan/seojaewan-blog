@@ -1,5 +1,8 @@
 import { getListMenuEntries } from '@/features/start-menu/list-menu/list-menu-entries';
-import { getPinnedMenuEntries } from '@/features/start-menu/pinned-menu/pinned-menu-entries';
+import {
+  getPinnedMenuEntries,
+  getPinnedMoves,
+} from '@/features/start-menu/pinned-menu/pinned-menu-entries';
 import type {
   StartAllView,
   StartItem,
@@ -67,8 +70,13 @@ export function useStartLists(onOpen: (item: StartItem) => void): StartLists {
    */
   function getPinnedMenuItems(item: StartItem): readonly MenuPopupEntry[] {
     const copyableItem = getCopyableItem(item);
+    // 이동 메뉴는 화면에 보이는 위치로 정한다. 왼쪽·오른쪽으로 이동은 아직 동작을 넘기지 않아 보이지 않는다.
+    const moves = getPinnedMoves(
+      pinned.findIndex((pinnedItem) => pinnedItem.id === item.id),
+      pinned.length,
+    );
     return getPinnedMenuEntries({
-      canMoveToFront: pinned[0]?.id !== item.id,
+      moves,
       canCopyLink: copyableItem !== undefined,
       onOpen: () => {
         onOpen(item);
