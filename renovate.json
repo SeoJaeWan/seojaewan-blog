@@ -35,6 +35,22 @@
       "description": "Node는 24로 고정하고 engines·.nvmrc 범위는 손으로 바꾼다",
       "matchManagers": ["nvm"],
       "enabled": false
+    },
+    {
+      "description": "Node는 24로 고정한다. Dockerfile의 node 이미지도 같다",
+      "matchManagers": ["dockerfile"],
+      "matchPackageNames": ["node"],
+      "allowedVersions": "<25"
+    },
+    {
+      "description": "jsdom 31은 parse5와 맞지 않아 vitest 작업자가 뜨지 않는다(tokenizer.flushCharacters). 고쳐질 때까지 30을 쓴다",
+      "matchPackageNames": ["jsdom"],
+      "allowedVersions": "<31"
+    },
+    {
+      "description": "peerDependencies는 범위로 둔다. 고정하면 쓰는 쪽의 버전을 막는다",
+      "matchDepTypes": ["peerDependencies"],
+      "rangeStrategy": "widen"
     }
   ]
 }
