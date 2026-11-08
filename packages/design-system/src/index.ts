@@ -18,6 +18,7 @@ export * from './components/checkbox/checkbox';
 export * from './components/code-block/code-block';
 export * from './components/column/column';
 export * from './components/column-header/column-header';
+export * from './components/columns/columns';
 export * from './components/details-header/details-header';
 export * from './components/drop-down-button/drop-down-button';
 export * from './components/empty-state/empty-state';
