@@ -2,6 +2,16 @@
 // @codocs [[피그마 연동:스토리 규칙]]
 // Start/Body 조립 스토리가 쓰는 고정 데이터다. 피그마 조립과 같은 값을 둔다.
 
+/** 피그마 Start/Body `View=Category`의 글 범주와 Start/CategoryFolder의 항목. 이름순이고, 4개 이상이라 카드에 큰 아이콘 3개와 묶음이 놓인다 */
+export const START_CATEGORY_POSTS = [
+  { id: 'post:css-container-queries', kind: 'post', title: 'CSS 컨테이너 쿼리' },
+  { id: 'post:nextjs-app-router-cache', kind: 'post', title: 'Next.js App Router 캐시' },
+  { id: 'post:react-19-hooks', kind: 'post', title: 'React 19 훅 정리' },
+  { id: 'post:typescript-5-decorators', kind: 'post', title: 'TypeScript 5 데코레이터' },
+  { id: 'post:vite-plugin', kind: 'post', title: 'Vite 플러그인 만들기' },
+  { id: 'post:react-server-components', kind: 'post', title: '리액트 서버 컴포넌트 이해하기' },
+] as const;
+
 /** 피그마 Start/Body `View=Category`의 모두 목록. 종류별로 묶고 묶음 안은 이름순이다 */
 export const START_CATEGORY_GROUPS = [
   {
@@ -13,11 +23,7 @@ export const START_CATEGORY_GROUPS = [
   },
   {
     label: '글',
-    items: [
-      { id: 'post:nextjs-app-router-cache', kind: 'post', title: 'Next.js App Router 캐시' },
-      { id: 'post:react-19-hooks', kind: 'post', title: 'React 19 훅 정리' },
-      { id: 'post:react-server-components', kind: 'post', title: '리액트 서버 컴포넌트 이해하기' },
-    ],
+    items: START_CATEGORY_POSTS,
   },
   {
     label: '외부 링크',
