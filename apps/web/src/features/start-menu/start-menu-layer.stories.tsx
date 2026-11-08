@@ -302,10 +302,35 @@ export const AllList: Story = {
       await expect(canvas.getByRole('button', { name: '보기: 범주' })).toBeInTheDocument();
     });
 
+    // @codocs [[Start 메뉴:모두]]
+    await step('처음 보기는 범주라 항목 종류마다 카드를 놓는다', async () => {
+      const allRegion = canvas.getByRole('region', { name: '모두' });
+      await expect(within(allRegion).getByText('외부 링크')).toBeInTheDocument();
+      await expect(within(allRegion).getByRole('button', { name: 'Blog' })).toBeInTheDocument();
+    });
+
+    // @codocs [[Start 메뉴:모두]]
+    await step('범주 카드의 큰 아이콘도 줄과 같은 우클릭 메뉴를 띄운다', async () => {
+      const allRegion = canvas.getByRole('region', { name: '모두' });
+      await expect(
+        await openContextMenu(within(allRegion).getByRole('button', { name: 'Blog' })),
+      ).toEqual(['열기', '시작 화면에서 고정 해제']);
+      await closeContextMenu();
+    });
+
+    // 아래 줄 목록 단계는 모든 항목이 줄로 보이는 간단히 보기에서 확인한다.
+    useWorkspaceStore.getState().setStartAllView('list');
+    await waitFor(() =>
+      expect(canvas.getByRole('button', { name: '보기: 간단히' })).toBeInTheDocument(),
+    );
+
     // @codocs [[접근성:Tab]]
     await step('모두 목록은 Tab 한 번에 닿고 안에서 ↑↓로 옮긴다', async () => {
       const list = canvas.getByRole('region', { name: '모두' });
-      const rows = [...list.querySelectorAll<HTMLElement>('[role="button"]')];
+      // 글자 머리글과 줄이 함께 하나의 Tab 정류장이다.
+      const rows = [
+        ...list.querySelectorAll<HTMLElement>('[data-letter-group] :is(button, [role="button"])'),
+      ];
       await expect(rows.filter((row) => row.tabIndex === 0)).toHaveLength(1);
       rows[0]?.focus();
       await userEvent.keyboard('{ArrowDown}');
@@ -353,12 +378,6 @@ export const AllList: Story = {
         expect(within(panel).queryByRole('button', { name: '글 하나' })).not.toBeInTheDocument(),
       );
       useWorkspaceStore.getState().restoreItems(['post:p1']);
-    });
-
-    // @codocs [[Start 메뉴:모두]]
-    await step('처음 보기는 범주라 항목 종류로 묶어 보인다', async () => {
-      await expect(within(panel).getByRole('button', { name: '보기: 범주' })).toBeInTheDocument();
-      await expect(within(panel).getByText('외부 링크')).toBeInTheDocument();
     });
 
     // @codocs [[Start 메뉴:모두]]
@@ -435,11 +454,11 @@ export const AllList: Story = {
 
     // @codocs [[Start 메뉴:모두]]
     await step('보기 메뉴에서 보기를 고르면 그 보기로 바뀌고 저장소에 저장한다', async () => {
-      await userEvent.click(within(panel).getByRole('button', { name: '보기: 범주' }));
-      await userEvent.click(await screen.findByRole('menuitemcheckbox', { name: '간단히' }));
-      await expect(useWorkspaceStore.getState().startAllView).toBe('list');
-      await expect(within(panel).getByRole('button', { name: '보기: 간단히' })).toBeInTheDocument();
-      await expect(within(panel).queryByText('외부 링크')).not.toBeInTheDocument();
+      await userEvent.click(within(panel).getByRole('button', { name: '보기: 간단히' }));
+      await userEvent.click(await screen.findByRole('menuitemcheckbox', { name: '범주' }));
+      await expect(useWorkspaceStore.getState().startAllView).toBe('category');
+      await expect(within(panel).getByRole('button', { name: '보기: 범주' })).toBeInTheDocument();
+      await expect(within(all()).getByText('외부 링크')).toBeInTheDocument();
     });
 
     // @codocs [[Start 메뉴:모두]]
@@ -462,6 +481,7 @@ export const AllList: Story = {
 
     // @codocs [[Start 메뉴:모두]]
     await step('줄 우클릭 메뉴의 열기는 항목을 열고 Start 메뉴를 닫는다', async () => {
+      useWorkspaceStore.getState().setStartAllView('list');
       await waitFor(() =>
         expect(within(all()).getByRole('button', { name: 'Next.js 캐시' })).toBeInTheDocument(),
       );
@@ -477,6 +497,8 @@ export const AllList: Story = {
 export const OpenItems: Story = {
   beforeEach: async () => {
     const restoreCatalog = await hydrateStartStoryPosts();
+    // 모두 목록의 글 줄을 누르므로 모든 항목이 줄로 보이는 간단히 보기로 둔다.
+    useWorkspaceStore.getState().setStartAllView('list');
     usePanelStore.getState().toggleStart();
     return restoreCatalog;
   },
