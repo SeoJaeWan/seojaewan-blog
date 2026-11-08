@@ -1,4 +1,11 @@
-import type { ComponentProps, JSX, KeyboardEvent, ReactElement, ReactNode } from 'react';
+import type {
+  ComponentProps,
+  JSX,
+  KeyboardEvent,
+  MouseEvent,
+  ReactElement,
+  ReactNode,
+} from 'react';
 
 import {
   cn,
@@ -59,6 +66,7 @@ type ExplorerContentProps = Pick<
     dropTarget?: ExplorerDropTarget;
     itemsKey?: string;
     onKeyDown?: (event: KeyboardEvent<HTMLDivElement>) => void;
+    onAddressRowClick?: (event: MouseEvent<HTMLDivElement>) => void;
   };
 
 /**
@@ -92,6 +100,7 @@ type ExplorerContentProps = Pick<
  * @param props.onSearchClose 검색 줄의 ← 버튼을 눌렀을 때. mobile 검색 줄(search open)만 보인다
  * @param props.onDetailsView 자세히 보기 버튼을 눌렀을 때 부른다
  * @param props.onLargeIconsView 큰 아이콘 보기 버튼을 눌렀을 때 부른다
+ * @param props.onAddressRowClick 주소 줄을 눌렀을 때. 경로의 빈 곳을 눌러 편집을 시작하는 데 쓴다
  * @param props.onKeyDown 본문에서 키를 눌렀을 때(Backspace, Alt + ← / → 같은 이동 단축키). 본문 어디를 눌러도 키를 받도록 본문이 포커스를 받는다
  * @param props.itemsKey 항목 자리를 새로 그리는 열쇠. 보는 위치가 바뀌면 바꿔, 항목 자리 스크롤을 맨 위로 돌린다
  * @param props.dropTarget 끌어 놓을 곳으로 쓸 때의 위치 id와 이름(`data-drop-target`). 다른 창이나 바탕화면에서 항목을 끌어 이 본문에 놓으면 그 위치로 옮긴다
@@ -126,6 +135,7 @@ export function ExplorerContent({
   onDetailsView: handleDetailsView,
   onLargeIconsView: handleLargeIconsView,
   onKeyDown: handleKeyDown,
+  onAddressRowClick: handleAddressRowClick,
   itemsKey,
   dropTarget,
   itemsAreaProps,
@@ -163,6 +173,7 @@ export function ExplorerContent({
         onSearch={handleSearch}
         search={search}
         onSearchClose={handleSearchClose}
+        onClick={handleAddressRowClick}
       >
         {path}
       </ExplorerAddressRow>

@@ -22,6 +22,7 @@ import {
   Tooltip,
 } from '@seojaewan/design-system';
 
+import { getPathNotFoundMessage } from '@/features/file-explorer/components/message-box-path-not-found/message-box-path-not-found';
 import {
   formatDeletedDate,
   getExplorerLocationName,
@@ -89,6 +90,7 @@ import {
 import { ExplorerCommands } from './components/explorer-commands/explorer-commands';
 import { ExplorerContent } from './components/explorer-content/explorer-content';
 import { getEmptyMenuEntries } from './empty-menu/empty-menu-entries';
+import { useAddressEdit } from './hooks/use-address-edit/use-address-edit';
 import { getItemMenuEntries } from './item-menu/item-menu-entries';
 import { getRecycleBinSortMenuEntries } from './recycle-bin-sort-submenu/recycle-bin-sort-submenu-entries';
 import { getSortMenuEntries } from './sort-submenu/sort-submenu-entries';
@@ -142,6 +144,7 @@ const ICON_VIEWS = { large: 'large', medium: 'medium' } as const;
  * - 명령 모음, 우클릭(모바일은 길게 누르기) 메뉴, 상태 줄(항목 수, 선택 수, 자세히·큰 아이콘 보기).
  * - 휴지통은 늘 자세히 보기(이름·원래 위치·삭제한 날짜)이고 항목을 열 수 없으며 복원만 된다. 휴지통 비우기는 메시지 상자만 보인다.
  * - 폴더 안 검색. 모바일은 주소 줄의 검색 버튼으로 검색 줄을 열고, ← 버튼·Esc·다른 위치로 가기로 검색어를 지우며 닫는다.
+ * - 주소창 편집: 경로의 빈 곳을 눌러 경로를 입력하고 Enter로 간다. 찾지 못하면 메시지 상자를 띄운다(`useAddressEdit`).
  * 쓸 수 없는 조작(같은 이름 충돌, 자기·하위 폴더로 옮기기)은 명령과 메뉴를 비활성으로 두고, 거부되면 제자리다.
  * @codocs [[파일 탐색기:구성]]
  * @codocs [[파일 탐색기:보기와 정렬]]
@@ -149,6 +152,7 @@ const ICON_VIEWS = { large: 'large', medium: 'medium' } as const;
  * @codocs [[파일 탐색기:우클릭 메뉴]]
  * @codocs [[파일 탐색기:휴지통 보기]]
  * @codocs [[파일 탐색기:폴더 안 검색]]
+ * @codocs [[파일 탐색기:주소창 편집]]
  * @codocs [[반응형:입력 차이]]
  * @codocs [[파일 탐색기:모바일]]
  * @param props 컴포넌트 속성
@@ -195,6 +199,7 @@ export function ExplorerBody({
   const dragTargetId = useItemDragStore((state) => state.targetId);
 
   const workspace = { items };
+  const addressEdit = useAddressEdit({ workspace, location, device, onNavigate });
   const savedView = explorerViews[location ?? DESKTOP_LOCATION_KEY] ?? DEFAULT_EXPLORER_VIEW;
   const view: ExplorerFolderView = isRecycleBin ? { ...savedView, view: 'details' } : savedView;
   if (search.location !== location) {
@@ -1104,6 +1109,9 @@ export function ExplorerBody({
           setSearch({ location, query: '', isOpen: true });
         }}
         onSearchClose={handleMobileSearchClose}
+        isBreadcrumbEditing={addressEdit.isEditing}
+        breadcrumbEditFieldProps={addressEdit.editFieldProps}
+        onAddressRowClick={addressEdit.handleRowClick}
         dropTarget={{
           id: location ?? DESKTOP_DROP_TARGET,
           name: getExplorerLocationName(workspace, location),
@@ -1161,6 +1169,12 @@ export function ExplorerBody({
         )}
         {overlay}
       </ExplorerContent>
+      <MessageBoxDialog
+        {...getPathNotFoundMessage(addressEdit.notFoundText ?? '')}
+        isOpen={addressEdit.notFoundText !== null}
+        onOpenChange={addressEdit.handleNotFoundOpenChange}
+        onCloseComplete={addressEdit.handleNotFoundCloseComplete}
+      />
       <MessageBoxDialog
         {...EMPTY_RECYCLE_BIN_MESSAGE}
         isOpen={isEmptyDialogOpen}
