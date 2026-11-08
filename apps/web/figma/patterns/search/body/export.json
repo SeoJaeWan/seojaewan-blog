@@ -71,27 +71,34 @@
                 ],
                 "component": "SectionHeader",
                 "layout": {
-                  "counterAlign": "MIN",
+                  "counterAlign": "CENTER",
                   "gap": 0,
                   "mode": "HORIZONTAL",
                   "padding": [
-                    "spacing/sm",
+                    "spacing/sm-nudge",
                     "spacing/md",
-                    "spacing/xs",
+                    "spacing/sm-nudge",
                     "spacing/md"
                   ],
                   "primaryAlign": "MIN"
                 },
                 "name": "header",
                 "properties": {
-                  "Label": "최근"
+                  "Label": "최근",
+                  "State": "Rest"
                 },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
                 "size": {
                   "h": 32,
-                  "w": 49
+                  "w": 638
                 },
                 "sizing": {
-                  "h": "HUG",
+                  "h": "FILL",
                   "v": "HUG"
                 },
                 "type": "INSTANCE"
@@ -551,27 +558,34 @@
                 ],
                 "component": "SectionHeader",
                 "layout": {
-                  "counterAlign": "MIN",
+                  "counterAlign": "CENTER",
                   "gap": 0,
                   "mode": "HORIZONTAL",
                   "padding": [
-                    "spacing/sm",
+                    "spacing/sm-nudge",
                     "spacing/md",
-                    "spacing/xs",
+                    "spacing/sm-nudge",
                     "spacing/md"
                   ],
                   "primaryAlign": "MIN"
                 },
                 "name": "header",
                 "properties": {
-                  "Label": "추천"
+                  "Label": "추천",
+                  "State": "Rest"
                 },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
                 "size": {
                   "h": 32,
-                  "w": 49
+                  "w": 638
                 },
                 "sizing": {
-                  "h": "HUG",
+                  "h": "FILL",
                   "v": "HUG"
                 },
                 "type": "INSTANCE"
@@ -1675,27 +1689,34 @@
                 ],
                 "component": "SectionHeader",
                 "layout": {
-                  "counterAlign": "MIN",
+                  "counterAlign": "CENTER",
                   "gap": 0,
                   "mode": "HORIZONTAL",
                   "padding": [
-                    "spacing/sm",
+                    "spacing/sm-nudge",
                     "spacing/md",
-                    "spacing/xs",
+                    "spacing/sm-nudge",
                     "spacing/md"
                   ],
                   "primaryAlign": "MIN"
                 },
                 "name": "header",
                 "properties": {
-                  "Label": "최근"
+                  "Label": "최근",
+                  "State": "Rest"
                 },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
                 "size": {
                   "h": 32,
-                  "w": 49
+                  "w": 388
                 },
                 "sizing": {
-                  "h": "HUG",
+                  "h": "FILL",
                   "v": "HUG"
                 },
                 "type": "INSTANCE"
@@ -2155,27 +2176,34 @@
                 ],
                 "component": "SectionHeader",
                 "layout": {
-                  "counterAlign": "MIN",
+                  "counterAlign": "CENTER",
                   "gap": 0,
                   "mode": "HORIZONTAL",
                   "padding": [
-                    "spacing/sm",
+                    "spacing/sm-nudge",
                     "spacing/md",
-                    "spacing/xs",
+                    "spacing/sm-nudge",
                     "spacing/md"
                   ],
                   "primaryAlign": "MIN"
                 },
                 "name": "header",
                 "properties": {
-                  "Label": "추천"
+                  "Label": "추천",
+                  "State": "Rest"
                 },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
                 "size": {
                   "h": 32,
-                  "w": 49
+                  "w": 388
                 },
                 "sizing": {
-                  "h": "HUG",
+                  "h": "FILL",
                   "v": "HUG"
                 },
                 "type": "INSTANCE"
@@ -2934,27 +2962,34 @@
                         ],
                         "component": "SectionHeader",
                         "layout": {
-                          "counterAlign": "MIN",
+                          "counterAlign": "CENTER",
                           "gap": 0,
                           "mode": "HORIZONTAL",
                           "padding": [
-                            "spacing/sm",
+                            "spacing/sm-nudge",
                             "spacing/md",
-                            "spacing/xs",
+                            "spacing/sm-nudge",
                             "spacing/md"
                           ],
                           "primaryAlign": "MIN"
                         },
                         "name": "header",
                         "properties": {
-                          "Label": "최고 일치"
+                          "Label": "최고 일치",
+                          "State": "Rest"
                         },
+                        "radius": [
+                          "radius/control",
+                          "radius/control",
+                          "radius/control",
+                          "radius/control"
+                        ],
                         "size": {
                           "h": 32,
-                          "w": 76
+                          "w": 300
                         },
                         "sizing": {
-                          "h": "HUG",
+                          "h": "FILL",
                           "v": "HUG"
                         },
                         "type": "INSTANCE"
@@ -3217,27 +3252,34 @@
                         ],
                         "component": "SectionHeader",
                         "layout": {
-                          "counterAlign": "MIN",
+                          "counterAlign": "CENTER",
                           "gap": 0,
                           "mode": "HORIZONTAL",
                           "padding": [
-                            "spacing/sm",
+                            "spacing/sm-nudge",
                             "spacing/md",
-                            "spacing/xs",
+                            "spacing/sm-nudge",
                             "spacing/md"
                           ],
                           "primaryAlign": "MIN"
                         },
                         "name": "header",
                         "properties": {
-                          "Label": "폴더"
+                          "Label": "폴더",
+                          "State": "Rest"
                         },
+                        "radius": [
+                          "radius/control",
+                          "radius/control",
+                          "radius/control",
+                          "radius/control"
+                        ],
                         "size": {
                           "h": 32,
-                          "w": 49
+                          "w": 300
                         },
                         "sizing": {
-                          "h": "HUG",
+                          "h": "FILL",
                           "v": "HUG"
                         },
                         "type": "INSTANCE"
@@ -3449,27 +3491,34 @@
                         ],
                         "component": "SectionHeader",
                         "layout": {
-                          "counterAlign": "MIN",
+                          "counterAlign": "CENTER",
                           "gap": 0,
                           "mode": "HORIZONTAL",
                           "padding": [
-                            "spacing/sm",
+                            "spacing/sm-nudge",
                             "spacing/md",
-                            "spacing/xs",
+                            "spacing/sm-nudge",
                             "spacing/md"
                           ],
                           "primaryAlign": "MIN"
                         },
                         "name": "header",
                         "properties": {
-                          "Label": "글"
+                          "Label": "글",
+                          "State": "Rest"
                         },
+                        "radius": [
+                          "radius/control",
+                          "radius/control",
+                          "radius/control",
+                          "radius/control"
+                        ],
                         "size": {
                           "h": 32,
-                          "w": 37
+                          "w": 300
                         },
                         "sizing": {
-                          "h": "HUG",
+                          "h": "FILL",
                           "v": "HUG"
                         },
                         "type": "INSTANCE"
@@ -3859,27 +3908,34 @@
                         ],
                         "component": "SectionHeader",
                         "layout": {
-                          "counterAlign": "MIN",
+                          "counterAlign": "CENTER",
                           "gap": 0,
                           "mode": "HORIZONTAL",
                           "padding": [
-                            "spacing/sm",
+                            "spacing/sm-nudge",
                             "spacing/md",
-                            "spacing/xs",
+                            "spacing/sm-nudge",
                             "spacing/md"
                           ],
                           "primaryAlign": "MIN"
                         },
                         "name": "header",
                         "properties": {
-                          "Label": "외부 링크"
+                          "Label": "외부 링크",
+                          "State": "Rest"
                         },
+                        "radius": [
+                          "radius/control",
+                          "radius/control",
+                          "radius/control",
+                          "radius/control"
+                        ],
                         "size": {
                           "h": 32,
-                          "w": 76
+                          "w": 300
                         },
                         "sizing": {
-                          "h": "HUG",
+                          "h": "FILL",
                           "v": "HUG"
                         },
                         "type": "INSTANCE"
@@ -4128,15 +4184,15 @@
                     "name": "preview title",
                     "size": {
                       "h": 28,
-                      "w": 142
+                      "w": 288
                     },
                     "sizing": {
-                      "h": "HUG",
+                      "h": "FILL",
                       "v": "HUG"
                     },
                     "text": {
-                      "autoResize": "WIDTH_AND_HEIGHT",
-                      "maxLines": null,
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
                       "maxLinesVariable": null,
                       "segments": [
                         {
@@ -4155,7 +4211,7 @@
                           "textStyle": "Hangul/Subtitle"
                         }
                       ],
-                      "truncation": "DISABLED"
+                      "truncation": "ENDING"
                     },
                     "type": "TEXT"
                   },
@@ -4166,15 +4222,15 @@
                     "name": "preview meta",
                     "size": {
                       "h": 16,
-                      "w": 83
+                      "w": 288
                     },
                     "sizing": {
-                      "h": "HUG",
+                      "h": "FILL",
                       "v": "HUG"
                     },
                     "text": {
-                      "autoResize": "WIDTH_AND_HEIGHT",
-                      "maxLines": null,
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
                       "maxLinesVariable": null,
                       "segments": [
                         {
@@ -4188,7 +4244,7 @@
                           "textStyle": "Caption"
                         }
                       ],
-                      "truncation": "DISABLED"
+                      "truncation": "ENDING"
                     },
                     "type": "TEXT"
                   },
@@ -4694,15 +4750,15 @@
                                 "name": "preview title",
                                 "size": {
                                   "h": 28,
-                                  "w": 142
+                                  "w": 354
                                 },
                                 "sizing": {
-                                  "h": "HUG",
+                                  "h": "FILL",
                                   "v": "HUG"
                                 },
                                 "text": {
-                                  "autoResize": "WIDTH_AND_HEIGHT",
-                                  "maxLines": null,
+                                  "autoResize": "HEIGHT",
+                                  "maxLines": 1,
                                   "maxLinesVariable": null,
                                   "segments": [
                                     {
@@ -4721,7 +4777,7 @@
                                       "textStyle": "Hangul/Subtitle"
                                     }
                                   ],
-                                  "truncation": "DISABLED"
+                                  "truncation": "ENDING"
                                 },
                                 "type": "TEXT"
                               },
@@ -4732,15 +4788,15 @@
                                 "name": "preview meta",
                                 "size": {
                                   "h": 16,
-                                  "w": 83
+                                  "w": 354
                                 },
                                 "sizing": {
-                                  "h": "HUG",
+                                  "h": "FILL",
                                   "v": "HUG"
                                 },
                                 "text": {
-                                  "autoResize": "WIDTH_AND_HEIGHT",
-                                  "maxLines": null,
+                                  "autoResize": "HEIGHT",
+                                  "maxLines": 1,
                                   "maxLinesVariable": null,
                                   "segments": [
                                     {
@@ -4754,7 +4810,7 @@
                                       "textStyle": "Caption"
                                     }
                                   ],
-                                  "truncation": "DISABLED"
+                                  "truncation": "ENDING"
                                 },
                                 "type": "TEXT"
                               },
@@ -5191,27 +5247,34 @@
                                     ],
                                     "component": "SectionHeader",
                                     "layout": {
-                                      "counterAlign": "MIN",
+                                      "counterAlign": "CENTER",
                                       "gap": 0,
                                       "mode": "HORIZONTAL",
                                       "padding": [
-                                        "spacing/sm",
+                                        "spacing/sm-nudge",
                                         "spacing/md",
-                                        "spacing/xs",
+                                        "spacing/sm-nudge",
                                         "spacing/md"
                                       ],
                                       "primaryAlign": "MIN"
                                     },
                                     "name": "header",
                                     "properties": {
-                                      "Label": "최고 일치"
+                                      "Label": "최고 일치",
+                                      "State": "Rest"
                                     },
+                                    "radius": [
+                                      "radius/control",
+                                      "radius/control",
+                                      "radius/control",
+                                      "radius/control"
+                                    ],
                                     "size": {
                                       "h": 32,
-                                      "w": 76
+                                      "w": 388
                                     },
                                     "sizing": {
-                                      "h": "HUG",
+                                      "h": "FILL",
                                       "v": "HUG"
                                     },
                                     "type": "INSTANCE"
@@ -5474,27 +5537,34 @@
                                     ],
                                     "component": "SectionHeader",
                                     "layout": {
-                                      "counterAlign": "MIN",
+                                      "counterAlign": "CENTER",
                                       "gap": 0,
                                       "mode": "HORIZONTAL",
                                       "padding": [
-                                        "spacing/sm",
+                                        "spacing/sm-nudge",
                                         "spacing/md",
-                                        "spacing/xs",
+                                        "spacing/sm-nudge",
                                         "spacing/md"
                                       ],
                                       "primaryAlign": "MIN"
                                     },
                                     "name": "header",
                                     "properties": {
-                                      "Label": "폴더"
+                                      "Label": "폴더",
+                                      "State": "Rest"
                                     },
+                                    "radius": [
+                                      "radius/control",
+                                      "radius/control",
+                                      "radius/control",
+                                      "radius/control"
+                                    ],
                                     "size": {
                                       "h": 32,
-                                      "w": 49
+                                      "w": 388
                                     },
                                     "sizing": {
-                                      "h": "HUG",
+                                      "h": "FILL",
                                       "v": "HUG"
                                     },
                                     "type": "INSTANCE"
@@ -5706,27 +5776,34 @@
                                     ],
                                     "component": "SectionHeader",
                                     "layout": {
-                                      "counterAlign": "MIN",
+                                      "counterAlign": "CENTER",
                                       "gap": 0,
                                       "mode": "HORIZONTAL",
                                       "padding": [
-                                        "spacing/sm",
+                                        "spacing/sm-nudge",
                                         "spacing/md",
-                                        "spacing/xs",
+                                        "spacing/sm-nudge",
                                         "spacing/md"
                                       ],
                                       "primaryAlign": "MIN"
                                     },
                                     "name": "header",
                                     "properties": {
-                                      "Label": "글"
+                                      "Label": "글",
+                                      "State": "Rest"
                                     },
+                                    "radius": [
+                                      "radius/control",
+                                      "radius/control",
+                                      "radius/control",
+                                      "radius/control"
+                                    ],
                                     "size": {
                                       "h": 32,
-                                      "w": 37
+                                      "w": 388
                                     },
                                     "sizing": {
-                                      "h": "HUG",
+                                      "h": "FILL",
                                       "v": "HUG"
                                     },
                                     "type": "INSTANCE"
@@ -6116,27 +6193,34 @@
                                     ],
                                     "component": "SectionHeader",
                                     "layout": {
-                                      "counterAlign": "MIN",
+                                      "counterAlign": "CENTER",
                                       "gap": 0,
                                       "mode": "HORIZONTAL",
                                       "padding": [
-                                        "spacing/sm",
+                                        "spacing/sm-nudge",
                                         "spacing/md",
-                                        "spacing/xs",
+                                        "spacing/sm-nudge",
                                         "spacing/md"
                                       ],
                                       "primaryAlign": "MIN"
                                     },
                                     "name": "header",
                                     "properties": {
-                                      "Label": "외부 링크"
+                                      "Label": "외부 링크",
+                                      "State": "Rest"
                                     },
+                                    "radius": [
+                                      "radius/control",
+                                      "radius/control",
+                                      "radius/control",
+                                      "radius/control"
+                                    ],
                                     "size": {
                                       "h": 32,
-                                      "w": 76
+                                      "w": 388
                                     },
                                     "sizing": {
-                                      "h": "HUG",
+                                      "h": "FILL",
                                       "v": "HUG"
                                     },
                                     "type": "INSTANCE"
