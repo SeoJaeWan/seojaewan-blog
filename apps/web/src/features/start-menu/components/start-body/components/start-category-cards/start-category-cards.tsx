@@ -1,5 +1,5 @@
 import { Popover as BasePopover } from '@base-ui/react/popover';
-import { Fragment, type JSX, type MouseEvent, useRef, useState } from 'react';
+import { Fragment, type JSX, type MouseEvent, useEffect, useRef, useState } from 'react';
 
 import { StartCategoryCard, type StartCategoryCardItems } from '@seojaewan/design-system';
 
@@ -75,16 +75,53 @@ export function StartCategoryCards({
 
   /**
    * 묶음이나 카드의 빈 곳을 누르면 그 범주의 펼침 팝업을 연다. 큰 아이콘(버튼)을 누른 것은 넘긴다.
+   * 카드 DOM 밖에서 온 클릭(큰 아이콘의 우클릭 메뉴는 포털이지만 React 트리로 카드까지 올라온다)도 넘긴다.
    * @param event 누르기 이벤트
    * @param label 범주 이름
    */
   function handleCardClick(event: MouseEvent<HTMLDivElement>, label: string): void {
-    if (event.target instanceof Element && event.target.closest('button') !== null) {
+    const target = event.target;
+    if (
+      !(target instanceof Element) ||
+      !event.currentTarget.contains(target) ||
+      target.closest('button') !== null
+    ) {
       return;
     }
     setPopupSize(null);
     setOpened({ label, card: event.currentTarget, row: rowRef.current });
   }
+
+  const isOpen = opened !== null;
+
+  useEffect(
+    /**
+     * 팝업이 열린 동안 Esc는 팝업만 닫는다. Start 패널(Base UI Dialog)도 문서에서 Esc를 받아 닫히므로, 창(window)의 붙잡기 단계에서
+     * 먼저 받아 더 퍼지지 않게 한다. 팝업 안 항목의 우클릭 메뉴가 열려 있으면 메뉴가 Esc를 받도록 넘긴다.
+     * @returns 이벤트를 떼는 정리 함수
+     */
+    () => {
+      if (!isOpen) {
+        return undefined;
+      }
+      /**
+       * Esc를 받아 팝업을 닫는다.
+       * @param event 키 이벤트
+       */
+      function handleEscape(event: KeyboardEvent): void {
+        if (event.key !== 'Escape' || document.querySelector('[role="menu"]') !== null) {
+          return;
+        }
+        event.stopPropagation();
+        setOpened(null);
+      }
+      window.addEventListener('keydown', handleEscape, true);
+      return () => {
+        window.removeEventListener('keydown', handleEscape, true);
+      };
+    },
+    [isOpen],
+  );
 
   /**
    * Base UI가 바깥 누르기·Esc로 닫으라고 알리면 닫는다.
@@ -168,20 +205,21 @@ export function StartCategoryCards({
           );
         },
       )}
-      <BasePopover.Root open={openedGroup !== undefined} onOpenChange={handlePopupOpenChange}>
-        <BasePopover.Portal>
-          <BasePopover.Positioner
-            anchor={opened?.card}
-            side="bottom"
-            align="center"
-            sideOffset={placeOverAnchor}
-            collisionBoundary={opened?.row ?? undefined}
-            collisionPadding={0}
-            collisionAvoidance={{ side: 'none', align: 'shift', fallbackAxisSide: 'none' }}
-            className="z-layer-popover"
-          >
-            <BasePopover.Popup aria-label={openedGroup?.label} className="outline-none">
-              {openedGroup !== undefined && (
+      {/* 팝업을 연 동안에만 Popover를 둔다. */}
+      {openedGroup !== undefined && (
+        <BasePopover.Root open onOpenChange={handlePopupOpenChange}>
+          <BasePopover.Portal>
+            <BasePopover.Positioner
+              anchor={opened?.card}
+              side="bottom"
+              align="center"
+              sideOffset={placeOverAnchor}
+              collisionBoundary={opened?.row ?? undefined}
+              collisionPadding={0}
+              collisionAvoidance={{ side: 'none', align: 'shift', fallbackAxisSide: 'none' }}
+              className="z-layer-popover"
+            >
+              <BasePopover.Popup aria-label={openedGroup.label} className="outline-none">
                 <StartCategoryPopup
                   ref={measurePopup}
                   device={device}
@@ -191,11 +229,11 @@ export function StartCategoryCards({
                   getMenuItems={getMenuItems}
                   style={popupSize ?? undefined}
                 />
-              )}
-            </BasePopover.Popup>
-          </BasePopover.Positioner>
-        </BasePopover.Portal>
-      </BasePopover.Root>
+              </BasePopover.Popup>
+            </BasePopover.Positioner>
+          </BasePopover.Portal>
+        </BasePopover.Root>
+      )}
     </div>
   );
 }
