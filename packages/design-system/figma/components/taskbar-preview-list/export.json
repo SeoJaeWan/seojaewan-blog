@@ -10,8 +10,8 @@
   "variants": {
     "default": {
       "node": {
-        "height": 174,
-        "width": 430,
+        "height": 166,
+        "width": 418,
         "x": 18,
         "y": 9
       },
@@ -480,7 +480,7 @@
             ],
             "layout": {
               "counterAlign": "MIN",
-              "gap": "spacing/xs",
+              "gap": "spacing/none",
               "mode": "HORIZONTAL",
               "padding": [
                 0,
@@ -493,7 +493,7 @@
             "name": "Previews",
             "size": {
               "h": 164,
-              "w": 420
+              "w": 416
             },
             "sizing": {
               "h": "HUG",
@@ -506,26 +506,26 @@
         "fillStyle": "Material/Acrylic Base",
         "layout": {
           "counterAlign": "MIN",
-          "gap": "spacing/xs",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
-            "spacing/xs",
-            "spacing/xs",
-            "spacing/xs",
-            "spacing/xs"
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
         "name": "TaskbarPreviewList",
         "radius": [
-          "radius/overlay",
-          "radius/overlay",
-          "radius/overlay",
-          "radius/overlay"
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
         ],
         "size": {
-          "h": 174,
-          "w": 430
+          "h": 166,
+          "w": 418
         },
         "sizing": {
           "h": "HUG",

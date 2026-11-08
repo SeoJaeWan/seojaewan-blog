@@ -1,0 +1,58 @@
+{
+  "delay": {
+    "ms": 0,
+    "token": null
+  },
+  "directives": {
+    "reduced-motion": [
+      "움직임 없이 바로 바뀐다"
+    ],
+    "repeat": [
+      "1"
+    ],
+    "trigger": [
+      "스켈레톤을 깐 이미지를 다 받았을 때"
+    ]
+  },
+  "duration": {
+    "ms": 167,
+    "token": "motion/duration/fast"
+  },
+  "iterations": 1,
+  "name": "motion-image-enter",
+  "nodeId": "3356:564",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 167,
+        "token": "motion/duration/fast"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": 0,
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/fade",
+          "offset": 1,
+          "time": 167,
+          "value": 1,
+          "valueToken": null
+        }
+      ],
+      "node": "wallpaper/Bloom",
+      "nodeKind": "asset",
+      "operation": "SET",
+      "path": "wallpaper/Bloom",
+      "property": "OPACITY"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=3356-564"
+}

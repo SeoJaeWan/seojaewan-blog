@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, within } from 'storybook/test';
 
 import tocExport from '../../../figma/components/toc/export.json';
 import { figmaFrame } from '../../story/figma-frame';
@@ -36,3 +37,31 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나(State)를 args 하나로 고른다.
 export const Figma: Story = {};
+
+// 넘칠 때 스크롤을 보는 데 쓰는 많은 항목이다. 앱처럼 항목을 눌러 이동할 수 있게(포커스할 수 있게) 둔다.
+const manyLabels = Array.from({ length: 40 }, (_, index) => `목차 항목 ${String(index + 1)}`);
+
+// @codocs [[Chrome:글 화면]]
+/** 항목이 최대 높이를 넘으면 목차 안에서 세로로 스크롤하고, 항목 높이는 줄지 않는다 */
+export const Overflow: Story = {
+  render: () => (
+    <Toc>
+      {manyLabels.map((label, index) => (
+        <TocItem key={label} role="button" tabIndex={0} isActive={index === 0} label={label} />
+      ))}
+    </Toc>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const first = within(canvasElement).getByText(manyLabels[0] ?? '');
+    const item = first.parentElement;
+    const items = item?.parentElement;
+    await step('Items 자리가 넘친 만큼 스크롤된다', async () => {
+      await expect(items).not.toBeNull();
+      await expect(items?.scrollHeight).toBeGreaterThan(items?.clientHeight ?? 0);
+      await expect(getComputedStyle(items as Element).overflowY).toBe('auto');
+    });
+    await step('항목은 피그마 높이 그대로다', async () => {
+      await expect(item?.getBoundingClientRect().height).toBe(20);
+    });
+  },
+};
