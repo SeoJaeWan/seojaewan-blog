@@ -8,7 +8,9 @@ import {
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
 import {
+  findExplorerLocationByAddress,
   formatDeletedDate,
+  getExplorerAddressText,
   getExplorerLocationName,
   getExplorerLocationPath,
   getExplorerWindowTitle,
@@ -65,5 +67,60 @@ describe('파일 탐색기:휴지통 보기', () => {
   it('삭제한 날짜는 방문자 시간대의 YYYY-MM-DD이고, 읽을 수 없으면 빈 글자다', () => {
     expect(formatDeletedDate(new Date(2026, 9, 28, 9).toISOString())).toBe('2026-10-28');
     expect(formatDeletedDate('없음')).toBe('');
+  });
+});
+
+// 경로 구분자(백슬래시)다.
+const separator = String.fromCodePoint(92);
+
+/**
+ * 이름들을 경로 구분자로 잇는다.
+ * @param names 이름
+ * @returns 경로
+ */
+function joinPath(...names: string[]): string {
+  return names.join(separator);
+}
+
+// @codocs [[파일 탐색기:주소창 편집]]
+describe('파일 탐색기:주소창 편집', () => {
+  it('편집을 시작하면 위치 칸 이름들을 경로 구분자로 이은 경로가 입력칸에 들어간다', () => {
+    expect(getExplorerAddressText(workspace, 'folder:React')).toBe(
+      joinPath('바탕 화면', 'Blog', 'React'),
+    );
+    expect(getExplorerAddressText(workspace, RECYCLE_BIN_ID)).toBe('휴지통');
+  });
+
+  it('입력한 경로의 이름을 따라 폴더를 찾고, 대소문자는 구분하지 않는다', () => {
+    expect(findExplorerLocationByAddress(workspace, joinPath('바탕 화면', 'Blog', 'React'))).toBe(
+      'folder:React',
+    );
+    expect(findExplorerLocationByAddress(workspace, joinPath('blog', 'react'))).toBe(
+      'folder:React',
+    );
+    expect(findExplorerLocationByAddress(workspace, joinPath(' 바탕 화면 ', ' BLOG ', ''))).toBe(
+      BLOG_FOLDER_ID,
+    );
+    expect(findExplorerLocationByAddress(workspace, '바탕 화면')).toBeNull();
+  });
+
+  it('휴지통도 받는다', () => {
+    expect(findExplorerLocationByAddress(workspace, '휴지통')).toBe(RECYCLE_BIN_ID);
+  });
+
+  it('찾지 못하면 undefined다', () => {
+    expect(
+      findExplorerLocationByAddress(workspace, joinPath('바탕 화면', '없는 폴더')),
+    ).toBeUndefined();
+    expect(findExplorerLocationByAddress(workspace, joinPath('Blog', '가'))).toBeUndefined();
+    expect(findExplorerLocationByAddress(workspace, '')).toBeUndefined();
+  });
+
+  it('휴지통 안의 폴더는 찾지 않는다', () => {
+    const result = trashItems(workspace, ['folder:React'], '2026-10-28T09:00:00.000Z');
+    if (!result.ok) {
+      throw new Error(result.reason);
+    }
+    expect(findExplorerLocationByAddress(result.state, joinPath('Blog', 'React'))).toBeUndefined();
   });
 });

@@ -87,6 +87,67 @@ export function getExplorerLocationTrail(
 }
 
 /**
+ * 주소창 편집의 처음 글자. 위치 칸의 이름들을 `\`로 잇는다(예: `바탕 화면\Blog\JavaScript`, 휴지통은 `휴지통`).
+ * @codocs [[파일 탐색기:주소창 편집]]
+ * @param workspace 작업 공간
+ * @param folderId 보고 있는 위치
+ * @returns 경로 글자
+ */
+export function getExplorerAddressText(
+  workspace: ExplorerWorkspace,
+  folderId: string | null,
+): string {
+  return getExplorerLocationPath(workspace, folderId).join(LOCATION_SEPARATOR);
+}
+
+/**
+ * 주소창에 입력한 경로로 위치를 찾는다. `\`로 나눈 이름을 따라 바탕 화면부터 폴더를 찾고, 대소문자는 구분하지 않는다.
+ * 첫 이름이 `바탕 화면`이면 건너뛰고(없어도 바탕 화면부터 찾는다), `휴지통` 하나면 휴지통이다. 이름 앞뒤 공백과 빈 이름(끝의 `\`)은 무시한다.
+ * 휴지통 안의 폴더와 폴더가 아닌 항목은 찾지 않는다. 같은 이름의 폴더가 여럿이면 앞의 것이다.
+ * @codocs [[파일 탐색기:주소창 편집]]
+ * @param workspace 작업 공간
+ * @param text 입력한 경로
+ * @returns 찾은 위치(폴더 id, 휴지통 id, 바탕화면은 null). 못 찾으면 undefined
+ */
+export function findExplorerLocationByAddress(
+  workspace: ExplorerWorkspace,
+  text: string,
+): string | null | undefined {
+  const names = text
+    .split(LOCATION_SEPARATOR)
+    .map((name) => name.trim())
+    .filter((name) => name !== '');
+  if (names.length === 0) {
+    return undefined;
+  }
+  if (names.length === 1 && isSameName(names[0], RECYCLE_BIN_NAME)) {
+    return RECYCLE_BIN_ID;
+  }
+  const folderNames = isSameName(names[0], DESKTOP_NAME) ? names.slice(1) : names;
+  let current: string | null = null;
+  for (const name of folderNames) {
+    const folder = Object.values(workspace.items).find(
+      (item) => item.kind === 'folder' && item.parentId === current && isSameName(item.name, name),
+    );
+    if (folder === undefined) {
+      return undefined;
+    }
+    current = folder.id;
+  }
+  return current;
+}
+
+/**
+ * 두 이름이 대소문자를 빼고 같은지 본다.
+ * @param a 이름
+ * @param b 이름
+ * @returns 같으면 true
+ */
+function isSameName(a: string | undefined, b: string): boolean {
+  return a !== undefined && a.toLocaleLowerCase() === b.toLocaleLowerCase();
+}
+
+/**
  * 휴지통 자세히 보기의 원래 위치 칸. 바탕 화면부터 원래 상위 폴더까지를 `\`로 잇는다(예: `바탕 화면\Blog`).
  * @codocs [[파일 탐색기:휴지통 보기]]
  * @param workspace 작업 공간
