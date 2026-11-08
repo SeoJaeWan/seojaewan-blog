@@ -18,6 +18,8 @@ export type WorkArea = {
  * 서버와 수화(hydration) 첫 렌더는 화면 크기를 모르므로 `null`이다. 창을 놓는 쪽은 `null`이면 창을 그리지 않는다.
  * 숨겨진 탭처럼 화면 너비나 높이가 0이면 아직 크기를 모르는 것과 같아 `null`이다. 이때 계산한 크기로 첫 창을 열면 0×0으로 남기 때문이며,
  * 탭이 보여 화면 크기가 생기면(`resize`) 그때 값을 돌려준다.
+ * 화면 높이는 보이는 높이(`visualViewport`, 없으면 `innerHeight`)이고 그 `resize`도 구독한다.
+ * @codocs [[반응형:화면 채우기]]
  * @codocs [[창 동작:창 조작]]
  * @codocs [[창 동작:새로고침과 첫 진입]]
  * @returns 작업 영역 크기. 마운트 전이거나 화면 크기가 0이면 `null`
@@ -42,14 +44,19 @@ export function getWorkArea(viewportWidth: number, viewportHeight: number): Work
 }
 
 /**
- * 화면 크기가 바뀔 때 알린다.
+ * 화면 크기가 바뀔 때 알린다. 인앱 브라우저처럼 주소창이 접히며 보이는 높이만 바뀌는 경우는 `window`의 `resize`가
+ * 오지 않을 수 있어, `visualViewport`가 있으면 그 `resize`도 구독한다.
+ * @codocs [[반응형:화면 채우기]]
  * @param onChange 크기가 바뀌면 부를 함수
  * @returns 구독을 끊는 함수
  */
 function subscribeResize(onChange: () => void): () => void {
+  const { visualViewport } = window;
   window.addEventListener('resize', onChange);
+  visualViewport?.addEventListener('resize', onChange);
   return () => {
     window.removeEventListener('resize', onChange);
+    visualViewport?.removeEventListener('resize', onChange);
   };
 }
 
@@ -62,11 +69,14 @@ function getViewportWidth(): number {
 }
 
 /**
- * 지금 화면 높이.
+ * 지금 화면 높이. 보이는 높이(`visualViewport`)가 있으면 그것을, 없으면 `innerHeight`를 쓴다.
+ * 창 위치는 정수 px라 반올림한다(`visualViewport.height`는 소수일 수 있다).
+ * @codocs [[반응형:화면 채우기]]
  * @returns 화면 높이(px)
  */
 function getViewportHeight(): number {
-  return window.innerHeight;
+  const visibleHeight = window.visualViewport?.height;
+  return visibleHeight === undefined ? window.innerHeight : Math.round(visibleHeight);
 }
 
 /**

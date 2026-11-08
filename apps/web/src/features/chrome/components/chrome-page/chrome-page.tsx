@@ -85,6 +85,8 @@ const WORDMARK = 'seojaewan.com';
  * 글 화면. wide는 글(최대 720)과 오른쪽 목차(220)를 가운데에 놓고, narrow는 글 머리 아래에 접은 목차를 둔다.
  * wide의 목차는 스크롤해도 오른쪽에 붙어 있다(sticky). 목차 항목이 없으면 목차를 그리지 않는다.
  * narrow의 접은 목차를 누르면 펼치고, 펼친 목차의 머리(제목)를 누르면 다시 접는다(클릭·Enter·Space).
+ * 글 맨 아래(꼬리 아래)에 위와 같은 여백을 둔다(피그마 `Chrome/Page` `Page=Post`의 아래 여백, wide `spacing/5xl`·narrow `spacing/2xl`).
+ * @codocs [[Chrome:글 화면]]
  * @param props 컴포넌트 속성
  * @param props.layout 피그마 Layout. wide는 넓은 창, narrow는 좁은 창의 배치다. 쓰는 곳이 창 내용 너비로 고른다
  * @param props.cover 커버 이미지(피그마 PostCover `image`). 있으면 제목 위에 그린다. 글 화면은 Notion 커버를 이미지 서버의 크기별 사본으로 넣는다([[Notion 이미지 제공]])
@@ -145,8 +147,8 @@ function PostPage({
     <div
       className={
         isWide
-          ? 'flex justify-center gap-spacing-5xl px-spacing-lg pt-spacing-5xl'
-          : 'flex flex-col items-center px-spacing-lg pt-spacing-2xl'
+          ? 'flex justify-center gap-spacing-5xl px-spacing-lg pt-spacing-5xl pb-spacing-5xl'
+          : 'flex flex-col items-center px-spacing-lg pt-spacing-2xl pb-spacing-2xl'
       }
     >
       <article className="flex w-full max-w-size-post-width min-w-size-none flex-col items-start gap-spacing-lg">
