@@ -201,17 +201,17 @@ export const PinnedTiles: Story = {
 
     // @codocs [[Start 메뉴:고정됨]]
     await step(
-      '우클릭 메뉴는 열기, 맨 앞으로 이동, 고정 해제이고 글과 외부 링크는 링크 복사도 있다',
+      '우클릭 메뉴는 열기, 앞으로 이동, 고정 해제이고 글과 외부 링크는 링크 복사도 있다',
       async () => {
         await expect(await openContextMenu(pinnedTile(panel, 'Blog'))).toEqual([
           '열기',
-          '맨 앞으로 이동',
+          '앞으로 이동',
           '시작 화면에서 고정 해제',
         ]);
         await closeContextMenu();
         await expect(await openContextMenu(pinnedTile(panel, 'GitHub'))).toEqual([
           '열기',
-          '맨 앞으로 이동',
+          '앞으로 이동',
           '링크 복사',
           '시작 화면에서 고정 해제',
         ]);
@@ -220,12 +220,12 @@ export const PinnedTiles: Story = {
     );
 
     // @codocs [[Start 메뉴:고정됨]]
-    await step('맨 앞 항목은 맨 앞으로 이동을 고를 수 없다', async () => {
-      await openContextMenu(pinnedTile(panel, 'File Explorer'));
-      await expect(screen.getByRole('menuitem', { name: '맨 앞으로 이동' })).toHaveAttribute(
-        'aria-disabled',
-        'true',
+    await step('맨 앞 칸과 둘째 칸에는 앞으로 이동이 없다', async () => {
+      await expect(await openContextMenu(pinnedTile(panel, 'File Explorer'))).not.toContain(
+        '앞으로 이동',
       );
+      await closeContextMenu();
+      await expect(await openContextMenu(pinnedTile(panel, 'Chrome'))).not.toContain('앞으로 이동');
       await closeContextMenu();
     });
 
@@ -248,9 +248,9 @@ export const PinnedTiles: Story = {
     );
 
     // @codocs [[Start 메뉴:고정됨]]
-    await step('우클릭 메뉴의 맨 앞으로 이동은 그 항목을 고정됨 맨 앞으로 옮긴다', async () => {
+    await step('우클릭 메뉴의 앞으로 이동은 그 항목을 고정됨 맨 앞으로 옮긴다', async () => {
       await openContextMenu(pinnedTile(panel, 'Blog'));
-      await userEvent.click(screen.getByRole('menuitem', { name: '맨 앞으로 이동' }));
+      await userEvent.click(screen.getByRole('menuitem', { name: '앞으로 이동' }));
       await expect(useWorkspaceStore.getState().startPins[0]).toBe('blog');
     });
 
