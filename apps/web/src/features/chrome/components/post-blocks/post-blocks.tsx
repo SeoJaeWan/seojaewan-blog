@@ -20,6 +20,7 @@ import {
 } from '@seojaewan/design-system';
 
 import { ResponsiveImage } from '@/features/chrome/components/responsive-image/responsive-image';
+import { useImageLoad } from '@/features/chrome/hooks/use-image-load/use-image-load';
 import type { ChromeTabPage } from '@/shared/utils/chrome-tabs/chrome-tabs';
 import {
   type CodeToken,
@@ -97,7 +98,7 @@ export function PostBlocks({
   resolveLink,
   onPageOpen: handlePageOpen,
   renderImage = renderServedImage,
-  onImageOpen,
+  onImageOpen: handleImageOpen,
   renderEquation = renderServerEquation,
   expandedToggleIndexes = [],
   className,
@@ -234,37 +235,15 @@ export function PostBlocks({
             className="w-full"
           />
         );
-      case 'image': {
-        const caption = getPlainText(block.caption);
-        const image = renderImage(block);
+      case 'image':
         return (
-          <Figure
+          <PostImageFigure
             key={index}
-            className="w-full"
-            image={
-              onImageOpen === undefined ? (
-                image
-              ) : (
-                // Figure가 이미지 칸의 바로 아래 요소에 주는 모양(너비 채우기)을 이미지에도 준다
-                <button
-                  type="button"
-                  aria-label={
-                    caption.length > 0 ? `이미지 크게 보기: ${caption}` : '이미지 크게 보기'
-                  }
-                  onClick={(event) => {
-                    onImageOpen(block, event.currentTarget);
-                  }}
-                  className="cursor-zoom-in [&>*]:block [&>*]:w-full [&>*]:object-cover"
-                >
-                  {image}
-                </button>
-              )
-            }
-            caption={caption}
-            hasCaption={caption.length > 0}
+            block={block}
+            renderImage={renderImage === renderServedImage ? undefined : renderImage}
+            onImageOpen={handleImageOpen}
           />
         );
-      }
       case 'divider':
         return <Separator key={index} className="w-full" />;
       case 'toggle':
@@ -543,6 +522,79 @@ function toRoman(number: number): string {
     }
   }
   return roman;
+}
+
+type PostImageFigureProps = {
+  block: PostImageBlock;
+  renderImage?: (block: PostImageBlock) => ReactNode;
+  onImageOpen?: (block: PostImageBlock, trigger: HTMLElement) => void;
+};
+
+/**
+ * 이미지 블록 하나를 Figure로 그린다. 이미지를 직접 넣지 않으면(이미지 서버 이미지) 받는 동안 Figure를 받는 중(`loading`)으로 두고
+ * 같은 이미지를 숨긴 img로 받아, 다 받으면 이미지를 서서히 나타나게(`motion-image-enter`) 그리고 받지 못하면 실패(`failed`) 칸으로 남긴다.
+ * 그릴 때 이미 받아진 이미지는 바로 보인다([[Notion 이미지 제공:로딩 표시]]). `onImageOpen`을 주면 다 받은 이미지가 크게 보기 버튼이 된다.
+ * @codocs [[Notion 이미지 제공:로딩 표시]]
+ * @codocs [[Chrome:글 화면]]
+ * @param props 컴포넌트 속성
+ * @param props.block 이미지 블록
+ * @param props.renderImage 이미지를 직접 그린다(조립 스토리). 주면 받기 상태를 따라가지 않는다
+ * @param props.onImageOpen 이미지를 눌렀을 때(크게 보기)
+ */
+function PostImageFigure({ block, renderImage, onImageOpen }: PostImageFigureProps): JSX.Element {
+  const isServed = renderImage === undefined;
+  const load = useImageLoad(isServed);
+  const caption = getPlainText(block.caption);
+  const image = isServed ? (
+    <ResponsiveImage
+      image={block}
+      alt={caption}
+      className={cn('h-auto', load.isEntering && 'motion-image-enter')}
+    />
+  ) : (
+    renderImage(block)
+  );
+  const figure = (
+    <Figure
+      className="w-full"
+      state={load.state}
+      image={
+        onImageOpen === undefined ? (
+          image
+        ) : (
+          // Figure가 이미지 칸의 바로 아래 요소에 주는 모양(너비 채우기)을 이미지에도 준다
+          <button
+            type="button"
+            aria-label={caption.length > 0 ? `이미지 크게 보기: ${caption}` : '이미지 크게 보기'}
+            onClick={(event) => {
+              onImageOpen(block, event.currentTarget);
+            }}
+            className="cursor-zoom-in [&>*]:block [&>*]:w-full [&>*]:object-cover"
+          >
+            {image}
+          </button>
+        )
+      }
+      caption={caption}
+      hasCaption={caption.length > 0}
+    />
+  );
+  if (load.state !== 'loading') {
+    return figure;
+  }
+  // 받는 동안 Figure는 이미지를 그리지 않으므로, 같은 자리에 숨긴 img를 겹쳐 받기를 기다린다.
+  return (
+    <div className="relative w-full">
+      {figure}
+      <ResponsiveImage
+        {...load.probeProps}
+        image={block}
+        alt=""
+        isHidden
+        className="invisible absolute inset-spacing-none size-full"
+      />
+    </div>
+  );
 }
 
 /**
