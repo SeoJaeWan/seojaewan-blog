@@ -22,7 +22,7 @@ _codocs:
   - 블로그 저장소가 젠킨스를 설치·운영하기: 원래 계획이었다. 2026-11-06에 local-server가 공용 젠킨스를 두기로 해 바꿨다. 서버에서 도는 서비스가 늘어 실행 계정·권한·GitHub 연결을 한 곳에서 관리하는 편이 낫기 때문이다.
   - 공개 전에 Cloudflare Access로 사이트를 막아 두기: 준비 전에는 `seojaewan.com`을 터널에 연결하지 않으면 되어 필요 없다([[배포 환경:공개 절차]]).
 배포(CD): |
-  공용 젠킨스(local-server가 운영)가 배포한다. 젠킨스 작업 `seojaewan-blog-release`가 2분마다 GitHub에 물어 `refs/heads/main`이 바뀐 것을 알아내고(웹훅은 쓰지 않는다), 실행 계정(라벨 `seojaewan-blog`)에서 이 저장소 루트의 `Jenkinsfile`을 실행한다. 실행 계정·비밀값·포트·데이터 위치·실패 알림 같은 공통 규칙은 local-server 저장소의 `.codocs/foundation/project-deploy.yaml`(프로젝트 배포)을 따르며, 여기에 옮겨 적지 않는다. 이 저장소 쪽 파일은 2026-11-06 구현 순서 9단계 7번 PR에서 만들었다.
+  공용 젠킨스(local-server가 운영)가 배포한다. 젠킨스 작업 `seojaewan-blog-release`가 2분마다 GitHub에 물어 `refs/heads/main`이 바뀐 것을 알아내고(웹훅은 쓰지 않는다), 실행 계정(라벨 `seojaewan-blog`)에서 이 저장소 루트의 `Jenkinsfile`을 실행한다. 실행 계정·비밀값·포트·데이터 위치·실패 알림 같은 공통 규칙은 local-server 저장소의 `.codocs/foundation/project-deploy.yaml`(프로젝트 배포)을 따르며, 여기에 옮겨 적지 않는다. 포트·데이터·비밀값 이름·notify 클라이언트는 local-server의 `registry/seojaewan-blog.yaml` `deploy` 절에 있고, 바꿀 때는 이 저장소가 그 파일을 PR로 바꾼다. 이 저장소 쪽 파일은 2026-11-06 구현 순서 9단계 7번 PR에서 만들었다.
 
   배포 경로는 둘이다(2026-11-06 결정).
   - 글 배포 경로: 동기화 작업이 만든 글 PR이 병합되면([[콘텐츠 원천:갱신 방식]]), 글 JSON만 바뀐 병합이므로 Changesets 버전 PR 없이 바로 블로그를 다시 배포한다.
@@ -36,6 +36,7 @@ _codocs:
      - 앱마다 `package.json`의 `version`을 실행 중인 컨테이너의 버전 라벨과 비교한다. 다르면 배포한다(버전 PR 병합).
      - 블로그는 버전이 같아도, 실행 중인 컨테이너를 만든 커밋과 지금 커밋 사이에 `apps/web/content/**`가 바뀌었으면 다시 배포한다(글 동기화 병합). 그 커밋을 모르면 바뀐 것으로 본다.
      - 실행 중인 컨테이너가 없으면(처음 배포, 멈춤·재시작 반복) 배포한다. 그래서 처음에는 두 앱 모두 배포한다.
+     - 이미지 서버를 배포해야 하는데 필요한 비밀값 파일(`/run/secrets/project/images-notion-token`, `/run/secrets/notify/images`)이 없으면(owner가 아직 넣지 않은 때) 이미지 서버만 건너뛰고 경고를 남긴다. 실패로 끝내지 않고 알리지도 않으며, 블로그와 버전 PR 단계는 그대로 진행한다. 건너뛴 앱은 배포되지 않은 채라 다음 실행에서 다시 배포 대상이 된다. 파일이 있는데 비었거나 다른 이유로 실패하면 실패로 끝낸다.
      - 고른 앱을 모두 빌드한 뒤에 바꾼다. 빌드가 깨지면 실행 중인 컨테이너는 그대로다. 빌드 전에 지금 이미지에 `previous` 태그를 단다.
      - `docker compose up --detach --wait --no-build --no-deps <서비스>`로 바꾸고 health check를 기다린다(최대 300초). 통과하지 못하면 `previous` 이미지로 되돌려 다시 띄우고 작업을 실패로 끝낸다. 되돌린 컨테이너는 옛 버전 라벨을 가지므로 다음 실행에서 다시 배포를 시도한다.
      - 끝나면 이름을 잃은 이전 빌드 이미지를 지운다(`previous` 하나는 손으로 되돌릴 때를 위해 남긴다).
@@ -59,8 +60,8 @@ _codocs:
   - `apps/web/Dockerfile`: Node 24(`node:24.18.1-bookworm-slim`, 다이제스트 고정)에서 `pnpm install --filter "@seojaewan/web..."`(디자인 시스템 포함) 뒤 `next build`(`output: 'standalone'`, 빌드 인자 `CONTENT_SOURCE` 기본 `notion`)를 하고, 실행 이미지에는 standalone 출력과 `.next/static`, `public`만 담아 `node` 사용자로 `apps/web/server.js`를 띄운다.
   - `apps/images/Dockerfile`: 같은 Node 24에 `@seojaewan/images`의 실행 의존성만 설치한다(sharp는 lockfile의 linux x64 glibc 바이너리). 고정 uid `10001`(`images`)로 `node src/main.ts`를 바로 실행한다.
   - 두 Dockerfile 모두 저장소 루트를 빌드 문맥으로 쓰고, 루트 `.dockerignore`가 `.git`, `node_modules`, 빌드 결과, `.env*`, `.deploy-secrets`를 뺀다. pnpm 버전은 corepack이 루트 `packageManager`를 따른다. 체크아웃의 파일 권한(umask)과 관계없이 실행 사용자가 읽게 빌드 단계에서 `chmod -R a+rX`한다.
-  - 데이터 위치: 이미지 서버 저장본은 호스트 `/srv/seojaewan-blog/images`를 컨테이너의 같은 경로에 bind로 둔다. 배포 스크립트가 올리기 전에 이 폴더의 주인을 `10001:10001`로 맞춘다(실행 계정은 Docker 권한이 있어 `docker run --user 0`으로 한다). 확인용으로만 `IMAGE_DATA_DIR`로 바꾼다. 블로그는 남길 데이터가 없다.
-  - 비밀값: 이미지 서버의 `NOTION_TOKEN`은 프로젝트 비밀값 `images-notion-token`, `ALERT_SECRET`은 notify 클라이언트 `images`의 비밀값이다. 배포 스크립트가 실행 계정의 `/run/secrets/project/images-notion-token`, `/run/secrets/notify/images`를 읽어 `.deploy-secrets/images.env`(권한 600)로 쓰고, compose `env_file`로 넣은 뒤 지운다. 값은 명령 인자와 로그에 넣지 않는다. compose `secrets`(파일 bind)는 쓰지 않는다. 실행 계정이 컨테이너라 그 안의 경로를 Docker 엔진이 보지 못하기 때문이다. `ALERT_URL`(`http://10.88.0.1:8790/notify`)은 비밀값이 아니라 compose에 적는다. 이미지 서버 컨테이너에서 notify(`10.88.0.1:8790/healthz`)에 닿는 것을 2026-11-06에 확인했다.
+  - 데이터 위치: 이미지 서버 저장본은 호스트 `/srv/seojaewan-blog/images`를 컨테이너의 같은 경로에 bind로 둔다. 이 폴더는 local-server가 `deploy.data`에 따라 Firebat에 만든다. compose의 bind 경로는 실행 계정이 아니라 Firebat 기준으로 풀리므로 호스트 경로로 적는다. 배포 스크립트가 올리기 전에 이 폴더의 주인을 `10001:10001`로 맞춘다(실행 계정 안에서 하면 호스트에 반영되지 않으므로 Docker 엔진에서 `docker run --user 0`으로 한다). 확인용으로만 `IMAGE_DATA_DIR`로 바꾼다. 블로그는 남길 데이터가 없다.
+  - 비밀값: 이미지 서버의 `NOTION_TOKEN`은 프로젝트 비밀값 `images-notion-token`, `ALERT_SECRET`은 notify 클라이언트 `images`의 비밀값이다. 프로젝트 비밀값은 owner가 local-server의 infra 화면에서 금고 항목을 골라 넣고, notify 비밀값은 발급 뒤 자동으로 복사된다. 배포 스크립트가 실행 계정의 `/run/secrets/project/images-notion-token`, `/run/secrets/notify/images`를 읽어 `.deploy-secrets/images.env`(권한 600)로 쓰고, compose `env_file`로 넣은 뒤 지운다. `env_file`은 실행 계정 안의 compose CLI가 읽으므로 실행 계정 경로로 적는다. 값은 명령 인자와 로그에 넣지 않는다. compose `secrets`(파일 bind)는 쓰지 않는다. 그 경로는 Firebat 기준(`/var/lib/local-server-projects/seojaewan-blog/...`)으로 풀려야 하고, 두 파일을 한 env 파일로 합쳐 넣는 편이 단순하기 때문이다. `ALERT_URL`(`http://10.88.0.1:8790/notify`)은 비밀값이 아니라 compose에 적는다. 이미지 서버 컨테이너에서 notify(`10.88.0.1:8790/healthz`)에 닿는 것을 2026-11-06에 확인했다.
 CI: |
   CI는 GitHub Actions 그대로다. PR 검사이고 병합 전에 통과해야 하는 조건도 같다([[Git 작업 규칙:CI]]).
 
@@ -102,11 +103,11 @@ CI: |
   | GitHub Actions 비밀값 | `NOTION_TOKEN`(`seojaewan-blog` 연동 토큰, 동기화 작업이 Notion을 읽는다), `CONTENT_SYNC_TOKEN`(글 PR을 만드는 Fine-grained PAT, `seojaewan-blog`만, Contents·Pull requests 쓰기), `ALERT_SECRET`(notify 클라이언트 `blog`의 비밀값, 동기화 실패와 동기화 PR 검사 실패 알림용) |
   | 이미지 서버(`apps/images`) | `NOTION_TOKEN`(`seojaewan-images` 연동 토큰), `IMAGE_STORE_DIR`(기본 `/srv/seojaewan-blog/images`), `HOST`(기본 `127.0.0.1`, 컨테이너는 `0.0.0.0`), `PORT`(기본 3100), `ALERT_URL`·`ALERT_SECRET`(둘은 함께 있어야 하고, 둘 다 없으면 로그만 남긴다) |
 
-  이미지 서버의 운영 값은 배포 스크립트가 컨테이너에 넣는다([[배포 환경:배포(CD)]]). `NOTION_TOKEN`은 owner가 local-server에서 프로젝트 비밀값 `images-notion-token`으로 넣는 값이다. `ALERT_SECRET`은 notify 클라이언트 `images`의 비밀값으로, owner가 local-server에서 발급하고 실행 계정에 들어온다. `HOST`·`PORT`·`IMAGE_STORE_DIR`는 이미지에, `ALERT_URL`은 `compose.yaml`에 적는다. notify 서비스 이름은 이미지 서버 `images`다. `blog`는 컨테이너가 아니라 Actions 비밀값 `ALERT_SECRET`으로 쓴다. 젠킨스 `jenkins`는 local-server의 젠킨스가 쓴다([[알림 프로세스]]). 사람이 넣는 값은 Notion 토큰과 `CONTENT_SYNC_TOKEN`, Actions의 `ALERT_SECRET`이다.
+  이미지 서버의 운영 값은 배포 스크립트가 컨테이너에 넣는다([[배포 환경:배포(CD)]]). `NOTION_TOKEN`은 owner가 local-server의 infra 화면에서 프로젝트 비밀값 `images-notion-token`으로 넣는 값이다. `ALERT_SECRET`은 notify 클라이언트 `images`의 비밀값으로, owner가 local-server에서 발급하고 실행 계정에 들어온다. `HOST`·`PORT`·`IMAGE_STORE_DIR`는 이미지에, `ALERT_URL`은 `compose.yaml`에 적는다. notify 서비스 이름은 이미지 서버 `images`다. `blog`는 컨테이너가 아니라 Actions 비밀값 `ALERT_SECRET`으로 쓴다. 젠킨스 `jenkins`는 local-server의 젠킨스가 쓴다([[알림 프로세스]]). 사람이 넣는 값은 Notion 토큰과 `CONTENT_SYNC_TOKEN`, Actions의 `ALERT_SECRET`이다.
 
   - 블로그는 환경 변수를 `src/env.ts`의 Zod 스키마로 검증한다. 환경 변수는 검증 모듈 하나에서만 읽는다([[코드 작성 규칙:React와 Next.js]]). 이미지 서버 주소와 Notion 데이터베이스 ID 세 개는 환경 변수가 아니라 코드 상수다.
   - turbo가 strict env 모드라, 작업에 넘길 변수를 `turbo.json`에 적어야 한다. `build`와 `dev`에는 `CONTENT_SOURCE`만, `test:e2e`에는 `CONTENT_SOURCE`·`E2E_PORT`를 넘긴다.
-  - 미니 PC: 비밀값은 local-server의 비밀값 명령으로 실행 계정의 `/run/secrets`에 들어오고, 배포 스크립트가 권한 600 env 파일로 컨테이너에 넣은 뒤 지운다([[배포 환경:배포(CD)]]). 이것이 운영의 기준이다.
+  - 미니 PC: 비밀값은 owner가 local-server의 infra 화면에서 넣어 실행 계정의 `/run/secrets`에 들어오고, 배포 스크립트가 권한 600 env 파일로 컨테이너에 넣은 뒤 지운다([[배포 환경:배포(CD)]]). 이것이 운영의 기준이다.
   - 로컬: `apps/web/.env.local`에 직접 둔다(Vercel이 없으므로 `vercel env pull`은 없다).
   - Actions 비밀값은 저장소 Settings의 Secrets에 사람이 넣는다.
   - 토큰의 종류와 권한은 [[콘텐츠 원천:연동 토큰]]에서 정한다.

@@ -191,6 +191,69 @@ describe('runDeploy', () => {
     expect(calls.some((line) => line.startsWith('docker image tag'))).toBe(false);
   });
 
+  it('이미지 서버의 비밀값 파일이 없으면 이미지 서버만 건너뛰고 경고를 남긴다', () => {
+    setUp({ web: '0.2.0', images: '0.2.0' });
+    rmSync(path.join(secretsDir, 'project', 'images-notion-token'));
+    const logs = [];
+    const { run, calls } = fakeRun([
+      ['git rev-parse HEAD', { stdout: headSha }],
+      ...container('web', { version: '0.1.0', revision: oldSha }),
+      ...container('images', { version: '0.1.0', revision: oldSha }),
+      ['git diff --quiet', { status: 0 }],
+    ]);
+    const result = runDeploy({
+      run,
+      root,
+      secretsDir,
+      dataDir: '/data/images',
+      log: (m) => logs.push(m),
+    });
+    expect(result).toEqual({ deployed: ['web'], failed: [] });
+    expect(logs.join('\n')).toMatch(/경고.*images.*images-notion-token/u);
+    expect(
+      calls.some((line) => /^docker compose (build|up)/u.test(line) && line.endsWith(' images')),
+    ).toBe(false);
+    expect(calls.some((line) => line.includes('chown'))).toBe(false);
+  });
+
+  it('비밀값 파일이 없고 이미지 서버만 배포 대상이면 아무것도 하지 않고 실패도 아니다', () => {
+    setUp({ web: '0.1.0', images: '0.2.0' });
+    rmSync(path.join(secretsDir, 'notify', 'images'));
+    const { result, calls } = deploy([
+      ...container('web', { version: '0.1.0', revision: oldSha }),
+      ...container('images', { version: '0.1.0', revision: oldSha }),
+      ['git diff --quiet', { status: 0 }],
+    ]);
+    expect(result).toEqual({ deployed: [], failed: [] });
+    expect(calls.some((line) => line.startsWith('docker compose build'))).toBe(false);
+  });
+
+  it('이미지 서버를 배포할 일이 없으면 비밀값 파일이 없어도 경고하지 않는다', () => {
+    setUp({ web: '0.2.0', images: '0.1.0' });
+    rmSync(path.join(secretsDir, 'project', 'images-notion-token'));
+    const logs = [];
+    const { run } = fakeRun([
+      ['git rev-parse HEAD', { stdout: headSha }],
+      ...container('web', { version: '0.1.0', revision: oldSha }),
+      ...container('images', { version: '0.1.0', revision: oldSha }),
+      ['git diff --quiet', { status: 0 }],
+    ]);
+    runDeploy({ run, root, secretsDir, dataDir: '/data/images', log: (m) => logs.push(m) });
+    expect(logs.join('\n')).not.toMatch(/경고/u);
+  });
+
+  it('비밀값 파일이 있는데 비었으면 지금처럼 실패한다', () => {
+    setUp({ web: '0.1.0', images: '0.2.0' });
+    writeFileSync(path.join(secretsDir, 'project', 'images-notion-token'), '\n');
+    expect(() =>
+      deploy([
+        ...container('web', { version: '0.1.0', revision: oldSha }),
+        ...container('images', { version: '0.1.0', revision: oldSha }),
+        ['git diff --quiet', { status: 0 }],
+      ]),
+    ).toThrow(/비었거나/u);
+  });
+
   it('HEAD가 main에 없으면 아무것도 하지 않고 멈춘다', () => {
     setUp({ web: '0.1.0', images: '0.1.0' });
     expect(() => deploy([['git merge-base --is-ancestor', { status: 1 }]])).toThrow(

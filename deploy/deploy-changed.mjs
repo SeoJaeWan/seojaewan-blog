@@ -88,6 +88,17 @@ export function contentChangedSince(run, revision, head) {
 }
 
 /**
+ * 이미지 서버에 필요한데 없는 비밀값 파일을 찾는다. 파일이 있는지만 본다(내용은 읽지 않는다).
+ * @param {string} secretsDir 비밀값 폴더(`/run/secrets`)
+ * @returns {string[]} 없는 파일 경로
+ */
+export function missingImagesSecrets(secretsDir) {
+  return imagesSecrets
+    .map(({ file }) => path.join(secretsDir, file))
+    .filter((source) => !existsSync(source));
+}
+
+/**
  * 이미지 서버의 비밀값을 compose env_file로 쓴다(권한 600). 값은 로그에 남기지 않는다.
  * @param {string} root 저장소 루트
  * @param {string} secretsDir 비밀값 폴더(`/run/secrets`)
@@ -96,7 +107,9 @@ export function writeImagesEnv(root, secretsDir) {
   const lines = imagesSecrets.map(({ name, file }) => {
     const source = path.join(secretsDir, file);
     if (!existsSync(source)) {
-      throw new Error(`비밀값 파일이 없다: ${source}. owner가 local-server에서 넣는다.`);
+      throw new Error(
+        `비밀값 파일이 없다: ${source}. owner가 local-server의 infra 화면에서 넣는다.`,
+      );
     }
     const value = readFileSync(source, 'utf8').trim();
     if (value === '' || /[\r\n]/u.test(value)) {
@@ -176,7 +189,16 @@ export function runDeploy({ run = runCommand, root, secretsDir, dataDir, log = c
   for (const { service, deploy, reason } of plan) {
     log(`${service}: ${deploy ? '배포' : '그대로'} (${reason})`);
   }
-  const targets = plan.filter(({ deploy }) => deploy);
+  // owner가 아직 비밀값을 넣지 않았으면 이미지 서버만 건너뛴다. 실패로 끝내거나 알리지 않고, 블로그와 버전 PR 단계는 그대로 진행한다.
+  // 건너뛴 앱은 배포되지 않은 채라 다음 실행에서 다시 배포 대상이 된다.
+  const missing = missingImagesSecrets(secretsDir);
+  const skipImages = missing.length > 0 && plan.some((p) => p.deploy && p.service === 'images');
+  if (skipImages) {
+    log(`경고: images 배포를 건너뛴다. 비밀값 파일이 아직 없다: ${missing.join(', ')}`);
+  }
+  const targets = plan.filter(
+    ({ deploy, service }) => deploy && !(skipImages && service === 'images'),
+  );
   if (targets.length === 0) {
     return { deployed: [], failed: [] };
   }
