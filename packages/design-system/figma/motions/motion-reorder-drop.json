@@ -1,0 +1,104 @@
+{
+  "delay": {
+    "ms": 0,
+    "token": null
+  },
+  "directives": {
+    "reduced-motion": [
+      "움직임 없이 바로 바뀐다"
+    ],
+    "repeat": [
+      "1"
+    ],
+    "runtime": [
+      "놓은 위치에서 새 자리까지의 거리"
+    ],
+    "trigger": [
+      "끌던 항목을 놓을 때"
+    ]
+  },
+  "duration": {
+    "ms": 250,
+    "token": "motion/duration/normal"
+  },
+  "iterations": 1,
+  "name": "motion-reorder-drop",
+  "nodeId": "3356:515",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 250,
+        "token": "motion/duration/normal"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": {
+            "x": 1.1,
+            "y": 1.1
+          },
+          "valueToken": "motion/scale/lift"
+        },
+        {
+          "easing": "motion/easing/point-to-point",
+          "offset": 1,
+          "time": 250,
+          "value": {
+            "x": 1,
+            "y": 1
+          },
+          "valueToken": null
+        }
+      ],
+      "node": "TaskbarButton",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "TaskbarButton",
+      "property": "SCALE_XY"
+    },
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 250,
+        "token": "motion/duration/normal"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": {
+            "x": 20,
+            "y": 0
+          },
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/point-to-point",
+          "offset": 1,
+          "time": 250,
+          "value": {
+            "x": 0,
+            "y": 0
+          },
+          "valueToken": null
+        }
+      ],
+      "node": "TaskbarButton",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "TaskbarButton",
+      "property": "TRANSLATION_XY"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=3356-515"
+}

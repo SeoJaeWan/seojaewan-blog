@@ -1,0 +1,67 @@
+{
+  "delay": {
+    "ms": 0,
+    "token": null
+  },
+  "directives": {
+    "hold": [
+      "끄는 동안 1.1배를 유지한다"
+    ],
+    "reduced-motion": [
+      "움직임 없이 바로 바뀐다"
+    ],
+    "repeat": [
+      "1"
+    ],
+    "trigger": [
+      "작업 표시줄 앱 버튼·탭·Start 고정됨 칸을 끌기 시작할 때"
+    ]
+  },
+  "duration": {
+    "ms": 167,
+    "token": "motion/duration/fast"
+  },
+  "iterations": 1,
+  "name": "motion-reorder-lift",
+  "nodeId": "3356:508",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 167,
+        "token": "motion/duration/fast"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": {
+            "x": 1,
+            "y": 1
+          },
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/point-to-point",
+          "offset": 1,
+          "time": 167,
+          "value": {
+            "x": 1.1,
+            "y": 1.1
+          },
+          "valueToken": "motion/scale/lift"
+        }
+      ],
+      "node": "TaskbarButton",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "TaskbarButton",
+      "property": "SCALE_XY"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=3356-508"
+}

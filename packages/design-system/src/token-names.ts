@@ -114,6 +114,7 @@ export const TOKEN_NAMES = {
     'size-taskbar-height',
     'size-taskbar-item',
     'size-toc-item-height',
+    'size-toc-items-max-height',
     'size-toc-width',
     'size-tooltip-balloon-width',
     'size-tooltip-max-width',

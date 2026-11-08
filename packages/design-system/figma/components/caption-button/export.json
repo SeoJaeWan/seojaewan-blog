@@ -16,6 +16,14 @@
       ],
       "type": "VARIANT"
     },
+    "Title bar": {
+      "default": "Default",
+      "options": [
+        "Custom",
+        "Default"
+      ],
+      "type": "VARIANT"
+    },
     "Variant": {
       "default": "Default",
       "options": [
@@ -26,7 +34,89 @@
     }
   },
   "variants": {
-    "variant=close,state=hover": {
+    "variant=close,state=hover,title-bar=custom": {
+      "node": {
+        "height": 40,
+        "width": 46,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3339:7269",
+      "properties": {
+        "State": "Hover",
+        "Title bar": "Custom",
+        "Variant": "Close"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "color/white",
+              "path": "icons/ic_fluent_dismiss_20_regular"
+            },
+            "component": "ic_fluent_dismiss_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "color/red/56"
+        ],
+        "height": "size/window/tall-title-bar-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Variant=Close, State=Hover, Title bar=Custom",
+        "reactions": [
+          {
+            "destination": "Variant=Close, State=Pressed, Title bar=Custom",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_PRESS"
+          }
+        ],
+        "size": {
+          "h": 40,
+          "w": 46
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/caption-button/width"
+      }
+    },
+    "variant=close,state=hover,title-bar=default": {
       "node": {
         "height": 32,
         "width": 46,
@@ -36,6 +126,7 @@
       "nodeId": "18:176",
       "properties": {
         "State": "Hover",
+        "Title bar": "Default",
         "Variant": "Close"
       },
       "tree": {
@@ -76,10 +167,10 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Variant=Close, State=Hover",
+        "name": "Variant=Close, State=Hover, Title bar=Default",
         "reactions": [
           {
-            "destination": "Variant=Close, State=Pressed",
+            "destination": "Variant=Close, State=Pressed, Title bar=Default",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -107,7 +198,68 @@
         "width": "size/caption-button/width"
       }
     },
-    "variant=close,state=inactive": {
+    "variant=close,state=inactive,title-bar=custom": {
+      "node": {
+        "height": 40,
+        "width": 46,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3339:7273",
+      "properties": {
+        "State": "Inactive",
+        "Title bar": "Custom",
+        "Variant": "Close"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "color/black/36",
+              "path": "icons/ic_fluent_dismiss_20_regular"
+            },
+            "component": "ic_fluent_dismiss_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "height": "size/window/tall-title-bar-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Variant=Close, State=Inactive, Title bar=Custom",
+        "size": {
+          "h": 40,
+          "w": 46
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/caption-button/width"
+      }
+    },
+    "variant=close,state=inactive,title-bar=default": {
       "node": {
         "height": 32,
         "width": 46,
@@ -117,6 +269,7 @@
       "nodeId": "18:182",
       "properties": {
         "State": "Inactive",
+        "Title bar": "Default",
         "Variant": "Close"
       },
       "tree": {
@@ -154,7 +307,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Variant=Close, State=Inactive",
+        "name": "Variant=Close, State=Inactive, Title bar=Default",
         "size": {
           "h": 32,
           "w": 46
@@ -167,7 +320,71 @@
         "width": "size/caption-button/width"
       }
     },
-    "variant=close,state=pressed": {
+    "variant=close,state=pressed,title-bar=custom": {
+      "node": {
+        "height": 40,
+        "width": 46,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3339:7271",
+      "properties": {
+        "State": "Pressed",
+        "Title bar": "Custom",
+        "Variant": "Close"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "color/white/70",
+              "path": "icons/ic_fluent_dismiss_20_regular"
+            },
+            "component": "ic_fluent_dismiss_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "color/red/56/90"
+        ],
+        "height": "size/window/tall-title-bar-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Variant=Close, State=Pressed, Title bar=Custom",
+        "size": {
+          "h": 40,
+          "w": 46
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/caption-button/width"
+      }
+    },
+    "variant=close,state=pressed,title-bar=default": {
       "node": {
         "height": 32,
         "width": 46,
@@ -177,6 +394,7 @@
       "nodeId": "18:179",
       "properties": {
         "State": "Pressed",
+        "Title bar": "Default",
         "Variant": "Close"
       },
       "tree": {
@@ -217,7 +435,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Variant=Close, State=Pressed",
+        "name": "Variant=Close, State=Pressed, Title bar=Default",
         "size": {
           "h": 32,
           "w": 46
@@ -230,7 +448,86 @@
         "width": "size/caption-button/width"
       }
     },
-    "variant=close,state=rest": {
+    "variant=close,state=rest,title-bar=custom": {
+      "node": {
+        "height": 40,
+        "width": 46,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3339:7267",
+      "properties": {
+        "State": "Rest",
+        "Title bar": "Custom",
+        "Variant": "Close"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "color/black/89",
+              "path": "icons/ic_fluent_dismiss_20_regular"
+            },
+            "component": "ic_fluent_dismiss_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "height": "size/window/tall-title-bar-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Variant=Close, State=Rest, Title bar=Custom",
+        "reactions": [
+          {
+            "destination": "Variant=Close, State=Hover, Title bar=Custom",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 40,
+          "w": 46
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/caption-button/width"
+      }
+    },
+    "variant=close,state=rest,title-bar=default": {
       "node": {
         "height": 32,
         "width": 46,
@@ -240,6 +537,7 @@
       "nodeId": "18:173",
       "properties": {
         "State": "Rest",
+        "Title bar": "Default",
         "Variant": "Close"
       },
       "tree": {
@@ -277,10 +575,10 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Variant=Close, State=Rest",
+        "name": "Variant=Close, State=Rest, Title bar=Default",
         "reactions": [
           {
-            "destination": "Variant=Close, State=Hover",
+            "destination": "Variant=Close, State=Hover, Title bar=Default",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -308,7 +606,89 @@
         "width": "size/caption-button/width"
       }
     },
-    "variant=default,state=hover": {
+    "variant=default,state=hover,title-bar=custom": {
+      "node": {
+        "height": 40,
+        "width": 46,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3339:7261",
+      "properties": {
+        "State": "Hover",
+        "Title bar": "Custom",
+        "Variant": "Default"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "color/black/89",
+              "path": "icons/ic_fluent_subtract_20_regular"
+            },
+            "component": "ic_fluent_subtract_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "color/black/4"
+        ],
+        "height": "size/window/tall-title-bar-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Variant=Default, State=Hover, Title bar=Custom",
+        "reactions": [
+          {
+            "destination": "Variant=Default, State=Pressed, Title bar=Custom",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_PRESS"
+          }
+        ],
+        "size": {
+          "h": 40,
+          "w": 46
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/caption-button/width"
+      }
+    },
+    "variant=default,state=hover,title-bar=default": {
       "node": {
         "height": 32,
         "width": 46,
@@ -318,6 +698,7 @@
       "nodeId": "18:140",
       "properties": {
         "State": "Hover",
+        "Title bar": "Default",
         "Variant": "Default"
       },
       "tree": {
@@ -358,10 +739,10 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Variant=Default, State=Hover",
+        "name": "Variant=Default, State=Hover, Title bar=Default",
         "reactions": [
           {
-            "destination": "Variant=Default, State=Pressed",
+            "destination": "Variant=Default, State=Pressed, Title bar=Default",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -389,7 +770,68 @@
         "width": "size/caption-button/width"
       }
     },
-    "variant=default,state=inactive": {
+    "variant=default,state=inactive,title-bar=custom": {
+      "node": {
+        "height": 40,
+        "width": 46,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3339:7265",
+      "properties": {
+        "State": "Inactive",
+        "Title bar": "Custom",
+        "Variant": "Default"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "color/black/36",
+              "path": "icons/ic_fluent_subtract_20_regular"
+            },
+            "component": "ic_fluent_subtract_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "height": "size/window/tall-title-bar-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Variant=Default, State=Inactive, Title bar=Custom",
+        "size": {
+          "h": 40,
+          "w": 46
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/caption-button/width"
+      }
+    },
+    "variant=default,state=inactive,title-bar=default": {
       "node": {
         "height": 32,
         "width": 46,
@@ -399,6 +841,7 @@
       "nodeId": "18:146",
       "properties": {
         "State": "Inactive",
+        "Title bar": "Default",
         "Variant": "Default"
       },
       "tree": {
@@ -436,7 +879,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Variant=Default, State=Inactive",
+        "name": "Variant=Default, State=Inactive, Title bar=Default",
         "size": {
           "h": 32,
           "w": 46
@@ -449,7 +892,71 @@
         "width": "size/caption-button/width"
       }
     },
-    "variant=default,state=pressed": {
+    "variant=default,state=pressed,title-bar=custom": {
+      "node": {
+        "height": 40,
+        "width": 46,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3339:7263",
+      "properties": {
+        "State": "Pressed",
+        "Title bar": "Custom",
+        "Variant": "Default"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "color/black/61",
+              "path": "icons/ic_fluent_subtract_20_regular"
+            },
+            "component": "ic_fluent_subtract_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "color/black/2"
+        ],
+        "height": "size/window/tall-title-bar-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Variant=Default, State=Pressed, Title bar=Custom",
+        "size": {
+          "h": 40,
+          "w": 46
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/caption-button/width"
+      }
+    },
+    "variant=default,state=pressed,title-bar=default": {
       "node": {
         "height": 32,
         "width": 46,
@@ -459,6 +966,7 @@
       "nodeId": "18:143",
       "properties": {
         "State": "Pressed",
+        "Title bar": "Default",
         "Variant": "Default"
       },
       "tree": {
@@ -499,7 +1007,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Variant=Default, State=Pressed",
+        "name": "Variant=Default, State=Pressed, Title bar=Default",
         "size": {
           "h": 32,
           "w": 46
@@ -512,7 +1020,86 @@
         "width": "size/caption-button/width"
       }
     },
-    "variant=default,state=rest": {
+    "variant=default,state=rest,title-bar=custom": {
+      "node": {
+        "height": 40,
+        "width": 46,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3339:7259",
+      "properties": {
+        "State": "Rest",
+        "Title bar": "Custom",
+        "Variant": "Default"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "color/black/89",
+              "path": "icons/ic_fluent_subtract_20_regular"
+            },
+            "component": "ic_fluent_subtract_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "height": "size/window/tall-title-bar-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Variant=Default, State=Rest, Title bar=Custom",
+        "reactions": [
+          {
+            "destination": "Variant=Default, State=Hover, Title bar=Custom",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 40,
+          "w": 46
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/caption-button/width"
+      }
+    },
+    "variant=default,state=rest,title-bar=default": {
       "node": {
         "height": 32,
         "width": 46,
@@ -522,6 +1109,7 @@
       "nodeId": "18:137",
       "properties": {
         "State": "Rest",
+        "Title bar": "Default",
         "Variant": "Default"
       },
       "tree": {
@@ -559,10 +1147,10 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Variant=Default, State=Rest",
+        "name": "Variant=Default, State=Rest, Title bar=Default",
         "reactions": [
           {
-            "destination": "Variant=Default, State=Hover",
+            "destination": "Variant=Default, State=Hover, Title bar=Default",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
