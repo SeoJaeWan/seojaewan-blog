@@ -147,7 +147,7 @@ function PostPage({
     <div
       className={
         isWide
-          ? 'flex justify-center gap-spacing-5xl px-spacing-lg pt-spacing-5xl pb-spacing-5xl'
+          ? 'flex justify-center gap-spacing-5xl px-spacing-3xl pt-spacing-5xl pb-spacing-5xl'
           : 'flex flex-col items-center px-spacing-lg pt-spacing-2xl pb-spacing-2xl'
       }
     >
