@@ -39,6 +39,8 @@ import { type InitialPage, useInitialWindow } from './hooks/use-initial-window/u
  * @codocs [[창 동작:브라우저 주소]]
  * @codocs [[창 동작:새로고침과 첫 진입]]
  * @codocs [[SEO와 공유 미리보기:첫 HTML]]
+ * 화면 높이는 동적 뷰포트(`h-dvh`)다. 인앱 브라우저처럼 주소창이 접히며 높이가 바뀌어도 아래가 비지 않는다.
+ * @codocs [[반응형:화면 채우기]]
  * 사이트를 처음 불러오면 재부팅 화면이 서버 HTML에서부터 덮고 있다(`booting`). 화면 크기를 알고(수화한 뒤 작업 영역) 첫 창을 연 뒤에
  * 걷어, 서버가 PC 모양으로 그린 화면이 기기 모양으로 바뀌는 모습을 가린다. 서버 HTML의 바탕화면에는 `inert`를 달지 않는다.
  * 스크립트 없이 읽는 검색 엔진·보조 기술이 내용을 그대로 읽어야 하기 때문이다. 수화한 뒤 걷힐 때까지만 `inert`다.
@@ -112,7 +114,7 @@ export function Shell({ posts, initialPage: initialPageProp }: ShellProps): JSX.
       ref={mainRef}
       tabIndex={-1}
       aria-label="바탕화면"
-      className="fixed inset-spacing-none overflow-hidden outline-none"
+      className="fixed inset-x-spacing-none top-spacing-none h-dvh overflow-hidden outline-none"
     >
       <ShellDesktop
         key={generation}

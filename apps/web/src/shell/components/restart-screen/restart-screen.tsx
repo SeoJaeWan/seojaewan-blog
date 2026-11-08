@@ -16,6 +16,8 @@ const BOOT_SCREEN_DELAY = '--motion-delay-boot-screen';
  * 3. `--motion-delay-boot-screen` 동안 보여 준다. 그동안 안의 ProgressRing이 돈다.
  * 4. `motion-boot-screen-exit`로 페이드 아웃하고, 끝나면 빼고 `idle`로 돌아간다.
  * 로고 크기와 간격은 화면 구간에 따라 CSS가 고른다(`device="auto"`). 서버가 화면 크기를 몰라도 첫 HTML부터 기기에 맞는 모습이다.
+ * 화면은 고정 크기가 아니라 동적 뷰포트(`dvh`) 전체를 채운다(`auto`가 준다).
+ * @codocs [[반응형:화면 채우기]]
  * @codocs [[다시 시작:순서]]
  * @codocs [[피그마 연동:모션 클래스]]
  *
@@ -83,7 +85,7 @@ export function RestartScreen(): JSX.Element | null {
       device="auto"
       progressLabel={isPageLoad ? '시작하는 중' : '다시 시작하는 중'}
       {...presence.presenceProps}
-      className={`fixed inset-spacing-none h-full w-full ${motionClassName}`}
+      className={`fixed top-spacing-none left-spacing-none ${motionClassName}`}
     />
   );
   if (!isPageLoad) {
@@ -91,7 +93,10 @@ export function RestartScreen(): JSX.Element | null {
   }
   // 안전장치 틀은 사라지는 움직임을 늦춰 둔 채 붙인다. 지연은 `globals.css`의 `[data-boot-screen-fallback]`이 준다.
   return (
-    <div data-boot-screen-fallback="" className="fixed inset-spacing-none motion-boot-screen-exit">
+    <div
+      data-boot-screen-fallback=""
+      className="fixed top-spacing-none left-spacing-none h-dvh w-full motion-boot-screen-exit"
+    >
       {screen}
     </div>
   );

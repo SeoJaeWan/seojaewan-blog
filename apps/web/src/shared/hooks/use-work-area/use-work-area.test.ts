@@ -42,3 +42,50 @@ describe('창 동작:창 조작', () => {
     expect(result.current).toEqual({ width: 967, height: 846 - TASKBAR_HEIGHT });
   });
 });
+
+/**
+ * 높이만 가진 가짜 visualViewport를 만든다.
+ * @param height 보이는 높이
+ * @returns resize를 보낼 수 있는 가짜 visualViewport
+ */
+function createVisualViewport(height: number): EventTarget & { height: number } {
+  return Object.assign(new EventTarget(), { height });
+}
+
+// @codocs [[반응형:화면 채우기]]
+describe('반응형:화면 채우기', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('visualViewport가 있으면 그 높이(반올림)로 작업 영역을 구한다', () => {
+    vi.stubGlobal('innerWidth', 412);
+    vi.stubGlobal('innerHeight', 915);
+    vi.stubGlobal('visualViewport', createVisualViewport(860.4));
+    const { result } = renderHook(() => useWorkArea());
+    expect(result.current).toEqual({ width: 412, height: 860 - TASKBAR_HEIGHT });
+  });
+
+  it('visualViewport의 resize만 와도 작업 영역 높이가 바뀐다', () => {
+    vi.stubGlobal('innerWidth', 412);
+    vi.stubGlobal('innerHeight', 915);
+    const visualViewport = createVisualViewport(800);
+    vi.stubGlobal('visualViewport', visualViewport);
+    const { result } = renderHook(() => useWorkArea());
+    expect(result.current).toEqual({ width: 412, height: 800 - TASKBAR_HEIGHT });
+
+    act(() => {
+      visualViewport.height = 915;
+      visualViewport.dispatchEvent(new Event('resize'));
+    });
+    expect(result.current).toEqual({ width: 412, height: 915 - TASKBAR_HEIGHT });
+  });
+
+  it('visualViewport가 없으면 innerHeight를 쓴다', () => {
+    vi.stubGlobal('innerWidth', 360);
+    vi.stubGlobal('innerHeight', 800);
+    vi.stubGlobal('visualViewport', null);
+    const { result } = renderHook(() => useWorkArea());
+    expect(result.current).toEqual({ width: 360, height: 800 - TASKBAR_HEIGHT });
+  });
+});
