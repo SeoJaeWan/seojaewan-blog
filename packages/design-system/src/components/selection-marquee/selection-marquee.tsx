@@ -15,7 +15,10 @@ export function SelectionMarquee({ className, ...divProps }: SelectionMarqueePro
     <div
       aria-hidden="true"
       {...divProps}
-      className={cn('border-stroke-width-default border-color-blue-18 bg-color-blue-5', className)}
+      className={cn(
+        'border-stroke-width-default border-color-blue-50 bg-color-blue-50-25',
+        className,
+      )}
     />
   );
 }
