@@ -9,11 +9,13 @@
  * |---|---|---|
  * | `bg-gradient-elevation-*` | background-image | `--elevation-*` |
  * | `bg-gradient-icon-color-*` | background-image | `--icon-color-*` |
+ * | `bg-gradient-skeleton-*` | background-image | `--skeleton-*` |
  * | `bg-<색 묶음>-*` | background-color | `--<색 묶음>-*` |
  * | `border-*` | border-width | `--stroke-width-*` |
  * | `border-b-*` | border-bottom-width | `--stroke-width-*` |
  * | `border-gradient-elevation-*` | 안쪽 선 고리(그라데이션) | `--elevation-*` |
  * | `border-gradient-icon-color-*` | 안쪽 선 고리(그라데이션) | `--icon-color-*` |
+ * | `border-gradient-skeleton-*` | 안쪽 선 고리(그라데이션) | `--skeleton-*` |
  * | `border-l-*` | border-left-width | `--stroke-width-*` |
  * | `border-<색 묶음>-*` | border-color | `--<색 묶음>-*` |
  * | `border-r-*` | border-right-width | `--stroke-width-*` |
@@ -114,6 +116,7 @@
   --color-blue-9: #cce8ff;
   --color-blue-18: #99d1ff;
   --color-blue-50: #0078d4;
+  --color-blue-50-25: #0078d440;
   --color-blue-58: #0853e0;
   --color-blue-59: #005fb8;
   --color-blue-59-80: #005fb8cc;
@@ -188,7 +191,7 @@
   --motion-easing-point-to-point: cubic-bezier(0.55, 0.55, 0, 1);
   --motion-easing-progress-ring: cubic-bezier(0.167, 0.167, 0.833, 0.833);
   --motion-scale-half: 0.5;
-  --motion-scale-search-icon: 1.1;
+  --motion-scale-lift: 1.1;
   --motion-scale-window-enter: 0.96;
   --motion-scale-window-minimize: 0.12;
   --opacity-cut: 62%;
@@ -294,6 +297,7 @@
   --size-taskbar-height: 48px;
   --size-taskbar-item: 40px;
   --size-toc-item-height: 20px;
+  --size-toc-items-max-height: 584px;
   --size-toc-width: 220px;
   --size-tooltip-balloon-width: 300px;
   --size-tooltip-max-width: 318px;
@@ -362,6 +366,7 @@
   --color-color-blue-9: var(--color-blue-9);
   --color-color-blue-18: var(--color-blue-18);
   --color-color-blue-50: var(--color-blue-50);
+  --color-color-blue-50-25: var(--color-blue-50-25);
   --color-color-blue-58: var(--color-blue-58);
   --color-color-blue-59: var(--color-blue-59);
   --color-color-blue-59-80: var(--color-blue-59-80);
@@ -521,6 +526,7 @@
   --size-size-taskbar-height: var(--size-taskbar-height);
   --size-size-taskbar-item: var(--size-taskbar-item);
   --size-size-toc-item-height: var(--size-toc-item-height);
+  --size-size-toc-items-max-height: var(--size-toc-items-max-height);
   --size-size-toc-width: var(--size-toc-width);
   --size-size-tooltip-balloon-width: var(--size-tooltip-balloon-width);
   --size-size-tooltip-max-width: var(--size-tooltip-max-width);
@@ -536,6 +542,7 @@
   --size-size-window-resize-edge: var(--size-window-resize-edge);
   --size-size-window-tall-title-bar-height: var(--size-window-tall-title-bar-height);
   --size-size-window-title-bar-height: var(--size-window-title-bar-height);
+  --skeleton-shimmer: linear-gradient(90deg, var(--color-white-0) 0%, var(--color-white-70) 50%, var(--color-white-0) 100%);
   --spacing-spacing-2xl: var(--spacing-2xl);
   --spacing-spacing-2xs: var(--spacing-2xs);
   --spacing-spacing-3xl: var(--spacing-3xl);
@@ -595,6 +602,10 @@
   background-image: --value(--icon-color-*);
 }
 
+@utility bg-gradient-skeleton-* {
+  background-image: --value(--skeleton-*);
+}
+
 @utility bg-material-* {
   background-color: --value(--material-*);
 }
@@ -634,6 +645,22 @@
     padding: var(--inner-border-width);
     border-radius: inherit;
     background: --value(--icon-color-*);
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    pointer-events: none;
+  }
+}
+
+@utility border-gradient-skeleton-* {
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    padding: var(--inner-border-width);
+    border-radius: inherit;
+    background: --value(--skeleton-*);
     mask:
       linear-gradient(#000 0 0) content-box exclude,
       linear-gradient(#000 0 0);
