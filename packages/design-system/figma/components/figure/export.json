@@ -27,7 +27,7 @@
   "variants": {
     "state=failed": {
       "node": {
-        "height": 433,
+        "height": 478,
         "width": 720,
         "x": 0,
         "y": 0
@@ -42,13 +42,17 @@
             "children": [
               {
                 "aspectRatio": {
-                  "value": 1.78,
-                  "variable": "ratio/video"
+                  "value": 1.6,
+                  "variable": null
                 },
+                "asset": {
+                  "path": "images/wallpaper-bloom"
+                },
+                "component": "wallpaper/Bloom",
                 "fills": [
-                  "color/gray/4"
+                  "IMAGE"
                 ],
-                "name": "placeholder",
+                "name": "image",
                 "radius": [
                   "radius/overlay",
                   "radius/overlay",
@@ -56,12 +60,37 @@
                   "radius/overlay"
                 ],
                 "size": {
-                  "h": 405,
+                  "h": 450,
                   "w": 720
                 },
                 "sizing": {
                   "h": "FILL",
                   "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "absolute": {
+                  "horizontal": "STRETCH",
+                  "vertical": "STRETCH"
+                },
+                "fills": [
+                  "color/gray/4"
+                ],
+                "name": "skeleton",
+                "radius": [
+                  "radius/overlay",
+                  "radius/overlay",
+                  "radius/overlay",
+                  "radius/overlay"
+                ],
+                "size": {
+                  "h": 450,
+                  "w": 720
+                },
+                "sizing": {
+                  "h": "DERIVED",
+                  "v": "DERIVED"
                 },
                 "type": "FRAME"
               }
@@ -80,7 +109,7 @@
             },
             "name": "image frame",
             "size": {
-              "h": 405,
+              "h": 450,
               "w": 720
             },
             "sizing": {
@@ -132,7 +161,7 @@
         },
         "name": "State=Failed",
         "size": {
-          "h": 433,
+          "h": 478,
           "w": 720
         },
         "sizing": {
@@ -265,7 +294,7 @@
     },
     "state=loading": {
       "node": {
-        "height": 433,
+        "height": 478,
         "width": 720,
         "x": 0,
         "y": 0
@@ -280,15 +309,44 @@
             "children": [
               {
                 "aspectRatio": {
-                  "value": 1.78,
-                  "variable": "ratio/video"
+                  "value": 1.6,
+                  "variable": null
+                },
+                "asset": {
+                  "path": "images/wallpaper-bloom"
+                },
+                "component": "wallpaper/Bloom",
+                "fills": [
+                  "IMAGE"
+                ],
+                "name": "image",
+                "radius": [
+                  "radius/overlay",
+                  "radius/overlay",
+                  "radius/overlay",
+                  "radius/overlay"
+                ],
+                "size": {
+                  "h": 450,
+                  "w": 720
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "absolute": {
+                  "horizontal": "STRETCH",
+                  "vertical": "STRETCH"
                 },
                 "children": [
                   {
                     "fillStyle": "Skeleton/Shimmer",
                     "name": "shimmer",
                     "size": {
-                      "h": 405,
+                      "h": 450,
                       "w": 720
                     },
                     "sizing": {
@@ -301,7 +359,7 @@
                 "fills": [
                   "color/gray/4"
                 ],
-                "name": "placeholder",
+                "name": "skeleton",
                 "radius": [
                   "radius/overlay",
                   "radius/overlay",
@@ -309,12 +367,12 @@
                   "radius/overlay"
                 ],
                 "size": {
-                  "h": 405,
+                  "h": 450,
                   "w": 720
                 },
                 "sizing": {
-                  "h": "FILL",
-                  "v": "FIXED"
+                  "h": "DERIVED",
+                  "v": "DERIVED"
                 },
                 "type": "FRAME"
               }
@@ -333,7 +391,7 @@
             },
             "name": "image frame",
             "size": {
-              "h": 405,
+              "h": 450,
               "w": 720
             },
             "sizing": {
@@ -385,7 +443,7 @@
         },
         "name": "State=Loading",
         "size": {
-          "h": 433,
+          "h": 478,
           "w": 720
         },
         "sizing": {
