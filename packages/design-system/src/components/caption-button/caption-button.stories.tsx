@@ -7,26 +7,30 @@ import { CaptionButton } from './caption-button';
 // 피그마 CaptionButton의 변형 속성 값이다(정규화한 이름).
 const VARIANTS = ['default', 'close'] as const;
 const STATES = ['rest', 'hover', 'pressed', 'inactive'] as const;
+const TITLE_BARS = ['default', 'custom'] as const;
 
 type FigmaArgs = {
   variant: (typeof VARIANTS)[number];
   state: (typeof STATES)[number];
+  titleBar: (typeof TITLE_BARS)[number];
   /** 동작 스토리가 호출 횟수를 확인하려고 받는다 */
   onClick?: ComponentProps<typeof CaptionButton>['onClick'];
 };
 
 const meta = {
   title: 'Components/CaptionButton',
-  args: { variant: 'default', state: 'rest' },
+  args: { variant: 'default', state: 'rest', titleBar: 'default' },
   argTypes: {
     variant: { control: 'inline-radio', options: VARIANTS },
     state: { control: 'inline-radio', options: STATES },
+    titleBar: { control: 'inline-radio', options: TITLE_BARS },
   },
   render: (args) => {
     const { onClick: handleClick } = args;
     return (
       <CaptionButton
         variant={args.variant}
+        titleBar={args.titleBar}
         label={args.variant === 'close' ? '닫기' : '최소화'}
         isInactive={args.state === 'inactive'}
         onClick={handleClick}
