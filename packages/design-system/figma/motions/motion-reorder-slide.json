@@ -1,0 +1,67 @@
+{
+  "delay": {
+    "ms": 0,
+    "token": null
+  },
+  "directives": {
+    "reduced-motion": [
+      "움직임 없이 바로 바뀐다"
+    ],
+    "repeat": [
+      "1"
+    ],
+    "runtime": [
+      "이전 자리에서 새 자리까지의 거리"
+    ],
+    "trigger": [
+      "순서가 바뀌어 밀려나는 항목이 새 자리로 갈 때(작업 표시줄·탭·Start 고정됨, Start 고정됨 메뉴 이동 공용)"
+    ]
+  },
+  "duration": {
+    "ms": 250,
+    "token": "motion/duration/normal"
+  },
+  "iterations": 1,
+  "name": "motion-reorder-slide",
+  "nodeId": "3356:525",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 250,
+        "token": "motion/duration/normal"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": {
+            "x": 44,
+            "y": 0
+          },
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/point-to-point",
+          "offset": 1,
+          "time": 250,
+          "value": {
+            "x": 0,
+            "y": 0
+          },
+          "valueToken": null
+        }
+      ],
+      "node": "TaskbarButton",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "TaskbarButton",
+      "property": "TRANSLATION_XY"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=3356-525"
+}
