@@ -641,6 +641,28 @@
 }
 
 /*
+ * 이미지 나타남(견본 motion-image-enter). 스켈레톤을 깐 이미지를 다 받으면 이미지가 투명도 0 → 1로 짧게 서서히 나타난다
+ * ([[Notion 이미지 제공:로딩 표시]]). 실행 중 값은 없다. 앱이 받기를 마친 이미지(img)에 붙이고,
+ * 그릴 때 이미 받아진 이미지(img.complete)에는 붙이지 않는다. 시작 모습(투명도 0)을 재생 전에도 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-image-enter {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@utility motion-image-enter {
+  animation-name: motion-image-enter;
+  animation-duration: var(--motion-duration-fast);
+  animation-timing-function: var(--motion-easing-fade);
+  animation-fill-mode: both;
+}
+
+/*
  * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다.
  * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환, 순서 바꾸기 끌기는 여기서 움직임 없이 바로 바꾼다.
  * hover·pressed 색 전환, 검색 돋보기 페이드, ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
@@ -665,7 +687,8 @@
   .motion-reorder-slide,
   .motion-start-pinned-move-exit,
   .motion-start-pinned-move-enter,
-  .motion-image-skeleton {
+  .motion-image-skeleton,
+  .motion-image-enter {
     animation: none;
   }
 
