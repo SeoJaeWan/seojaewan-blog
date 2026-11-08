@@ -56,27 +56,34 @@
             ],
             "component": "SectionHeader",
             "layout": {
-              "counterAlign": "MIN",
+              "counterAlign": "CENTER",
               "gap": 0,
               "mode": "HORIZONTAL",
               "padding": [
-                "spacing/sm",
+                "spacing/sm-nudge",
                 "spacing/md",
-                "spacing/xs",
+                "spacing/sm-nudge",
                 "spacing/md"
               ],
               "primaryAlign": "MIN"
             },
             "name": "header",
             "properties": {
-              "Label": "머리글"
+              "Label": "머리글",
+              "State": "Rest"
             },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
             "size": {
               "h": 32,
-              "w": 61
+              "w": 574
             },
             "sizing": {
-              "h": "HUG",
+              "h": "FILL",
               "v": "HUG"
             },
             "type": "INSTANCE"
