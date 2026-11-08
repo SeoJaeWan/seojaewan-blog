@@ -22,6 +22,12 @@ _codocs:
   - Chrome 목차 들여 쓰기: 제목 단계마다 들이되, 글에서 가장 높은 제목 단계를 들여 쓰지 않는 상대 단계로 풀었다. 사용자가 말한 `heading_1/2/3` 절대 단계와 다를 수 있어 확인이 필요하다.
   - 모바일 부팅 화면 규칙은 [[반응형:화면 채우기]] 새 섹션으로 두었고, 입력 차이 표의 Start 순서 바꾸기 칸에 이동 메뉴를 가리키는 문장을 더했다.
 
+작업 영역 높이를 innerHeight로 되돌림: |
+  `fix/work-area-inner-height` PR에서 작업 중에 정한 것이다.
+  - 스토리 화면 크기 도우미(`setStoryScreen`)가 더 이상 읽지 않는 `visualViewport.height` 가짜 값 설정을 뺐다.
+  - `use-work-area` 테스트의 `visualViewport` 구독·반올림 시험은 지우고, `visualViewport`가 있어도 `innerHeight`를 쓰는지 보는 시험 하나로 바꿨다.
+  - [[반응형:화면 채우기]]에서 `visualViewport`를 말한 문장만 `innerHeight` 기준으로 고쳤다. 인앱 브라우저에서 주소창이 접힐 때 `resize`가 오지 않을 수 있다는 이유 문장은 근거가 없어져 함께 뺐다.
+
 끌어서 순서 바꾸기 모션: |
   `feat/drag-reorder-motion` PR에서 [[항목 조작:순서 바꾸기 끌기]]를 구현하며 정한 것이다.
   - 세 곳(작업 표시줄 고정 앱, 탐색기·Chrome 탭, Start 고정됨)이 공용 훅 `useReorderMotion` 하나를 쓴다. 끄는 항목은 `motion-reorder-lift`를 붙인 채 `translate`로 포인터를 따라오고, 놓거나 취소하면 `motion-reorder-drop`, 자리가 바뀐 나머지는 `motion-reorder-slide`를 FLIP으로 재생한다. 포인터를 놓친 취소도 놓기와 같이 새 자리로 들어간다.
