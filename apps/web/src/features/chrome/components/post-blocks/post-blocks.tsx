@@ -6,6 +6,8 @@ import {
   Callout,
   cn,
   CodeBlock,
+  Column,
+  Columns,
   Equation,
   Figure,
   ListBlock,
@@ -21,10 +23,12 @@ import { ResponsiveImage } from '@/features/chrome/components/responsive-image/r
 import type { ChromeTabPage } from '@/shared/utils/chrome-tabs/chrome-tabs';
 import {
   type CodeToken,
+  getColumnGrows,
   getHeadingId,
+  getHeadingLevel,
   getPlainText,
+  getTopHeadingLevel,
   type HeadingBlock,
-  isHeadingBlock,
   type ListItemBlock,
   type PostBlock,
   type RichText as RichTextPart,
@@ -41,6 +45,7 @@ export type PostEquationBlock = Extract<PostBlock, { type: 'equation' }>;
 
 type PostBlocksProps = {
   blocks: readonly PostBlock[];
+  layout?: 'wide' | 'narrow';
   resolveLink?: (href: string) => ChromeTabPage | null;
   onPageOpen?: (page: ChromeTabPage) => void;
   renderImage?: (block: PostImageBlock) => ReactNode;
@@ -50,8 +55,7 @@ type PostBlocksProps = {
   className?: string;
 };
 
-// 제목 단계와 단계마다의 글자 스타일이다([[Notion 블록:지원 블록]]).
-const HEADING_LEVELS = { heading_1: 1, heading_2: 2, heading_3: 3 } as const;
+// 제목 단계마다의 글자 스타일이다([[Notion 블록:지원 블록]]).
 const headingClassNames = {
   heading_1: 'w-full type-title text-color-black-89',
   heading_2: 'w-full type-subtitle text-color-black-89',
@@ -66,7 +70,8 @@ const BULLETS = ['•', '◦', '▪'] as const;
 
 /**
  * 글 본문 블록을 피그마 조립 `Chrome/PostBlocks`의 모양으로 그린다. 블록 사이 간격은 16이고 바탕은 페이지 바탕(`chrome/page-fill`)이다.
- * 제목은 제목 1·2·3을 글자 스타일 Title·Subtitle·Body Large Strong으로 그리고, 목차가 찾도록 맨 위 블록의 제목에 id를 단다.
+ * 제목은 제목 1·2·3을 글자 스타일 Title·Subtitle·Body Large Strong으로 그리고, 목차가 찾도록 맨 위 블록과 열 안 블록의 제목에 id를 단다.
+ * 열 나누기는 Columns·Column으로 그린다. 넓은 창은 열을 나란히 놓고 열 너비를 Notion `width_ratio` 비율로 나누며, 좁은 창은 차례로 쌓는다.
  * 이어진 같은 종류의 목록 항목은 한 목록으로 묶어 ListBlock으로 그리고, 표시(글머리표·번호)는 깊이와 순서로 정한다.
  * 글자 조각(문단, 제목, 목록, 인용, 콜아웃, 토글 제목, 표 칸)의 서식과 링크는 RichText가 그린다.
  * 코드 블록은 서버가 강조한 글자 조각(`highlighted`)이 있으면 강조기가 준 색으로 칠하고, 없으면 글자 그대로다.
@@ -77,6 +82,7 @@ const BULLETS = ['•', '◦', '▪'] as const;
  * @codocs [[Chrome:글 화면]]
  * @param props 컴포넌트 속성
  * @param props.blocks 본문 블록
+ * @param props.layout 글 화면의 넓은 창·좁은 창([[Chrome:글 화면]]). 열 나누기를 나란히 놓을지 쌓을지 고른다. 주지 않으면 넓은 창이다
  * @param props.resolveLink 링크 주소가 블로그 안의 페이지면 그 페이지를 돌려준다. 외부 주소면 null이다. 없으면 모든 링크가 외부 주소다
  * @param props.onPageOpen 블로그 글 링크를 눌렀을 때. 같은 탭에서 그 페이지로 간다
  * @param props.renderImage 이미지 블록의 이미지(피그마 Figure `image`)를 그린다. 없으면 이미지 서버의 크기별 사본과 크기로 그린다([[Notion 이미지 제공]]). 조립 스토리가 피그마의 그림을 넣을 때 쓴다
@@ -87,6 +93,7 @@ const BULLETS = ['•', '◦', '▪'] as const;
  */
 export function PostBlocks({
   blocks,
+  layout = 'wide',
   resolveLink,
   onPageOpen: handlePageOpen,
   renderImage = renderServedImage,
@@ -138,7 +145,9 @@ export function PostBlocks({
          */
         (item, index) => {
           const hasChildren = item.children !== undefined && item.children.length > 0;
-          const subItems = hasChildren ? renderBlocks(item.children ?? [], depth + 1) : undefined;
+          const subItems = hasChildren
+            ? renderBlocks(item.children ?? [], depth + 1, null)
+            : undefined;
           return item.type === 'to_do' ? (
             <ListBlock
               key={index}
@@ -171,23 +180,25 @@ export function PostBlocks({
    * @param block 블록
    * @param index 블록 차례
    * @param depth 들여쓴 단계(맨 위가 0)
+   * @param outlinePath 블록들이 놓인 본문 안 자리. 맨 위면 비어 있고, 열 안이면 열 나누기 차례·열 차례가 이어진다. 목차에 들지 않는 곳(토글·목록 안)이면 null이다
    * @returns 블록
    */
   function renderBlock(
     block: Exclude<PostBlock, ListItemBlock>,
     index: number,
     depth: number,
+    outlinePath: readonly number[] | null,
   ): JSX.Element {
-    const isTopLevel = depth === 0;
+    const isTopLevel = depth === 0 && outlinePath?.length === 0;
     switch (block.type) {
       case 'heading_1':
       case 'heading_2':
       case 'heading_3':
         return createElement(
-          `h${String(HEADING_LEVELS[block.type] - topHeadingLevel + 2)}`,
+          `h${String(getHeadingLevel(block) - topHeadingLevel + 2)}`,
           {
             key: index,
-            id: isTopLevel ? getHeadingId(index) : undefined,
+            id: outlinePath === null ? undefined : getHeadingId(...outlinePath, index),
             className: headingClassNames[block.type],
           },
           renderRichText(block.richText),
@@ -264,8 +275,16 @@ export function PostBlocks({
             title={renderRichText(block.richText)}
             isDefaultExpanded={isTopLevel && expandedToggleIndexes.includes(index)}
           >
-            {renderBlocks(block.children ?? [], depth + 1)}
+            {renderBlocks(block.children ?? [], depth + 1, null)}
           </Toggle>
+        );
+      case 'column_list':
+        return renderColumns(block.children, index, outlinePath);
+      case 'column':
+        return (
+          <Column key={index} className="w-full">
+            {renderBlocks(block.children, 0, null)}
+          </Column>
         );
       case 'table':
         return (
@@ -333,12 +352,58 @@ export function PostBlocks({
   }
 
   /**
+   * 열 나누기 블록을 그린다. 넓은 창은 열을 나란히 놓고 열마다 `width_ratio` 비율로 너비를 나누고, 좁은 창은 왼쪽 열부터 쌓는다.
+   * 열 안의 블록은 맨 위처럼 그리고(목록 단계도 새로 센다), 제목에는 목차가 찾는 id를 단다.
+   * @codocs [[Notion 블록:지원 블록]]
+   * @param children 열 나누기의 하위 블록(열)
+   * @param index 열 나누기 블록 차례
+   * @param outlinePath 열 나누기가 놓인 본문 안 자리. 목차에 들지 않는 곳이면 null이다
+   * @returns 열 나누기
+   */
+  function renderColumns(
+    children: readonly PostBlock[],
+    index: number,
+    outlinePath: readonly number[] | null,
+  ): JSX.Element {
+    const isWide = layout === 'wide';
+    const grows = getColumnGrows(
+      children.map((column) => (column.type === 'column' ? column.widthRatio : null)),
+    );
+    return (
+      <Columns key={index} layout={layout} className="w-full">
+        {children.map(
+          /**
+           * 열 하나를 그린다. 넓은 창이면 비율만큼 너비를 나눠 갖는다.
+           * @param column 열
+           * @param columnIndex 열 차례
+           * @returns 열
+           */
+          (column, columnIndex) => (
+            <Column key={columnIndex} style={isWide ? { flexGrow: grows[columnIndex] } : undefined}>
+              {renderBlocks(
+                column.type === 'column' ? column.children : [column],
+                0,
+                outlinePath === null ? null : [...outlinePath, index, columnIndex],
+              )}
+            </Column>
+          ),
+        )}
+      </Columns>
+    );
+  }
+
+  /**
    * 블록들을 차례대로 그린다. 이어진 같은 종류의 목록 항목은 한 목록으로 묶는다.
    * @param items 블록
    * @param depth 들여쓴 단계(맨 위가 0)
+   * @param outlinePath 블록들이 놓인 본문 안 자리. 맨 위면 비어 있다. 목차에 들지 않는 곳(토글·목록 안)이면 null이다
    * @returns 블록들
    */
-  function renderBlocks(items: readonly PostBlock[], depth: number): ReactNode[] {
+  function renderBlocks(
+    items: readonly PostBlock[],
+    depth: number,
+    outlinePath: readonly number[] | null,
+  ): ReactNode[] {
     const nodes: ReactNode[] = [];
     let list: ListItemBlock[] = [];
     let listStart = 0;
@@ -365,7 +430,7 @@ export function PostBlocks({
           list.push(block);
           return;
         }
-        nodes.push(renderBlock(block, index, depth));
+        nodes.push(renderBlock(block, index, depth, outlinePath));
       },
     );
     if (list.length > 0) {
@@ -378,7 +443,7 @@ export function PostBlocks({
     <div
       className={cn('flex w-full flex-col items-start gap-spacing-lg bg-color-white', className)}
     >
-      {renderBlocks(blocks, 0)}
+      {renderBlocks(blocks, 0, [])}
     </div>
   );
 }
@@ -504,14 +569,4 @@ function renderServerEquation(block: PostEquationBlock): ReactNode {
     return text;
   }
   return <KatexHtml html={block.html} />;
-}
-
-/**
- * 본문 맨 위 블록에서 가장 높은 제목 단계를 찾는다. 글 제목이 h1이고 이 단계를 h2로 그려, 제목 2부터 쓴 글도 단계를 건너뛰지 않는다.
- * @param blocks 본문 블록
- * @returns 가장 높은 제목 단계(제목이 없으면 1)
- */
-function getTopHeadingLevel(blocks: readonly PostBlock[]): number {
-  const levels = blocks.filter(isHeadingBlock).map((block) => HEADING_LEVELS[block.type]);
-  return levels.length > 0 ? Math.min(...levels) : 1;
 }

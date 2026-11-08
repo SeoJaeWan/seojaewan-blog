@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { getTocHeadings, type PostBlock, postBodySchema } from './post-body';
+import {
+  getColumnGrows,
+  getTocHeadings,
+  getTopHeadingLevel,
+  type PostBlock,
+  postBodySchema,
+} from './post-body';
 
 /**
  * 제목 블록을 만든다.
@@ -139,5 +145,64 @@ describe('Chrome:글 화면', () => {
 
   it('제목이 없으면 목차가 없다', () => {
     expect(getTocHeadings([paragraph])).toEqual([]);
+  });
+
+  // @codocs [[Notion 블록:지원 블록]]
+  it('열 안의 제목도 목차에 넣고, 토글 안의 제목은 넣지 않는다', () => {
+    const blocks: PostBlock[] = [
+      heading('하나'),
+      {
+        type: 'column_list',
+        children: [
+          { type: 'column', widthRatio: null, children: [paragraph, heading('왼쪽')] },
+          { type: 'column', widthRatio: null, children: [heading('오른쪽')] },
+        ],
+      },
+      { type: 'toggle', richText: [text('토글')], children: [heading('토글 안')] },
+    ];
+    expect(getTocHeadings(blocks)).toEqual([
+      { id: 'heading-0', label: '하나' },
+      { id: 'heading-1-0-1', label: '왼쪽' },
+      { id: 'heading-1-1-0', label: '오른쪽' },
+    ]);
+  });
+});
+
+// @codocs [[Notion 블록:모양]]
+describe('Notion 블록:모양', () => {
+  it('가장 높은 제목 단계는 맨 위와 열 안의 제목에서 찾고 토글 안은 보지 않는다', () => {
+    const inColumn: PostBlock = {
+      type: 'column_list',
+      children: [
+        {
+          type: 'column',
+          widthRatio: null,
+          children: [{ type: 'heading_1', richText: [text('열 안')] }],
+        },
+      ],
+    };
+    const inToggle: PostBlock = {
+      type: 'toggle',
+      richText: [text('토글')],
+      children: [{ type: 'heading_1', richText: [text('토글 안')] }],
+    };
+    expect(getTopHeadingLevel([heading('둘'), inColumn])).toBe(1);
+    expect(getTopHeadingLevel([heading('둘'), inToggle])).toBe(2);
+    expect(getTopHeadingLevel([paragraph])).toBe(1);
+  });
+});
+
+// @codocs [[Notion 블록:지원 블록]]
+describe('Notion 블록:지원 블록 - 열 너비', () => {
+  it('열은 width_ratio 비율로 너비를 나누고, 몫의 합은 열 수다', () => {
+    expect(getColumnGrows([0.25, 0.75])).toEqual([0.5, 1.5]);
+    const [left, right] = getColumnGrows([0.3, 0.5]);
+    expect(left).toBeCloseTo(0.75);
+    expect(right).toBeCloseTo(1.25);
+  });
+
+  it('비율이 없으면 똑같이 나누고, 일부만 없으면 다른 열의 평균을 쓴다', () => {
+    expect(getColumnGrows([null, null, null])).toEqual([1, 1, 1]);
+    expect(getColumnGrows([1, null])).toEqual([1, 1]);
   });
 });
