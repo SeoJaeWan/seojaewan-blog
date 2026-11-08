@@ -1,10 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import type { PostBlock } from '@/shared/utils/post-body/post-body';
-
 import {
   DEFAULT_SHARE_IMAGE,
-  DESCRIPTION_MAX_LENGTH,
   getEntryDescription,
   getEntryMetadata,
   getHomeMetadata,
@@ -16,15 +13,6 @@ import {
 } from './site-metadata';
 
 const COVER = 'https://images.seojaewan.com/notion/cover/410c97ba-fd89-8146/0123456789ab';
-
-/**
- * 글자 하나로 된 문단 블록을 만든다.
- * @param text 글자
- * @returns 문단 블록
- */
-function paragraph(text: string): PostBlock {
-  return { type: 'paragraph', richText: [{ text, link: null }] };
-}
 
 // @codocs [[SEO와 공유 미리보기:메타 정보]]
 describe('SEO와 공유 미리보기:메타 정보', () => {
@@ -44,55 +32,35 @@ describe('SEO와 공유 미리보기:메타 정보', () => {
   it('항목의 제목은 항목 제목이고 canonical은 묶음별 경로다', () => {
     const row = { title: '시험 프로젝트', summary: '소개', cover: null };
     expect(
-      getEntryMetadata({ post: { collection: 'blog', slug: 'react-19-hooks' }, row, blocks: [] }),
+      getEntryMetadata({ post: { collection: 'blog', slug: 'react-19-hooks' }, row }),
     ).toMatchObject({ title: '시험 프로젝트', alternates: { canonical: '/posts/react-19-hooks' } });
     expect(
-      getEntryMetadata({ post: { collection: 'project', slug: 'this-blog' }, row, blocks: [] })
-        .alternates?.canonical,
+      getEntryMetadata({ post: { collection: 'project', slug: 'this-blog' }, row }).alternates
+        ?.canonical,
     ).toBe('/projects/this-blog');
     expect(
-      getEntryMetadata({ post: { collection: 'about', slug: 'resume' }, row, blocks: [] })
-        .alternates?.canonical,
+      getEntryMetadata({ post: { collection: 'about', slug: 'resume' }, row }).alternates
+        ?.canonical,
     ).toBe('/about/resume');
   });
 
   it('Summary가 있으면 설명은 Summary다', () => {
-    expect(getEntryDescription('Notion에서 옮긴 기록', [paragraph('본문 첫 문단')])).toBe(
-      'Notion에서 옮긴 기록',
-    );
+    expect(getEntryDescription('Notion에서 옮긴 기록')).toBe('Notion에서 옮긴 기록');
   });
 
-  it('Summary가 비어 있으면 설명은 본문의 첫 문단이다', () => {
-    const blocks: PostBlock[] = [
-      { type: 'heading_2', richText: [{ text: '제목', link: null }] },
-      paragraph('  '),
-      paragraph('첫 문단이다.\n둘째 줄이다.'),
-      paragraph('둘째 문단이다.'),
-    ];
-    expect(getEntryDescription(' ', blocks)).toBe('첫 문단이다. 둘째 줄이다.');
-  });
-
-  it('첫 문단이 160자를 넘으면 앞 160자만 쓴다', () => {
-    const description = getEntryDescription('', [paragraph('가'.repeat(200))]);
-    expect(Array.from(description)).toHaveLength(DESCRIPTION_MAX_LENGTH);
-    expect(getEntryDescription('', [paragraph(`${'가'.repeat(159)}😀끝`)])).toBe(
-      `${'가'.repeat(159)}😀`,
-    );
-  });
-
-  it('Summary도 문단도 없으면 사이트 소개를 쓴다', () => {
-    expect(getEntryDescription('', [])).toBe(SITE_DESCRIPTION);
+  it('Summary가 비어 있으면 바로 사이트 소개를 쓴다', () => {
+    expect(getEntryDescription('')).toBe(SITE_DESCRIPTION);
+    expect(getEntryDescription(' \n ')).toBe(SITE_DESCRIPTION);
   });
 
   it('공유 미리보기의 제목·설명·주소도 항목 값이다', () => {
     const metadata = getEntryMetadata({
       post: { collection: 'blog', slug: 'react-19-hooks' },
-      row: { title: 'React 19 훅 정리', summary: '', cover: null },
-      blocks: [paragraph('React 19의 새 훅')],
+      row: { title: 'React 19 훅 정리', summary: '요약이다', cover: null },
     });
     expect(metadata.openGraph).toMatchObject({
       title: 'React 19 훅 정리',
-      description: 'React 19의 새 훅',
+      description: '요약이다',
       url: '/posts/react-19-hooks',
     });
     expect(metadata.twitter).toMatchObject({ title: 'React 19 훅 정리' });
@@ -106,7 +74,6 @@ describe('SEO와 공유 미리보기:공유 미리보기 이미지', () => {
     const metadata = getEntryMetadata({
       post: { collection: 'blog', slug: 'notion-blog-migration' },
       row: { title: '제목', summary: '요약', cover: COVER },
-      blocks: [],
     });
     expect(metadata.openGraph?.images).toEqual([{ url: `${COVER}?w=1440` }]);
     expect(metadata.twitter?.images).toEqual([{ url: `${COVER}?w=1440` }]);
@@ -116,7 +83,6 @@ describe('SEO와 공유 미리보기:공유 미리보기 이미지', () => {
     const metadata = getEntryMetadata({
       post: { collection: 'about', slug: 'resume' },
       row: { title: '제목', summary: '요약', cover: null },
-      blocks: [],
     });
     expect(DEFAULT_SHARE_IMAGE.url).toBe('/og-default.png');
     expect(metadata.openGraph?.images).toEqual([DEFAULT_SHARE_IMAGE]);
