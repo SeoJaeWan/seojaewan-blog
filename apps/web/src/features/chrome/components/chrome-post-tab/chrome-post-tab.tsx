@@ -145,6 +145,7 @@ export function ChromePostTab({
       {bodyState.status === 'loaded' && (
         <PostBlocks
           blocks={bodyState.body.blocks}
+          layout={layout}
           resolveLink={resolveLink}
           onPageOpen={handleNavigate}
           onImageOpen={handleImageOpen}

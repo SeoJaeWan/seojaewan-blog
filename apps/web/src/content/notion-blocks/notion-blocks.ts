@@ -25,6 +25,7 @@ const tableBodySchema = z.object({ has_column_header: z.boolean() });
 const tableRowBodySchema = z.object({ cells: z.array(richTexts) });
 const bookmarkBodySchema = z.object({ url: z.string(), caption: richTexts });
 const equationBodySchema = z.object({ expression: z.string() });
+const columnBodySchema = z.object({ width_ratio: z.number().positive().optional() });
 
 /** Notion 블록 하나와 그 하위 블록(검증한 머리 부분과 응답 그대로의 블록) */
 type BlockInput = {
@@ -34,8 +35,10 @@ type BlockInput = {
 };
 
 /**
- * Notion 블록 나무를 본문 블록으로 바꾼다. 지원 블록 12종(제목, 문단, 목록(글머리·번호·할 일), 인용, 콜아웃, 코드, 이미지,
- * 구분선, 토글, 표, 북마크, 수식)을 옮긴다.
+ * Notion 블록 나무를 본문 블록으로 바꾼다. 지원 블록 13종(제목, 문단, 목록(글머리·번호·할 일), 인용, 콜아웃, 코드, 이미지,
+ * 구분선, 토글, 표, 북마크, 수식, 열 나누기)을 옮긴다.
+ * - 열 나누기(`column_list`)는 열(`column`)을 하위 블록으로 품고, 열은 `width_ratio`(없으면 null)와 안의 블록을 품는다.
+ *   열 나누기 밖에 따로 나온 열은 안의 블록을 그 자리에 둔다.
  * - 지원하지 않는 블록은 그 자리에 `unsupported`(Notion 유형 이름)를 두고 서버 로그에 경고를 남긴다. 조용히 버리거나 멈추지 않는다.
  * - 목록·할 일·토글은 하위 블록을 그대로 품는다. 하위 블록을 품지 못하는 블록(문단 등)의 하위 블록은 그 블록 바로 뒤에 둔다.
  * - 이미지 주소는 Notion 주소가 아니라 이미지 서버 주소다. 크기는 비워 두고 본문을 만들 때 `resolvePostImages`가 채운다.
@@ -145,10 +148,29 @@ function toPostBlock(node: NotionBlockNode): PostBlock[] {
     }
     case 'equation':
       return [{ type: 'equation', expression: equationBodySchema.parse(body).expression }];
+    case 'column_list':
+      return [{ type: 'column_list', children: children.flatMap(toColumnBlock) }];
+    case 'column':
+      return toPostBlocks(children);
     default:
       console.warn(`[post-body] 지원하지 않는 블록이다: ${head.type} (${head.id})`);
       return [{ type: 'unsupported', typeName: head.type }];
   }
+}
+
+/**
+ * 열 나누기의 하위 블록 하나를 열 블록으로 바꾼다. 열이 아닌 블록은 지원하지 않는 블록으로 남긴다.
+ * @codocs [[Notion 블록:지원 블록]]
+ * @param node 열 나누기의 하위 블록
+ * @returns 열 블록(하나)
+ */
+function toColumnBlock(node: NotionBlockNode): PostBlock[] {
+  const { head, block, children } = toBlockInput(node);
+  if (head.type !== 'column') {
+    return toPostBlock(node);
+  }
+  const ratio = columnBodySchema.optional().parse(block.column)?.width_ratio;
+  return [{ type: 'column', widthRatio: ratio ?? null, children: toPostBlocks(children) }];
 }
 
 /**
