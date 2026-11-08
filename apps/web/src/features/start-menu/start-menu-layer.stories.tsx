@@ -114,6 +114,28 @@ async function closeContextMenu(): Promise<void> {
 }
 
 /**
+ * 요소의 움직임 상태(`data-reorder-motion`)가 바뀌는 차례를 기록한다. 짧게 지나가는 상태도 놓치지 않게 DOM 변화로 받는다.
+ * @param element 요소
+ * @returns 기록을 멈추고 바뀐 차례(없으면 `none`)를 돌려주는 함수
+ */
+function recordMotion(element: HTMLElement): { stop: () => string[] } {
+  const states: string[] = [];
+  const observer = new MutationObserver(() => {
+    const state = element.getAttribute('data-reorder-motion') ?? 'none';
+    if (states.at(-1) !== state) {
+      states.push(state);
+    }
+  });
+  observer.observe(element, { attributes: true, attributeFilter: ['data-reorder-motion'] });
+  return {
+    stop: () => {
+      observer.disconnect();
+      return states;
+    },
+  };
+}
+
+/**
  * 열린 창들의 앱 이름.
  * @returns 열린 차례대로의 앱
  */
@@ -272,23 +294,24 @@ export const PinnedTiles: Story = {
       '메뉴로 옮기면 칸이 사라진 뒤 순서가 바뀌고, 나머지가 미끄러진 뒤 새 자리에서 나타난다',
       async () => {
         const chrome = pinnedTile(panel, 'Chrome');
+        const explorer = pinnedTile(panel, 'File Explorer');
+        // 앞 단계의 미끄러짐이 끝나 칸이 제자리에 선 뒤에 기록한다.
+        await waitFor(() => expect(chrome).not.toHaveAttribute('data-reorder-motion'));
+        await waitFor(() => expect(explorer).not.toHaveAttribute('data-reorder-motion'));
         await openContextMenu(chrome);
+        const chromeMotion = recordMotion(chrome);
+        const explorerMotion = recordMotion(explorer);
         await userEvent.click(screen.getByRole('menuitem', { name: '왼쪽으로 이동' }));
-        await expect(chrome).toHaveAttribute('data-reorder-motion', 'exit');
         await waitFor(() =>
           expect(useWorkspaceStore.getState().startPins.slice(2, 4)).toEqual([
             'app:chrome',
             'app:file-explorer',
           ]),
         );
-        await waitFor(() =>
-          expect(pinnedTile(panel, 'File Explorer')).toHaveAttribute(
-            'data-reorder-motion',
-            'slide',
-          ),
-        );
-        await waitFor(() => expect(chrome).toHaveAttribute('data-reorder-motion', 'enter'));
         await waitFor(() => expect(chrome).not.toHaveAttribute('data-reorder-motion'));
+        await waitFor(() => expect(explorer).not.toHaveAttribute('data-reorder-motion'));
+        await expect(chromeMotion.stop()).toEqual(['exit', 'enter', 'none']);
+        await expect(explorerMotion.stop()).toEqual(['slide', 'none']);
       },
     );
 
@@ -515,6 +538,42 @@ export const AllList: Story = {
       await expect(within(panel).getByRole('button', { name: '보기: 범주' })).toBeInTheDocument();
       await expect(within(all()).getByText('외부 링크')).toBeInTheDocument();
     });
+
+    // @codocs [[Start 메뉴:모두]]
+    await step(
+      '범주 카드의 묶음이나 빈 곳을 누르면 펼침 팝업이 열리고, Esc나 바깥 누르기로 팝업만 닫힌다',
+      async () => {
+        /**
+         * 범주 카드의 빈 곳(카드 바탕)을 누른다.
+         * @param label 범주 이름
+         */
+        async function clickCard(label: string): Promise<void> {
+          const card = within(all()).getByText(label).parentElement;
+          if (card === null) {
+            throw new Error(`범주 카드가 없다: ${label}`);
+          }
+          await fireEvent.click(card);
+        }
+
+        await clickCard('글');
+        const popup = await screen.findByRole('dialog', { name: '글' });
+        await expect(within(popup).getByRole('button', { name: 'Next.js 캐시' })).toBeVisible();
+        await expect(
+          await openContextMenu(within(popup).getByRole('button', { name: 'Next.js 캐시' })),
+        ).toContain('열기');
+        await closeContextMenu();
+        await expect(screen.getByRole('dialog', { name: '글' })).toBeInTheDocument();
+        await userEvent.keyboard('{Escape}');
+        await waitFor(() => expect(screen.queryByRole('dialog', { name: '글' })).toBeNull());
+        await expect(usePanelStore.getState().openPanel).toBe('start');
+
+        await clickCard('글');
+        await screen.findByRole('dialog', { name: '글' });
+        await userEvent.click(within(panel).getByText('고정됨'));
+        await waitFor(() => expect(screen.queryByRole('dialog', { name: '글' })).toBeNull());
+        await expect(usePanelStore.getState().openPanel).toBe('start');
+      },
+    );
 
     // @codocs [[Start 메뉴:모두]]
     await step('그리드 보기의 항목 칸도 같은 우클릭 메뉴를 띄운다', async () => {

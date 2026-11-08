@@ -353,6 +353,12 @@ export function useReorderMotion(
       move();
       return;
     }
+    // 앞선 이동으로 미끄러지는 중이었으면 그 미끄러짐을 끝낸다. 남겨 두면 끝날 때 이동 중인 상태를 지운다.
+    const container = containerRef.current;
+    const moving = container === null ? undefined : getItems(container, itemAttribute).get(key);
+    if (moving !== undefined && motionsRef.current.delete(key)) {
+      clearSettle(moving);
+    }
     const item = hold(key, moveClassNames.exit, 'exit');
     afterAnimations(
       item === undefined ? [] : [item],
