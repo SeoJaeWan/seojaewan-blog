@@ -1,23 +1,108 @@
 {
-  "description": "목록 안 항목 묶음의 머리글로, Start 메뉴 목록과 검색 결과에 쓴다.",
+  "description": "목록 안 항목 묶음의 머리글로, Start 메뉴 목록과 검색 결과에 쓴다.\n@sample-size width",
   "name": "SectionHeader",
-  "nodeId": "386:13783",
+  "nodeId": "3339:13944",
   "propertyDefinitions": {
     "Label": {
       "default": "머리글",
       "type": "TEXT"
+    },
+    "State": {
+      "default": "Rest",
+      "options": [
+        "Rest",
+        "Hover"
+      ],
+      "type": "VARIANT"
     }
   },
   "variants": {
-    "default": {
+    "state=hover": {
       "node": {
         "height": 32,
-        "width": 61,
+        "width": 400,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3339:13942",
+      "properties": {
+        "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "color/black/89"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 37
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "머리글",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Body Strong"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/black/4"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/md",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 400
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "state=rest": {
+      "node": {
+        "height": 32,
+        "width": 400,
         "x": 0,
         "y": 0
       },
       "nodeId": "386:13783",
-      "properties": {},
+      "properties": {
+        "State": "Rest"
+      },
       "tree": {
         "children": [
           {
@@ -50,24 +135,48 @@
           }
         ],
         "layout": {
-          "counterAlign": "MIN",
+          "counterAlign": "CENTER",
           "gap": 0,
           "mode": "HORIZONTAL",
           "padding": [
-            "spacing/sm",
+            "spacing/sm-nudge",
             "spacing/md",
-            "spacing/xs",
+            "spacing/sm-nudge",
             "spacing/md"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "SectionHeader",
+        "name": "State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
         "size": {
           "h": 32,
-          "w": 61
+          "w": 400
         },
         "sizing": {
-          "h": "HUG",
+          "h": "FIXED",
           "v": "HUG"
         },
         "type": "COMPONENT"

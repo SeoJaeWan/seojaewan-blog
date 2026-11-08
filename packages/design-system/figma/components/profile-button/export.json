@@ -1,7 +1,7 @@
 {
   "description": "사용자 사진과 이름 버튼으로, Start 메뉴 아래 줄에 쓴다.",
   "name": "ProfileButton",
-  "nodeId": "414:5722",
+  "nodeId": "3359:13664",
   "propertyDefinitions": {
     "Name": {
       "default": "사용자 이름",
@@ -9,10 +9,121 @@
     },
     "Photo": {
       "type": "INSTANCE_SWAP"
+    },
+    "State": {
+      "default": "Rest",
+      "options": [
+        "Rest",
+        "Hover"
+      ],
+      "type": "VARIANT"
     }
   },
   "variants": {
-    "default": {
+    "state=hover": {
+      "node": {
+        "height": 32,
+        "width": 109,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3359:13661",
+      "properties": {
+        "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/avatar-profile"
+            },
+            "component": "avatar/Profile",
+            "height": "size/avatar/profile",
+            "name": "profile photo",
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/avatar/profile"
+          },
+          {
+            "fills": [
+              "color/black/89"
+            ],
+            "name": "profile name",
+            "size": {
+              "h": 20,
+              "w": 65
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "사용자",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": " ",
+                  "fill": "color/black/89",
+                  "textStyle": "Body"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/black/4"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/md",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 109
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "state=rest": {
       "node": {
         "height": 32,
         "width": 109,
@@ -20,7 +131,9 @@
         "y": 0
       },
       "nodeId": "414:5722",
-      "properties": {},
+      "properties": {
+        "State": "Rest"
+      },
       "tree": {
         "children": [
           {
@@ -92,7 +205,31 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "ProfileButton",
+        "name": "State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
         "size": {
           "h": 32,
           "w": 109
