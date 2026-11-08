@@ -477,8 +477,30 @@
 }
 
 /*
+ * 순서 바꾸기 끌기 시작(견본 motion-reorder-lift). 끄는 항목(작업 표시줄 앱 버튼·탭·Start 고정됨 칸) 전체가 배율 1 → 1.1로 커진다.
+ * 앱이 끌기를 시작할 때 붙이고 끄는 동안 붙여 둔다. 끝 모습(1.1배)을 끄는 동안 유지하도록 fill-mode는 both다.
+ * 놓을 때는 이 클래스를 떼고 motion-reorder-drop을 붙인다([[항목 조작:순서 바꾸기 끌기]]). 실행 중 값은 없다.
+ */
+@keyframes motion-reorder-lift {
+  0% {
+    scale: 1;
+  }
+
+  100% {
+    scale: var(--motion-scale-lift);
+  }
+}
+
+@utility motion-reorder-lift {
+  animation-name: motion-reorder-lift;
+  animation-duration: var(--motion-duration-fast);
+  animation-timing-function: var(--motion-easing-point-to-point);
+  animation-fill-mode: both;
+}
+
+/*
  * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다.
- * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환은 여기서 움직임 없이 바로 바꾼다.
+ * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환, 순서 바꾸기 끌기는 여기서 움직임 없이 바로 바꾼다.
  * hover·pressed 색 전환, 검색 돋보기 페이드, ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
  * 애니메이션을 없애면 사라지는 요소는 기다릴 애니메이션이 없어 바로 빠진다([[피그마 연동:모션 클래스]]).
  */
@@ -494,7 +516,13 @@
   .motion-boot-screen-enter,
   .motion-boot-screen-exit,
   .motion-start-jump-list-enter [data-jump-list],
-  .motion-start-jump-list-exit [data-jump-list] {
+  .motion-start-jump-list-exit [data-jump-list],
+  .motion-reorder-lift {
     animation: none;
+  }
+
+  /* 끄는 동안의 1.1배는 움직임 없이 바로 갖는다. */
+  .motion-reorder-lift {
+    scale: var(--motion-scale-lift);
   }
 }
