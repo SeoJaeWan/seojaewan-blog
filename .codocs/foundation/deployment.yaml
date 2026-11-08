@@ -78,7 +78,7 @@ CI: |
   - pnpm은 job마다 `runner.temp`에 설치한다. 기본 위치를 runner끼리 함께 쓰면 서로 덮어쓰기 때문이다. Actions의 pnpm 캐시는 쓰지 않는다. 저장소가 머신에 남아 있기 때문이다.
 도메인과 캐시: |
   - Cloudflare 터널은 Cloudflare DNS를 쓰는 도메인에서만 쓸 수 있으므로 `seojaewan.com`은 Cloudflare DNS에 둔다.
-  - `seojaewan.com`은 터널을 거쳐 블로그 컨테이너로 간다(프록시 켬). `www`는 `seojaewan.com`으로 영구 이동한다.
+  - `seojaewan.com`은 터널을 거쳐 블로그 컨테이너(`127.0.0.1:3000`)로 간다(프록시 켬). `www`는 터널 hostname과 Cloudflare Redirect Rule("Redirect from WWW to root" 템플릿, 301, query string 유지)로 `seojaewan.com`에 영구 이동한다. 2026-11-08에 공개했다([[배포 환경:공개 절차]]).
   - Cloudflare는 `/_next/static/*`와 이미지만 캐시하고 HTML은 캐시하지 않는다. 다시 배포한 글이 바로 보여야 하기 때문이다.
   - 서버가 다운되면 사이트도 다운이다. 집 서버라 받아들인다.
   - 이미지 서버의 도메인과 캐시는 [[Notion 이미지 제공]]에서 정한다.
@@ -91,7 +91,7 @@ CI: |
   - runner 서비스 3개
   - 시나리오 케이스 보고서 서버
 
-  등록 파일의 필드 형식은 local-server에서 아직 정하지 않았다. 등록 PR은 형식이 정해지고 `infra`가 배포된 뒤에 올린다. 그 전에는 감시가 없다.
+  2026-11-08에 `registry/seojaewan-blog.yaml`에서 `blog-web`과 `blog-images`를 `active`로 등록했다(local-server PR #99, #101). 이미지 서버는 `/healthz`(http)로 검사하고 공개 검사는 `https://images.seojaewan.com/healthz`다. 등록 파일의 필드 형식은 local-server 저장소가 정한다. infra는 local-server의 자동 배포가 배포하므로 이 저장소에서 따로 배포하지 않는다.
 감시의 검토한 대안: |
   - `uptime.yml`(GitHub 호스티드 러너가 1시간마다 `https://seojaewan.com/` 확인): 만들지 않는다. 알림이 메일로 따로 가고, local-server 감시가 더 빠르게 같은 일을 하기 때문이다.
 환경 변수: |
@@ -127,14 +127,16 @@ CI: |
   - 젠킨스 공개 주소(local-server 소유): 같은 터널의 `jenkins.seojaewan.com`이 `http://127.0.0.1:8090`으로 간다.
   - 젠킨스의 Cloudflare Access: `jenkins` 앱(local-server 소유)이 `jenkins.seojaewan.com` 전체를 owner 이메일만 허용한다. `jenkins-webhook` 앱(`/github-webhook` Bypass)은 웹훅을 쓰지 않게 되어 지울 대상이다(owner가 Cloudflare에서 지운다).
   - Access 앱을 만들 때 만난 문제: 브라우저 격리 옵션을 켜면 공개 주소에 저장이 안 된다. 같은 주소를 쓰는 앱이 이미 있으면 "destination belongs to another application" 오류가 난다.
-  - 2026-11-06에 확인한 상태: `jenkins.seojaewan.com/`은 Access로 302, `images.seojaewan.com`은 서버가 없어 502다.
+  - 2026-11-06에 확인한 상태: `jenkins.seojaewan.com/`은 Access로 302, `images.seojaewan.com`은 서버가 없어 502였다. 2026-11-08에 이미지 서버를 배포해 `images.seojaewan.com/healthz`가 200이다.
   - 머신 준비: Playwright Chromium 시스템 라이브러리 설치(`playwright install-deps chromium`), `corepack enable`, 사용자 `seojaewan`을 docker 그룹에 추가.
 공개 절차: |
-  준비되기 전에는 `seojaewan.com`을 터널에 연결하지 않는다. 연결하지 않으면 접속 자체가 되지 않아 막아 둘 필요가 없다. 공개 전에는 사람이 사이트를 미리 보지 않는다. 확인은 health check와 서버 안의 `curl`로만 한다.
+  준비되기 전에는 `seojaewan.com`을 터널에 연결하지 않았다. 연결하지 않으면 접속 자체가 되지 않아 막아 둘 필요가 없다. 공개 전에는 사람이 사이트를 미리 보지 않고, health check와 서버 안의 `curl`로만 확인했다.
+
+  2026-11-08에 공개했다. `seojaewan.com`을 터널(`127.0.0.1:3000`)에 연결했고 Access는 없다. `www`는 [[배포 환경:도메인과 캐시]]대로 넘긴다. 공개 확인에서 첫 화면, `/api/health`, robots, sitemap, og 이미지가 200이고 없는 주소는 404이며, 글 페이지와 본문 이미지, og/twitter 메타, 카카오톡 미리보기가 정상이었다.
 
   공개는 `seojaewan.com`을 처음 터널에 연결하는 일이다.
   1. 터널에 연결한다.
   2. 확인한다: 사이트 접속, 글 동기화 작업(글을 고치거나 `공개`를 체크하면 PR이 만들어지고, CI를 통과해 워크플로가 병합하고, 다시 배포되는지. 초안만 고친 경우 PR이 없는지), 동기화 실패와 글 PR CI 실패 때 카카오톡 알림(notify는 준비됐다, [[알림 프로세스:선행 조건]]), 카카오톡으로 링크를 공유했을 때의 미리보기([[SEO와 공유 미리보기:공유 미리보기 이미지]]).
   3. 문제가 있으면 고치거나 터널 연결을 끊는다.
-  4. 확인되면 Google Search Console과 네이버 서치어드바이저에 등록한다([[SEO와 공유 미리보기:검색 엔진 등록]]).
+  4. 확인되면 Google Search Console과 네이버 서치어드바이저에 등록한다(아직 하지 않았다, 사람이 한다. [[SEO와 공유 미리보기:검색 엔진 등록]]).
 
