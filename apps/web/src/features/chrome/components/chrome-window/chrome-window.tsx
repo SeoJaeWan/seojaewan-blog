@@ -20,7 +20,7 @@ import {
 
 import { MenuButton } from '@/shared/components/menu-button/menu-button';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
-import { useTabStrip } from '@/shared/hooks/use-tab-strip/use-tab-strip';
+import { TAB_ID_ATTRIBUTE, useTabStrip } from '@/shared/hooks/use-tab-strip/use-tab-strip';
 
 export type ChromeWindowDevice = 'desktop' | 'mobile';
 
@@ -280,6 +280,7 @@ export function ChromeWindow({
                   return (
                     <BrowserTab
                       key={tab.id ?? `${String(index)}-${tab.title}`}
+                      {...{ [TAB_ID_ATTRIBUTE]: tab.id }}
                       value={index}
                       isActive={tab.isActive}
                       // 선택된 탭 바로 왼쪽 탭은 구분선을 그리지 않는다.

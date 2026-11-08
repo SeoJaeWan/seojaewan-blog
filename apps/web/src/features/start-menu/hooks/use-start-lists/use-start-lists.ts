@@ -1,5 +1,9 @@
+import type { PinnedMovePlayer } from '@/features/start-menu/components/start-body/start-body';
 import { getListMenuEntries } from '@/features/start-menu/list-menu/list-menu-entries';
-import { getPinnedMenuEntries } from '@/features/start-menu/pinned-menu/pinned-menu-entries';
+import {
+  getPinnedMenuEntries,
+  getPinnedMoves,
+} from '@/features/start-menu/pinned-menu/pinned-menu-entries';
 import type {
   StartAllView,
   StartItem,
@@ -19,7 +23,7 @@ import { copyItemLink } from '@/shared/utils/item-link/item-link';
  * - view: 모두 목록의 보기
  * - pinned: 고정됨 항목. 고정한 순서이고 휴지통에 들어간 항목은 뺀다
  * - groups: 모두 목록의 묶음
- * - getPinnedMenuItems: 고정 항목의 우클릭 메뉴 항목
+ * - getPinnedMenuItems: 고정 항목의 우클릭 메뉴 항목. 이동 메뉴는 받은 `playMove`로 움직임과 함께 옮긴다
  * - getListMenuItems: 모두 목록 항목의 우클릭 메뉴 항목
  * - movePinned: 고정 항목을 다른 고정 항목의 자리로 옮긴다
  * - changeView: 모두 목록의 보기를 바꾼다
@@ -28,7 +32,7 @@ export type StartLists = {
   view: StartAllView;
   pinned: readonly StartItem[];
   groups: readonly StartItemGroup[];
-  getPinnedMenuItems: (item: StartItem) => readonly MenuPopupEntry[];
+  getPinnedMenuItems: (item: StartItem, playMove: PinnedMovePlayer) => readonly MenuPopupEntry[];
   getListMenuItems: (item: StartItem) => readonly MenuPopupEntry[];
   movePinned: (id: string, targetId: string) => void;
   changeView: (view: StartAllView) => void;
@@ -61,20 +65,42 @@ export function useStartLists(onOpen: (item: StartItem) => void): StartLists {
   }
 
   /**
-   * 고정 항목의 우클릭 메뉴 항목을 만든다.
+   * 고정 항목의 우클릭 메뉴 항목을 만든다. 이동 메뉴(앞으로·왼쪽으로·오른쪽으로 이동)는 `playMove`에 순서 바꾸기를 넘겨,
+   * 옮기는 칸이 사라진 뒤 그때의 저장소 상태로 옮긴다.
    * @param item 고정 항목
+   * @param playMove 움직임과 함께 순서를 바꾸는 함수
    * @returns 메뉴 항목
    */
-  function getPinnedMenuItems(item: StartItem): readonly MenuPopupEntry[] {
+  function getPinnedMenuItems(
+    item: StartItem,
+    playMove: PinnedMovePlayer,
+  ): readonly MenuPopupEntry[] {
     const copyableItem = getCopyableItem(item);
+    // 이동 메뉴는 화면에 보이는 위치로 정한다.
+    const moves = getPinnedMoves(
+      pinned.findIndex((pinnedItem) => pinnedItem.id === item.id),
+      pinned.length,
+    );
     return getPinnedMenuEntries({
-      canMoveToFront: pinned[0]?.id !== item.id,
+      moves,
       canCopyLink: copyableItem !== undefined,
       onOpen: () => {
         onOpen(item);
       },
       onMoveToFront: () => {
-        workspace.moveStartPin(item.id, 0);
+        playMove(() => {
+          useWorkspaceStore.getState().moveStartPin(item.id, 0);
+        });
+      },
+      onMoveLeft: () => {
+        playMove(() => {
+          useWorkspaceStore.getState().swapStartPin(item.id, 'left');
+        });
+      },
+      onMoveRight: () => {
+        playMove(() => {
+          useWorkspaceStore.getState().swapStartPin(item.id, 'right');
+        });
       },
       onCopyLink: () => {
         if (copyableItem !== undefined) {

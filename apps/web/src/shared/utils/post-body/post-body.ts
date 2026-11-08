@@ -84,6 +84,7 @@ export type ListItemBlock =
  * 코드 블록의 강조(`highlighted`)와 수식 HTML(`html`, KaTeX)은 서버가 본문을 만들 때 처리해 보낸다([[기술 스택:글 본문 처리]]).
  * 이미지 주소는 [[Notion 이미지 제공]]의 주소이고, 폭·높이는 이미지 서버가 알려준 크기다(모르면 null).
  * `html`은 서버가 KaTeX로 그린 수식 HTML이며 그리지 못한 식이면 없다.
+ * 열 나누기는 `column_list`가 열(`column`)들을 `children`으로 품고, 열은 Notion `width_ratio`(`widthRatio`, 없으면 null)와 안의 블록을 품는다.
  */
 export type PostBlock =
   | HeadingBlock
@@ -102,6 +103,8 @@ export type PostBlock =
       expression: string;
       html?: string;
     }
+  | { type: 'column_list'; children: PostBlock[] }
+  | { type: 'column'; widthRatio: number | null; children: PostBlock[] }
   | { type: 'unsupported'; typeName: string };
 
 const richTextsSchema = z.array(richTextSchema);
@@ -157,6 +160,12 @@ export const postBlockSchema: z.ZodType<PostBlock> = z.discriminatedUnion('type'
     description: z.string(),
   }),
   z.object({ type: z.literal('equation'), expression: z.string(), html: z.string().optional() }),
+  z.object({ type: z.literal('column_list'), children: z.array(z.lazy(() => postBlockSchema)) }),
+  z.object({
+    type: z.literal('column'),
+    widthRatio: z.number().positive().nullable(),
+    children: z.array(z.lazy(() => postBlockSchema)),
+  }),
   z.object({ type: z.literal('unsupported'), typeName: z.string().min(1) }),
 ]);
 
@@ -181,7 +190,11 @@ export const TOC_MIN_HEADINGS = 1;
 export type TocHeading = {
   id: string;
   label: string;
+  level: TocLevel;
 };
+
+/** 목차 들여 쓰기 단계. 글에서 가장 높은 제목 단계가 1이다 */
+export type TocLevel = 1 | 2 | 3;
 
 /**
  * 블록이 제목인지 본다.
@@ -193,12 +206,80 @@ export function isHeadingBlock(block: PostBlock): block is HeadingBlock {
 }
 
 /**
- * 제목 블록 요소의 id. 본문 안 차례로 만든다.
- * @param index 본문 안 블록 차례
+ * 제목 블록 요소의 id. 본문 안 자리로 만든다. 맨 위 블록은 차례 하나(`heading-3`), 열 안의 블록은 열 나누기 블록 차례·열 차례·열 안 차례를
+ * 잇는다(`heading-3-1-0`).
+ * @param path 본문 안 자리(맨 위 차례부터)
  * @returns id
  */
-export function getHeadingId(index: number): string {
-  return `heading-${String(index)}`;
+export function getHeadingId(...path: number[]): string {
+  return `heading-${path.map(String).join('-')}`;
+}
+
+/** 목차와 제목 단계를 정하는 제목 하나. path는 본문 안 자리(`getHeadingId`)다 */
+export type OutlineHeading = {
+  block: HeadingBlock;
+  path: number[];
+};
+
+// 제목 블록의 단계다.
+const headingLevels = { heading_1: 1, heading_2: 2, heading_3: 3 } as const satisfies Record<
+  HeadingBlock['type'],
+  number
+>;
+
+/**
+ * 제목 블록의 단계(제목 1·2·3).
+ * @param block 제목 블록
+ * @returns 단계
+ */
+export function getHeadingLevel(block: HeadingBlock): number {
+  return headingLevels[block.type];
+}
+
+/**
+ * 목차에 들고 가장 높은 제목 단계를 찾는 범위의 제목을 본문 차례대로 모은다. 맨 위 블록과 열 안의 블록(열 안의 열 포함)을 보고,
+ * 토글과 목록 안의 제목은 넣지 않는다. 열은 늘 보이지만 토글은 접혀 있기 때문이다.
+ * @codocs [[Notion 블록:모양]]
+ * @codocs [[Notion 블록:지원 블록]]
+ * @param blocks 본문 블록
+ * @param parentPath 블록들이 놓인 자리. 맨 위면 비어 있다
+ * @returns 제목과 자리
+ */
+export function getOutlineHeadings(
+  blocks: readonly PostBlock[],
+  parentPath: readonly number[] = [],
+): OutlineHeading[] {
+  return blocks.flatMap(
+    /**
+     * 블록 하나가 제목이면 그 제목을, 열 나누기면 열 안의 제목을 돌려준다.
+     * @param block 블록
+     * @param index 블록 차례
+     * @returns 제목과 자리
+     */
+    (block, index): OutlineHeading[] => {
+      const path = [...parentPath, index];
+      if (isHeadingBlock(block)) {
+        return [{ block, path }];
+      }
+      if (block.type !== 'column_list') {
+        return [];
+      }
+      return block.children.flatMap((column, columnIndex) =>
+        column.type === 'column' ? getOutlineHeadings(column.children, [...path, columnIndex]) : [],
+      );
+    },
+  );
+}
+
+/**
+ * 글에서 가장 높은 제목 단계를 찾는다(`getOutlineHeadings`의 범위). 글 제목이 h1이고 이 단계를 h2로 그린다.
+ * @codocs [[Notion 블록:모양]]
+ * @param blocks 본문 블록
+ * @returns 가장 높은 제목 단계(제목이 없으면 1)
+ */
+export function getTopHeadingLevel(blocks: readonly PostBlock[]): number {
+  const levels = getOutlineHeadings(blocks).map((heading) => getHeadingLevel(heading.block));
+  return levels.length > 0 ? Math.min(...levels) : 1;
 }
 
 /**
@@ -211,14 +292,56 @@ export function getPlainText(richText: readonly RichText[]): string {
 }
 
 /**
- * 본문의 목차 항목. 제목(Heading)이 1개 이상일 때 목차를 보이므로, 제목이 없으면 빈 목록이다.
+ * 본문의 목차 항목. 제목(Heading)이 1개 이상일 때 목차를 보이므로, 제목이 없으면 빈 목록이다. 열 안의 제목도 넣는다. 들여 쓰기 단계(`level`)는 가장 높은 제목 단계를 1로 하는 상대 단계다.
  * @codocs [[Chrome:글 화면]]
+ * @codocs [[Notion 블록:지원 블록]]
  * @param blocks 본문 블록
  * @returns 목차 항목
  */
 export function getTocHeadings(blocks: readonly PostBlock[]): TocHeading[] {
-  const headings = blocks.flatMap((block, index) =>
-    isHeadingBlock(block) ? [{ id: getHeadingId(index), label: getPlainText(block.richText) }] : [],
+  const topLevel = getTopHeadingLevel(blocks);
+  const headings = getOutlineHeadings(blocks).map(
+    /**
+     * 제목 하나를 목차 항목으로 바꾼다.
+     * @param heading 제목과 본문 안 자리
+     * @returns 목차 항목
+     */
+    (heading): TocHeading => ({
+      id: getHeadingId(...heading.path),
+      label: getPlainText(heading.block.richText),
+      level: getTocLevel(getHeadingLevel(heading.block), topLevel),
+    }),
   );
   return headings.length >= TOC_MIN_HEADINGS ? headings : [];
+}
+
+/**
+ * 목차 들여 쓰기 단계. 글에서 가장 높은 제목 단계를 1로 하는 상대 단계다(가장 높은 단계는 들여 쓰지 않는다).
+ * @codocs [[Chrome:글 화면]]
+ * @param level 제목 단계(제목 1·2·3)
+ * @param topLevel 글에서 가장 높은 제목 단계
+ * @returns 목차 단계(1~3)
+ */
+export function getTocLevel(level: number, topLevel: number): TocLevel {
+  const relative = level - topLevel + 1;
+  if (relative <= 1) {
+    return 1;
+  }
+  return relative === 2 ? 2 : 3;
+}
+
+/**
+ * 넓은 창에서 열마다 남는 너비를 나눠 가질 몫(`flex-grow`)을 정한다. Notion `width_ratio`의 비율을 따르고, 비율이 없는 열은
+ * 다른 열들의 평균 몫(모두 없으면 똑같이)을 갖는다. 몫의 합이 열 수가 되도록 맞춰, 합이 1보다 작아 너비가 남지 않게 한다.
+ * @codocs [[Notion 블록:지원 블록]]
+ * @param ratios 열마다의 `width_ratio`(없으면 null)
+ * @returns 열마다의 몫
+ */
+export function getColumnGrows(ratios: readonly (number | null)[]): number[] {
+  const known = ratios.filter((ratio): ratio is number => ratio !== null && ratio > 0);
+  const fallback =
+    known.length === 0 ? 1 : known.reduce((sum, ratio) => sum + ratio, 0) / known.length;
+  const filled = ratios.map((ratio) => (ratio !== null && ratio > 0 ? ratio : fallback));
+  const total = filled.reduce((sum, ratio) => sum + ratio, 0);
+  return filled.map((ratio) => (ratio / total) * filled.length);
 }

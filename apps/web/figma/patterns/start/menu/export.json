@@ -1206,27 +1206,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "B"
+                                                  "Label": "B",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 34
+                                                  "w": 574
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -1438,27 +1445,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "C"
+                                                  "Label": "C",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 33
+                                                  "w": 574
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -1670,27 +1684,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "F"
+                                                  "Label": "F",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 32
+                                                  "w": 574
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -1902,27 +1923,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "G"
+                                                  "Label": "G",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 35
+                                                  "w": 574
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -2131,27 +2159,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "N"
+                                                  "Label": "N",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 35
+                                                  "w": 574
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -2368,27 +2403,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "R"
+                                                  "Label": "R",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 33
+                                                  "w": 574
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -2733,27 +2775,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "ㄹ"
+                                                  "Label": "ㄹ",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 37
+                                                  "w": 574
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -2995,27 +3044,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "ㅅ"
+                                                  "Label": "ㅅ",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 37
+                                                  "w": 574
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -3234,27 +3290,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "ㅇ"
+                                                  "Label": "ㅇ",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 37
+                                                  "w": 574
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -3713,8 +3776,15 @@
                             },
                             "name": "ProfileButton",
                             "properties": {
-                              "Name": "서재완"
+                              "Name": "서재완",
+                              "State": "Rest"
                             },
+                            "radius": [
+                              "radius/control",
+                              "radius/control",
+                              "radius/control",
+                              "radius/control"
+                            ],
                             "size": {
                               "h": 32,
                               "w": 510
@@ -5219,27 +5289,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "B"
+                                                  "Label": "B",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 34
+                                                  "w": 356
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -5451,27 +5528,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "C"
+                                                  "Label": "C",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 33
+                                                  "w": 356
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -5683,27 +5767,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "F"
+                                                  "Label": "F",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 32
+                                                  "w": 356
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -5915,27 +6006,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "G"
+                                                  "Label": "G",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 35
+                                                  "w": 356
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -6144,27 +6242,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "N"
+                                                  "Label": "N",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 35
+                                                  "w": 356
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -6381,27 +6486,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "R"
+                                                  "Label": "R",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 33
+                                                  "w": 356
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -6746,27 +6858,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "ㄹ"
+                                                  "Label": "ㄹ",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 37
+                                                  "w": 356
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -7008,27 +7127,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "ㅅ"
+                                                  "Label": "ㅅ",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 37
+                                                  "w": 356
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -7247,27 +7373,34 @@
                                                 ],
                                                 "component": "SectionHeader",
                                                 "layout": {
-                                                  "counterAlign": "MIN",
+                                                  "counterAlign": "CENTER",
                                                   "gap": 0,
                                                   "mode": "HORIZONTAL",
                                                   "padding": [
-                                                    "spacing/sm",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md",
-                                                    "spacing/xs",
+                                                    "spacing/sm-nudge",
                                                     "spacing/md"
                                                   ],
                                                   "primaryAlign": "MIN"
                                                 },
                                                 "name": "header",
                                                 "properties": {
-                                                  "Label": "ㅇ"
+                                                  "Label": "ㅇ",
+                                                  "State": "Rest"
                                                 },
+                                                "radius": [
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control",
+                                                  "radius/control"
+                                                ],
                                                 "size": {
                                                   "h": 32,
-                                                  "w": 37
+                                                  "w": 356
                                                 },
                                                 "sizing": {
-                                                  "h": "HUG",
+                                                  "h": "FILL",
                                                   "v": "HUG"
                                                 },
                                                 "type": "INSTANCE"
@@ -7726,8 +7859,15 @@
                             },
                             "name": "ProfileButton",
                             "properties": {
-                              "Name": "서재완"
+                              "Name": "서재완",
+                              "State": "Rest"
                             },
+                            "radius": [
+                              "radius/control",
+                              "radius/control",
+                              "radius/control",
+                              "radius/control"
+                            ],
                             "size": {
                               "h": 32,
                               "w": 260

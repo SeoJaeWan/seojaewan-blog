@@ -41,8 +41,8 @@ export const Default: Story = {
   },
 };
 
-// 서버가 화면 크기를 모를 때 쓰는 `auto`. 화면 구간 CSS(`mobile:`)가 피그마 Device와 같은 크기를 고른다.
-// 스토리 화면은 PC 구간이라 desktop과 같은 크기다.
+// 서버가 화면 크기를 모를 때 쓰는 `auto`. 화면 구간 CSS(`mobile:`)가 피그마 Device와 같은 로고 크기·간격을 고르고,
+// 화면은 고정 크기 대신 화면 전체를 채운다. 스토리 화면은 PC 구간이라 로고는 desktop과 같은 크기다.
 export const AutoDevice: Story = {
   render: () => <BootScreen device="auto" progressLabel="시작하는 중" />,
   play: async ({ canvasElement, step }) => {

@@ -21,20 +21,28 @@ import type {
   StartItem,
   StartItemGroup,
 } from '@/features/start-menu/utils/start-items/start-items';
-import { findPinnedIdAt } from '@/features/start-menu/utils/start-items/start-items';
+import {
+  findPinnedIdAt,
+  START_TILE_ID_ATTRIBUTE,
+} from '@/features/start-menu/utils/start-items/start-items';
 import { getAvailableLetters } from '@/features/start-menu/utils/start-letter-rules/start-letter-rules';
 import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
+import { useReorderMotion } from '@/shared/hooks/use-reorder-motion/use-reorder-motion';
 import { useRovingFocus } from '@/shared/hooks/use-roving-focus/use-roving-focus';
 
+import { StartCategoryCards } from './components/start-category-cards/start-category-cards';
 import { StartJumpList } from './components/start-jump-list/start-jump-list';
 import { StartTile } from './components/start-tile/start-tile';
 import { StartViewMenu } from './components/start-view-menu/start-view-menu';
 import { getViewMenuEntries } from './view-menu/view-menu-entries';
 
 export type StartBodyDevice = 'desktop' | 'mobile';
+
+/** 고정 칸을 메뉴로 옮길 때 움직임과 함께 순서를 바꾸는 함수. 순서를 바꾸는 함수를 받아 알맞은 때 부른다 */
+export type PinnedMovePlayer = (move: () => void) => void;
 
 type StartBodyCommonProps = {
   device?: StartBodyDevice;
@@ -45,7 +53,7 @@ type StartListViewProps = StartBodyCommonProps & {
   pinned: readonly StartItem[];
   groups: readonly StartItemGroup[];
   onItemOpen?: (item: StartItem) => void;
-  getPinnedMenuItems?: (item: StartItem) => readonly MenuPopupEntry[];
+  getPinnedMenuItems?: (item: StartItem, playMove: PinnedMovePlayer) => readonly MenuPopupEntry[];
   getListMenuItems?: (item: StartItem) => readonly MenuPopupEntry[];
   onPinnedMove?: (id: string, targetId: string) => void;
   onViewChange?: (view: StartAllView) => void;
@@ -107,7 +115,7 @@ const contentInsetClassNames = {
  * @param props.pinned (list·grid·category) 고정됨 항목
  * @param props.groups (list·grid·category) 모두 목록의 묶음
  * @param props.onItemOpen (list·grid·category) 항목 칸(고정됨, 그리드 보기)과 목록 줄을 눌렀을 때 부른다. 항목을 여는 일은 쓰는 곳이 한다. (results) 항목 줄이나 카드의 `열기`를 눌렀을 때 그 항목의 id로 부른다
- * @param props.getPinnedMenuItems (list·grid·category) 고정됨 칸의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartTile`)을 항목마다 정한다. 주지 않으면 메뉴가 없다
+ * @param props.getPinnedMenuItems (list·grid·category) 고정됨 칸의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartTile`)을 항목마다 정한다. 이동 메뉴는 순서를 바꾸는 함수를 함께 받은 `playMove`에 넘겨 움직임과 함께 옮긴다. 주지 않으면 메뉴가 없다
  * @param props.getListMenuItems (list·grid·category) 모두 목록 줄(그리드 보기는 칸)의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartListApp`·`Menu/StartListPost`)을 항목마다 정한다. 주지 않으면 메뉴가 없다
  * @param props.onPinnedMove (list·grid·category) 고정됨 칸을 끌어 다른 칸 자리에 놓을 때(끄는 동안 칸마다) 끈 항목 id와 놓인 칸의 항목 id로 부른다. 주지 않으면 끌 수 없다
  * @param props.onViewChange (list·grid·category) `보기:` 메뉴에서 보기를 골랐을 때 부른다. 주지 않으면 `보기:`는 메뉴 없는 버튼 모양만 그린다
@@ -208,7 +216,7 @@ function StartJumpListView({
  * @param props.pinned 고정됨 항목
  * @param props.groups 모두 목록의 묶음
  * @param props.onItemOpen 항목 칸(고정됨, 그리드 보기)과 목록 줄을 눌렀을 때 부른다. 항목을 여는 일은 쓰는 곳이 한다
- * @param props.getPinnedMenuItems 고정됨 칸의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartTile`)을 항목마다 정한다. 주지 않으면 메뉴가 없다
+ * @param props.getPinnedMenuItems 고정됨 칸의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartTile`)을 항목마다 정한다. 이동 메뉴는 순서를 바꾸는 함수를 함께 받은 `playMove`에 넘겨 움직임과 함께 옮긴다. 주지 않으면 메뉴가 없다
  * @param props.getListMenuItems 모두 목록 줄(그리드 보기는 칸)의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartListApp`·`Menu/StartListPost`)을 항목마다 정한다. 주지 않으면 메뉴가 없다
  * @param props.onPinnedMove 고정됨 칸을 끌어 다른 칸 자리에 놓을 때(끄는 동안 칸마다) 끈 항목 id와 놓인 칸의 항목 id로 부른다. 주지 않으면 끌 수 없다
  * @param props.onViewChange `보기:` 메뉴에서 보기를 골랐을 때 부른다. 주지 않으면 `보기:`는 메뉴 없는 버튼 모양만 그린다
@@ -225,7 +233,7 @@ function StartListView({
   onViewChange: handleViewChange,
 }: StartListViewProps): JSX.Element {
   const tileClassName = tileClassNames[device];
-  // 첫 글자로 묶은 보기(간단히·그리드)만 글자 격자로 이동한다. 범주 보기의 머리글은 종류 이름이라 누를 수 없다.
+  // 첫 글자로 묶은 보기(간단히·그리드)만 글자 격자로 이동한다. 범주 보기는 머리글 대신 범주 카드를 놓는다.
   const isJumpListEnabled = view !== 'category';
   // 격자를 연 머리글의 글자. null이면 격자가 닫혀 있다.
   const [openedLetter, setOpenedLetter] = useState<string | null>(null);
@@ -237,6 +245,14 @@ function StartListView({
   const isPinnedDraggedRef = useRef(false);
   const [isViewMenuOpen, setIsViewMenuOpen] = useState(false);
   const startPointerDrag = usePointerDrag();
+  const pinnedMotion = useReorderMotion(pinnedGridRef, {
+    itemAttribute: START_TILE_ID_ATTRIBUTE,
+    axis: 'both',
+    moveClassNames: {
+      exit: 'motion-start-pinned-move-exit',
+      enter: 'motion-start-pinned-move-enter',
+    },
+  });
   // 격자가 열리거나 닫힌 뒤 포커스를 옮길 글자. 연 머리글의 글자 칸, 닫으면 고른(뒤로면 연) 글자의 머리글로 옮긴다.
   const pendingFocusLetterRef = useRef<string | null>(null);
   const jumpList = usePresence(bodyRef, isGridOpen, { shouldIncludeSubtree: true });
@@ -291,6 +307,8 @@ function StartListView({
 
   /**
    * 고정 칸 위에서 포인터를 누르면 끌어 순서 바꾸기를 시작한다. 끄는 동안 포인터 아래 칸 자리로 바로 옮긴다.
+   * 끄는 칸은 커진 채 포인터를 따라오고, 밀려나는 칸은 새 자리로 미끄러지고, 놓으면 새 자리로 들어간다(`useReorderMotion`).
+   * @codocs [[항목 조작:순서 바꾸기 끌기]]
    * @param event 누르기 이벤트
    * @param item 누른 칸의 항목
    */
@@ -299,16 +317,21 @@ function StartListView({
     if (handlePinnedMove === undefined) {
       return;
     }
+    const tile = event.currentTarget;
     startPointerDrag(event, {
-      onStart: () => {
+      onStart: (start, point) => {
         isPinnedDraggedRef.current = true;
+        pinnedMotion.startDrag(tile, start, point);
       },
       onMove: (point) => {
+        pinnedMotion.moveDrag(point);
         const targetId = findPinnedIdAt(pinnedGridRef.current, point.x, point.y);
         if (targetId !== null && targetId !== item.id) {
           handlePinnedMove(item.id, targetId);
         }
       },
+      onDrop: pinnedMotion.endDrag,
+      onCancel: pinnedMotion.endDrag,
     });
   }
 
@@ -414,7 +437,9 @@ function StartListView({
                       item={item}
                       className={tileClassName}
                       onItemOpen={handleItemOpen}
-                      menuItems={getPinnedMenuItems?.(item)}
+                      menuItems={getPinnedMenuItems?.(item, (move) => {
+                        pinnedMotion.playMove(item.id, move);
+                      })}
                       onPointerDown={handlePinnedPointerDown}
                       shouldSuppressClick={shouldSuppressPinnedClick}
                     />
@@ -433,14 +458,23 @@ function StartListView({
                 action={renderViewControl()}
                 className="w-full shrink-shrink-none"
               />
-              <StartAllList
-                view={view}
-                groups={groups}
-                tileClassName={tileClassName}
-                onItemOpen={handleItemOpen}
-                getMenuItems={getListMenuItems}
-                onHeaderClick={handleHeaderClick}
-              />
+              {view === 'category' ? (
+                <StartCategoryCards
+                  device={device}
+                  groups={groups}
+                  onItemOpen={handleItemOpen}
+                  getMenuItems={getListMenuItems}
+                />
+              ) : (
+                <StartAllList
+                  view={view}
+                  groups={groups}
+                  tileClassName={tileClassName}
+                  onItemOpen={handleItemOpen}
+                  getMenuItems={getListMenuItems}
+                  onHeaderClick={handleHeaderClick}
+                />
+              )}
             </section>
           </div>
         </ScrollArea>

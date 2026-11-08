@@ -58,15 +58,15 @@
             "name": "preview title",
             "size": {
               "h": 28,
-              "w": 35
+              "w": 224
             },
             "sizing": {
-              "h": "HUG",
+              "h": "FILL",
               "v": "HUG"
             },
             "text": {
-              "autoResize": "WIDTH_AND_HEIGHT",
-              "maxLines": null,
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
               "maxLinesVariable": null,
               "segments": [
                 {
@@ -75,7 +75,7 @@
                   "textStyle": "Hangul/Subtitle"
                 }
               ],
-              "truncation": "DISABLED"
+              "truncation": "ENDING"
             },
             "type": "TEXT"
           },
@@ -86,15 +86,15 @@
             "name": "preview meta",
             "size": {
               "h": 16,
-              "w": 45
+              "w": 224
             },
             "sizing": {
-              "h": "HUG",
+              "h": "FILL",
               "v": "HUG"
             },
             "text": {
-              "autoResize": "WIDTH_AND_HEIGHT",
-              "maxLines": null,
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
               "maxLinesVariable": null,
               "segments": [
                 {
@@ -113,7 +113,7 @@
                   "textStyle": "Hangul/Caption"
                 }
               ],
-              "truncation": "DISABLED"
+              "truncation": "ENDING"
             },
             "type": "TEXT"
           },

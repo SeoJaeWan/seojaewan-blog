@@ -6,7 +6,7 @@ import type { PostBlock } from '@/shared/utils/post-body/post-body';
 
 /**
  * 본문 블록에 서버에서 처리할 것을 채운다. 코드 블록은 Shiki로 강조한 글자 조각(`highlighted`), 수식 블록은 KaTeX로
- * 그린 HTML(`html`)을 더한다. 목록·할 일·토글 안의 하위 블록도 같이 처리한다.
+ * 그린 HTML(`html`)을 더한다. 목록·할 일·토글·열 나누기 안의 하위 블록도 같이 처리한다.
  * 브라우저는 이 결과를 그리기만 하고 강조·수식 계산을 돌리지 않는다.
  * @codocs [[기술 스택:글 본문 처리]]
  * @codocs [[Notion 블록:지원 블록]]
@@ -36,6 +36,8 @@ async function renderPostBlock(block: PostBlock): Promise<PostBlock> {
     case 'numbered_list_item':
     case 'to_do':
     case 'toggle':
+    case 'column_list':
+    case 'column':
       return block.children === undefined
         ? block
         : { ...block, children: await renderPostBlocks(block.children) };

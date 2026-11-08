@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thumbnail';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
+import { useReorderMotion } from '@/shared/hooks/use-reorder-motion/use-reorder-motion';
 import { useRovingFocus } from '@/shared/hooks/use-roving-focus/use-roving-focus';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
@@ -26,7 +27,7 @@ import { TaskbarAppItem } from './components/app-item/app-item';
 import { TaskbarWindowPreviewList } from './components/taskbar-window-preview-list/taskbar-window-preview-list';
 import { useHoverPreview } from './hooks/use-hover-preview/use-hover-preview';
 import { useOpenApp } from './hooks/use-open-app/use-open-app';
-import { findTaskbarAppAt } from './utils/taskbar-app-drag/taskbar-app-drag';
+import { findTaskbarAppAt, TASKBAR_APP_ATTRIBUTE } from './utils/taskbar-app-drag/taskbar-app-drag';
 import { getTaskbarApps } from './utils/taskbar-app-rules/taskbar-app-rules';
 
 /** 창 미리보기 축소 화면 자리(WindowPreview Thumbnail, 208 너비에서 안쪽 여백을 뺀 192×108) */
@@ -57,6 +58,7 @@ export type TaskbarAppsLayerProps = {
  * - 버튼을 우클릭(모바일은 길게 누르기)하면 버튼 위 가운데에 우클릭 메뉴를 연다. 앱 이름(새 창), 고정·고정 해제, 창 닫기·모든 창 닫기다.
  *   메뉴가 열리면 미리보기는 닫는다.
  * - 데스크톱에서 고정한 앱 버튼을 끌어 다른 고정 앱 버튼 자리에 놓으면 순서가 바뀐다. 끌기 뒤에 따라오는 클릭은 버튼 동작을 하지 않는다. 모바일은 끌기가 없다.
+ *   끄는 버튼은 커진 채 포인터를 가로로 따라오고, 밀려나는 버튼은 새 자리로 미끄러지고, 놓으면 새 자리로 들어간다(`useReorderMotion`).
  * - 모바일은 미리보기 목록을 화면 폭(좌우 12px 여백)에 맞춰 작업 표시줄 위 가운데에 띄우고, 카드가 많으면 카드를 같은 너비로 줄인다.
  * - 미리보기 목록은 실제 창을 `WindowThumbnail`로 줄여 보여 주고, 고르면 그 창을 맨 앞으로, 닫기를 누르면 그 창을 닫는다.
  *   바깥을 누르거나 Esc를 누르면 닫힌다. 축소 화면 안의 창 내용과 제목은 앱을 아는 쓰는 곳이 `renderWindow`·`getWindowTitle`로 넘긴다.
@@ -94,6 +96,10 @@ export function TaskbarAppsLayer({
   const [menuApp, setMenuApp] = useState<WindowApp | null>(null);
   const previewApp = preview?.app ?? null;
   const containerRef = useRef<HTMLDivElement>(null);
+  const reorderMotion = useReorderMotion(containerRef, {
+    itemAttribute: TASKBAR_APP_ATTRIBUTE,
+    axis: 'x',
+  });
   // 앱 버튼을 끄는 중인지, 방금 끌었는지(끌기 뒤에 따라오는 클릭을 거른다)다.
   const isDraggingRef = useRef(false);
   const isDraggedRef = useRef(false);
@@ -281,13 +287,18 @@ export function TaskbarAppsLayer({
       return;
     }
     startPointerDrag(event, {
-      onStart: () => {
+      onStart: (start, point) => {
         isDraggingRef.current = true;
         isDraggedRef.current = true;
         hover.cancel();
         setPreview(null);
+        const button = findAppButton(containerRef.current, app);
+        if (button !== null) {
+          reorderMotion.startDrag(button, start, point);
+        }
       },
       onMove: (point) => {
+        reorderMotion.moveDrag(point);
         const { taskbarPins: pins, moveTaskbarPin } = useWorkspaceStore.getState();
         const target = findTaskbarAppAt(containerRef.current, pins, point.x, point.y);
         const index = target === null ? -1 : pins.indexOf(target);
@@ -297,9 +308,11 @@ export function TaskbarAppsLayer({
       },
       onDrop: () => {
         isDraggingRef.current = false;
+        reorderMotion.endDrag();
       },
       onCancel: () => {
         isDraggingRef.current = false;
+        reorderMotion.endDrag();
       },
     });
   }

@@ -3,7 +3,11 @@ import { expect, fireEvent, userEvent, waitFor, within } from 'storybook/test';
 
 import { StoryStage } from '@seojaewan/design-system/story';
 
-import { dragStoryPointer } from '@/features/window/story-pointer';
+import {
+  dragStoryPointer,
+  pressStoryPointer,
+  storyPointerInit,
+} from '@/features/window/story-pointer';
 import { openStoryWindows, resetStoryStores } from '@/shared/stores/store-reset/story-stores';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
@@ -496,6 +500,28 @@ export const DragOrder: Story = {
       },
     );
 
+    // @codocs [[항목 조작:순서 바꾸기 끌기]]
+    await step(
+      '끄는 버튼은 커지고, 밀려나는 버튼은 미끄러지고, 놓으면 끌던 버튼이 새 자리로 들어간다',
+      async () => {
+        const chrome = body.getByRole('button', { name: 'Chrome' });
+        const explorer = body.getByRole('button', { name: '파일 탐색기' });
+        // 앞 단계의 놓기·미끄러짐이 끝나 버튼이 제자리에 선 뒤에 잰다.
+        await waitFor(() => expect(chrome).not.toHaveAttribute('data-reorder-motion'));
+        await waitFor(() => expect(explorer).not.toHaveAttribute('data-reorder-motion'));
+        const end = getCenter(explorer);
+        await pressStoryPointer(chrome, [getCenter(chrome), end]);
+        await expect(chrome).toHaveAttribute('data-reorder-motion', 'lift');
+        await expect(explorer).toHaveAttribute('data-reorder-motion', 'slide');
+        await expect(useWorkspaceStore.getState().taskbarPins).toEqual(['file-explorer', 'chrome']);
+        await fireEvent.pointerUp(chrome, storyPointerInit(end));
+        await expect(chrome).toHaveAttribute('data-reorder-motion', 'drop');
+        await waitFor(() => expect(chrome).not.toHaveAttribute('data-reorder-motion'));
+        await waitFor(() => expect(explorer).not.toHaveAttribute('data-reorder-motion'));
+        await fireEvent.click(chrome);
+      },
+    );
+
     // @codocs [[작업 표시줄:고정과 순서]]
     await step('끌지 않고 누르면 버튼 동작을 한다', async () => {
       const chrome = body.getByRole('button', { name: 'Chrome' });
@@ -525,8 +551,8 @@ export const Mobile: Story = {
         await expect(cards).toHaveLength(3);
         // 실제 브라우저라 여는 애니메이션의 scale이 getBoundingClientRect에 들어가므로 배치 크기를 본다.
         const listWidth = window.innerWidth - 12 * 2;
-        // 카드 사이 간격 4px 둘, 목록 판 여백 합 10px (예: 390폭이면 (366 - 10 - 4 * 2) / 3 = 116)
-        const cardWidth = Math.floor((listWidth - 10 - 4 * 2) / 3);
+        // 카드는 틈 없이 붙고 목록 판은 테두리 합 2px만 갖는다 (예: 390폭이면 (366 - 2) / 3 = 121)
+        const cardWidth = Math.floor((listWidth - 2) / 3);
         await expect(cards[0]?.parentElement?.offsetWidth).toBe(listWidth);
         await expect(cards.map((card) => card.offsetWidth)).toEqual([
           cardWidth,

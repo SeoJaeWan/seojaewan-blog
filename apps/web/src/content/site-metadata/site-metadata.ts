@@ -6,7 +6,6 @@ import {
   type PostCollection,
   type PostRef,
 } from '@/shared/utils/post-address/post-address';
-import { getPlainText, type PostBlock } from '@/shared/utils/post-body/post-body';
 
 /** 사이트 주소. 메타 정보의 상대 주소(canonical, 기본 공유 그림)가 이 주소를 앞에 붙인다 */
 export const SITE_ORIGIN = 'https://seojaewan.com';
@@ -14,14 +13,11 @@ export const SITE_ORIGIN = 'https://seojaewan.com';
 /** 사이트 이름. 첫 화면의 `<title>`이고 다른 화면의 제목 뒤에 붙는다 */
 export const SITE_NAME = 'seojaewan';
 
-/** 첫 화면의 사이트 소개 한 줄. Summary도 본문 문단도 없는 항목의 설명으로도 쓴다 */
+/** 첫 화면의 사이트 소개 한 줄. Summary가 없는 항목의 설명으로도 쓴다 */
 export const SITE_DESCRIPTION = '서재완의 기술 블로그입니다.';
 
 /** 커버가 없는 항목과 첫 화면의 공유 그림(`public/og-default.png`, `scripts/generate-og-default.ts`가 만든다) */
 export const DEFAULT_SHARE_IMAGE = { url: '/og-default.png', width: 1200, height: 630 } as const;
-
-/** Summary가 없을 때 본문 첫 문단에서 가져오는 글자 수 */
-export const DESCRIPTION_MAX_LENGTH = 160;
 
 // 공유 그림으로 쓰는 커버 폭. 이미지 서버가 만드는 두 폭 가운데 큰 쪽이다.
 const SHARE_IMAGE_WIDTH = 1440;
@@ -40,7 +36,6 @@ type ShareImage = {
 export type EntryMetadataSource = {
   post: PostRef;
   row: Pick<PostRow, 'title' | 'summary' | 'cover'>;
-  blocks: readonly PostBlock[];
 };
 
 /** sitemap에 넣을 공개 항목 하나. 묶음과 slug, 고친 시각이다 */
@@ -91,18 +86,17 @@ export function getHomeMetadata(): Metadata {
 
 /**
  * 글 주소(`/posts/<slug>`, `/projects/<slug>`, `/about/<slug>`) 페이지의 메타 정보. 제목은 항목 제목(템플릿이 사이트 이름을 붙인다),
- * 설명은 Summary나 본문 첫 문단, canonical은 묶음별 경로, 공유 그림은 커버의 `?w=1440`이나 기본 그림이다.
+ * 설명은 Summary(없으면 사이트 소개), canonical은 묶음별 경로, 공유 그림은 커버의 `?w=1440`이나 기본 그림이다.
  * @codocs [[SEO와 공유 미리보기:메타 정보]]
  * @codocs [[SEO와 공유 미리보기:공유 미리보기 이미지]]
  * @param source 항목 값
  * @param source.post 항목(묶음과 slug)
  * @param source.row 항목의 제목, Summary, 커버
- * @param source.blocks 항목의 본문 블록
  * @returns 글 주소 페이지의 메타 정보
  */
-export function getEntryMetadata({ post, row, blocks }: EntryMetadataSource): Metadata {
+export function getEntryMetadata({ post, row }: EntryMetadataSource): Metadata {
   const path = getPostPath(post);
-  const description = getEntryDescription(row.summary, blocks);
+  const description = getEntryDescription(row.summary);
   const images = [getShareImage(row.cover)];
   return {
     title: row.title,
@@ -122,27 +116,14 @@ export function getEntryMetadata({ post, row, blocks }: EntryMetadataSource): Me
 }
 
 /**
- * 항목의 설명(meta description). Notion Summary가 있으면 그대로 쓰고, 비어 있으면 본문 첫 문단(맨 위 층의 글자가 있는 문단)의
- * 앞 160자를 쓴다. 문단 안의 줄바꿈과 겹친 공백은 공백 하나로 줄인다. 문단도 없으면 사이트 소개를 쓴다.
+ * 항목의 설명(meta description). Notion Summary가 있으면 그대로 쓰고, 비어 있으면 사이트 소개를 쓴다.
  * @codocs [[SEO와 공유 미리보기:메타 정보]]
  * @param summary Notion Summary. 없으면 빈 문자열
- * @param blocks 본문 블록
  * @returns 설명
  */
-export function getEntryDescription(summary: string, blocks: readonly PostBlock[]): string {
+export function getEntryDescription(summary: string): string {
   const trimmedSummary = summary.trim();
-  if (trimmedSummary !== '') {
-    return trimmedSummary;
-  }
-  const paragraph = blocks
-    .flatMap((block) =>
-      block.type === 'paragraph' ? [normalizeSpace(getPlainText(block.richText))] : [],
-    )
-    .find((text) => text !== '');
-  // 글자 수는 코드 포인트로 센다. 이모지 같은 글자를 반으로 자르지 않기 위해서다.
-  return paragraph === undefined
-    ? SITE_DESCRIPTION
-    : Array.from(paragraph).slice(0, DESCRIPTION_MAX_LENGTH).join('').trimEnd();
+  return trimmedSummary === '' ? SITE_DESCRIPTION : trimmedSummary;
 }
 
 /**
@@ -195,13 +176,4 @@ export function getRobots(): MetadataRoute.Robots {
     rules: { userAgent: '*', allow: '/', disallow: '/api/' },
     sitemap: `${SITE_ORIGIN}/sitemap.xml`,
   };
-}
-
-/**
- * 줄바꿈과 겹친 공백을 공백 하나로 줄이고 앞뒤 공백을 지운다.
- * @param text 글자
- * @returns 줄인 글자
- */
-function normalizeSpace(text: string): string {
-  return text.replaceAll(/\s+/gu, ' ').trim();
 }

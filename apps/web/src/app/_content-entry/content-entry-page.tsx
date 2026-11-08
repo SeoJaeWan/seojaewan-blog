@@ -32,7 +32,7 @@ export async function getContentEntryParams(
 }
 
 /**
- * 글 주소 페이지의 메타 정보(제목, 설명, canonical, 공유 그림). 본문은 Summary가 비어 있을 때만 읽는다. 공개 항목이 아니면
+ * 글 주소 페이지의 메타 정보(제목, 설명, canonical, 공유 그림). 공개 항목이 아니면
  * 루트 레이아웃 것을 그대로 쓴다(화면이 404로 답한다).
  * @codocs [[SEO와 공유 미리보기:메타 정보]]
  * @param collection 묶음
@@ -49,8 +49,7 @@ export async function getContentEntryMetadata(
   if (row === null) {
     return {};
   }
-  const blocks = row.summary.trim() === '' ? ((await getContentBody(post))?.blocks ?? []) : [];
-  return getEntryMetadata({ post, row, blocks });
+  return getEntryMetadata({ post, row });
 }
 
 /**

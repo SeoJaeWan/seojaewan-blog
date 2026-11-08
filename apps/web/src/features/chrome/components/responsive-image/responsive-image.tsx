@@ -1,4 +1,4 @@
-import type { JSX } from 'react';
+import type { JSX, Ref } from 'react';
 
 import type { PostImage } from '@/shared/utils/post-body/post-body';
 import { getPostImageSrcSet, POST_IMAGE_SIZES } from '@/shared/utils/post-image/post-image';
@@ -8,6 +8,10 @@ type ResponsiveImageProps = {
   alt: string;
   sizes?: string;
   className?: string;
+  ref?: Ref<HTMLImageElement>;
+  onLoad?: () => void;
+  onError?: () => void;
+  isHidden?: boolean;
 };
 
 /**
@@ -20,15 +24,24 @@ type ResponsiveImageProps = {
  * @param props.alt 대체 글자. 캡션이 없으면 빈 글자다
  * @param props.sizes 그려질 폭(`sizes`). 없으면 글 본문 폭 기준(`(max-width: 767px) 100vw, 720px`)이다
  * @param props.className 바깥 배치 클래스
+ * @param props.ref img 요소
+ * @param props.onLoad 다 받았을 때
+ * @param props.onError 받지 못했을 때
+ * @param props.isHidden 받기 상태만 보려고 숨겨 그리는 img인지. 보조 기술에서도 숨긴다
  */
 export function ResponsiveImage({
   image,
   alt,
   sizes = POST_IMAGE_SIZES,
   className,
+  ref,
+  onLoad: handleLoad,
+  onError: handleError,
+  isHidden = false,
 }: ResponsiveImageProps): JSX.Element {
   return (
     <img
+      ref={ref}
       src={image.url}
       srcSet={getPostImageSrcSet(image.url)}
       sizes={sizes}
@@ -36,8 +49,11 @@ export function ResponsiveImage({
       height={image.height ?? undefined}
       loading="lazy"
       decoding="async"
-      alt={alt}
+      alt={isHidden ? '' : alt}
+      aria-hidden={isHidden ? true : undefined}
       className={className}
+      onLoad={handleLoad}
+      onError={handleError}
     />
   );
 }

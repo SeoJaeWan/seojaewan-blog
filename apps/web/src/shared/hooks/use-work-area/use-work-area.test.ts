@@ -27,4 +27,33 @@ describe('창 동작:창 조작', () => {
     });
     expect(result.current).toEqual({ width: 390, height: 844 - TASKBAR_HEIGHT });
   });
+
+  it('화면 크기가 0이면 null이고, 크기가 생기면 작업 영역을 돌려준다', () => {
+    vi.stubGlobal('innerWidth', 0);
+    vi.stubGlobal('innerHeight', 0);
+    const { result } = renderHook(() => useWorkArea());
+    expect(result.current).toBeNull();
+
+    act(() => {
+      vi.stubGlobal('innerWidth', 967);
+      vi.stubGlobal('innerHeight', 846);
+      window.dispatchEvent(new Event('resize'));
+    });
+    expect(result.current).toEqual({ width: 967, height: 846 - TASKBAR_HEIGHT });
+  });
+});
+
+// @codocs [[반응형:화면 채우기]]
+describe('반응형:화면 채우기', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('visualViewport가 있어도 innerHeight로 작업 영역을 구한다', () => {
+    vi.stubGlobal('innerWidth', 412);
+    vi.stubGlobal('innerHeight', 915);
+    vi.stubGlobal('visualViewport', Object.assign(new EventTarget(), { height: 860.4 }));
+    const { result } = renderHook(() => useWorkArea());
+    expect(result.current).toEqual({ width: 412, height: 915 - TASKBAR_HEIGHT });
+  });
 });

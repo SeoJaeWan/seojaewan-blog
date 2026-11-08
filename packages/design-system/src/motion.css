@@ -40,7 +40,7 @@
   }
 
   100% {
-    scale: var(--motion-scale-search-icon);
+    scale: var(--motion-scale-lift);
   }
 }
 
@@ -91,7 +91,7 @@
 
 /* 검색 돋보기 강조의 정지 모습(배율 1.1)이다. 키프레임 없이 끝 배율 토큰만 준다. */
 @utility motion-search-box-focus-rest {
-  scale: var(--motion-scale-search-icon);
+  scale: var(--motion-scale-lift);
 }
 
 /*
@@ -477,9 +477,196 @@
 }
 
 /*
+ * 순서 바꾸기 끌기 시작(견본 motion-reorder-lift). 끄는 항목(작업 표시줄 앱 버튼·탭·Start 고정됨 칸) 전체가 배율 1 → 1.1로 커진다.
+ * 앱이 끌기를 시작할 때 붙이고 끄는 동안 붙여 둔다. 끝 모습(1.1배)을 끄는 동안 유지하도록 fill-mode는 both다.
+ * 놓을 때는 이 클래스를 떼고 motion-reorder-drop을 붙인다([[항목 조작:순서 바꾸기 끌기]]). 실행 중 값은 없다.
+ */
+@keyframes motion-reorder-lift {
+  0% {
+    scale: 1;
+  }
+
+  100% {
+    scale: var(--motion-scale-lift);
+  }
+}
+
+@utility motion-reorder-lift {
+  animation-name: motion-reorder-lift;
+  animation-duration: var(--motion-duration-fast);
+  animation-timing-function: var(--motion-easing-point-to-point);
+  animation-fill-mode: both;
+}
+
+/*
+ * 순서 바꾸기 끌기 놓기(견본 motion-reorder-drop). 끌던 항목이 놓은 자리에서 새 자리로 미끄러져 들어가며
+ * 배율 1.1 → 1로 돌아온다. 두 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다.
+ * FLIP 방식이다. 앱이 항목을 새 자리로 옮긴 뒤, 놓은 위치에서 새 자리까지의 거리(놓은 위치 - 새 자리)를
+ * --motion-reorder-from-x·-y로 넘기고 motion-reorder-lift를 떼며 이 클래스를 붙인다. 밀려나는 항목의 미끄러짐
+ * (motion-reorder-slide)도 같은 변수를 쓴다. 시작 모습을 재생 전에도 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-reorder-drop {
+  0% {
+    scale: var(--motion-scale-lift);
+    translate: var(--motion-reorder-from-x) var(--motion-reorder-from-y);
+  }
+
+  100% {
+    scale: 1;
+    translate: 0 0;
+  }
+}
+
+@utility motion-reorder-drop {
+  animation-name: motion-reorder-drop;
+  animation-duration: var(--motion-duration-normal);
+  animation-timing-function: var(--motion-easing-point-to-point);
+  animation-fill-mode: both;
+}
+
+/*
+ * 순서 바꾸기 미끄러짐(견본 motion-reorder-slide). 순서가 바뀌어 밀려나는 항목이 이전 자리에서 새 자리로 미끄러진다.
+ * 작업 표시줄·탭·Start 고정됨의 끌기와 Start 고정됨 메뉴 이동이 함께 쓴다([[항목 조작:순서 바꾸기 끌기]]).
+ * FLIP 방식이다. 앱이 항목을 새 자리로 옮긴 뒤, 이전 자리에서 새 자리까지의 거리(이전 자리 - 새 자리)를
+ * motion-reorder-drop과 같은 --motion-reorder-from-x·-y로 넘기고 이 클래스를 붙인다.
+ * 시작 모습을 재생 전에도 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-reorder-slide {
+  0% {
+    translate: var(--motion-reorder-from-x) var(--motion-reorder-from-y);
+  }
+
+  100% {
+    translate: 0 0;
+  }
+}
+
+@utility motion-reorder-slide {
+  animation-name: motion-reorder-slide;
+  animation-duration: var(--motion-duration-normal);
+  animation-timing-function: var(--motion-easing-point-to-point);
+  animation-fill-mode: both;
+}
+
+/*
+ * Start 고정됨 메뉴 이동의 사라짐(견본 motion-start-pinned-move-exit). 메뉴(앞으로·왼쪽으로·오른쪽으로 이동)로 옮기는 칸
+ * 전체(PinnedTile)가 제자리에서 배율 1 → 0.5로 작아지며 투명도 1 → 0으로 사라진다([[Start 메뉴:고정됨]]).
+ * 배율(direct-entrance)과 투명도(fade)는 이징이 달라 animation을 쉼표로 나눈다. 실행 중 값은 없다.
+ * 이어서 나머지 칸이 motion-reorder-slide로 미끄러지고, 옮기는 칸이 도착할 자리에서 motion-start-pinned-move-enter로 나타난다.
+ * 사라진 끝 모습(투명도 0)을 다음 단계까지 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-start-pinned-move-exit-scale {
+  0% {
+    scale: 1;
+  }
+
+  100% {
+    scale: var(--motion-scale-half);
+  }
+}
+
+@keyframes motion-start-pinned-move-exit-fade {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@utility motion-start-pinned-move-exit {
+  animation:
+    motion-start-pinned-move-exit-scale var(--motion-duration-fast)
+      var(--motion-easing-direct-entrance) both,
+    motion-start-pinned-move-exit-fade var(--motion-duration-fast) var(--motion-easing-fade) both;
+}
+
+/*
+ * Start 고정됨 메뉴 이동의 나타남(견본 motion-start-pinned-move-enter). 나머지 칸이 motion-reorder-slide로 미끄러진 뒤,
+ * 옮기는 칸 전체(PinnedTile)가 도착할 자리에서 배율 0.5 → 1로 커지며 투명도 0 → 1로 나타난다([[Start 메뉴:고정됨]]).
+ * 배율(direct-entrance)과 투명도(fade)는 이징이 달라 animation을 쉼표로 나눈다. 실행 중 값은 없다.
+ * 시작 모습(투명도 0)을 재생 전에도 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-start-pinned-move-enter-scale {
+  0% {
+    scale: var(--motion-scale-half);
+  }
+
+  100% {
+    scale: 1;
+  }
+}
+
+@keyframes motion-start-pinned-move-enter-fade {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@utility motion-start-pinned-move-enter {
+  animation:
+    motion-start-pinned-move-enter-scale var(--motion-duration-normal)
+      var(--motion-easing-direct-entrance) both,
+    motion-start-pinned-move-enter-fade var(--motion-duration-normal) var(--motion-easing-fade) both;
+}
+
+/*
+ * 이미지 스켈레톤 반짝임(견본 motion-image-skeleton). Figure State=Loading의 반짝임 칠(shimmer 레이어)이 칸 왼쪽 밖
+ * 자리에서 칸 두 개 너비만큼 오른쪽으로 지나가기를 되풀이한다([[Notion 이미지 제공:로딩 표시]]).
+ * 견본의 1440은 견본 칸 너비(720)의 두 배라, px 대신 요소 자기 너비(translate 200%)로 써서 실제 이미지 너비가 달라도
+ * 칸 전체를 지나가게 한다(견본에서는 1440과 같다). 실행 중 값은 없다.
+ * 받는 중에 늘 붙는 움직임이라 Figure가 반짝임 레이어에 붙인다. 정지 자리(칸 왼쪽 밖)는 컴포넌트가 위치(right)로 잡는다.
+ * 받기에 실패하면 반짝임 레이어가 빠져 멈춘다.
+ */
+@keyframes motion-image-skeleton {
+  0% {
+    translate: 0 0;
+  }
+
+  100% {
+    translate: 200% 0;
+  }
+}
+
+@utility motion-image-skeleton {
+  animation-name: motion-image-skeleton;
+  animation-duration: var(--motion-duration-slower);
+  animation-timing-function: var(--motion-easing-fade);
+  animation-iteration-count: infinite;
+}
+
+/*
+ * 이미지 나타남(견본 motion-image-enter). 스켈레톤을 깐 이미지를 다 받으면 이미지가 투명도 0 → 1로 짧게 서서히 나타난다
+ * ([[Notion 이미지 제공:로딩 표시]]). 실행 중 값은 없다. 앱이 받기를 마친 이미지(img)에 붙이고,
+ * 그릴 때 이미 받아진 이미지(img.complete)에는 붙이지 않는다. 시작 모습(투명도 0)을 재생 전에도 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-image-enter {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@utility motion-image-enter {
+  animation-name: motion-image-enter;
+  animation-duration: var(--motion-duration-fast);
+  animation-timing-function: var(--motion-easing-fade);
+  animation-fill-mode: both;
+}
+
+/*
  * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다.
- * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환은 여기서 움직임 없이 바로 바꾼다.
+ * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환, 순서 바꾸기 끌기는 여기서 움직임 없이 바로 바꾼다.
  * hover·pressed 색 전환, 검색 돋보기 페이드, ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
+ * 이미지 스켈레톤 반짝임은 반짝이지 않고 회색 칸만 보인다(반짝임 칠은 칸 밖 정지 자리에 남는다).
  * 애니메이션을 없애면 사라지는 요소는 기다릴 애니메이션이 없어 바로 빠진다([[피그마 연동:모션 클래스]]).
  */
 @media (prefers-reduced-motion: reduce) {
@@ -494,7 +681,19 @@
   .motion-boot-screen-enter,
   .motion-boot-screen-exit,
   .motion-start-jump-list-enter [data-jump-list],
-  .motion-start-jump-list-exit [data-jump-list] {
+  .motion-start-jump-list-exit [data-jump-list],
+  .motion-reorder-lift,
+  .motion-reorder-drop,
+  .motion-reorder-slide,
+  .motion-start-pinned-move-exit,
+  .motion-start-pinned-move-enter,
+  .motion-image-skeleton,
+  .motion-image-enter {
     animation: none;
+  }
+
+  /* 끄는 동안의 1.1배는 움직임 없이 바로 갖는다. */
+  .motion-reorder-lift {
+    scale: var(--motion-scale-lift);
   }
 }

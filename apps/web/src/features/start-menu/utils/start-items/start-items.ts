@@ -5,6 +5,7 @@ import {
   compareStartTitles,
   groupByStartLetter,
 } from '@/features/start-menu/utils/start-letter-rules/start-letter-rules';
+import { getLayoutRect } from '@/shared/utils/layout-rect/layout-rect';
 import {
   getAppFromItemId,
   getVisibleStartPins,
@@ -163,7 +164,9 @@ export function toSearchItem(item: PlacedItem): SearchItem {
 
 /**
  * 고정됨 격자에서 화면 자리 아래에 있는 칸의 항목 id를 찾는다. 끌어 순서를 바꿀 때 놓일 자리를 정한다.
+ * 끄는 칸과 미끄러지는 칸의 움직이는 모습이 아니라 원래 자리(`getLayoutRect`)로 찾는다.
  * @codocs [[Start 메뉴:고정됨]]
+ * @codocs [[항목 조작:순서 바꾸기 끌기]]
  * @param grid 고정 항목 칸을 담은 요소
  * @param x 화면 가로 자리(px)
  * @param y 화면 세로 자리(px)
@@ -172,7 +175,7 @@ export function toSearchItem(item: PlacedItem): SearchItem {
 export function findPinnedIdAt(grid: Element | null, x: number, y: number): string | null {
   const tiles = grid?.querySelectorAll(`[${START_TILE_ID_ATTRIBUTE}]`) ?? [];
   for (const tile of tiles) {
-    const rect = tile.getBoundingClientRect();
+    const rect = getLayoutRect(tile);
     if (x >= rect.left && x < rect.right && y >= rect.top && y < rect.bottom) {
       return tile.getAttribute(START_TILE_ID_ATTRIBUTE);
     }
