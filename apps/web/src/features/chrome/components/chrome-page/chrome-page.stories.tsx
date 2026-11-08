@@ -1,8 +1,9 @@
 import pageExport from '@figma/patterns/chrome/page/export.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { JSX } from 'react';
+import { expect, fn, within } from 'storybook/test';
 
-import { ImageAsset } from '@seojaewan/design-system';
+import { ImageAsset, ListItem } from '@seojaewan/design-system';
 import { figmaFrame } from '@seojaewan/design-system/story';
 
 import { POST_PAGE, postPageBlocks } from '@/features/chrome/components/chrome-page/story-data';
@@ -90,3 +91,87 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Figma: Story = {};
+
+const handleResultOpen = fn();
+const handleLatestPostOpen = fn();
+const handleImageOpen = fn();
+
+/**
+ * 요소에 실제로 적용된 마우스 커서 모양을 읽는다.
+ * @param element 요소
+ * @returns CSS cursor 값
+ */
+function getCursor(element: Element): string {
+  return getComputedStyle(element).cursor;
+}
+
+// @codocs [[디자인 시스템:커서]]
+/** 검색 결과 줄은 손가락 커서고, 같은 ListItem을 쓰는 Windows 화면 줄은 화살표 그대로다 */
+export const SearchResultsCursor: Story = {
+  args: { page: 'search-results' },
+  render: () => (
+    <>
+      <ChromePage
+        page="search-results"
+        query={SEARCH_RESULTS.query}
+        results={SEARCH_RESULTS.results}
+        onResultOpen={handleResultOpen}
+      />
+      <ListItem
+        role="button"
+        tabIndex={0}
+        title="Windows 화면 줄"
+        icon={<ImageAsset name="images/file-document" />}
+      />
+    </>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      getCursor(canvas.getByRole('button', { name: /리액트 서버 컴포넌트 이해하기/ })),
+    ).toBe('pointer');
+    await expect(getCursor(canvas.getByRole('button', { name: /Windows 화면 줄/ }))).not.toBe(
+      'pointer',
+    );
+  },
+};
+
+// @codocs [[디자인 시스템:커서]]
+/** 새 탭 바로가기는 손가락 커서다 */
+export const NewTabCursor: Story = {
+  args: { page: 'new-tab' },
+  render: () => (
+    <ChromePage
+      page="new-tab"
+      latestPosts={NEW_TAB_LATEST_POSTS.map((title) => ({ title }))}
+      onLatestPostOpen={handleLatestPostOpen}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(getCursor(canvas.getByRole('button', { name: 'React 19 훅 정리' }))).toBe(
+      'pointer',
+    );
+  },
+};
+
+// @codocs [[디자인 시스템:커서]]
+/** 글 이미지의 크게 보기 버튼은 페이지 영역 규칙이 아니라 확대 커서를 그대로 둔다 */
+export const ImageCursor: Story = {
+  args: { page: 'post' },
+  render: () => (
+    <ChromePage page="post" meta={POST_PAGE.meta} title={POST_PAGE.title} toc={POST_PAGE.toc}>
+      <PostBlocks
+        blocks={postPageBlocks.wide}
+        renderImage={() => <ImageAsset name="images/wallpaper-bloom" />}
+        onImageOpen={handleImageOpen}
+      />
+    </ChromePage>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(getCursor(canvas.getByRole('button', { name: /이미지 크게 보기/ }))).toBe(
+      'zoom-in',
+    );
+  },
+};

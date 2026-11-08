@@ -414,7 +414,13 @@ export function ChromePage({
     }
   }
   return (
-    <div ref={scrollRef} className={cn('flex flex-col overflow-y-auto bg-color-white', className)}>
+    // @codocs [[디자인 시스템:커서]]
+    // data-web-page: 이 안의 누를 수 있는 요소는 손가락 커서다(디자인 시스템 reset.css).
+    <div
+      ref={scrollRef}
+      data-web-page
+      className={cn('flex flex-col overflow-y-auto bg-color-white', className)}
+    >
       {zoom === undefined ? (
         content
       ) : (
