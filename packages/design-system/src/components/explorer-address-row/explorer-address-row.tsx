@@ -14,6 +14,8 @@ type ExplorerAddressRowProps = Omit<ComponentProps<'div'>, 'children'> & {
   search?: ExplorerAddressRowSearch;
   children?: ReactNode;
   locationIcon: ReactNode;
+  isBreadcrumbEditing?: boolean;
+  breadcrumbEditFieldProps?: ComponentProps<typeof Breadcrumb>['editFieldProps'];
   onBack?: () => void;
   canGoBack?: boolean;
   canGoForward?: boolean;
@@ -38,6 +40,8 @@ type ExplorerAddressRowProps = Omit<ComponentProps<'div'>, 'children'> & {
  *   나타날 때 검색 상자에 포커스를 준다. desktop은 늘 검색 상자를 보이므로 이 값을 쓰지 않는다
  * @param props.children 피그마 Breadcrumb의 Items 슬롯. 경로 칸(BreadcrumbItem)을 채운다
  * @param props.locationIcon 피그마 Breadcrumb의 `Location icon` 인스턴스 교체 속성. 경로 앞 위치 아이콘이다. 쓰는 곳마다 다르므로 꼭 넘긴다
+ * @param props.isBreadcrumbEditing 안쪽 Breadcrumb의 피그마 State=Editing. 경로 칸 대신 경로 글자 입력칸을 그린다
+ * @param props.breadcrumbEditFieldProps 안쪽 Breadcrumb의 편집 입력칸에 넘길 값·동작·접근성 속성(Breadcrumb `editFieldProps`). `isBreadcrumbEditing`일 때만 쓴다
  * @param props.onBack 뒤로 버튼을 눌렀을 때
  * @param props.canGoBack 뒤로 갈 수 있는지. false면 뒤로 버튼을 비활성(IconButton disabled)으로 둔다
  * @param props.canGoForward 앞으로 갈 수 있는지. false면 앞으로 버튼을 비활성으로 둔다. desktop만 보인다
@@ -57,6 +61,8 @@ export function ExplorerAddressRow({
   search = 'closed',
   children,
   locationIcon,
+  isBreadcrumbEditing = false,
+  breadcrumbEditFieldProps,
   onBack: handleBack,
   canGoBack = true,
   canGoForward = true,
@@ -141,7 +147,12 @@ export function ExplorerAddressRow({
           />
         </>
       ) : null}
-      <Breadcrumb locationIcon={locationIcon} className="min-w-size-none flex-flex-fill">
+      <Breadcrumb
+        locationIcon={locationIcon}
+        isEditing={isBreadcrumbEditing}
+        editFieldProps={breadcrumbEditFieldProps}
+        className="min-w-size-none flex-flex-fill"
+      >
         {children}
       </Breadcrumb>
       {isDesktop ? (

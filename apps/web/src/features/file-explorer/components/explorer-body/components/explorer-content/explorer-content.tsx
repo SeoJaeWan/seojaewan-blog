@@ -42,6 +42,8 @@ type ExplorerContentProps = Pick<
   | 'onSearch'
   | 'search'
   | 'onSearchClose'
+  | 'isBreadcrumbEditing'
+  | 'breadcrumbEditFieldProps'
 > &
   Pick<
     StatusBarProps,
@@ -69,6 +71,8 @@ type ExplorerContentProps = Pick<
  * @param props.searchPlaceholder 검색 상자의 안내 글자. desktop과 mobile 검색 줄에 보인다. 탐색기 창은 `<현재 폴더> 검색`처럼 덮어쓴다
  * @param props.searchValue 검색 상자의 입력값. 주면 쓰는 곳이 값을 정한다(위치를 옮기면 비우는 등). desktop과 mobile 검색 줄에 보인다
  * @param props.path 주소 줄 Breadcrumb의 Items 자리. 경로 칸(BreadcrumbItem)을 넣는다
+ * @param props.isBreadcrumbEditing 피그마 Address=Editing. 주소 줄 Breadcrumb이 경로 칸 대신 경로 글자 입력칸을 그린다
+ * @param props.breadcrumbEditFieldProps 주소 줄 Breadcrumb 편집 입력칸에 넘길 값·동작·접근성 속성. `isBreadcrumbEditing`일 때만 쓴다
  * @param props.commands 명령 막대의 Commands 자리. `ExplorerCommands`를 넣는다
  * @param props.navigation 본문 바탕(LayerSurface) 안 탐색 창(NavigationPane)의 Items 자리. 폴더 트리의 NavigationItem을 넣는다. desktop만 보인다
  * @param props.children 본문 바탕(LayerSurface) 안 `items` 영역의 내용. 현재 폴더의 항목(FileItem, 또는 DetailsHeader와 FileRow)을 넣는다. 피그마는 슬롯 안에 슬롯 속성을 둘 수 없어 이 영역을 `Window/Explorer`가 LayerSurface 슬롯을 통해 직접 채운다
@@ -100,6 +104,8 @@ export function ExplorerContent({
   searchPlaceholder,
   searchValue,
   path,
+  isBreadcrumbEditing,
+  breadcrumbEditFieldProps,
   commands,
   navigation,
   children,
@@ -142,6 +148,8 @@ export function ExplorerContent({
       <ExplorerAddressRow
         device={device}
         locationIcon={locationIcon}
+        isBreadcrumbEditing={isBreadcrumbEditing}
+        breadcrumbEditFieldProps={breadcrumbEditFieldProps}
         searchPlaceholder={searchPlaceholder}
         searchValue={searchValue}
         onBack={handleBack}
