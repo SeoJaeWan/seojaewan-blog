@@ -82,6 +82,7 @@ export async function runMcpExport(options: McpExportOptions): Promise<McpExport
       result.violations.push(...outcome.violations);
       continue;
     }
+    result.notices.push(...outcome.notices);
     const folder = targetFolder(outcome.target, isPattern);
     if (folder === null) {
       result.violations.push({

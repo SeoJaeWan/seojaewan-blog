@@ -197,7 +197,7 @@ export type NodeData = {
   layout: LayoutData | null;
   isStrokeIncludedInLayout: boolean;
   aspectRatio: number | null;
-  annotations: string[];
+  annotations: AnnotationData[];
   reactions: ReactionData[];
   child: ChildLayoutData | null;
   text: TextData | null;
@@ -205,4 +205,14 @@ export type NodeData = {
   instance: InstanceData | null;
   isFullEllipse: boolean | null;
   children: NodeData[];
+};
+
+/**
+ * 레이어의 Dev Mode 주석 하나.
+ * - text: 주석 글(평문)
+ * - category: 주석 카테고리 이름(`Development`, `Accessibility` 등). 카테고리가 없으면 null
+ */
+export type AnnotationData = {
+  text: string;
+  category: string | null;
 };

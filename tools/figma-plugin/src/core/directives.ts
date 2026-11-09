@@ -1,38 +1,48 @@
 // description과 주석에 적는 `@키 값` 줄을 읽는다. 피그마 API를 쓰지 않는 순수 함수다.
 // 규칙 글의 자리와 키의 뜻은 [[피그마 연동:구조 검사]]에 있다.
 
-/** 받는 키. API로 읽을 수 없는 것만 `@` 줄에 적는다 */
-export const DIRECTIVE_KEYS = [
-  'repeat',
-  'direction',
-  'trigger',
-  'hold',
-  'runtime',
-  'reduced-motion',
-  'sample-size',
-] as const;
+/** 받는 키. 피그마 기능(재생 설정, 주석, 변수 연결 등)으로 읽을 수 없는 것만 `@` 줄에 적는다 */
+export const DIRECTIVE_KEYS = ['direction', 'hold'] as const;
+
+/**
+ * 옛 모션 견본(01 · Foundations `Foundations / Motion`) 주석에만 받는 키. 견본을 움직임이 일어나는 자리로 옮기기 전까지
+ * 그 견본을 그대로 내보내기 위해 받는다([[디자인 기반:모션 견본]]).
+ */
+export const LEGACY_SAMPLE_KEYS = ['repeat', 'trigger', 'runtime', 'reduced-motion'] as const;
+
+/**
+ * 더 쓰지 않는 키. 피그마 기능으로 대신 읽는다(재생 설정 Loop, 프로토타입, Development·Accessibility 주석, 변수 연결 여부).
+ * 피그마에서 줄을 지우기 전까지 내보내기를 막지 않고 지울 줄로 알린다.
+ */
+export const RETIRED_KEYS = [...LEGACY_SAMPLE_KEYS, 'sample-size'] as const;
 
 export type DirectiveKey = (typeof DIRECTIVE_KEYS)[number];
 
-/** 키 → 값 목록. `@trigger`처럼 여러 줄을 쓸 수 있는 키가 있어 목록이다 */
-export type Directives = Partial<Record<DirectiveKey, string[]>>;
+/** 옛 견본 주석에만 받는 키 */
+export type LegacySampleKey = (typeof LEGACY_SAMPLE_KEYS)[number];
 
-/** `@` 줄을 읽은 결과. problems: 고쳐야 할 줄. */
+/** 키 → 값 목록. `@hold`처럼 여러 줄을 쓸 수 있는 키가 있어 목록이다 */
+export type Directives = Partial<Record<DirectiveKey | LegacySampleKey, string[]>>;
+
+/**
+ * `@` 줄을 읽은 결과.
+ * - problems: 고쳐야 할 줄(막는다)
+ * - retired: 더 쓰지 않는 키의 줄(막지 않고 지울 줄로 알린다)
+ */
 export type ParsedDirectives = {
   directives: Directives;
   problems: string[];
+  retired: string[];
 };
 
-/** `@sample-size`로 표시하는 견본 크기 축 */
-export type SampleAxis = 'width' | 'height';
-
-const sampleAxisNames: readonly SampleAxis[] = ['width', 'height'];
-
-/** 포커스 전환을 적는 `@trigger` 값 */
-export const FOCUS_TRIGGER = 'focus-visible';
+/**
+ * 읽는 방법.
+ * - isLegacySample: 옛 모션 견본 주석이면 true. `@repeat`·`@trigger`·`@runtime`·`@reduced-motion`을 받는다
+ */
+export type DirectiveOptions = { isLegacySample?: boolean };
 
 // 한 번만 쓰는 키다. 값 하나가 CSS 값 하나로 옮겨진다.
-const singleKeys: readonly DirectiveKey[] = ['repeat', 'direction'];
+const singleKeys: readonly string[] = ['repeat', 'direction'];
 // `animation-iteration-count` 값이다.
 const REPEAT_PATTERN = /^(?:[1-9]\d*|infinite)$/u;
 // `animation-direction` 값이다.
@@ -41,24 +51,35 @@ const LINE_PATTERN = /^@([a-z][a-z-]*)(?:\s+(.+))?$/u;
 
 /**
  * 글에서 `@키 값` 줄을 읽는다. `@`로 시작하지 않는 줄은 설명이라 보지 않는다.
- * 모르는 키, 값이 없는 줄, 잘못된 값은 고칠 줄로 돌려준다.
+ * 모르는 키, 값이 없는 줄, 잘못된 값은 고칠 줄로, 더 쓰지 않는 키의 줄은 지울 줄로 돌려준다.
  * @codocs [[피그마 연동:구조 검사]]
  * @param text description이나 주석 글
- * @returns 키와 값, 고칠 줄
+ * @param options 읽는 방법(옛 견본 주석인지)
+ * @returns 키와 값, 고칠 줄, 지울 줄
  */
-export function parseDirectives(text: string): ParsedDirectives {
+export function parseDirectives(text: string, options: DirectiveOptions = {}): ParsedDirectives {
+  const accepted: readonly string[] =
+    options.isLegacySample === true ? [...DIRECTIVE_KEYS, ...LEGACY_SAMPLE_KEYS] : DIRECTIVE_KEYS;
   const directives: Directives = {};
   const problems: string[] = [];
+  const retired: string[] = [];
   for (const raw of text.split(/\r?\n/u)) {
     const line = raw.trim();
     if (!line.startsWith('@')) {
       continue;
     }
     const match = LINE_PATTERN.exec(line);
-    const key = DIRECTIVE_KEYS.find((item) => item === match?.[1]);
+    const name = match?.[1] ?? '';
+    const key = [...DIRECTIVE_KEYS, ...LEGACY_SAMPLE_KEYS].find(
+      (item) => item === name && accepted.includes(item),
+    );
     const value = match?.[2]?.trim();
     if (key === undefined) {
-      problems.push(`\`${line}\`: 모르는 키다(${DIRECTIVE_KEYS.map((k) => `@${k}`).join(', ')})`);
+      if (RETIRED_KEYS.some((item) => item === name)) {
+        retired.push(line);
+      } else {
+        problems.push(`\`${line}\`: 모르는 키다(${accepted.map((k) => `@${k}`).join(', ')})`);
+      }
     } else if (value === undefined || value === '') {
       problems.push(`\`${line}\`: 값이 없다`);
     } else {
@@ -70,7 +91,7 @@ export function parseDirectives(text: string): ParsedDirectives {
       }
     }
   }
-  return { directives, problems };
+  return { directives, problems, retired };
 }
 
 /**
@@ -81,7 +102,7 @@ export function parseDirectives(text: string): ParsedDirectives {
  * @returns 문제, 없으면 null
  */
 function valueProblem(
-  key: DirectiveKey,
+  key: DirectiveKey | LegacySampleKey,
   value: string,
   known: readonly string[] | undefined,
 ): string | null {
@@ -94,49 +115,20 @@ function valueProblem(
   if (key === 'direction' && !directions.includes(value)) {
     return `${directions.join(', ')} 가운데 하나여야 한다`;
   }
-  if (key === 'sample-size') {
-    return sampleSizeProblem(value, known ?? []);
-  }
   return null;
-}
-
-/**
- * `@sample-size` 값을 본다. 값은 `width`, `height`이고 두 축은 한 줄(`width height`)이나 두 줄로 적는다.
- * @param value 값
- * @param known 이미 읽은 값
- * @returns 문제, 없으면 null
- */
-function sampleSizeProblem(value: string, known: readonly string[]): string | null {
-  const words = value.split(/\s+/u);
-  if (!words.every((word) => sampleAxisNames.some((axis) => axis === word))) {
-    return `${sampleAxisNames.join(', ')}만 쓴다`;
-  }
-  const seen = known.flatMap((line) => line.split(/\s+/u));
-  if (words.some((word, index) => seen.includes(word) || words.indexOf(word) !== index)) {
-    return '같은 축을 두 번 적었다';
-  }
-  return null;
-}
-
-/**
- * `@sample-size` 줄로 표시한 견본 크기 축을 모은다. 견본 크기는 코드에서 부모를 채우는 컴포넌트를 피그마에서 혼자 보이려고
- * 원본 루트에 준 폭·높이라, 변수 없는 숫자로 둔다.
- * @codocs [[피그마 연동:구조 검사]]
- * @param directives 읽은 `@` 줄
- * @returns 축
- */
-export function sampleSizeAxes(directives: Directives): Set<SampleAxis> {
-  const words = (directives['sample-size'] ?? []).flatMap((line) => line.split(/\s+/u));
-  return new Set(sampleAxisNames.filter((axis) => words.includes(axis)));
 }
 
 /**
  * 여러 글을 이어 읽는다.
  * @param texts 글(없는 값은 건너뛴다)
- * @returns 키와 값, 고칠 줄
+ * @param options 읽는 방법(옛 견본 주석인지)
+ * @returns 키와 값, 고칠 줄, 지울 줄
  */
-export function parseDirectiveTexts(texts: readonly (string | undefined)[]): ParsedDirectives {
-  return parseDirectives(texts.filter((text) => text !== undefined).join('\n'));
+export function parseDirectiveTexts(
+  texts: readonly (string | undefined)[],
+  options: DirectiveOptions = {},
+): ParsedDirectives {
+  return parseDirectives(texts.filter((text) => text !== undefined).join('\n'), options);
 }
 
 /**
@@ -149,7 +141,7 @@ export function parseDirectiveTexts(texts: readonly (string | undefined)[]): Par
  * @param variant 변형(단독 컴포넌트면 node와 같은 노드)
  * @param variant.id 변형 ID
  * @param variant.description 변형 description
- * @returns 키와 값, 고칠 줄
+ * @returns 키와 값, 고칠 줄, 지울 줄
  */
 export function parseVariantDirectives(
   node: { readonly id: string; readonly description: string },
@@ -158,4 +150,15 @@ export function parseVariantDirectives(
   return parseDirectiveTexts(
     node.id === variant.id ? [node.description] : [node.description, variant.description],
   );
+}
+
+/**
+ * 지울 줄 알림 문장을 만든다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param where 위치(컴포넌트·변형, 토큰 이름 등)
+ * @param lines 지울 줄
+ * @returns 알림 문장
+ */
+export function retiredNotice(where: string, lines: readonly string[]): string {
+  return `${where}: 더 쓰지 않는 \`@\` 줄 ${lines.map((line) => `\`${line}\``).join(', ')}을 지운다. 재생 설정 Loop, 프로토타입, Development·Accessibility 주석, 변수 연결 여부로 읽는다.`;
 }

@@ -25,6 +25,7 @@ export function layerTree(node: NodeData, codeVariables: CodeVariables, isRoot =
   };
   putBound(tree, 'width', node.width);
   putBound(tree, 'height', node.height);
+  putSampleSize(tree, node, sizing);
   putOptionalBounds(tree, node);
   putAppearance(tree, node, codeVariables);
   putLayout(tree, node);
@@ -45,7 +46,10 @@ export function layerTree(node: NodeData, codeVariables: CodeVariables, isRoot =
     };
   }
   if (node.annotations.length > 0) {
-    tree.annotations = [...node.annotations];
+    tree.annotations = node.annotations.map((annotation) => ({
+      text: annotation.text,
+      category: annotation.category,
+    }));
   }
   if (node.reactions.length > 0) {
     tree.reactions = node.reactions.map(reactionJson);
@@ -74,6 +78,46 @@ function boundJson(bound: Bound): JsonValue {
 function putBound(tree: JsonObject, key: string, bound: Bound): void {
   if (bound.variable !== undefined) {
     tree[key] = bound.variable;
+  }
+}
+
+/**
+ * 변수 없는 고정 크기 축을 견본 크기로 적는다. 변수에 연결된 축만 고정 크기다. `size`의 숫자는 그대로 두어
+ * 스토리(`FigmaFrame`)가 견본 크기를 줄 수 있게 한다. 배율 인스턴스와 잠긴 비율에서 나오는 축은 적지 않는다.
+ * @codocs [[디자인 기반:크기 변수]]
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param tree 트리
+ * @param node 노드
+ * @param sizing 가로·세로 크기 방식
+ * @param sizing.horizontal 가로 크기 방식
+ * @param sizing.vertical 세로 크기 방식
+ */
+function putSampleSize(
+  tree: JsonObject,
+  node: NodeData,
+  sizing: { horizontal: string; vertical: string },
+): void {
+  if (node.instance !== null && Math.abs(node.instance.scaleFactor - 1) > 1e-6) {
+    return;
+  }
+  const isLocked = node.aspectRatio !== null;
+  const axes: string[] = [];
+  if (
+    sizing.horizontal === 'FIXED' &&
+    node.width.variable === undefined &&
+    !(isLocked && (sizing.vertical !== 'FIXED' || node.height.variable !== undefined))
+  ) {
+    axes.push('width');
+  }
+  if (
+    sizing.vertical === 'FIXED' &&
+    node.height.variable === undefined &&
+    !(isLocked && (sizing.horizontal !== 'FIXED' || node.width.variable !== undefined))
+  ) {
+    axes.push('height');
+  }
+  if (axes.length > 0) {
+    tree.sampleSize = axes;
   }
 }
 

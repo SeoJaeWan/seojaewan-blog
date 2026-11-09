@@ -1,6 +1,6 @@
 import { isCodeOnlyPath } from '../../../packages/design-system/scripts/tokens/token-naming';
 import { colorToHex, type FigmaColor } from './color';
-import { parseDirectives } from './core/directives';
+import { parseDirectives, retiredNotice } from './core/directives';
 import type { JsonObject, JsonValue } from './stable-json';
 
 // 피그마 API 값을 옮겨 담은 순수 데이터 모양. figma-reader.ts가 피그마 객체를 이 모양으로 바꾼다.
@@ -253,9 +253,12 @@ function withDirectives(
   label: string,
   context: ConversionContext,
 ): JsonObject {
-  const { directives, problems } = parseDirectives(source.description ?? '');
+  const { directives, problems, retired } = parseDirectives(source.description ?? '');
   for (const problem of problems) {
     context.problems.push(`${label}: description의 ${problem}`);
+  }
+  if (retired.length > 0) {
+    context.notices.push(retiredNotice(label, retired));
   }
   if (Object.keys(directives).length === 0) {
     return token;

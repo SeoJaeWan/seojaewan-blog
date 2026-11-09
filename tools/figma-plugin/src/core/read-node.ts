@@ -7,6 +7,7 @@ import {
   sourceLayerId,
 } from './bindings';
 import type {
+  AnnotationData,
   AssetData,
   AssetKind,
   Bound,
@@ -101,7 +102,7 @@ async function readNode(
     layout: null,
     isStrokeIncludedInLayout: 'strokesIncludedInLayout' in node && node.strokesIncludedInLayout,
     aspectRatio: aspectRatioOf(node),
-    annotations: annotationTexts(node),
+    annotations: await annotationData(node, names),
     reactions: parent === null ? await reactionsOf(node) : [],
     child: null,
     text: null,
@@ -238,6 +239,45 @@ export function annotationTexts(node: BaseNode): string[] {
   return node.annotations
     .map((annotation) => annotation.label ?? annotation.labelMarkdown ?? '')
     .filter((text) => text !== '');
+}
+
+/**
+ * 노드 주석의 글과 카테고리를 읽는다. 평문(`label`)을 먼저 쓰고, 카테고리 이름은 이름 캐시에 함께 둔다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param node 노드
+ * @param names 이름 캐시(카테고리 ID → 이름도 담는다)
+ * @returns 주석
+ */
+export async function annotationData(node: BaseNode, names: NameCache): Promise<AnnotationData[]> {
+  if (!('annotations' in node)) {
+    return [];
+  }
+  const result: AnnotationData[] = [];
+  for (const annotation of node.annotations) {
+    const text = annotation.label ?? annotation.labelMarkdown ?? '';
+    if (text === '') {
+      continue;
+    }
+    result.push({ text, category: await categoryName(annotation.categoryId, names) });
+  }
+  return result;
+}
+
+/**
+ * 주석 카테고리 이름을 찾는다.
+ * @param id 카테고리 ID
+ * @param names 이름 캐시
+ * @returns 카테고리 이름, 없으면 null
+ */
+async function categoryName(id: string | undefined, names: NameCache): Promise<string | null> {
+  if (id === undefined || id === '') {
+    return null;
+  }
+  const key = `annotation-category:${id}`;
+  if (!names.has(key)) {
+    names.set(key, (await figma.annotations.getAnnotationCategoryByIdAsync(id))?.label);
+  }
+  return names.get(key) ?? null;
 }
 
 /**

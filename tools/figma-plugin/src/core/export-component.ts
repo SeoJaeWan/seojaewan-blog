@@ -14,7 +14,7 @@ import {
   type Violation,
 } from './check-structure';
 import { noCodeVariables } from './code-variables';
-import { parseVariantDirectives } from './directives';
+import { parseVariantDirectives, retiredNotice } from './directives';
 import { layerTree } from './layer-tree';
 import type { AssetData, NodeData } from './node-data';
 import { isMotionApiError } from './read-motion';
@@ -34,8 +34,12 @@ export type TargetExport = {
   assets: Map<string, Uint8Array>;
 };
 
+/**
+ * 대상 하나의 검사·내보내기 결과. notices: 막지 않는 알림(지울 `@` 줄 등).
+ */
 export type TargetOutcome =
-  { ok: true; target: TargetExport } | { ok: false; name: string; violations: Violation[] };
+  | { ok: true; target: TargetExport; notices: string[] }
+  | { ok: false; name: string; violations: Violation[] };
 
 /**
  * 컴포넌트(세트)를 변형마다 구조 검사하고 내보낸다. 위반이 하나라도 있으면 파일을 만들지 않고 위반을 모두 돌려준다.
@@ -63,11 +67,15 @@ export async function exportTargetCore(
   const assetNodes = new Map<string, AssetData>();
   const nodes = new Map<string, ComponentNode>();
   const codeVariables = context.codeVariables ?? noCodeVariables;
+  const retiredLines = new Set<string>();
   for (const variant of variantsOf(node)) {
     const tree = await readNodeTree(variant, names);
     const where = `${node.name} / ${variant.name}`;
-    const { directives, problems } = parseVariantDirectives(node, variant);
-    violations.push(...checkVariant(tree, where, context, directives, kind));
+    const { problems, retired } = parseVariantDirectives(node, variant);
+    violations.push(...checkVariant(tree, where, context, kind));
+    for (const line of retired) {
+      retiredLines.add(line);
+    }
     for (const problem of problems) {
       violations.push({
         where,
@@ -108,6 +116,7 @@ export async function exportTargetCore(
   }
   return {
     ok: true,
+    notices: retiredLines.size === 0 ? [] : [retiredNotice(node.name, [...retiredLines])],
     target: {
       manifest: {
         name: node.name,

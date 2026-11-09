@@ -108,3 +108,11 @@ Notion 열 나누기: |
   - 크기 꺼내기(`getPostImageSize`)는 서버 계약 시험도 불러 앱 별칭을 못 쓰는 `post-image.ts`에 두어, `PostImage` 대신 크기 부분만 받는 타입(`PostImageSizeSource`)을 받는다.
   - 이미지를 두 번 받지 않는 것은 기존 구조 그대로다. 숨긴 img와 다 받은 뒤의 img가 같은 `src`·`srcset`·`sizes`라 브라우저가 한 번 받은 것을 다시 쓴다.
   - 동작 스토리 `ImageLoading`에 크기를 아는 세로 이미지와 커버를 더하면서, 화면 밖 이미지는 늦게 받기(`loading="lazy"`)가 시작되지 않아 확인 전에 화면 안으로 옮기게(`scrollIntoView`) 했다.
+
+플러그인 @ 줄을 피그마 기능으로 대신함: |
+  [[남은 작업]] 6번의 `@` 줄 정리(컴포넌트 쪽)를 플러그인에 옮기면서 정한 것이다.
+  - 더 쓰지 않는 키(`@repeat`·`@trigger`·`@runtime`·`@reduced-motion`·`@sample-size`)가 description에 남아 있으면 막지 않고 "지울 줄" 알림으로 보인다. 피그마에서 줄을 지우는 일(C단계)보다 플러그인을 먼저 바꾸므로, 그 사이 컴포넌트 내보내기가 모르는 키로 막히지 않게 하기 위해서다. 줄을 다 지운 뒤 알림을 오류로 바꿀지는 다시 본다.
+  - 옛 모션 견본(`Foundations / Motion`) 주석은 견본을 옮기기 전까지 `@repeat`·`@trigger`·`@runtime`·`@reduced-motion`을 그대로 읽는다(`isLegacySample`). 견본 21개의 재생 설정 Loop가 모두 켜져 있어(2026-11-09 읽기 확인) 지금 Loop로 읽으면 한 번 도는 움직임 19개가 무한 반복으로 나가기 때문이다.
+  - 레이어 주석은 `@` 줄로 읽지 않는다. `@` 줄의 자리는 변수·스타일·컴포넌트 description이다([[피그마 연동:구조 검사]]). 주석은 레이어 트리 `annotations`에 `{ text, category }`로 싣는다.
+  - 견본 크기: 변수 없는 고정 크기를 막지 않고, 레이어 트리에 `sampleSize`(`width`·`height`)로 적는다. `size`의 숫자와 `sizing`의 `FIXED`는 그대로 둔다. 스토리의 `FigmaFrame`이 이 숫자로 견본 크기를 주기 때문이다([[테스트 작성 규칙:스토리 테스트]]). 배율 인스턴스와 잠긴 비율에서 나오는 축은 적지 않는다.
+  - Focused 변형으로 가는 전환에 `@trigger focus-visible`을 요구하던 검사를 없앴다. 트리거는 읽지 않는다.
