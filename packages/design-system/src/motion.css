@@ -131,7 +131,7 @@
 }
 
 /*
- * 창 열기(견본 motion-window-open). WindowFrame 전체가 배율 0.96 → 1, 투명도 0 → 1로 나타난다.
+ * 창 열기(견본 motion-window-open). WindowFrame 전체가 배율 0.85 → 1, 투명도 0 → 1로 나타난다.
  * 두 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다. 앱이 창을 열 때(data-starting-style 자리) 붙인다.
  */
 @keyframes motion-window-open {
