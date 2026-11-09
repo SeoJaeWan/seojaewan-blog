@@ -1,5 +1,5 @@
 {
-  "description": "이동 버튼·경로·검색이 있는 줄로, 파일 탐색기 본문 맨 위에 쓴다.\n@sample-size width",
+  "description": "이동 버튼·경로·검색이 있는 줄로, 파일 탐색기 본문 맨 위에 쓴다.",
   "name": "ExplorerAddressRow",
   "nodeId": "439:5700",
   "propertyDefinitions": {
@@ -334,7 +334,7 @@
                             },
                             "text": {
                               "autoResize": "WIDTH_AND_HEIGHT",
-                              "maxLines": null,
+                              "maxLines": 1,
                               "maxLinesVariable": null,
                               "segments": [
                                 {
@@ -353,7 +353,7 @@
                                   "textStyle": "Hangul/Caption"
                                 }
                               ],
-                              "truncation": "DISABLED"
+                              "truncation": "ENDING"
                             },
                             "type": "TEXT"
                           }
@@ -456,7 +456,7 @@
                             },
                             "text": {
                               "autoResize": "WIDTH_AND_HEIGHT",
-                              "maxLines": null,
+                              "maxLines": 1,
                               "maxLinesVariable": null,
                               "segments": [
                                 {
@@ -465,7 +465,7 @@
                                   "textStyle": "Caption"
                                 }
                               ],
-                              "truncation": "DISABLED"
+                              "truncation": "ENDING"
                             },
                             "type": "TEXT"
                           }
@@ -716,6 +716,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Device=Desktop, Search=Closed",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 44,
           "w": 798
@@ -863,7 +866,7 @@
                             },
                             "text": {
                               "autoResize": "WIDTH_AND_HEIGHT",
-                              "maxLines": null,
+                              "maxLines": 1,
                               "maxLinesVariable": null,
                               "segments": [
                                 {
@@ -882,7 +885,7 @@
                                   "textStyle": "Hangul/Caption"
                                 }
                               ],
-                              "truncation": "DISABLED"
+                              "truncation": "ENDING"
                             },
                             "type": "TEXT"
                           }
@@ -985,7 +988,7 @@
                             },
                             "text": {
                               "autoResize": "WIDTH_AND_HEIGHT",
-                              "maxLines": null,
+                              "maxLines": 1,
                               "maxLinesVariable": null,
                               "segments": [
                                 {
@@ -994,7 +997,7 @@
                                   "textStyle": "Caption"
                                 }
                               ],
-                              "truncation": "DISABLED"
+                              "truncation": "ENDING"
                             },
                             "type": "TEXT"
                           }
@@ -1204,6 +1207,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Device=Mobile, Search=Closed",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 44,
           "w": 388
@@ -1423,6 +1429,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Device=Mobile, Search=Open",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 44,
           "w": 388
