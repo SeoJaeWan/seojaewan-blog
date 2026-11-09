@@ -252,7 +252,7 @@ export const Standalone: Story = {
 function FigmaMenuItem(props: FigmaArgs): JSX.Element {
   const common = {
     label: LABEL,
-    disabled: props.state === 'disabled',
+    isDisabled: props.state === 'disabled',
     shortcut: props.hasShortcut ? SHORTCUT : undefined,
   };
   const icon = props.hasIcon ? ('icons/ic_fluent_open_20_regular.svg' as const) : undefined;
@@ -276,7 +276,7 @@ function FigmaMenuItem(props: FigmaArgs): JSX.Element {
         </Menu.RadioGroup>
       );
     case 'zoom':
-      return <MenuItem {...common} variant="zoom" value="100%" />;
+      return <MenuItem {...common} variant="zoom" icon={icon} value="100%" />;
     case 'radio-off':
       // 묶음의 값이 이 항목과 달라 골라지지 않은 라디오 항목이다.
       return (
