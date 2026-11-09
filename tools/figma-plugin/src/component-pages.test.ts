@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   type AncestorInfo,
   componentPlace,
+  isCodeOnlyComponent,
   isComponentsPage,
   isDocComponent,
   UNGROUPED,
@@ -66,5 +67,16 @@ describe('컴포넌트는 02 · Components 페이지의 묶음 섹션 > 컴포�
     expect(isDocComponent('.section_header')).toBe(true);
     expect(isDocComponent('Button')).toBe(false);
     expect(isDocComponent('Menu/.hidden')).toBe(false);
+  });
+});
+
+// @codocs [[컴포넌트 목록:코드 전용 컴포넌트]]
+describe('코드 전용 컴포넌트', () => {
+  it('감싸기·배치용 컴포넌트는 내보내지 않는다', () => {
+    expect(isCodeOnlyComponent('ScrollArea')).toBe(true);
+    expect(isCodeOnlyComponent('MenuSeparator')).toBe(true);
+    expect(isCodeOnlyComponent('Scrollbar')).toBe(false);
+    expect(isCodeOnlyComponent('Separator')).toBe(false);
+    expect(isCodeOnlyComponent('Equation')).toBe(false);
   });
 });

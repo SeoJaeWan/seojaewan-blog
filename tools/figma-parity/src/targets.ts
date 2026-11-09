@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
+import { isCodeOnlyComponent } from './code-only.ts';
 import {
   FIGMA_COMPONENTS_DIR,
   FIGMA_PATTERNS_DIR,
@@ -41,7 +42,7 @@ export type TargetList = {
 };
 
 /**
- * 컴포넌트 폴더(`figma/components/<c>/`)와 조립 폴더(`figma/patterns/<영역>/<이름>/`)를 읽는다.
+ * 컴포넌트 폴더(`figma/components/<c>/`, 코드 전용 컴포넌트 제외)와 조립 폴더(`figma/patterns/<영역>/<이름>/`)를 읽는다.
  * @codocs [[피그마 연동:캡처 표]]
  * @returns 대상, 폴더 오류, 배율
  */
@@ -65,7 +66,10 @@ export function loadTargets(): TargetList {
     targets.push({ ...target, name: manifest.name, variants: manifest.variants });
     fileErrors.push(...folderErrors(target.folder, manifest.variants));
   }
-  for (const component of subfolders(FIGMA_COMPONENTS_DIR)) {
+  // 코드 전용 컴포넌트는 피그마 그림과 비교하지 않는다.
+  for (const component of subfolders(FIGMA_COMPONENTS_DIR).filter(
+    (folder) => !isCodeOnlyComponent(folder),
+  )) {
     add({
       id: component,
       kind: 'component',
