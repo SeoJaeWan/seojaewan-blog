@@ -128,21 +128,27 @@ function PostPage({
   useEffect(
     /**
      * 지금 읽는 위치 항목이 목차 안에서 가려지면(목차가 최대 높이를 넘어 스크롤할 때) 그 항목이 보이도록 목차만 스크롤한다.
-     * 페이지는 스크롤하지 않는다.
+     * 페이지는 스크롤하지 않는다. 목차의 스크롤 상자는 Toc가 감싼 ScrollArea의 스크롤 영역이다.
+     * 부드럽게 스크롤하고, 동작 줄이기에서는 바로 옮긴다.
      * @codocs [[Chrome:글 화면]]
      */
     () => {
       const item = tocRef.current?.querySelector('[aria-current="location"]');
-      const list = item?.parentElement;
+      const list = item?.closest('[data-scrollbar-hidden]');
       if (item === null || item === undefined || list === null || list === undefined) {
         return;
       }
       const listRect = list.getBoundingClientRect();
       const itemRect = item.getBoundingClientRect();
-      list.scrollTop = getTocScrollTop(
+      const top = getTocScrollTop(
         { top: listRect.top, bottom: listRect.bottom, scrollTop: list.scrollTop },
         { top: itemRect.top, bottom: itemRect.bottom },
       );
+      if (top === list.scrollTop) {
+        return;
+      }
+      const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      list.scrollTo({ top, behavior: isReduced ? 'instant' : 'smooth' });
     },
     [activeTocIndex, isWide, isTocExpanded],
   );
