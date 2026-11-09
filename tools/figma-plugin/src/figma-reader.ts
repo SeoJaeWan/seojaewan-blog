@@ -3,6 +3,7 @@ import {
   type AncestorInfo,
   type ComponentPlace,
   componentPlace,
+  isCodeOnlyComponent,
   isComponentsPage,
   isDocComponent,
   UNGROUPED,
@@ -96,7 +97,7 @@ async function listPageComponents(
   const nodes = page.findAllWithCriteria({ types: ['COMPONENT_SET', 'COMPONENT'] });
   const summaries: ComponentSummary[] = [];
   for (const node of nodes) {
-    if (isDocComponent(node.name)) {
+    if (isDocComponent(node.name) || isCodeOnlyComponent(node.name)) {
       continue;
     }
     if (node.type === 'COMPONENT_SET') {

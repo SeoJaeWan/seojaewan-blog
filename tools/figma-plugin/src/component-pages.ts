@@ -48,3 +48,29 @@ export function componentPlace(ancestors: readonly AncestorInfo[]): ComponentPla
 export function isDocComponent(name: string): boolean {
   return name.trimStart().startsWith(DOC_COMPONENT_PREFIX);
 }
+
+/**
+ * 코드 전용 컴포넌트(감싸기·배치용) 이름. 피그마에 두지 않고 코드에만 두므로, 피그마에서 지우기 전까지 남아 있어도 내보내지 않는다.
+ * 목록의 기준은 [[컴포넌트 목록:코드 전용 컴포넌트]]이다.
+ */
+const codeOnlyComponents: ReadonlySet<string> = new Set([
+  'LayerSurface',
+  'ScrollArea',
+  'TileGrid',
+  'Column',
+  'Columns',
+  'ListGroup',
+  'Popover',
+  'CaptionButtonGroup',
+  'MenuSeparator',
+]);
+
+/**
+ * 내보내지 않는 코드 전용 컴포넌트인지 본다.
+ * @codocs [[컴포넌트 목록:코드 전용 컴포넌트]]
+ * @param name 컴포넌트(세트) 이름
+ * @returns 코드 전용이면 true
+ */
+export function isCodeOnlyComponent(name: string): boolean {
+  return codeOnlyComponents.has(name.trim());
+}

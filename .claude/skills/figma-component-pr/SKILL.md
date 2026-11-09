@@ -23,11 +23,12 @@ description: 피그마 플러그인이 연 컴포넌트 PR(`feat/figma-<컴포�
    - 조립 PR: @codocs [[디자인 시스템:조립]], @codocs [[저장소 구성:앱 폴더 구조]]
    - 공통: @codocs [[피그마 연동:스토리 규칙]], @codocs [[피그마 연동:캡처 표]], @codocs [[피그마 연동:자산]], @codocs [[피그마 연동:토큰 생성]], @codocs [[컴포넌트 목록:상태]]
 2. PR 브랜치를 받는다(`gh pr checkout <번호>`). `main` 대비 바뀐 파일이 @codocs [[피그마 연동:피그마 플러그인]]에서 이 PR이 바꾸는 파일뿐인지 확인한다. 예상 밖 파일이 있으면 멈추고 보고한다.
-3. 대상의 변형과 속성, 쓰는 변수·스타일을 `export.json`의 레이어 트리와 PNG에서 확인하고, 그래도 모르는 것만 피그마 MCP로 본다. 둘이 다르면 `export.json`을 따르고 차이와 MCP로 메운 것을 보고한다(@codocs [[피그마 연동:스킬]]). 쓰는 토큰이 `figma/tokens.json`에 없으면 멈추고, 토큰 PR을 먼저 처리·병합한 뒤 이 PR에 `main`을 받아 와야 한다고 보고한다(@codocs [[피그마 연동:PR 흐름]]). 조립 PR이면 쓰는 디자인 시스템 컴포넌트가 코드에 모두 있는지도 확인한다.
+3. 대상의 변형과 속성, 쓰는 변수·스타일을 `export.json`과 PNG에서 확인하고(컴포넌트는 레이어 트리 `tree`, 조립은 조립 보고 `report`: 쓴 컴포넌트와 속성, 컴포넌트 밖에서 그린 것, Foundations에 없는 값과 가까운 토큰, 표시용, 움직임. PR 본문의 "조립 보고"와 같다. @codocs [[피그마 연동:피그마 플러그인]]), 그래도 모르는 것만 피그마 MCP로 본다. 둘이 다르면 `export.json`을 따르고 차이와 MCP로 메운 것을 보고한다(@codocs [[피그마 연동:스킬]]). 쓰는 토큰이 `figma/tokens.json`에 없으면 멈추고, 토큰 PR을 먼저 처리·병합한 뒤 이 PR에 `main`을 받아 와야 한다고 보고한다(@codocs [[피그마 연동:PR 흐름]]). 조립 PR이면 쓰는 디자인 시스템 컴포넌트가 코드에 모두 있는지도 확인한다.
 4. `pnpm --filter @seojaewan/design-system generate:assets`를 실행하고, 바뀐 `src/assets/`를 커밋한다.
 5. 구현한다.
    - 컴포넌트 PR: `src/components/<컴포넌트>/`에 코드와 `Figma` 스토리를 만들거나 고친다.
-   - 조립 PR: 그 영역의 기능 폴더에 앱 컴포넌트와 스토리를 만든다. `export.json`과 피그마 조립 PNG는 구현 참고 자료다(배치, 쓰는 컴포넌트, 변형). 스토리 데이터를 피그마와 똑같이 맞추지 않아도 된다.
+   - 조립 PR: 그 영역의 기능 폴더에 앱 컴포넌트와 스토리를 만든다. 구조는 코드가 정하고, 피그마 조립 PNG와 조립 보고는 그림 기준이다(@codocs [[디자인 시스템:조립]]). 보고의 "Foundations에 없는 값"은 가까운 토큰으로 옮기고 보고에 적는다(토큰에 없는 값은 코드에 쓸 수 없다). "표시용"으로 분류된 것(호버 커서 그림 등)은 구현하지 않는다. 스토리 데이터를 피그마와 똑같이 맞추지 않아도 된다.
+   - 코드 전용 컴포넌트(@codocs [[컴포넌트 목록:코드 전용 컴포넌트]])는 `Figma` 스토리를 두지 않고 동작 테스트로 지킨다.
    - 값은 토큰 클래스로만 쓴다(@codocs [[피그마 연동:토큰 생성]]의 이름 규칙).
 6. 캡처 도구를 로컬에서 돌린다(@codocs [[피그마 연동:CI]]). `pnpm --filter @seojaewan/figma-parity capture --target <컴포넌트 폴더나 조립 이름>`(예: `--target button`, `--target Menu/Folder`)을 실행하면 Storybook을 빌드하고 `tools/figma-parity/parity-results/<대상>/<변형>/`에 그림을 남긴다. Chromium이 없으면 `pnpm --filter @seojaewan/figma-parity exec playwright install chromium`을 먼저 실행한다. 스토리 짝을 찾지 못한 변형이 없어야 한다.
    - 컴포넌트 PR: 변형마다 `피그마 | 코드 | 차이`(`figma.png`, `code.png`, `diff.png`)를 본다. 차이 그림에서 엔진 차이가 아닌 차이가 보이면 5로 돌아가 고친다.
