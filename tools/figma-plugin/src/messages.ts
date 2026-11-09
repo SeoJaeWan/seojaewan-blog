@@ -1,3 +1,4 @@
+import type { PatternReport } from './core/pattern-report';
 import type { TokenSummary } from './token-changes';
 
 // UI(iframe)와 플러그인 본체가 주고받는 메시지 모양. UI와 본체 양쪽에서 타입으로만 쓴다.
@@ -56,15 +57,25 @@ export type ViolationGroup = {
 };
 
 /**
+ * 조립 하나의 보고. variants: 변형 이름과 그 변형의 조립 보고.
+ */
+export type PatternReportView = {
+  name: string;
+  variants: { name: string; report: PatternReport }[];
+};
+
+/**
  * 내보내기 결과. 구조 검사 위반이 있으면 아무것도 커밋하지 않고 대상별 위반 목록을 돌려준다.
  * - commits: 커밋한 PR
  * - unchanged: 바뀐 것이 없어 커밋하지 않은 대상
+ * - reports: 이번에 내보낸 조립의 보고
  */
 export type ExportOutcome =
   | {
       kind: 'done';
       commits: PullRequestCommit[];
       unchanged: string[];
+      reports: PatternReportView[];
     }
   | { kind: 'blocked'; groups: ViolationGroup[] };
 

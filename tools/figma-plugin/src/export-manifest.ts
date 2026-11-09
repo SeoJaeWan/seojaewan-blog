@@ -1,3 +1,4 @@
+import type { PatternReport } from './core/pattern-report';
 import { type JsonObject, type JsonValue, stableStringify } from './stable-json';
 
 // 대상(컴포넌트나 조립) 폴더마다 두는 export.json과 figma.json을 만들고 읽는다.
@@ -14,12 +15,14 @@ export type NodeBox = { x: number; y: number; width: number; height: number };
  * - properties: 변형 속성(피그마 속성 이름 → 값). 단독 컴포넌트는 비어 있다
  * - node: PNG 안 노드 위치. PNG에는 그림자와 노드 밖으로 나온 자식까지 담긴다
  * - tree: 구현 참고용 레이어 트리. 판정에 쓰지 않는다
+ * - report: 조립 보고(조립만). 막지 않고 보고만 한다
  */
 export type VariantEntry = {
   nodeId: string;
   properties: Record<string, string>;
   node: NodeBox;
   tree?: JsonObject;
+  report?: PatternReport;
 };
 
 /** 피그마 노드의 사각형(절대 좌표) */
@@ -98,6 +101,7 @@ export function manifestText(manifest: ExportManifest): string {
       properties: { ...entry.properties },
       node: { ...entry.node },
       ...(entry.tree === undefined ? {} : { tree: entry.tree }),
+      ...(entry.report === undefined ? {} : { report: reportJson(entry.report) }),
     };
   }
   return stableStringify({
@@ -109,6 +113,31 @@ export function manifestText(manifest: ExportManifest): string {
       : { propertyDefinitions: manifest.propertyDefinitions }),
     variants,
   });
+}
+
+/**
+ * 조립 보고를 JSON으로 옮긴다.
+ * @param report 조립 보고
+ * @returns JSON 객체
+ */
+function reportJson(report: PatternReport): JsonObject {
+  return {
+    components: report.components.map(
+      /**
+       * 보고 줄을 JSON으로 옮긴다.
+       * @param item 보고 줄
+       */
+      (item) => ({
+        component: item.component,
+        properties: { ...item.properties },
+        paths: [...item.paths],
+      }),
+    ),
+    drawn: report.drawn.map((item) => ({ ...item })),
+    offToken: report.offToken.map((item) => ({ ...item })),
+    displayOnly: report.displayOnly.map((item) => ({ ...item })),
+    motion: report.motion.map((item) => ({ ...item })),
+  };
 }
 
 /**

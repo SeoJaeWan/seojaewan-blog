@@ -1,9 +1,11 @@
+import { reportSections } from '../core/pattern-report';
 import type {
   ConnectionResult,
   ExportMessage,
   ExportOutcome,
   ExportProgress,
   MainMessage,
+  PatternReportView,
   PullRequestCommit,
   RepoStatus,
   UiMessage,
@@ -741,6 +743,7 @@ function renderRun(): void {
     nodes.push(...violationBlocks(run.outcome.groups));
   } else if (run.outcome?.kind === 'done') {
     nodes.push(...resultBlocks(run.outcome.commits, run.outcome.unchanged));
+    nodes.push(...reportBlocks(run.outcome.reports));
   }
   if (!run.isRunning) {
     if (run.notices.length > 0) {
@@ -879,6 +882,81 @@ function resultBlocks(commits: readonly PullRequestCommit[], unchanged: readonly
     );
   }
   return nodes;
+}
+
+/**
+ * 조립 보고를 조립마다 접은 묶음으로 만든다. 막지 않는 보고라 결과 아래에 둔다. 줄마다 그 레이어를 피그마에서 보는 버튼을 둔다.
+ * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param reports 이번에 내보낸 조립의 보고
+ * @returns 보고 요소
+ */
+function reportBlocks(reports: readonly PatternReportView[]): Node[] {
+  if (reports.length === 0) {
+    return [];
+  }
+  return [
+    make('h3', '', `조립 보고 ${String(reports.length)} (막지 않음)`),
+    ...reports.map(
+      /**
+       * 조립 하나의 보고를 만든다.
+       * @param pattern 조립 보고
+       */
+      (pattern) =>
+        collapsible(
+          [pattern.name, make('span', 'count', `변형 ${String(pattern.variants.length)}`)],
+          make(
+            'div',
+            '',
+            pattern.variants.map(
+              /**
+               * 변형 하나의 보고를 만든다.
+               * @param variant 변형과 보고
+               */
+              (variant) =>
+                make('section', 'result-group', [
+                  make('h3', '', variant.name),
+                  ...reportSections(variant.report).map(
+                    /**
+                     * 보고 묶음 하나를 만든다.
+                     * @param section 보고 묶음
+                     */
+                    (section) =>
+                      make('div', '', [
+                        make('p', 'muted', section.title),
+                        make(
+                          'ul',
+                          '',
+                          section.lines.map((line) => reportLine(line.text, line.nodeId)),
+                        ),
+                      ]),
+                  ),
+                ]),
+            ),
+          ),
+          `report:${pattern.name}`,
+        ),
+    ),
+  ];
+}
+
+/**
+ * 조립 보고 한 줄을 만든다. 노드가 있으면 "피그마에서 보기"를 둔다.
+ * @param text 줄 글
+ * @param nodeId 피그마 노드 ID. 없으면 null
+ * @returns 목록 항목
+ */
+function reportLine(text: string, nodeId: string | null): HTMLLIElement {
+  const item = make('li', '', [make('span', '', text)]);
+  if (nodeId !== null) {
+    const show = make('button', '', '피그마에서 보기');
+    show.type = 'button';
+    show.addEventListener('click', () => {
+      post({ type: 'focus-node', nodeId });
+    });
+    item.append(show);
+  }
+  return item;
 }
 
 /**

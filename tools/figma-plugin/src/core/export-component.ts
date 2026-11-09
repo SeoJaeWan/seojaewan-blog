@@ -9,7 +9,6 @@ import {
   type AncestorData,
   checkClippingAncestors,
   type CheckContext,
-  type CheckTargetKind,
   checkVariant,
   type Violation,
 } from './check-structure';
@@ -17,6 +16,7 @@ import { noCodeVariables } from './code-variables';
 import { parseVariantDirectives, retiredNotice } from './directives';
 import { layerTree } from './layer-tree';
 import type { AssetData, NodeData } from './node-data';
+import { type AnimatedLayer, patternReport } from './pattern-report';
 import { isMotionApiError } from './read-motion';
 import { type NameCache, readNodeTree } from './read-node';
 
@@ -41,28 +41,37 @@ export type TargetOutcome =
   | { ok: true; target: TargetExport; notices: string[] }
   | { ok: false; name: string; violations: Violation[] };
 
+/** 내보내는 대상 종류. 컴포넌트는 구조 검사를 하고, 조립(03 · Patterns)은 검사 없이 보고만 한다 */
+export type TargetKind = 'component' | 'pattern';
+
 /**
- * 컴포넌트(세트)를 변형마다 구조 검사하고 내보낸다. 위반이 하나라도 있으면 파일을 만들지 않고 위반을 모두 돌려준다.
+ * 컴포넌트(세트)나 조립을 변형마다 내보낸다.
+ * 컴포넌트는 구조 검사를 하고 위반이 하나라도 있으면 파일을 만들지 않고 위반을 모두 돌려준다.
+ * 조립은 구조 검사를 하지 않고 막지 않으며, 변형마다 조립 보고를 담는다([[피그마 연동:구조 검사]]).
  * 내보내는 것은 변형 이름과 속성, 변형 PNG와 PNG 안 노드 위치, 쓰는 자산 파일, 구현 참고용 레이어 트리다. 레이어 트리는 판정에 쓰지 않는다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
  * @param scale PNG 배율
- * @param context 구조 검사에 쓰는 파일 정보
- * @param kind 대상 종류(컴포넌트, 조립). 조립은 배치 프레임 모양과 루트 크기를 다르게 검사한다
+ * @param context 구조 검사와 조립 보고에 쓰는 파일 정보
+ * @param kind 대상 종류(컴포넌트, 조립)
  * @returns 내보낸 대상, 또는 위반 목록
  */
 export async function exportTargetCore(
   nodeId: string,
   scale: number,
   context: CheckContext,
-  kind: CheckTargetKind,
+  kind: TargetKind,
 ): Promise<TargetOutcome> {
   const node = await findComponent(nodeId);
   if (node === null) {
     throw new Error(`컴포넌트 ${nodeId}를 찾을 수 없다.`);
   }
   const names: NameCache = new Map();
-  const violations: Violation[] = checkClippingAncestors(node.name, variantAncestors(node));
+  const isPattern = kind === 'pattern';
+  const violations: Violation[] = isPattern
+    ? []
+    : checkClippingAncestors(node.name, variantAncestors(node));
+  const notices: string[] = [];
   const variants: Record<string, VariantEntry> = {};
   const assetNodes = new Map<string, AssetData>();
   const nodes = new Map<string, ComponentNode>();
@@ -72,17 +81,21 @@ export async function exportTargetCore(
     const tree = await readNodeTree(variant, names);
     const where = `${node.name} / ${variant.name}`;
     const { problems, retired } = parseVariantDirectives(node, variant);
-    violations.push(...checkVariant(tree, where, context, kind));
     for (const line of retired) {
       retiredLines.add(line);
     }
-    for (const problem of problems) {
-      violations.push({
-        where,
-        reason: `description의 ${problem}`,
-        fix: 'description 줄을 고친다.',
-        nodeId: variant.id,
-      });
+    if (isPattern) {
+      notices.push(...problems.map((problem) => `${where}: description의 ${problem}`));
+    } else {
+      violations.push(...checkVariant(tree, where, context));
+      for (const problem of problems) {
+        violations.push({
+          where,
+          reason: `description의 ${problem}`,
+          fix: 'description 줄을 고친다.',
+          nodeId: variant.id,
+        });
+      }
     }
     collectAssets(tree, assetNodes);
     const properties = propertiesOf(node, variant);
@@ -99,6 +112,15 @@ export async function exportTargetCore(
       properties,
       node: nodeBox(box, variant.absoluteRenderBounds),
       tree: layerTree(tree, codeVariables),
+      ...(isPattern
+        ? {
+            report: patternReport(
+              tree,
+              context.tokenValues ?? [],
+              animatedLayers(variant, where, notices),
+            ),
+          }
+        : {}),
     };
     nodes.set(slug, variant);
   }
@@ -116,7 +138,10 @@ export async function exportTargetCore(
   }
   return {
     ok: true,
-    notices: retiredLines.size === 0 ? [] : [retiredNotice(node.name, [...retiredLines])],
+    notices: [
+      ...(retiredLines.size === 0 ? [] : [retiredNotice(node.name, [...retiredLines])]),
+      ...notices,
+    ],
     target: {
       manifest: {
         name: node.name,
@@ -129,6 +154,52 @@ export async function exportTargetCore(
       assets,
     },
   };
+}
+
+/**
+ * 변형 안에서 키프레임이 걸린 보이는 레이어를 찾는다. 경로는 변형 기준 레이어 경로(`a/b`)다.
+ * 모션 API를 쓸 수 없는 계정이면 빈 목록과 알림이다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param variant 변형
+ * @param where 알림에 쓸 위치
+ * @param notices 알림 목록
+ * @returns 키프레임이 걸린 레이어
+ */
+function animatedLayers(variant: ComponentNode, where: string, notices: string[]): AnimatedLayer[] {
+  const layers: AnimatedLayer[] = [];
+  /**
+   * 노드와 보이는 자식을 훑는다.
+   * @param node 노드
+   * @param path 변형 기준 경로
+   */
+  function walk(node: SceneNode, path: string): void {
+    if (!node.visible) {
+      return;
+    }
+    if ('animations' in node) {
+      const properties = Object.keys(node.animations).filter(
+        (key) => Reflect.get(node.animations, key) !== undefined,
+      );
+      if (properties.length > 0) {
+        layers.push({ path, nodeId: node.id, properties: properties.sort() });
+      }
+    }
+    if ('children' in node) {
+      for (const child of node.children) {
+        walk(child, path === '' ? child.name : `${path}/${child.name}`);
+      }
+    }
+  }
+  try {
+    walk(variant, '');
+  } catch (error) {
+    if (!isMotionApiError(error)) {
+      throw error;
+    }
+    notices.push(`${where}: 모션 API를 쓸 수 없어 움직임을 보고하지 않았다.`);
+    return [];
+  }
+  return layers;
 }
 
 /**

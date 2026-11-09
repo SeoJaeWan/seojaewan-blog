@@ -15,6 +15,7 @@ import {
   type CodeVariables,
 } from './core/code-variables';
 import { defaultFloatValue, isMotionApiError, readMotionVariables } from './core/read-motion';
+import { readTokenValues } from './core/token-values';
 import type {
   DesignTokensInput,
   EffectInput,
@@ -557,6 +558,7 @@ export async function readCheckContext(): Promise<CheckContext> {
     imageHashes: new Set((await readImageAssets()).keys()),
     codeVariables: await readCodeVariables(),
     motionVariables: await readMotionVariables(),
+    tokenValues: await readTokenValues(),
   };
 }
 

@@ -534,6 +534,7 @@ async function paintsData(paints: readonly Paint[], names: NameCache): Promise<P
       variable:
         paint.type === 'SOLID' ? await variableName(paint.boundVariables?.color, names) : undefined,
       imageHash: paint.type === 'IMAGE' ? paint.imageHash : undefined,
+      ...(paint.type === 'SOLID' ? { color: { ...paint.color, a: paint.opacity ?? 1 } } : {}),
     });
   }
   return result;

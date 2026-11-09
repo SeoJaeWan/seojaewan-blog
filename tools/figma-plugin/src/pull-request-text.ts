@@ -1,5 +1,7 @@
 import type { MotionValue } from './core/motion-data';
+import { reportSections } from './core/pattern-report';
 import { pngFile } from './export-manifest';
+import type { PatternReportView } from './messages';
 import { type MotionExport, type MotionTime, roundMs, roundValue } from './motion-file';
 import { FILE_KEY, REPO_NAME, REPO_OWNER } from './plugin-config';
 
@@ -23,6 +25,8 @@ const PREVIEW_COLUMNS = 2;
 const PREVIEW_IMAGE_WIDTH = 360;
 /** 바뀐 변형이 이보다 많은 대상은 미리보기를 접는다 */
 const FOLD_VARIANT_COUNT = 4;
+/** 조립 보고에서 묶음 하나에 싣는 최대 줄 수. 넘는 줄은 export.json의 report에서 본다 */
+const REPORT_LINE_LIMIT = 30;
 
 /**
  * PR 하나에 담긴 대상 하나의 변경(main 기준).
@@ -180,6 +184,7 @@ export function componentPullRequestBody(
  * @param area 영역 폴더 이름
  * @param targets 이번에 내보낸 조립과 main 기준 변경
  * @param renamedFolders 이름이 바뀌어 지운 이전 폴더
+ * @param reports 이번에 내보낸 조립의 보고
  * @returns PR 본문(Markdown)
  */
 export function patternPullRequestBody(
@@ -187,6 +192,7 @@ export function patternPullRequestBody(
   area: string,
   targets: readonly TargetChanges[],
   renamedFolders: readonly string[],
+  reports: readonly PatternReportView[],
 ): string {
   return [
     '## 변경',
@@ -198,13 +204,70 @@ export function patternPullRequestBody(
     '',
     ...variantPreviews(branch, targets),
     '',
+    '## 조립 보고',
+    '',
+    '조립은 구조 검사 없이 보고만 한다. 막지 않는다. 같은 내용이 `export.json` 변형의 `report`에 있다.',
+    '',
+    ...reportMarkdown(reports),
+    '',
     '## 확인',
     '',
-    '- 피그마 그림이 구현할 모습이다. 조립은 피그마와 픽셀 비교하지 않으므로, 이 본문의 피그마 그림과 `Patterns/<조립 이름>` 스토리를 사람이 보고 비교한다. `export.json`은 구현 참고 자료다.',
+    '- 피그마 그림이 구현할 모습이다. 조립의 구조는 코드가 정하고, 그림은 참고용 기준이다. 조립 보고(쓴 컴포넌트, 컴포넌트 밖에서 그린 것, Foundations에 없는 값, 표시용, 움직임)를 먼저 읽는다.',
     '- 앱(`apps/web`의 `shell/`·`features/`·`shared/`)의 조립 컴포넌트와 스토리를 만들고, 기능은 `play` 동작 스토리로 확인한다.',
     '- CI 댓글의 캡처 표는 이전 코드 그림(`parity-captures`)과 비교해 의도하지 않은 배치 변화를 보여 준다. 의도한 변화는 이 PR을 병합하면 새 기준이 된다.',
     '- 쓰는 토큰·컴포넌트 PR이 열려 있으면 그것을 먼저 병합하고 이 PR에 `main`을 받아 온다.',
   ].join('\n');
+}
+
+/**
+ * 조립 보고를 조립마다 접은 Markdown으로 만든다. 묶음마다 줄이 많으면 앞의 줄만 싣는다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param reports 조립 보고
+ * @returns 본문 줄
+ */
+export function reportMarkdown(reports: readonly PatternReportView[]): string[] {
+  if (reports.length === 0) {
+    return ['보고할 조립이 없다.'];
+  }
+  return reports.flatMap(
+    /**
+     * 조립 하나의 보고를 만든다.
+     * @param pattern 조립 보고
+     * @param index 조립 순서
+     */
+    (pattern, index) => [
+      ...(index === 0 ? [] : ['']),
+      `<details><summary><b>${htmlText(pattern.name)}</b> · 변형 ${String(pattern.variants.length)}개</summary>`,
+      '',
+      ...pattern.variants.flatMap(
+        /**
+         * 변형 하나의 보고를 만든다.
+         * @param variant 변형과 보고
+         */
+        (variant) => [
+          `#### ${variant.name}`,
+          '',
+          ...reportSections(variant.report).flatMap(
+            /**
+             * 보고 묶음 하나를 만든다.
+             * @param section 보고 묶음
+             */
+            (section) => {
+              const shown = section.lines.slice(0, REPORT_LINE_LIMIT);
+              const rest = section.lines.length - shown.length;
+              return [
+                `- ${section.title}`,
+                ...shown.map((line) => `  - ${line.text}`),
+                ...(rest > 0 ? [`  - 외 ${String(rest)}줄(export.json의 report에서 본다)`] : []),
+              ];
+            },
+          ),
+          '',
+        ],
+      ),
+      '</details>',
+    ],
+  );
 }
 
 /**
