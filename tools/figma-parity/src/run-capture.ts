@@ -40,7 +40,7 @@ import { loadTargets, type Target, variantResultDir } from './targets.ts';
 //                                [--previous <ref>] [--print-range]
 // 캡처할 대상(컴포넌트와 조립)을 고르고 Storybook을 빌드한 뒤 Playwright Test로 캡처한다.
 // 결과는 <결과 폴더>/captures.json과 대상·변형마다 code.png, diff.png와 비교한 그림이다.
-// 컴포넌트는 피그마 그림(figma.png)과, 조립은 parity-captures의 이전 코드 그림(previous.png)과 비교한다.
+// 컴포넌트와 조립 모두 피그마 그림(figma.png)과 비교하고(조립은 참고용), 조립은 parity-captures의 이전 코드 그림(previous.png)과도 비교한다.
 // --previous: 조립의 이전 코드 그림을 읽을 parity-captures 참조. 기본은 origin/parity-captures다.
 //             그 이력에서 --base(기본 origin/main)와의 merge-base 시점의 캡처 커밋을 고른다.
 //             참조가 없으면(브랜치를 받지 않았으면) 조립은 지금 그림만 남긴다.

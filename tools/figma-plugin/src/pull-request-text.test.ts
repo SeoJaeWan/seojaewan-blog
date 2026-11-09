@@ -335,5 +335,6 @@ describe('PR 본문의 피그마 미리보기', () => {
     expect(body).not.toContain('  - row30: 간격 9');
     expect(body).toContain('  - 외 2줄(export.json의 report에서 본다)');
     expect(patternPullRequestBody('b', 'menu', [button], [], [])).toContain('보고할 조립이 없다.');
+    expect(body).toContain('`피그마 | 코드 | 차이`로 나란히 보여 준다. 조립은 참고용');
   });
 });
