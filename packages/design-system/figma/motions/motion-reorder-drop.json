@@ -3,27 +3,22 @@
     "ms": 0,
     "token": null
   },
-  "directives": {
-    "reduced-motion": [
-      "움직임 없이 바로 바뀐다"
-    ],
-    "repeat": [
-      "1"
-    ],
-    "runtime": [
-      "놓은 위치에서 새 자리까지의 거리"
-    ],
-    "trigger": [
-      "끌던 항목을 놓을 때"
-    ]
-  },
+  "directives": {},
   "duration": {
-    "ms": 250,
-    "token": "motion/duration/normal"
+    "ms": 83,
+    "token": "motion/duration/faster"
   },
   "iterations": 1,
   "name": "motion-reorder-drop",
   "nodeId": "3356:515",
+  "notes": [
+    {
+      "category": "Development",
+      "path": "TaskbarButton",
+      "text": "놓은 자리에서 새 자리까지의 거리는 실행 중에 정해진다. 여기 20px은 대표값이다."
+    }
+  ],
+  "source": "flow",
   "tracks": [
     {
       "delay": {
@@ -31,8 +26,8 @@
         "token": null
       },
       "duration": {
-        "ms": 250,
-        "token": "motion/duration/normal"
+        "ms": 83,
+        "token": "motion/duration/faster"
       },
       "keyframes": [
         {
@@ -40,15 +35,15 @@
           "offset": 0,
           "time": 0,
           "value": {
-            "x": 1.1,
-            "y": 1.1
+            "x": 1.2,
+            "y": 1.2
           },
-          "valueToken": "motion/scale/lift"
+          "valueToken": "motion/scale/reorder-drag"
         },
         {
-          "easing": "motion/easing/point-to-point",
+          "easing": "motion/easing/direct-entrance",
           "offset": 1,
-          "time": 250,
+          "time": 83,
           "value": {
             "x": 1,
             "y": 1
@@ -68,8 +63,8 @@
         "token": null
       },
       "duration": {
-        "ms": 250,
-        "token": "motion/duration/normal"
+        "ms": 83,
+        "token": "motion/duration/faster"
       },
       "keyframes": [
         {
@@ -85,7 +80,7 @@
         {
           "easing": "motion/easing/point-to-point",
           "offset": 1,
-          "time": 250,
+          "time": 83,
           "value": {
             "x": 0,
             "y": 0
