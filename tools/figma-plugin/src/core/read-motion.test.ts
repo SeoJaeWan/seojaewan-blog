@@ -327,7 +327,7 @@ describe('모션 읽기', () => {
       parent: {
         type: 'COMPONENT_SET',
         name: 'Figure',
-        description: '@hold 실패하면 멈춘다',
+        description: '@direction alternate',
         parent: null,
       },
       description: '',
@@ -343,7 +343,7 @@ describe('모션 읽기', () => {
       label: 'Figure / State=Loading',
       source: 'component',
       isLooping: true,
-      description: '@hold 실패하면 멈춘다\n',
+      description: '@direction alternate\n',
       notes: [{ path: '', category: 'Development', text: 'motion-image-skeleton' }],
     });
     expect(sample.tracks.map((track) => [track.path, track.node, track.nodeKind])).toEqual([

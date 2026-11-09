@@ -11,17 +11,17 @@ import {
 describe('@ 줄', () => {
   it('설명 글은 건너뛰고 키와 값을 읽는다', () => {
     const { directives, problems, retired } = parseDirectives(
-      '유지 조건이 있는 움직임이다.\n@hold 끄는 동안\n  @direction alternate\n@hold 포커스 동안',
+      '왕복하는 움직임이다.\n  @direction alternate',
     );
-    expect(directives).toEqual({ hold: ['끄는 동안', '포커스 동안'], direction: ['alternate'] });
+    expect(directives).toEqual({ direction: ['alternate'] });
     expect(problems).toEqual([]);
     expect(retired).toEqual([]);
   });
 
   it.each([
     ['@loop 1', '모르는 키'],
-    ['@Hold 1', '모르는 키'],
-    ['@hold', '값이 없다'],
+    ['@Direction normal', '모르는 키'],
+    ['@direction', '값이 없다'],
     ['@direction normal\n@direction reverse', '한 번만'],
     ['@direction sideways', 'alternate'],
   ])('%s를 고칠 줄로 돌려준다', (text, message) => {
@@ -31,7 +31,7 @@ describe('@ 줄', () => {
 
   it('더 쓰지 않는 키는 막지 않고 지울 줄로 돌려준다', () => {
     const { directives, problems, retired } = parseDirectives(
-      '@sample-size width\n@runtime 열리는 메뉴\n@trigger focus-visible\n@repeat 1\n@reduced-motion 바로',
+      '@sample-size width\n@runtime 열리는 메뉴\n@trigger focus-visible\n@repeat 1\n@reduced-motion 바로\n@hold 끄는 동안',
     );
     expect(directives).toEqual({});
     expect(problems).toEqual([]);
@@ -41,13 +41,14 @@ describe('@ 줄', () => {
       '@trigger focus-visible',
       '@repeat 1',
       '@reduced-motion 바로',
+      '@hold 끄는 동안',
     ]);
     expect(retiredNotice('FileRow', retired)).toContain('`@sample-size width`');
   });
 
-  it('옛 모션 견본 주석은 @repeat·@trigger·@runtime·@reduced-motion을 받는다', () => {
+  it('옛 모션 견본 주석은 @repeat·@trigger·@runtime·@reduced-motion을 받고 @hold는 지울 줄이다', () => {
     const { directives, problems, retired } = parseDirectives(
-      '@repeat 1\n  @trigger open\n@trigger hover\n@reduced-motion 바로 바뀜\n@sample-size width',
+      '@repeat 1\n  @trigger open\n@trigger hover\n@reduced-motion 바로 바뀜\n@hold 끄는 동안',
       { isLegacySample: true },
     );
     expect(directives).toEqual({
@@ -56,7 +57,7 @@ describe('@ 줄', () => {
       'reduced-motion': ['바로 바뀜'],
     });
     expect(problems).toEqual([]);
-    expect(retired).toEqual(['@sample-size width']);
+    expect(retired).toEqual(['@hold 끄는 동안']);
     expect(parseDirectives('@repeat 0', { isLegacySample: true }).problems[0]).toContain(
       '1 이상의 정수',
     );
@@ -66,22 +67,23 @@ describe('@ 줄', () => {
   });
 
   it('여러 글을 이어 읽는다', () => {
-    expect(parseDirectiveTexts(['@hold a', undefined, '@hold b']).directives).toEqual({
-      hold: ['a', 'b'],
-    });
+    expect(
+      parseDirectiveTexts(['@trigger a', undefined, '@trigger b'], { isLegacySample: true })
+        .directives,
+    ).toEqual({ trigger: ['a', 'b'] });
   });
 
   it('단독 컴포넌트의 description은 한 번만 읽는다', () => {
-    const standalone = { id: '1:1', description: '@hold a' };
-    expect(parseVariantDirectives(standalone, standalone).directives).toEqual({ hold: ['a'] });
+    const standalone = { id: '1:1', description: '@direction reverse' };
+    expect(parseVariantDirectives(standalone, standalone).problems).toEqual([]);
   });
 
   it('세트는 세트와 변형의 description을 이어 읽는다', () => {
     const { directives, retired } = parseVariantDirectives(
       { id: '1:1', description: '@sample-size width' },
-      { id: '1:2', description: '@hold hover' },
+      { id: '1:2', description: '@direction reverse' },
     );
-    expect(directives).toEqual({ hold: ['hover'] });
+    expect(directives).toEqual({ direction: ['reverse'] });
     expect(retired).toEqual(['@sample-size width']);
   });
 });

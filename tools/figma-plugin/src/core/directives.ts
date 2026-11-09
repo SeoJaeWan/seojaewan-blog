@@ -2,7 +2,7 @@
 // 규칙 글의 자리와 키의 뜻은 [[피그마 연동:구조 검사]]에 있다.
 
 /** 받는 키. 피그마 기능(재생 설정, 주석, 변수 연결 등)으로 읽을 수 없는 것만 `@` 줄에 적는다 */
-export const DIRECTIVE_KEYS = ['direction', 'hold'] as const;
+export const DIRECTIVE_KEYS = ['direction'] as const;
 
 /**
  * 옛 모션 견본(01 · Foundations `Foundations / Motion`) 주석에만 받는 키. 견본을 움직임이 일어나는 자리로 옮기기 전까지
@@ -12,16 +12,16 @@ export const LEGACY_SAMPLE_KEYS = ['repeat', 'trigger', 'runtime', 'reduced-moti
 
 /**
  * 더 쓰지 않는 키. 피그마 기능으로 대신 읽는다(재생 설정 Loop, 프로토타입, Development·Accessibility 주석, 변수 연결 여부).
- * 피그마에서 줄을 지우기 전까지 내보내기를 막지 않고 지울 줄로 알린다.
+ * 유지 조건(`@hold`)은 기능 문서와 코드가 맡는다. 피그마에서 줄을 지우기 전까지 내보내기를 막지 않고 지울 줄로 알린다.
  */
-export const RETIRED_KEYS = [...LEGACY_SAMPLE_KEYS, 'sample-size'] as const;
+export const RETIRED_KEYS = [...LEGACY_SAMPLE_KEYS, 'sample-size', 'hold'] as const;
 
 export type DirectiveKey = (typeof DIRECTIVE_KEYS)[number];
 
 /** 옛 견본 주석에만 받는 키 */
 export type LegacySampleKey = (typeof LEGACY_SAMPLE_KEYS)[number];
 
-/** 키 → 값 목록. `@hold`처럼 여러 줄을 쓸 수 있는 키가 있어 목록이다 */
+/** 키 → 값 목록. `@trigger`(옛 견본)처럼 여러 줄을 쓸 수 있는 키가 있어 목록이다 */
 export type Directives = Partial<Record<DirectiveKey | LegacySampleKey, string[]>>;
 
 /**

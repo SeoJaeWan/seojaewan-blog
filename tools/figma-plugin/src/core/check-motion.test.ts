@@ -306,10 +306,10 @@ describe('움직임이 일어나는 자리', () => {
 
   it('원본 description의 @ 줄을 읽고 더 쓰지 않는 줄은 알린다', () => {
     const result = exported(
-      currentSample({ source: 'component', description: '@hold 끄는 동안\n@runtime 거리' }),
+      currentSample({ source: 'component', description: '@direction alternate\n@hold 끄는 동안' }),
     );
-    expect(result.motion.directives).toEqual({ hold: ['끄는 동안'] });
-    expect(result.notices).toEqual([expect.stringContaining('`@runtime 거리`')]);
+    expect(result.motion.directives).toEqual({ direction: ['alternate'] });
+    expect(result.notices).toEqual([expect.stringContaining('`@hold 끄는 동안`')]);
   });
 
   it('주석과 자리를 json에 싣는다', () => {

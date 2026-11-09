@@ -622,8 +622,8 @@ describe('코드 전용 변수와 모드', () => {
   it('description의 @ 줄만 담고 설명 글은 담지 않는다', () => {
     const plain = JSON.stringify(tokensOf({ description: '설명 글' }));
     expect(plain).not.toContain('설명 글');
-    const lined = JSON.stringify(tokensOf({ description: '설명 글\n@hold 끄는 동안' }));
-    expect(lined).toContain('"directives":{"hold":["끄는 동안"]}');
+    const lined = JSON.stringify(tokensOf({ description: '설명 글\n@direction alternate' }));
+    expect(lined).toContain('"directives":{"direction":["alternate"]}');
     expect(() => tokensOf({ description: '@loop 1' })).toThrow('모르는 키');
   });
 });
