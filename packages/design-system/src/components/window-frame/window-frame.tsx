@@ -47,6 +47,12 @@ const materialClassNames = {
   chrome: 'bg-color-gray-13',
 } as const satisfies Record<WindowFrameMaterial, string>;
 
+// 재질별 내용 자리(피그마 Content 슬롯) 칠이다. 마이카 창은 제목 표시줄만 재질이 비치고 본문은 불투명한 층을 깐다.
+const contentClassNames = {
+  mica: 'bg-color-gray-2',
+  chrome: undefined,
+} as const satisfies Record<WindowFrameMaterial, string | undefined>;
+
 // 떠 있는 창(Placement=Default)의 효과 스타일이다. 마이카는 그림자와 배경 흐림을 함께 거는 Surface 스타일을 쓴다.
 const activeShadowClassNames = {
   mica: 'surface-window-active-mica',
@@ -72,7 +78,7 @@ const inactiveShadowClassNames = {
  * @param props.titleBarContent (custom 제목 표시줄) 피그마 `Title bar content` 슬롯. 탭이나 주소창처럼 앱이 제목 표시줄을 채운다
  * @param props.isInactive 피그마 State=Inactive. 창이 활성 상태가 아니면 그림자를 줄이고 제목과 창 버튼을 흐리게 그린다
  * @param props.placement 피그마 Placement. default는 떠 있는 창, maximized·snapped는 화면에 붙어 모서리·테두리·그림자가 없다
- * @param props.material 피그마 Material. mica는 창 재질, chrome은 Chrome 창 틀 색이다
+ * @param props.material 피그마 Material. mica는 제목 표시줄에 창 재질이 비치고 내용 자리에 불투명한 층을 깔며, chrome은 Chrome 창 틀 색이다
  * @param props.hasMaximize 최대화(또는 복원) 버튼을 그린다(CaptionButtonGroup에 넘긴다). 늘 전체화면인 모바일 창은 끈다
  * @param props.onMinimize 최소화 버튼을 눌렀을 때
  * @param props.onMaximize 최대화 버튼을 눌렀을 때(placement가 default, snapped일 때)
@@ -184,7 +190,12 @@ export function WindowFrame({
           className="shrink-shrink-none"
         />
       </div>
-      <div className="flex min-h-size-none w-full flex-flex-fill flex-col items-center justify-center overflow-clip">
+      <div
+        className={cn(
+          'flex min-h-size-none w-full flex-flex-fill flex-col items-center justify-center overflow-clip',
+          contentClassNames[material],
+        )}
+      >
         {children}
       </div>
     </div>
