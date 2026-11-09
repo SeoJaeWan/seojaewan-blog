@@ -8,6 +8,7 @@ export type Bound<T = number> = { value: T; variable?: string };
  * 칠 하나의 데이터.
  * - variable: 단색 칠에 연결한 색 변수 이름
  * - imageHash: 이미지 칠의 이미지 해시
+ * - color: 단색 칠의 색(0~1, a는 칠 불투명도). 조립 보고가 가까운 색 토큰을 찾는 데 쓴다
  */
 export type PaintData = {
   type: string;
@@ -15,6 +16,7 @@ export type PaintData = {
   blendMode: string;
   variable?: string;
   imageHash?: string | null;
+  color?: { r: number; g: number; b: number; a: number };
 };
 
 /** 효과 하나의 데이터. blurType: 배경·레이어 흐림의 종류(NORMAL, PROGRESSIVE). */

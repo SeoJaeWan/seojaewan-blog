@@ -284,6 +284,7 @@ describe('PR 본문의 피그마 미리보기', () => {
         manyVariants('Menu/File', 'apps/web/figma/patterns/menu/file', 6),
       ],
       [],
+      [],
     );
     expect(body).toContain(
       '## 변경\n\n| 조립 | 바뀐 변형 |\n|---|---|\n| Menu/Folder | 1 |\n| Menu/Desktop | 0 |\n| Menu/File | 6 |\n\n- 영역: `menu`',
@@ -297,10 +298,42 @@ describe('PR 본문의 피그마 미리보기', () => {
   });
 
   // @codocs [[디자인 시스템:조립]]
-  it('조립 PR의 확인은 피그마 그림을 사람이 보고, 캡처 표는 이전 코드 그림과 비교한다고 적는다', () => {
-    const body = patternPullRequestBody('feat/figma-patterns-menu', 'menu', [button], []);
-    expect(body).toContain('조립은 피그마와 픽셀 비교하지 않으므로');
-    expect(body).toContain('이전 코드 그림(`parity-captures`)과 비교해 의도하지 않은 배치 변화');
-    expect(body).not.toContain('`피그마 | 코드 | 차이`');
+  it('조립 PR 본문에 조립 보고를 조립마다 접어 싣는다', () => {
+    const empty = { components: [], drawn: [], offToken: [], displayOnly: [], motion: [] };
+    const body = patternPullRequestBody(
+      'feat/figma-patterns-menu',
+      'menu',
+      [button],
+      [],
+      [
+        {
+          name: 'Menu/Folder',
+          variants: [
+            {
+              name: 'default',
+              report: {
+                ...empty,
+                components: [
+                  { component: 'MenuItem', properties: { State: 'Rest' }, paths: ['a'] },
+                ],
+                offToken: Array.from({ length: 32 }, (_, index) => ({
+                  path: `row${String(index)}`,
+                  nodeId: `1:${String(index)}`,
+                  text: '간격 9 → 가까운 토큰 `spacing/sm`(8)',
+                })),
+              },
+            },
+          ],
+        },
+      ],
+    );
+    expect(body).toContain('## 조립 보고');
+    expect(body).toContain('<details><summary><b>Menu/Folder</b> · 변형 1개</summary>');
+    expect(body).toContain('#### default\n\n- 사용한 컴포넌트\n  - MenuItem (State=Rest) ×1');
+    expect(body).toContain('- 컴포넌트 밖에서 그린 것\n  - 없음');
+    expect(body).toContain('  - row29: 간격 9');
+    expect(body).not.toContain('  - row30: 간격 9');
+    expect(body).toContain('  - 외 2줄(export.json의 report에서 본다)');
+    expect(patternPullRequestBody('b', 'menu', [button], [], [])).toContain('보고할 조립이 없다.');
   });
 });

@@ -31,7 +31,13 @@ import {
   updateBranch,
   updatePullRequestBody,
 } from './github-client';
-import type { ExportOutcome, ExportProgress, PullRequestCommit, ViolationGroup } from './messages';
+import type {
+  ExportOutcome,
+  ExportProgress,
+  PatternReportView,
+  PullRequestCommit,
+  ViolationGroup,
+} from './messages';
 import { assetFilePath, componentSlug, patternFolder, patternPlace } from './naming';
 import {
   ASSETS_DIR,
@@ -285,7 +291,7 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
     commits.push(tokensCommit);
   }
   request.progress({ phase: 'commit', done: commitTotal, total: commitTotal, text: '끝' });
-  return { kind: 'done', commits, unchanged };
+  return { kind: 'done', commits, unchanged, reports: patterns.map(reportView) };
 }
 
 /**
@@ -548,9 +554,25 @@ async function commitPatterns(
     kind: 'pattern',
     subject,
     message,
-    body: patternPullRequestBody(branch, area, changes, renamed),
+    body: patternPullRequestBody(branch, area, changes, renamed, patterns.map(reportView)),
     log,
   });
+}
+
+/**
+ * 내보낸 조립의 변형별 보고를 모은다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param pattern 내보낸 조립
+ * @returns 조립 보고
+ */
+function reportView(pattern: PlacedPattern): PatternReportView {
+  const { manifest } = pattern.exported;
+  return {
+    name: manifest.name,
+    variants: Object.entries(manifest.variants).flatMap(([name, entry]) =>
+      entry.report === undefined ? [] : [{ name, report: entry.report }],
+    ),
+  };
 }
 
 /**
