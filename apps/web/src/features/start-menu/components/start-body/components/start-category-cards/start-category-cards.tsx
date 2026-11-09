@@ -217,7 +217,8 @@ export function StartCategoryCards({
               collisionBoundary={opened?.row ?? undefined}
               collisionPadding={0}
               collisionAvoidance={{ side: 'none', align: 'shift', fallbackAxisSide: 'none' }}
-              className="z-layer-popover"
+              // 패널 층(pointer-events-none) 안에 그려지므로 입력을 다시 받게 한다.
+              className="pointer-events-auto z-layer-popover"
             >
               <BasePopover.Popup aria-label={openedGroup.label} className="outline-none">
                 <StartCategoryPopup
