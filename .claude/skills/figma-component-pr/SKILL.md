@@ -32,11 +32,11 @@ description: 피그마 플러그인이 연 컴포넌트 PR(`feat/figma-<컴포�
    - 값은 토큰 클래스로만 쓴다(@codocs [[피그마 연동:토큰 생성]]의 이름 규칙).
 6. 캡처 도구를 로컬에서 돌린다(@codocs [[피그마 연동:CI]]). `pnpm --filter @seojaewan/figma-parity capture --target <컴포넌트 폴더나 조립 이름>`(예: `--target button`, `--target Menu/Folder`)을 실행하면 Storybook을 빌드하고 `tools/figma-parity/parity-results/<대상>/<변형>/`에 그림을 남긴다. Chromium이 없으면 `pnpm --filter @seojaewan/figma-parity exec playwright install chromium`을 먼저 실행한다. 스토리 짝을 찾지 못한 변형이 없어야 한다.
    - 컴포넌트 PR: 변형마다 `피그마 | 코드 | 차이`(`figma.png`, `code.png`, `diff.png`)를 본다. 차이 그림에서 엔진 차이가 아닌 차이가 보이면 5로 돌아가 고친다.
-   - 조립 PR: 컴포넌트와 같이 `피그마 | 코드 | 차이`(`figma.png`, `code.png`, `diff.png`)를 보지만 참고용이다(@codocs [[피그마 연동:캡처 표]]). 조립의 구조는 코드가 정하므로 꼭 같지 않아도 되고, 큰 차이(빠진 부분, 다른 배치·색)가 보이면 5로 돌아가 고치거나 이유를 보고에 적는다. 의도하지 않은 변화는 `parity-captures`에 병합 때 저장된 이전 코드 그림과의 비교(`previous.png`, `previous-diff.png`)로 본다. 먼저 `git fetch origin parity-captures`로 이전 그림을 받는다. 이전 그림이 없는 새 조립과 새 변형은 이 비교가 없다. 로컬(Windows 등)에서 찍은 그림은 CI(Linux)에서 저장한 이전 그림과 글자 렌더링이 달라 글자 둘레가 옅게 밝을 수 있다.
+   - 조립 PR: 컴포넌트와 같이 `피그마 | 코드 | 차이`(`figma.png`, `code.png`, `diff.png`)를 보지만 참고용이다(@codocs [[피그마 연동:캡처 표]]). 조립의 구조는 코드가 정하므로 꼭 같지 않아도 되고, 큰 차이(빠진 부분, 다른 배치·색)가 보이면 5로 돌아가 고치거나 이유를 보고에 적는다.
 7. 컴포넌트 PR에서 피그마 그림과 맞추려면 캡처 도구나 `figma/`를 바꿔야 할 것 같으면 멈추고, 어느 변형이 왜 그런지 보고한다.
 8. `pnpm lint`, `pnpm typecheck`, `pnpm test`를 통과시킨다.
 9. 커밋하고 푸시한다. 커밋 규칙은 @codocs [[Git 작업 규칙:커밋]]을 따른다. PR 브랜치에 이어서 커밋하고 병합하지 않는다.
 10. 보고한다.
     - 변형마다 바꾼 것
     - 캡처 표에서 사람이 볼 곳: 차이 그림에 남은 차이와 그 이유, 캡처로 확인되지 않는 재질의 흐림 등(@codocs [[피그마 연동:캡처 표]])
-    - 조립 PR: 피그마 그림과 크게 다른 곳과 그 이유(참고용), 이전 코드 그림과 달라진 곳 가운데 의도한 변화
+    - 조립 PR: 피그마 그림과 크게 다른 곳과 그 이유(참고용)

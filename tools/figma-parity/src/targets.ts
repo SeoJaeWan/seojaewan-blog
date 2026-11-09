@@ -16,7 +16,7 @@ import { parseManifest, type VariantEntry } from './variant-name.ts';
 
 /**
  * 캡처할 대상(컴포넌트나 조립).
- * - id: 대상 이름. 컴포넌트는 폴더 이름(`button`), 조립은 `patterns/<영역>/<이름>`이다. `parity-captures` 브랜치와 결과 폴더의 경로이기도 하다
+ * - id: 대상 이름. 컴포넌트는 폴더 이름(`button`), 조립은 `patterns/<영역>/<이름>`이다. 결과 폴더의 경로이기도 하다
  * - name: 피그마 이름(`Button`, `Menu/Folder`)
  * - folder: 피그마 그림 폴더(저장소 기준)
  * - storybook: 스토리가 있는 Storybook

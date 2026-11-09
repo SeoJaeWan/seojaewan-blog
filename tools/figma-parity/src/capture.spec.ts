@@ -16,8 +16,6 @@ import {
   readRenderExtents,
   type Size,
 } from './capture.ts';
-import { gitShowBuffer } from './git-files.ts';
-import { capturePath } from './parity-captures.ts';
 import { storybookStaticDir } from './paths.ts';
 import {
   CAPTURE_RESULT_FILE,
@@ -25,9 +23,6 @@ import {
   CODE_CAPTURE_FILE,
   DIFF_CAPTURE_FILE,
   FIGMA_CAPTURE_FILE,
-  PREVIOUS_CAPTURE_FILE,
-  PREVIOUS_COMMIT_ENV,
-  PREVIOUS_DIFF_CAPTURE_FILE,
   RESULTS_DIR_ENV,
   SELECTION_FILE,
 } from './results.ts';
@@ -39,14 +34,12 @@ import type { VariantEntry } from './variant-name.ts';
 
 // @codocs [[피그마 연동:캡처 표]]
 // 변형과 상태마다 코드를 캡처하고 차이 그림을 만든다. 컴포넌트와 조립 모두 피그마 그림과 같은 조건(배율, 여백, 배경, 상태 재현)으로
-// 맞춰 비교한다(조립은 참고용). 조립은 parity-captures에 저장된 이전 코드 그림과의 비교도 함께 남긴다(의도하지 않은 배치 변화).
+// 맞춰 비교한다(조립은 참고용).
 // 판정은 하지 않는다. 보통은 run-capture.ts가 범위를 정하고 Storybook을 빌드한 뒤 이 파일을 실행한다.
 const resultsDir = process.env[RESULTS_DIR_ENV] ?? '';
 if (resultsDir === '') {
   throw new Error(`${RESULTS_DIR_ENV} 환경 변수로 결과 폴더를 정한다(run-capture.ts가 정한다).`);
 }
-// 조립의 이전 코드 그림을 읽을 parity-captures 커밋. 비어 있으면 조립은 지금 그림만 남긴다.
-const previousCommit = process.env[PREVIOUS_COMMIT_ENV] ?? '';
 const selectionFile = path.join(resultsDir, SELECTION_FILE);
 const selected = existsSync(selectionFile)
   ? new Set(JSON.parse(readFileSync(selectionFile, 'utf8')) as string[])
@@ -83,7 +76,7 @@ test.afterAll(
   },
 );
 
-// 피그마 PNG와 같은 배율로 찍는다. 조립도 같은 배율로 찍어 parity-captures에 둔다.
+// 피그마 PNG와 같은 배율로 찍는다.
 test.use({ deviceScaleFactor: scale });
 
 for (const target of targets) {
@@ -128,7 +121,6 @@ async function captureVariant(
     name: target.name,
     variant: variant.variant,
     figma: null,
-    previous: null,
     code: null,
     diff: null,
     error: null,
@@ -157,10 +149,7 @@ async function captureVariant(
       }
       return opened.target;
     }
-    const code = await captureWithFigma(page, target, variant, open, row, write);
-    if (target.kind === 'pattern') {
-      await comparePrevious(page, target, variant, code, row, write);
-    }
+    await captureWithFigma(page, target, variant, open, row, write);
   } catch (error) {
     row.error = error instanceof Error ? error.message : String(error);
   }
@@ -177,7 +166,6 @@ async function captureVariant(
  * @param open 스토리를 여는 함수
  * @param row 채울 캡처 표 줄
  * @param write 그림을 쓰는 함수
- * @returns 지금 코드 그림과 그 배경색
  */
 async function captureWithFigma(
   page: Page,
@@ -186,7 +174,7 @@ async function captureWithFigma(
   open: () => Promise<Locator>,
   row: CaptureRow,
   write: WriteImage,
-): Promise<{ png: Buffer; background: string }> {
+): Promise<void> {
   const figmaPng = figmaImagePath(target, variant.variant);
   if (!existsSync(figmaPng)) {
     throw new Error(`피그마 그림이 없다: ${path.basename(figmaPng)}`);
@@ -223,41 +211,6 @@ async function captureWithFigma(
   });
   row.figma = write(FIGMA_CAPTURE_FILE, figma);
   row.diff = write(DIFF_CAPTURE_FILE, await diffImage(page, figma, codePng, code.background));
-  return { png: codePng, background: code.background };
-}
-
-/**
- * 조립의 지금 코드 그림을 parity-captures의 이전 코드 그림과도 비교해 남긴다. 이전 그림이 없으면(새 조립, 새 변형) 남기지 않는다.
- * @codocs [[피그마 연동:캡처 표]]
- * @param page Playwright 페이지
- * @param target 대상
- * @param variant 변형
- * @param code 지금 코드 그림과 배경색
- * @param code.png 지금 코드 그림
- * @param code.background 배경색
- * @param row 채울 캡처 표 줄
- * @param write 그림을 쓰는 함수
- */
-async function comparePrevious(
-  page: Page,
-  target: Target,
-  variant: VariantEntry,
-  code: { png: Buffer; background: string },
-  row: CaptureRow,
-  write: WriteImage,
-): Promise<void> {
-  const previous =
-    previousCommit === ''
-      ? undefined
-      : gitShowBuffer(previousCommit, capturePath(target.id, variant.variant));
-  if (previous === undefined) {
-    return;
-  }
-  row.previous = write(PREVIOUS_CAPTURE_FILE, previous);
-  row.previousDiff = write(
-    PREVIOUS_DIFF_CAPTURE_FILE,
-    await diffImage(page, previous, code.png, code.background),
-  );
 }
 
 /**

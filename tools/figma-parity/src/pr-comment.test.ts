@@ -4,7 +4,6 @@ import {
   CAPTURE_ROWS_PER_TABLE,
   COMMENT_LIMIT,
   markerIndex,
-  NO_PREVIOUS,
   renderComments,
   reportImageUrl,
 } from './pr-comment.ts';
@@ -31,8 +30,6 @@ function row(target: string, variant: string, change: Partial<CaptureRow> = {}):
     name: target,
     variant,
     figma: `${dir}/figma.png`,
-    previous: isPattern ? `${dir}/previous.png` : null,
-    previousDiff: isPattern ? `${dir}/previous-diff.png` : null,
     code: `${dir}/code.png`,
     diff: `${dir}/diff.png`,
     error: null,
@@ -103,9 +100,8 @@ describe('PR 댓글 조립 캡처 표', () => {
   it('조립도 피그마 | 코드 | 차이로 놓고 제목과 머리에 참고용이라고 쓴다', () => {
     const { bodies, images } = renderComments(
       {
-        rows: [row('patterns/menu/folder', 'default', { name: 'Menu/Folder', previous: null })],
+        rows: [row('patterns/menu/folder', 'default', { name: 'Menu/Folder' })],
         fileErrors: [],
-        previousCommit: 'f4437a64b515335b061d5cf898d4e6e0504f1844',
       },
       commentOptions,
     );
@@ -116,7 +112,7 @@ describe('PR 댓글 조립 캡처 표', () => {
     expect(body).toContain(
       '| `default` | <img src="https://img/patterns/menu/folder/default/figma.png" alt="피그마"> | <img src="https://img/patterns/menu/folder/default/code.png" alt="코드"> | <img src="https://img/patterns/menu/folder/default/diff.png" alt="차이"> |',
     );
-    expect(body).not.toContain('| 변형 | 이전 코드 | 지금 코드 | 차이 |');
+    expect(body).not.toContain('이전 코드');
     expect(images).toEqual([
       'patterns/menu/folder/default/figma.png',
       'patterns/menu/folder/default/code.png',
@@ -124,53 +120,11 @@ describe('PR 댓글 조립 캡처 표', () => {
     ]);
   });
 
-  it('이전 코드 그림이 있으면 이전 코드 비교 표를 접어 덧붙이고, 읽은 parity-captures 커밋을 머리에 쓴다', () => {
-    const { bodies, images } = renderComments(
-      {
-        rows: [
-          row('patterns/menu/folder', 'default', { name: 'Menu/Folder' }),
-          row('patterns/menu/folder', 'state=hover', {
-            name: 'Menu/Folder',
-            previous: null,
-            previousDiff: null,
-          }),
-        ],
-        fileErrors: [],
-        previousCommit: 'f4437a64b515335b061d5cf898d4e6e0504f1844',
-      },
-      commentOptions,
-    );
-    const body = bodies[0] ?? '';
-    expect(body).toContain('이전 코드 그림: `parity-captures` f4437a6.');
-    expect(body).toContain('<details><summary>Menu/Folder: 이전 코드 그림과 비교 (2개)</summary>');
-    expect(body).toContain('| 변형 | 이전 코드 | 지금 코드 | 차이 |');
-    expect(body).toContain(
-      '| `default` | <img src="https://img/patterns/menu/folder/default/previous.png" alt="이전 코드"> | <img src="https://img/patterns/menu/folder/default/code.png" alt="지금 코드"> | <img src="https://img/patterns/menu/folder/default/previous-diff.png" alt="차이"> |',
-    );
-    expect(body).toContain(
-      `| \`state=hover\` | ${NO_PREVIOUS} | <img src="https://img/patterns/menu/folder/state=hover/code.png" alt="지금 코드"> |  |`,
-    );
-    expect(images).toContain('patterns/menu/folder/default/previous-diff.png');
-  });
-
-  it('parity-captures를 읽지 못한 실행은 머리에 이전 코드 비교가 없다고 쓴다', () => {
-    const { bodies } = renderComments(
-      {
-        rows: [row('patterns/menu/folder', 'default', { previous: null, previousDiff: null })],
-        fileErrors: [],
-        previousCommit: null,
-      },
-      commentOptions,
-    );
-    expect(bodies[0]).toContain('이번 실행은 `parity-captures`를 읽지 못해 이전 코드 비교가 없다.');
-  });
-
   it('조립 표가 댓글 하나보다 길어 나뉘면 나뉜 조각에도 표 머리를 다시 쓴다', () => {
     const rows = Array.from({ length: 600 }, (_, index) =>
       row(
         'patterns/menu/folder',
         `state=s${String(index)},show-icon=true,long-name=${'x'.repeat(20)}`,
-        { previous: null, previousDiff: null },
       ),
     );
     const all = renderComments({ rows, fileErrors: [] }, commentOptions).bodies.join('\n');
