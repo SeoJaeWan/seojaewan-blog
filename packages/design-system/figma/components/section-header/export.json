@@ -1,5 +1,5 @@
 {
-  "description": "목록 안 항목 묶음의 머리글로, Start 메뉴 목록과 검색 결과에 쓴다.\n@sample-size width",
+  "description": "목록 안 항목 묶음의 머리글로, Start 메뉴 목록과 검색 결과에 쓴다.",
   "name": "SectionHeader",
   "nodeId": "3339:13944",
   "propertyDefinitions": {
@@ -80,6 +80,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -170,6 +173,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
