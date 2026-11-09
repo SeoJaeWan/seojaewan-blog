@@ -1,5 +1,5 @@
 {
-  "description": "창 최대화 버튼에 마우스를 올리면 뜨는 스냅 레이아웃 메뉴로, 창 제목 표시줄 오른쪽 위에 쓴다.\n@runtime 마우스를 올리면 SnapLayoutFlyout이 열린다: Half, Two thirds, Half quarter, Quad",
+  "description": "창 최대화 버튼에 마우스를 올리면 뜨는 스냅 레이아웃 메뉴로, 창 제목 표시줄 오른쪽 위에 쓴다.",
   "name": "Window/SnapLayoutMenu",
   "nodeId": "594:9021",
   "propertyDefinitions": {},
@@ -13,130 +13,26 @@
       },
       "nodeId": "594:9021",
       "properties": {},
-      "tree": {
-        "children": [
+      "report": {
+        "components": [
           {
-            "children": [
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "asset": {
-                          "color": "color/black/89",
-                          "path": "icons/ic_fluent_maximize_20_regular"
-                        },
-                        "component": "ic_fluent_maximize_20_regular",
-                        "height": "size/icon/sm",
-                        "name": "icon",
-                        "size": {
-                          "h": 16,
-                          "w": 16
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "FIXED"
-                        },
-                        "type": "INSTANCE",
-                        "width": "size/icon/sm"
-                      }
-                    ],
-                    "component": "CaptionButton",
-                    "height": "size/caption-button/height",
-                    "layout": {
-                      "counterAlign": "CENTER",
-                      "gap": 0,
-                      "mode": "HORIZONTAL",
-                      "padding": [
-                        0,
-                        0,
-                        0,
-                        0
-                      ],
-                      "primaryAlign": "CENTER"
-                    },
-                    "name": "maximize button",
-                    "properties": {
-                      "State": "Rest",
-                      "Variant": "Default"
-                    },
-                    "size": {
-                      "h": 32,
-                      "w": 46
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FIXED"
-                    },
-                    "type": "INSTANCE",
-                    "width": "size/caption-button/width"
-                  }
-                ],
-                "layout": {
-                  "counterAlign": "MIN",
-                  "gap": 0,
-                  "mode": "HORIZONTAL",
-                  "padding": [
-                    0,
-                    0,
-                    0,
-                    0
-                  ],
-                  "primaryAlign": "MIN"
-                },
-                "name": "Trigger",
-                "size": {
-                  "h": 32,
-                  "w": 46
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "type": "SLOT"
-              }
+            "component": "CaptionButton",
+            "paths": [
+              "popover/Trigger/maximize button"
             ],
-            "component": "Popover",
-            "layout": {
-              "counterAlign": "MIN",
-              "gap": "spacing/xs",
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/none",
-                "spacing/none",
-                "spacing/none",
-                "spacing/none"
-              ],
-              "primaryAlign": "MIN"
-            },
-            "name": "popover",
             "properties": {
-              "Placement": "Bottom center",
-              "State": "Closed"
-            },
-            "size": {
-              "h": 32,
-              "w": 46
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+              "State": "Rest",
+              "Title bar": "Default",
+              "Variant": "Default"
+            }
           }
         ],
-        "layout": {
-          "counterAlign": "MIN",
-          "gap": 0,
-          "mode": "HORIZONTAL",
-          "padding": [
-            0,
-            0,
-            0,
-            0
-          ],
-          "primaryAlign": "MIN"
-        },
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
         "name": "Window/SnapLayoutMenu",
         "size": {
           "h": 32,
@@ -145,8 +41,7 @@
         "sizing": {
           "h": "HUG",
           "v": "HUG"
-        },
-        "type": "COMPONENT"
+        }
       }
     }
   }
