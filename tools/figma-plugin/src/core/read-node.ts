@@ -1,3 +1,4 @@
+import { canonicalCategoryName } from './annotation-category';
 import { ASSET_GROUP_PREFIX, ASSET_GROUPS } from './asset-groups';
 import {
   bindingBase,
@@ -264,7 +265,7 @@ export async function annotationData(node: BaseNode, names: NameCache): Promise<
 }
 
 /**
- * 주석 카테고리 이름을 찾는다.
+ * 주석 카테고리 이름을 찾는다. 피그마 화면 언어와 상관없이 영어 기준 이름으로 맞춘다.
  * @param id 카테고리 ID
  * @param names 이름 캐시
  * @returns 카테고리 이름, 없으면 null
@@ -275,7 +276,8 @@ async function categoryName(id: string | undefined, names: NameCache): Promise<s
   }
   const key = `annotation-category:${id}`;
   if (!names.has(key)) {
-    names.set(key, (await figma.annotations.getAnnotationCategoryByIdAsync(id))?.label);
+    const label = (await figma.annotations.getAnnotationCategoryByIdAsync(id))?.label;
+    names.set(key, label === undefined ? undefined : canonicalCategoryName(label));
   }
   return names.get(key) ?? null;
 }
