@@ -550,10 +550,11 @@
 }
 
 /*
- * Start 고정됨 메뉴 이동의 사라짐(견본 motion-start-pinned-move-exit). 메뉴(앞으로·왼쪽으로·오른쪽으로 이동)로 옮기는 칸
- * 전체(PinnedTile)가 제자리에서 배율 1 → 0.5로 작아지며 투명도 1 → 0으로 사라진다([[Start 메뉴:고정됨]]).
+ * Start 고정됨 메뉴 이동의 사라짐(조립 흐름 motion-start-pinned-move-exit). 메뉴(앞으로·왼쪽으로·오른쪽으로 이동)로 옮기는 칸
+ * 전체(PinnedTile)가 제자리에서 배율 1 → 0.91로 작아지며 투명도 1 → 0으로 사라진다([[Start 메뉴:고정됨]]).
+ * 세 단계(사라짐 → 교차 페이드 → 나타남)의 처음이고, 시작 시점은 메뉴가 사라진 순간부터 잰 지연(motion/delay/pinned-move-exit)이다.
+ * 이어서 나머지 칸이 motion-start-pinned-move-swap으로 교차 페이드하고, 옮기는 칸이 도착할 자리에서 motion-start-pinned-move-enter로 나타난다.
  * 배율(direct-entrance)과 투명도(fade)는 이징이 달라 animation을 쉼표로 나눈다. 실행 중 값은 없다.
- * 이어서 나머지 칸이 motion-reorder-slide로 미끄러지고, 옮기는 칸이 도착할 자리에서 motion-start-pinned-move-enter로 나타난다.
  * 사라진 끝 모습(투명도 0)을 다음 단계까지 유지하도록 fill-mode는 both다.
  */
 @keyframes motion-start-pinned-move-exit-scale {
@@ -562,7 +563,7 @@
   }
 
   100% {
-    scale: var(--motion-scale-half);
+    scale: var(--motion-scale-pinned-move-exit);
   }
 }
 
@@ -578,9 +579,10 @@
 
 @utility motion-start-pinned-move-exit {
   animation:
-    motion-start-pinned-move-exit-scale var(--motion-duration-fast)
-      var(--motion-easing-direct-entrance) both,
-    motion-start-pinned-move-exit-fade var(--motion-duration-fast) var(--motion-easing-fade) both;
+    motion-start-pinned-move-exit-scale var(--motion-duration-faster)
+      var(--motion-easing-direct-entrance) var(--motion-delay-pinned-move-exit) both,
+    motion-start-pinned-move-exit-fade var(--motion-duration-faster) var(--motion-easing-fade)
+      var(--motion-delay-pinned-move-exit) both;
 }
 
 /*
