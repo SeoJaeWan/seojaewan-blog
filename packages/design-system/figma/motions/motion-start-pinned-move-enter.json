@@ -1,48 +1,46 @@
 {
   "delay": {
-    "ms": 0,
-    "token": null
+    "ms": 850,
+    "token": "motion/delay/pinned-move-enter"
   },
-  "directives": {
-    "reduced-motion": [
-      "움직임 없이 바로 바뀐다"
-    ],
-    "repeat": [
-      "1"
-    ],
-    "trigger": [
-      "Start 고정됨 칸을 메뉴로 옮길 때 나머지 칸이 미끄러진 뒤(motion-reorder-slide) 옮기는 칸이 도착할 자리에서 나타난다"
-    ]
-  },
+  "directives": {},
   "duration": {
-    "ms": 250,
-    "token": "motion/duration/normal"
+    "ms": 333,
+    "token": "motion/duration/slow"
   },
   "iterations": 1,
   "name": "motion-start-pinned-move-enter",
   "nodeId": "3356:548",
+  "notes": [
+    {
+      "category": "Development",
+      "path": "PinnedTile",
+      "text": "옮기는 칸이 도착할 자리에서 나타난다. 메뉴가 사라진 뒤 약 850ms에 시작한다(키프레임 시작 시점). 시작 시점은 motion/delay/pinned-move-enter 변수 값이다."
+    }
+  ],
+  "source": "flow",
   "tracks": [
     {
       "delay": {
-        "ms": 0,
-        "token": null
+        "ms": 850,
+        "token": "motion/delay/pinned-move-enter"
       },
       "duration": {
-        "ms": 250,
-        "token": "motion/duration/normal"
+        "ms": 333,
+        "token": "motion/duration/slow"
       },
       "keyframes": [
         {
           "easing": null,
           "offset": 0,
-          "time": 0,
+          "time": 850,
           "value": 0,
           "valueToken": null
         },
         {
           "easing": "motion/easing/fade",
           "offset": 1,
-          "time": 250,
+          "time": 1183,
           "value": 1,
           "valueToken": null
         }
@@ -55,28 +53,28 @@
     },
     {
       "delay": {
-        "ms": 0,
-        "token": null
+        "ms": 850,
+        "token": "motion/delay/pinned-move-enter"
       },
       "duration": {
-        "ms": 250,
-        "token": "motion/duration/normal"
+        "ms": 333,
+        "token": "motion/duration/slow"
       },
       "keyframes": [
         {
           "easing": null,
           "offset": 0,
-          "time": 0,
+          "time": 850,
           "value": {
-            "x": 0.5,
-            "y": 0.5
+            "x": 0.96,
+            "y": 0.96
           },
-          "valueToken": "motion/scale/half"
+          "valueToken": "motion/scale/pinned-move-enter"
         },
         {
           "easing": "motion/easing/direct-entrance",
           "offset": 1,
-          "time": 250,
+          "time": 1183,
           "value": {
             "x": 1,
             "y": 1

@@ -1,5 +1,5 @@
 {
-  "description": "구분선으로, 메뉴·카드·목록 사이를 나눌 때 쓴다.\n@sample-size width",
+  "description": "구분선으로, 메뉴·카드·목록 사이를 나눌 때 쓴다.",
   "name": "Separator",
   "nodeId": "509:5923",
   "propertyDefinitions": {
@@ -30,6 +30,9 @@
         ],
         "height": "stroke-width/default",
         "name": "Orientation=Horizontal",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 1,
           "w": 240
