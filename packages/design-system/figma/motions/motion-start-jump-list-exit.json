@@ -3,24 +3,16 @@
     "ms": 0,
     "token": null
   },
-  "directives": {
-    "reduced-motion": [
-      "움직임 없이 바로 바뀐다"
-    ],
-    "repeat": [
-      "1"
-    ],
-    "trigger": [
-      "Start 글자 목록을 닫을 때"
-    ]
-  },
+  "directives": {},
   "duration": {
-    "ms": 167,
-    "token": "motion/duration/fast"
+    "ms": 250,
+    "token": "motion/duration/normal"
   },
   "iterations": 1,
   "name": "motion-start-jump-list-exit",
   "nodeId": "758:441",
+  "notes": [],
+  "source": "flow",
   "tracks": [
     {
       "delay": {
@@ -28,8 +20,8 @@
         "token": null
       },
       "duration": {
-        "ms": 167,
-        "token": "motion/duration/fast"
+        "ms": 250,
+        "token": "motion/duration/normal"
       },
       "keyframes": [
         {
@@ -42,7 +34,7 @@
         {
           "easing": "motion/easing/fade",
           "offset": 1,
-          "time": 167,
+          "time": 250,
           "value": 0,
           "valueToken": null
         }
@@ -59,8 +51,8 @@
         "token": null
       },
       "duration": {
-        "ms": 167,
-        "token": "motion/duration/fast"
+        "ms": 250,
+        "token": "motion/duration/normal"
       },
       "keyframes": [
         {
@@ -76,10 +68,10 @@
         {
           "easing": "motion/easing/direct-entrance",
           "offset": 1,
-          "time": 167,
+          "time": 250,
           "value": {
-            "x": 1.15,
-            "y": 1.15
+            "x": 1.5,
+            "y": 1.5
           },
           "valueToken": null
         }
@@ -96,8 +88,8 @@
         "token": null
       },
       "duration": {
-        "ms": 167,
-        "token": "motion/duration/fast"
+        "ms": 250,
+        "token": "motion/duration/normal"
       },
       "keyframes": [
         {
@@ -110,7 +102,7 @@
         {
           "easing": "motion/easing/fade",
           "offset": 1,
-          "time": 167,
+          "time": 250,
           "value": 1,
           "valueToken": null
         }

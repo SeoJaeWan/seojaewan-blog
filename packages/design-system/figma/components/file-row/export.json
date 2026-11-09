@@ -1,5 +1,5 @@
 {
-  "description": "파일 한 줄로, 탐색기 자세히 보기(이름·수정한 날짜·유형·위치)와 휴지통 자세히 보기(이름·원래 위치·삭제한 날짜)에 쓴다.\n@sample-size width",
+  "description": "파일 한 줄로, 탐색기 자세히 보기(이름·수정한 날짜·유형·위치)와 휴지통 자세히 보기(이름·원래 위치·삭제한 날짜)에 쓴다.",
   "name": "FileRow",
   "nodeId": "514:15135",
   "propertyDefinitions": {
@@ -249,6 +249,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 840
@@ -455,6 +458,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 840
@@ -655,6 +661,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -869,6 +878,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -1136,6 +1148,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 840
@@ -1355,6 +1370,9 @@
             "trigger": "ON_HOVER"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 840
@@ -1559,6 +1577,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 840
@@ -1761,6 +1782,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -1968,6 +1992,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 840
@@ -2168,6 +2195,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -2382,6 +2412,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -2649,6 +2682,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 840
@@ -2849,6 +2885,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -3053,6 +3092,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
