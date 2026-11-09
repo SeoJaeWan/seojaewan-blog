@@ -1,5 +1,5 @@
 {
-  "description": "현재 위치 경로를 보여 주는 줄로, 탐색기 주소 줄에 쓴다.\n@sample-size width",
+  "description": "현재 위치 경로를 보여 주는 줄로, 탐색기 주소 줄에 쓴다.",
   "name": "Breadcrumb",
   "nodeId": "3339:13946",
   "propertyDefinitions": {
@@ -169,6 +169,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 480
@@ -264,7 +267,7 @@
                         },
                         "text": {
                           "autoResize": "WIDTH_AND_HEIGHT",
-                          "maxLines": null,
+                          "maxLines": 1,
                           "maxLinesVariable": null,
                           "segments": [
                             {
@@ -283,7 +286,7 @@
                               "textStyle": "Hangul/Caption"
                             }
                           ],
-                          "truncation": "DISABLED"
+                          "truncation": "ENDING"
                         },
                         "type": "TEXT"
                       }
@@ -386,7 +389,7 @@
                         },
                         "text": {
                           "autoResize": "WIDTH_AND_HEIGHT",
-                          "maxLines": null,
+                          "maxLines": 1,
                           "maxLinesVariable": null,
                           "segments": [
                             {
@@ -395,7 +398,7 @@
                               "textStyle": "Caption"
                             }
                           ],
-                          "truncation": "DISABLED"
+                          "truncation": "ENDING"
                         },
                         "type": "TEXT"
                       }
@@ -507,6 +510,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
