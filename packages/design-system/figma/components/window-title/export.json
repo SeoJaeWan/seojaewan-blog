@@ -1,5 +1,5 @@
 {
-  "description": "앱 아이콘과 창 제목 묶음으로, 창 제목 표시줄과 창 미리보기 머리글에 쓴다.\n@sample-size width",
+  "description": "앱 아이콘과 창 제목 묶음으로, 창 제목 표시줄과 창 미리보기 머리글에 쓴다.",
   "name": "WindowTitle",
   "nodeId": "395:15808",
   "propertyDefinitions": {
@@ -115,6 +115,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Preview, State=Active",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 16,
           "w": 660
@@ -213,6 +216,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Preview, State=Inactive",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 16,
           "w": 660
@@ -311,6 +317,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Window, State=Active",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 660
@@ -409,6 +418,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Window, State=Inactive",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 660
