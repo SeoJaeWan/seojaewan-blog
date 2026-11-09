@@ -19,7 +19,7 @@ import {
   createChromeContent,
   getActiveChromePage,
 } from '@/shared/utils/chrome-tabs/chrome-tabs';
-import type { PostBlock } from '@/shared/utils/post-body/post-body';
+import type { PostBlock, PostBody } from '@/shared/utils/post-body/post-body';
 
 import { ChromeWindowLayer } from './chrome-window-layer';
 import { mockPostBodies } from './components/chrome-post-tab/story-fetch';
@@ -733,17 +733,29 @@ export const TwoWindows: Story = {
   },
 };
 
-const loadingBody: readonly PostBlock[] = [
-  ...imageBody,
-  {
-    type: 'image',
-    // 없는 주소라 받기에 실패한다
-    url: '/story-missing-image.png',
-    width: null,
-    height: null,
-    caption: [{ text: '깨진 그림', link: null }],
-  },
-];
+const loadingBody: PostBody = {
+  blocks: [
+    ...imageBody,
+    {
+      type: 'image',
+      // 없는 주소라 받기에 실패한다
+      url: '/story-missing-image.png',
+      width: null,
+      height: null,
+      caption: [{ text: '깨진 그림', link: null }],
+    },
+    {
+      type: 'image',
+      // 없는 주소라 받기에 실패한다. 크기를 아는 세로 이미지(1:2)다
+      url: '/story-missing-tall-image.png',
+      width: 300,
+      height: 600,
+      caption: [{ text: '깨진 세로 그림', link: null }],
+    },
+  ],
+  // 없는 주소라 받기에 실패한다
+  cover: { url: '/story-missing-cover.png', width: 1600, height: 900 },
+};
 
 // @codocs [[Notion 이미지 제공:로딩 표시]]
 /** 글 이미지는 받는 동안 스켈레톤(받는 중 Figure)을 보이고, 다 받으면 이미지를, 받지 못하면 회색 칸을 남긴다 */
@@ -777,14 +789,58 @@ export const ImageLoading: Story = {
     });
 
     await step('받지 못한 이미지는 반짝임을 멈추고 이미지 없이 회색 칸으로 남는다', async () => {
+      // 화면 밖 이미지는 늦게 받으므로(loading="lazy") 화면 안으로 옮긴다
+      figureOf('깨진 그림').scrollIntoView();
       await waitFor(() => expect(figureOf('깨진 그림')).not.toHaveAttribute('aria-busy'));
       await expect(figureOf('깨진 그림').querySelector('img')).toBeNull();
       await expect(
         screen.queryByRole('button', { name: '이미지 크게 보기: 깨진 그림' }),
       ).not.toBeInTheDocument();
     });
+
+    await step('회색 칸은 이미지 크기를 알면 그 비율로, 모르면 16:9로 자리를 잡는다', async () => {
+      figureOf('깨진 세로 그림').scrollIntoView();
+      await waitFor(() => expect(figureOf('깨진 세로 그림')).not.toHaveAttribute('aria-busy'));
+      const tall = placeholderOf(figureOf('깨진 세로 그림'));
+      await expect(tall.offsetHeight / tall.offsetWidth).toBeCloseTo(2, 1);
+      const unknown = placeholderOf(figureOf('깨진 그림'));
+      await expect(unknown.offsetWidth / unknown.offsetHeight).toBeCloseTo(16 / 9, 1);
+    });
+
+    await step('커버는 받는 동안·실패 칸이 커버 칸을 채운다', async () => {
+      const coverFigure = await waitFor(() => {
+        const found = [...document.querySelectorAll('figure')].find(
+          (figure) => figure.querySelector('figcaption') === null,
+        );
+        if (found === undefined) {
+          throw new Error('커버 칸이 없다');
+        }
+        return found;
+      });
+      await waitFor(() => expect(coverFigure).not.toHaveAttribute('aria-busy'));
+      const coverBox = coverFigure.parentElement?.parentElement;
+      if (coverBox === null || coverBox === undefined) {
+        throw new Error('커버 바탕이 없다');
+      }
+      const placeholder = placeholderOf(coverFigure);
+      await expect(placeholder.offsetHeight).toBe(coverBox.offsetHeight);
+      await expect(placeholder.offsetWidth).toBe(coverBox.offsetWidth);
+    });
   },
 };
+
+/**
+ * Figure의 받는 중·실패 칸(이미지 칸 안의 회색 칸)을 찾는다.
+ * @param figure Figure
+ * @returns 회색 칸
+ */
+function placeholderOf(figure: HTMLElement): HTMLElement {
+  const placeholder = figure.firstElementChild?.firstElementChild;
+  if (!(placeholder instanceof HTMLElement)) {
+    throw new Error('회색 칸이 없다');
+  }
+  return placeholder;
+}
 
 // @codocs [[Chrome:글 화면]]
 /** 글 본문 이미지를 크게 본다 */

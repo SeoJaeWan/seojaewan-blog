@@ -1,9 +1,11 @@
 import imageViewerExport from '@figma/patterns/chrome/image-viewer/export.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { getImageAsset, ImageAsset, type ImageAssetName } from '@seojaewan/design-system';
 import { figmaFrame } from '@seojaewan/design-system/story';
+
+import { LoadingImage } from '@/features/chrome/components/loading-image/loading-image';
 
 import { ChromeImageViewer } from './chrome-image-viewer';
 
@@ -119,6 +121,87 @@ export const SmallImageStaysOriginal: Story = {
     await expect(image.height).toBe(original.height);
   },
 };
+
+// 받기에 실패하는 없는 주소다. 받는 중 칸과 실패 칸은 같은 자리를 잡으므로, 실패한 칸으로 자리를 잰다.
+const MISSING_IMAGE_URL = '/story-missing-viewer-image.png';
+
+// @codocs [[Notion 이미지 제공:로딩 표시]]
+/** 크기를 아는 세로로 긴 이미지는 받는 동안 다 받은 이미지와 같은 자리(영역 높이에 맞춘 원본 비율)를 잡는다 */
+export const LoadingTallImageKeepsRatio: Story = {
+  render: (args) => (
+    <ChromeImageViewer
+      layout={args.layout}
+      caption={IMAGE_CAPTION}
+      image={
+        <LoadingImage
+          image={{ url: MISSING_IMAGE_URL, width: 105, height: 2000 }}
+          alt={IMAGE_CAPTION}
+          sizes="100vw"
+          fit="contain"
+        />
+      }
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    // @codocs [[Notion 이미지 제공:로딩 표시]]
+    await step('자리가 영역 높이에 맞고 원본 비율을 지킨다', async () => {
+      const { placeholder, stage } = await getPlaceholderAndStage(canvasElement);
+      // 영역 높이(캡션과 간격을 빼고 줄어든 이미지 칸)에 맞아 원본(2000)보다 작다
+      await expect(placeholder.offsetHeight).toBeLessThanOrEqual(stage.clientHeight);
+      await expect(placeholder.offsetHeight).toBeLessThan(2000);
+      await expect(placeholder.offsetWidth / placeholder.offsetHeight).toBeCloseTo(105 / 2000, 2);
+    });
+  },
+};
+
+// @codocs [[Notion 이미지 제공:로딩 표시]]
+/** 크기를 모르는 이미지는 받는 동안 영역 너비의 16:9 자리를 잡는다 */
+export const LoadingUnknownSizeImage: Story = {
+  render: (args) => (
+    <ChromeImageViewer
+      layout={args.layout}
+      caption={IMAGE_CAPTION}
+      image={
+        <LoadingImage
+          image={{ url: MISSING_IMAGE_URL, width: null, height: null }}
+          alt={IMAGE_CAPTION}
+          sizes="100vw"
+          fit="contain"
+        />
+      }
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    // @codocs [[Notion 이미지 제공:로딩 표시]]
+    await step('자리가 영역 너비의 16:9다', async () => {
+      const { placeholder } = await getPlaceholderAndStage(canvasElement);
+      await expect(placeholder.offsetWidth / placeholder.offsetHeight).toBeCloseTo(16 / 9, 1);
+    });
+  },
+};
+
+/**
+ * 받지 못한 이미지의 회색 칸과 그 칸을 맞추는 영역(이미지 칸)을 찾는다.
+ * @param canvasElement 스토리 캔버스
+ * @returns 회색 칸과 영역
+ */
+async function getPlaceholderAndStage(
+  canvasElement: HTMLElement,
+): Promise<{ placeholder: HTMLElement; stage: HTMLElement }> {
+  const figure = await waitFor(() => {
+    const found = canvasElement.querySelector('figure');
+    if (found === null || found.hasAttribute('aria-busy')) {
+      throw new Error('실패 칸이 아직 없다');
+    }
+    return found;
+  });
+  const placeholder = figure.firstElementChild?.firstElementChild;
+  const stage = figure.parentElement?.parentElement;
+  if (!(placeholder instanceof HTMLElement) || !(stage instanceof HTMLElement)) {
+    throw new Error('회색 칸이나 영역이 없다');
+  }
+  return { placeholder, stage };
+}
 
 /**
  * 크게 보는 이미지와 그 이미지를 맞추는 영역(이미지 칸)의 크기를 잰다.

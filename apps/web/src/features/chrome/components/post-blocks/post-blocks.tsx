@@ -34,6 +34,7 @@ import {
   type PostBlock,
   type RichText as RichTextPart,
 } from '@/shared/utils/post-body/post-body';
+import { getPostImageSize } from '@/shared/utils/post-image/post-image';
 
 import { RichText } from './components/rich-text/rich-text';
 import { KatexHtml } from './katex-html';
@@ -532,6 +533,7 @@ type PostImageFigureProps = {
 
 /**
  * 이미지 블록 하나를 Figure로 그린다. 이미지를 직접 넣지 않으면(이미지 서버 이미지) 받는 동안 Figure를 받는 중(`loading`)으로 두고
+ * 그 칸을 이미지 크기의 비율로 잡는다(모르면 16:9).
  * 같은 이미지를 숨긴 img로 받아, 다 받으면 이미지를 서서히 나타나게(`motion-image-enter`) 그리고 받지 못하면 실패(`failed`) 칸으로 남긴다.
  * 그릴 때 이미 받아진 이미지는 바로 보인다([[Notion 이미지 제공:로딩 표시]]). `onImageOpen`을 주면 다 받은 이미지가 크게 보기 버튼이 된다.
  * @codocs [[Notion 이미지 제공:로딩 표시]]
@@ -558,6 +560,8 @@ function PostImageFigure({ block, renderImage, onImageOpen }: PostImageFigurePro
     <Figure
       className="w-full"
       state={load.state}
+      // 받는 동안·실패 칸을 다 받은 이미지와 같은 비율로 잡아, 받는 순간 글이 밀리지 않게 한다(모르면 16:9)
+      imageSize={getPostImageSize(block)}
       image={
         onImageOpen === undefined ? (
           image
