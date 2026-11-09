@@ -3,7 +3,8 @@
  * 컴포넌트와 앱은 이 클래스만 붙이고 duration-*·ease-*·transition-* 같은 클래스를 직접 쓰지 않는다.
  *
  * @codocs [[피그마 연동:모션 클래스]]
- * - 어떤 움직임이 있고 이름이 무엇인지는 피그마 00 · Guide의 Motion이 보여 준다([[디자인 기반:모션]]).
+ * - 움직임은 피그마에서 그 움직임이 일어나는 자리(조립 흐름 프레임, 컴포넌트·자산 원본)에 있고,
+ *   클래스 이름은 흐름 프레임 이름이나 원본의 Development 주석이다([[디자인 기반:모션 견본]]).
  * - 상태 전환(hover·pressed·focus) 클래스는 transition 설정(속성·시간·이징)만 갖고, 바뀐 뒤의 값은 컴포넌트가 가진다.
  * - 시간·이징·배율은 tokens.css의 var(--motion-*)로 쓴다. 토큰 값은 피그마 Motion 변수에서 만들어진다.
  * - @keyframes와 motion-* 클래스(@utility)는 이 파일에서만 정의한다(stylelint.config.mjs).
@@ -260,9 +261,9 @@
 }
 
 /*
- * Start·검색 패널 열기(견본 motion-panel-enter). ShellSurface가 화면 아래에서 제자리로 미끄러져 올라온다.
- * 견본의 720은 견본 패널 높이이고 실행 중 값은 없다. 키프레임은 px 대신 요소 자기 높이(translate 100%)로 써서
- * 실제 패널 높이가 달라도(모바일 640 등) 화면 아래로 빠졌다가 올라오게 한다(견본에서는 720과 같다).
+ * Start·검색 패널 열기(조립 흐름 motion-panel-enter). ShellSurface가 화면 아래에서 제자리로 미끄러져 올라온다(페이드 없음).
+ * 흐름의 862는 패널 기본 높이(size/shell/height)이고 실행 중 값은 없다. 키프레임은 px 대신 요소 자기 높이(translate 100%)로 써서
+ * 실제 패널 높이가 달라도(작은 화면, 모바일 등) 화면 아래로 빠졌다가 올라오게 한다(흐름에서는 862와 같다).
  * 앱이 패널을 열 때(data-starting-style 자리) 붙인다. 시작 모습을 재생 전에도 유지하도록 fill-mode는 both다.
  */
 @keyframes motion-panel-enter {
@@ -277,7 +278,7 @@
 
 @utility motion-panel-enter {
   animation-name: motion-panel-enter;
-  animation-duration: var(--motion-duration-normal);
+  animation-duration: var(--motion-duration-fast);
   animation-timing-function: var(--motion-easing-direct-entrance);
   animation-fill-mode: both;
 }
@@ -663,9 +664,65 @@
 }
 
 /*
- * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다.
+ * 드롭다운·우클릭 메뉴 열기(조립 흐름 motion-menu-enter). 메뉴가 열리는 쪽으로 미끄러져 나오고, 시작 가장자리(아래로 열면 위)에서
+ * 잘린다. 페이드는 없다. 흐름의 -102는 흐름 메뉴(Menu/ViewOptions)의 높이라 px 대신 요소 자기 높이(translate -100%)로 써서
+ * 실제 메뉴 높이가 달라도 시작 가장자리 밖에서 나오게 한다(흐름에서는 -102와 같다). 실행 중 값은 없다.
+ * 클래스는 잘라 내는 틀(흐름의 menu clip, 앱에서는 Base UI 메뉴 팝업)에 붙이고 바로 안의 메뉴 바탕이 움직인다.
+ * 틀은 시작 가장자리만 자르고, 나머지 세 쪽은 그림자가 보이도록 안쪽 여백만큼 넓힌 뒤 같은 만큼 바깥 여백을 줄여 자리는 그대로다.
+ * 열린 뒤에는 시작 가장자리의 그림자까지 보이도록 쓰는 곳이 움직임이 끝나면 클래스를 뗀다.
+ * 열리는 쪽은 Base UI가 틀에 단 data-side로 고른다(top이면 위로, 나머지는 아래로). 피그마 흐름은 아래로 여는 모습이다.
+ * 틀의 넓힌 여백은 누르는 영역이 되지 않게 포인터 이벤트를 메뉴 바탕에만 둔다.
+ * 하위 메뉴는 측정하지 않아 지금처럼 motion-flyout-enter, 작업 표시줄 앱 버튼 메뉴는 motion-taskbar-menu-enter를 쓴다.
+ */
+@keyframes motion-menu-enter {
+  0% {
+    translate: 0 -100%;
+  }
+
+  100% {
+    translate: 0 0;
+  }
+}
+
+@keyframes motion-menu-enter-up {
+  0% {
+    translate: 0 100%;
+  }
+
+  100% {
+    translate: 0 0;
+  }
+}
+
+@utility motion-menu-enter {
+  overflow: hidden;
+  padding: 0 var(--spacing-3xl) var(--spacing-3xl);
+  margin: 0 calc(var(--spacing-3xl) * -1) calc(var(--spacing-3xl) * -1);
+  pointer-events: none;
+
+  & > * {
+    pointer-events: auto;
+    animation-name: motion-menu-enter;
+    animation-duration: var(--motion-duration-fast);
+    animation-timing-function: var(--motion-easing-direct-entrance);
+    animation-fill-mode: both;
+  }
+
+  &[data-side='top'] {
+    padding: var(--spacing-3xl) var(--spacing-3xl) 0;
+    margin: calc(var(--spacing-3xl) * -1) calc(var(--spacing-3xl) * -1) 0;
+  }
+
+  &[data-side='top'] > * {
+    animation-name: motion-menu-enter-up;
+  }
+}
+
+/*
+ * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다. 멈추면 정보가 사라지는 움직임만 남긴다([[디자인 기반:동작 줄이기]]).
  * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환, 순서 바꾸기 끌기는 여기서 움직임 없이 바로 바꾼다.
- * hover·pressed 색 전환, 검색 돋보기 페이드, ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
+ * hover·pressed·focus 색 전환도 서서히 바뀌지 않고 바로 바뀐다.
+ * 검색 돋보기 페이드, ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
  * 이미지 스켈레톤 반짝임은 반짝이지 않고 회색 칸만 보인다(반짝임 칠은 칸 밖 정지 자리에 남는다).
  * 애니메이션을 없애면 사라지는 요소는 기다릴 애니메이션이 없어 바로 빠진다([[피그마 연동:모션 클래스]]).
  */
@@ -688,8 +745,21 @@
   .motion-start-pinned-move-exit,
   .motion-start-pinned-move-enter,
   .motion-image-skeleton,
-  .motion-image-enter {
+  .motion-image-enter,
+  .motion-menu-enter > * {
     animation: none;
+  }
+
+  /* 메뉴 열기의 자르는 틀은 움직임이 없으면 필요 없어 그림자가 모두 보이게 푼다. */
+  .motion-menu-enter {
+    overflow: visible;
+    padding: 0;
+    margin: 0;
+  }
+
+  .motion-control-state,
+  .motion-search-box-focus-state {
+    transition: none;
   }
 
   /* 끄는 동안의 1.1배는 움직임 없이 바로 갖는다. */
