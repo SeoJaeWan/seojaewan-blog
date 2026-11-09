@@ -284,8 +284,8 @@
 }
 
 /*
- * Start·검색 패널 닫기(견본 motion-panel-exit). 패널 열기의 반대로, ShellSurface가 제자리에서 화면 아래로 미끄러져 내려간다.
- * 견본의 720은 견본 패널 높이이고 실행 중 값은 없다. 열기처럼 px 대신 요소 자기 높이(translate 100%)로 쓴다.
+ * Start·검색 패널 닫기(조립 흐름 motion-panel-exit). 패널 열기의 반대로, ShellSurface가 제자리에서 화면 아래로 미끄러져 내려간다.
+ * 흐름의 862는 패널 기본 높이(size/shell/height)이고 실행 중 값은 없다. 열기처럼 px 대신 요소 자기 높이(translate 100%)로 쓴다.
  * 앱이 패널을 닫을 때(data-ending-style 자리) 붙인다. 사라진 모습을 끝난 뒤에도 유지하도록 fill-mode는 both다(창 닫기처럼).
  */
 @keyframes motion-panel-exit {
