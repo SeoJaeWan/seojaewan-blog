@@ -13,306 +13,26 @@
       },
       "nodeId": "854:6152",
       "properties": {},
-      "tree": {
-        "children": [
+      "report": {
+        "components": [
           {
-            "children": [
-              {
-                "children": [
-                  {
-                    "fills": [
-                      "color/black/89"
-                    ],
-                    "name": "title",
-                    "size": {
-                      "h": 28,
-                      "w": 400
-                    },
-                    "sizing": {
-                      "h": "FILL",
-                      "v": "HUG"
-                    },
-                    "text": {
-                      "autoResize": "HEIGHT",
-                      "maxLines": null,
-                      "maxLinesVariable": null,
-                      "segments": [
-                        {
-                          "characters": "휴지통 비우기",
-                          "fill": "color/black/89",
-                          "textStyle": "Hangul/Subtitle"
-                        }
-                      ],
-                      "truncation": "DISABLED"
-                    },
-                    "type": "TEXT"
-                  },
-                  {
-                    "fills": [
-                      "color/black/89"
-                    ],
-                    "name": "message",
-                    "size": {
-                      "h": 20,
-                      "w": 400
-                    },
-                    "sizing": {
-                      "h": "FILL",
-                      "v": "HUG"
-                    },
-                    "text": {
-                      "autoResize": "HEIGHT",
-                      "maxLines": null,
-                      "maxLinesVariable": null,
-                      "segments": [
-                        {
-                          "characters": "소중한",
-                          "fill": "color/black/89",
-                          "textStyle": "Hangul/Body"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "color/black/89",
-                          "textStyle": "Body"
-                        },
-                        {
-                          "characters": "글이에요",
-                          "fill": "color/black/89",
-                          "textStyle": "Hangul/Body"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "color/black/89",
-                          "textStyle": "Body"
-                        },
-                        {
-                          "characters": "지우지",
-                          "fill": "color/black/89",
-                          "textStyle": "Hangul/Body"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "color/black/89",
-                          "textStyle": "Body"
-                        },
-                        {
-                          "characters": "말아주세요",
-                          "fill": "color/black/89",
-                          "textStyle": "Hangul/Body"
-                        }
-                      ],
-                      "truncation": "DISABLED"
-                    },
-                    "type": "TEXT"
-                  }
-                ],
-                "fills": [
-                  "color/white"
-                ],
-                "layout": {
-                  "counterAlign": "MIN",
-                  "gap": "spacing/md",
-                  "mode": "VERTICAL",
-                  "padding": [
-                    "spacing/2xl",
-                    "spacing/2xl",
-                    "spacing/2xl",
-                    "spacing/2xl"
-                  ],
-                  "primaryAlign": "MIN"
-                },
-                "name": "content",
-                "size": {
-                  "h": 108,
-                  "w": 448
-                },
-                "sizing": {
-                  "h": "FILL",
-                  "v": "HUG"
-                },
-                "type": "FRAME"
-              },
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "fills": [
-                          "color/white"
-                        ],
-                        "name": "label",
-                        "size": {
-                          "h": 20,
-                          "w": 25
-                        },
-                        "sizing": {
-                          "h": "HUG",
-                          "v": "HUG"
-                        },
-                        "text": {
-                          "autoResize": "WIDTH_AND_HEIGHT",
-                          "maxLines": null,
-                          "maxLinesVariable": null,
-                          "segments": [
-                            {
-                              "characters": "확인",
-                              "fill": "color/white",
-                              "textStyle": "Hangul/Body"
-                            }
-                          ],
-                          "truncation": "DISABLED"
-                        },
-                        "type": "TEXT"
-                      }
-                    ],
-                    "component": "Button",
-                    "fills": [
-                      "color/blue/59"
-                    ],
-                    "layout": {
-                      "counterAlign": "CENTER",
-                      "gap": "spacing/sm",
-                      "mode": "HORIZONTAL",
-                      "padding": [
-                        "spacing/sm-nudge",
-                        "spacing/md",
-                        "spacing/sm-nudge",
-                        "spacing/md"
-                      ],
-                      "primaryAlign": "CENTER"
-                    },
-                    "minWidth": "size/button/min-width",
-                    "name": "primary button",
-                    "properties": {
-                      "Has icon": false,
-                      "Label": "확인",
-                      "State": "Rest",
-                      "Variant": "Accent"
-                    },
-                    "radius": [
-                      "radius/control",
-                      "radius/control",
-                      "radius/control",
-                      "radius/control"
-                    ],
-                    "size": {
-                      "h": 32,
-                      "w": 400
-                    },
-                    "sizing": {
-                      "h": "FILL",
-                      "v": "HUG"
-                    },
-                    "strokeStyle": "Elevation/Accent Control Border",
-                    "strokeWeight": [
-                      "stroke-width/default",
-                      "stroke-width/default",
-                      "stroke-width/default",
-                      "stroke-width/default"
-                    ],
-                    "strokesIncludedInLayout": false,
-                    "type": "INSTANCE"
-                  }
-                ],
-                "fills": [
-                  "color/gray/4"
-                ],
-                "layout": {
-                  "counterAlign": "MIN",
-                  "gap": "spacing/sm",
-                  "mode": "HORIZONTAL",
-                  "padding": [
-                    "spacing/2xl",
-                    "spacing/2xl",
-                    "spacing/2xl",
-                    "spacing/2xl"
-                  ],
-                  "primaryAlign": "MIN"
-                },
-                "name": "footer",
-                "size": {
-                  "h": 81,
-                  "w": 448
-                },
-                "sizing": {
-                  "h": "FILL",
-                  "v": "HUG"
-                },
-                "strokeWeight": [
-                  "stroke-width/default",
-                  0,
-                  0,
-                  0
-                ],
-                "strokes": [
-                  "color/black/6"
-                ],
-                "strokesIncludedInLayout": true,
-                "type": "FRAME"
-              }
-            ],
             "component": "MessageBox",
-            "effectStyle": "Elevation/Dialog",
-            "fills": [
-              "color/gray/4"
+            "paths": [
+              "message box"
             ],
-            "layout": {
-              "counterAlign": "MIN",
-              "gap": 0,
-              "mode": "VERTICAL",
-              "padding": [
-                0,
-                0,
-                0,
-                0
-              ],
-              "primaryAlign": "MIN"
-            },
-            "name": "message box",
             "properties": {
               "Buttons": "One",
               "Message": "소중한 글이에요 지우지 말아주세요",
               "Title": "휴지통 비우기"
-            },
-            "radius": [
-              "radius/overlay",
-              "radius/overlay",
-              "radius/overlay",
-              "radius/overlay"
-            ],
-            "size": {
-              "h": 189,
-              "w": 448
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "HUG"
-            },
-            "strokeWeight": [
-              "stroke-width/default",
-              "stroke-width/default",
-              "stroke-width/default",
-              "stroke-width/default"
-            ],
-            "strokes": [
-              "color/gray/51/40"
-            ],
-            "strokesIncludedInLayout": false,
-            "type": "INSTANCE"
+            }
           }
         ],
-        "layout": {
-          "counterAlign": "MIN",
-          "gap": "spacing/none",
-          "mode": "VERTICAL",
-          "padding": [
-            "spacing/none",
-            "spacing/none",
-            "spacing/none",
-            "spacing/none"
-          ],
-          "primaryAlign": "MIN"
-        },
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
         "name": "MessageBox/EmptyRecycleBin",
         "size": {
           "h": 189,
@@ -321,8 +41,7 @@
         "sizing": {
           "h": "HUG",
           "v": "HUG"
-        },
-        "type": "COMPONENT"
+        }
       }
     }
   }
