@@ -3,27 +3,22 @@
     "ms": 0,
     "token": null
   },
-  "directives": {
-    "hold": [
-      "받기에 실패하면 멈추고 회색 칸으로 남는다"
-    ],
-    "reduced-motion": [
-      "반짝이지 않고 회색 칸만 보인다"
-    ],
-    "repeat": [
-      "infinite"
-    ],
-    "trigger": [
-      "이미지를 받는 동안(본문 이미지·커버·이미지 크게 보기, 그릴 때 이미 받아진 이미지는 제외)"
-    ]
-  },
+  "directives": {},
   "duration": {
     "ms": 1000,
     "token": "motion/duration/slower"
   },
   "iterations": "infinite",
   "name": "motion-image-skeleton",
-  "nodeId": "3356:558",
+  "nodeId": "3348:2141",
+  "notes": [
+    {
+      "category": "Development",
+      "path": "",
+      "text": "motion-image-skeleton"
+    }
+  ],
+  "source": "component",
   "tracks": [
     {
       "delay": {
@@ -53,9 +48,9 @@
       "node": "shimmer",
       "nodeKind": "layer",
       "operation": "SET",
-      "path": "Figure / image frame / placeholder / shimmer",
+      "path": "State=Loading / image frame / placeholder / shimmer",
       "property": "TRANSLATION_X"
     }
   ],
-  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=3356-558"
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=3348-2141"
 }
