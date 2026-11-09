@@ -733,6 +733,59 @@ export const TwoWindows: Story = {
   },
 };
 
+const loadingBody: readonly PostBlock[] = [
+  ...imageBody,
+  {
+    type: 'image',
+    // 없는 주소라 받기에 실패한다
+    url: '/story-missing-image.png',
+    width: null,
+    height: null,
+    caption: [{ text: '깨진 그림', link: null }],
+  },
+];
+
+// @codocs [[Notion 이미지 제공:로딩 표시]]
+/** 글 이미지는 받는 동안 스켈레톤(받는 중 Figure)을 보이고, 다 받으면 이미지를, 받지 못하면 회색 칸을 남긴다 */
+export const ImageLoading: Story = {
+  beforeEach: async () => {
+    await hydratePosts();
+    openChromeWindow({ kind: 'post', collection: 'blog', slug: 'rsc' });
+    return mockPostBodies({ rsc: loadingBody });
+  },
+  play: async ({ step }) => {
+    /**
+     * 캡션으로 Figure를 찾는다.
+     * @param caption 캡션
+     * @returns Figure
+     */
+    function figureOf(caption: string): HTMLElement {
+      const figure = screen.getByText(caption).closest('figure');
+      if (figure === null) {
+        throw new Error(`Figure가 없다: ${caption}`);
+      }
+      return figure;
+    }
+
+    await step('다 받은 이미지는 받는 중 표시 없이 이미지를 보인다', async () => {
+      const image = await screen.findByRole('button', { name: '이미지 크게 보기: 구조 그림' });
+      // 다 받은 이미지는 서서히 나타나므로 나타나기를 기다린다.
+      await waitFor(() =>
+        expect(within(image).getByRole('img', { name: '구조 그림' })).toBeVisible(),
+      );
+      await expect(figureOf('구조 그림')).not.toHaveAttribute('aria-busy');
+    });
+
+    await step('받지 못한 이미지는 반짝임을 멈추고 이미지 없이 회색 칸으로 남는다', async () => {
+      await waitFor(() => expect(figureOf('깨진 그림')).not.toHaveAttribute('aria-busy'));
+      await expect(figureOf('깨진 그림').querySelector('img')).toBeNull();
+      await expect(
+        screen.queryByRole('button', { name: '이미지 크게 보기: 깨진 그림' }),
+      ).not.toBeInTheDocument();
+    });
+  },
+};
+
 // @codocs [[Chrome:글 화면]]
 /** 글 본문 이미지를 크게 본다 */
 export const ImageViewer: Story = {

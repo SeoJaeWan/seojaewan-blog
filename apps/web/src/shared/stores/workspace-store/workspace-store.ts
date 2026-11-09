@@ -26,6 +26,7 @@ import {
   setDesktopIconPositions,
   setExplorerView,
   type StartAllViewSetting,
+  swapStartPin,
   toSavedWorkspace,
   trashItems,
   unpinFromStart,
@@ -59,6 +60,7 @@ export type WorkspaceActionResult = { ok: true } | { ok: false; reason: Workspac
  * - pinToStart: Start 고정됨에 넣는다(맨 뒤)
  * - unpinFromStart: Start 고정됨에서 뺀다
  * - moveStartPin: Start 고정됨의 순서를 바꾼다(맨 앞으로 이동은 0)
+ * - swapStartPin: Start 고정됨의 칸을 화면에 보이는 옆 칸과 자리를 바꾼다(왼쪽·오른쪽으로 이동)
  * - setStartAllView: Start 모두 목록의 보기를 바꾼다
  * - pinToTaskbar: 작업 표시줄에 앱을 고정한다
  * - unpinFromTaskbar: 작업 표시줄에서 앱 고정을 해제한다
@@ -83,6 +85,7 @@ type WorkspaceActions = {
   pinToStart: (id: string) => void;
   unpinFromStart: (id: string) => void;
   moveStartPin: (id: string, index: number) => void;
+  swapStartPin: (id: string, direction: 'left' | 'right') => void;
   setStartAllView: (view: StartAllViewSetting) => void;
   pinToTaskbar: (app: WindowApp) => void;
   unpinFromTaskbar: (app: WindowApp) => void;
@@ -268,6 +271,9 @@ function createWorkspaceStore(
     },
     moveStartPin: (id, index) => {
       update((state) => moveStartPin(state, id, index));
+    },
+    swapStartPin: (id, direction) => {
+      update((state) => swapStartPin(state, id, direction));
     },
     setStartAllView: (startAllView) => {
       set({ startAllView });

@@ -25,9 +25,10 @@ const deviceClassNames = {
     gap: 'h-size-boot-screen-mobile-gap',
   },
   // 화면 구간을 스크립트 없이 CSS(`mobile:`)로 고른다. 서버가 화면 크기를 모르는 첫 HTML에서도 기기에 맞는 모습으로 그린다.
+  // 화면 크기는 피그마 변형의 고정 크기(견본 화면 크기)가 아니다. `auto`는 앱 화면을 덮는 자리라 화면(동적 뷰포트) 전체를 채운다.
+  // @codocs [[반응형:화면 채우기]]
   auto: {
-    screen:
-      'w-size-boot-screen-width h-size-boot-screen-height mobile:w-size-screen-mobile-width mobile:h-size-screen-mobile-height',
+    screen: 'h-dvh w-full',
     logo: 'size-size-boot-screen-logo mobile:size-size-boot-screen-logo-mobile',
     gap: 'h-size-boot-screen-gap mobile:h-size-boot-screen-mobile-gap',
   },
@@ -41,7 +42,7 @@ const deviceClassNames = {
  * 접근성 이름은 쓰는 곳이 `aria-label`로 붙인다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
  * @param props 컴포넌트 속성
- * @param props.device 피그마 Device. 화면 크기와 로고 크기, 로고와 링 사이 간격을 고른다. `auto`면 화면 구간에 따라 CSS가 고른다
+ * @param props.device 피그마 Device. 화면 크기와 로고 크기, 로고와 링 사이 간격을 고른다. `auto`면 로고 크기와 간격은 화면 구간에 따라 CSS가 고르고, 화면은 고정 크기 대신 화면(동적 뷰포트) 전체를 채운다
  * @param props.progressLabel 진행 링의 접근성 이름. 기본은 다시 시작할 때의 `다시 시작하는 중`이다
  * @param props.className 덧붙이거나 덮어쓸 클래스
  */

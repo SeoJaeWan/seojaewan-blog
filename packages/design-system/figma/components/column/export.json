@@ -1,0 +1,231 @@
+{
+  "description": "열 나누기 블록의 열 하나로, 블록을 위에서 아래로 쌓는다.\n@sample-size width",
+  "name": "Column",
+  "nodeId": "3349:1761",
+  "propertyDefinitions": {
+    "Content": {
+      "type": "SLOT"
+    }
+  },
+  "variants": {
+    "default": {
+      "node": {
+        "height": 52,
+        "width": 356,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3349:1761",
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "color/black/89"
+                        ],
+                        "name": "text",
+                        "size": {
+                          "h": 48,
+                          "w": 337
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "인용",
+                              "fill": "color/black/89",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "color/black/89",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "블록의",
+                              "fill": "color/black/89",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "color/black/89",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "글이다",
+                              "fill": "color/black/89",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": ". ",
+                              "fill": "color/black/89",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "출처나",
+                              "fill": "color/black/89",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "color/black/89",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "강조할",
+                              "fill": "color/black/89",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "color/black/89",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "문장을",
+                              "fill": "color/black/89",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "color/black/89",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "담는다",
+                              "fill": "color/black/89",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": ".",
+                              "fill": "color/black/89",
+                              "textStyle": "Body Large"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/sm",
+                      "mode": "VERTICAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "Content",
+                    "size": {
+                      "h": 48,
+                      "w": 337
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "type": "SLOT"
+                  }
+                ],
+                "component": "Quote",
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/none",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/2xs",
+                    "spacing/none",
+                    "spacing/2xs",
+                    "spacing/lg"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "Quote",
+                "properties": {},
+                "size": {
+                  "h": 52,
+                  "w": 356
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "strokeWeight": [
+                  0,
+                  0,
+                  0,
+                  "stroke-width/indicator"
+                ],
+                "strokes": [
+                  "color/black/61"
+                ],
+                "strokesIncludedInLayout": true,
+                "type": "INSTANCE"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/lg",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Content",
+            "size": {
+              "h": 52,
+              "w": 356
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Column",
+        "size": {
+          "h": 52,
+          "w": 356
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    }
+  }
+}

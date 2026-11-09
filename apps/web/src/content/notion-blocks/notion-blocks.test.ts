@@ -235,6 +235,44 @@ describe('Notion 블록:지원하지 않는 블록', () => {
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('지원하지 않는 블록이다: embed'));
   });
 
+  // @codocs [[Notion 블록:지원 블록]]
+  it('열 나누기는 열들을 품고, 열은 width_ratio(없으면 null)와 안의 블록을 품는다', () => {
+    expect(
+      toPostBlocks([
+        {
+          block: block('list', 'column_list', {}),
+          children: [
+            {
+              block: block('left', 'column', { width_ratio: 0.25 }),
+              children: [{ block: paragraph('a', '왼쪽'), children: [] }],
+            },
+            {
+              block: block('right', 'column', {}),
+              children: [{ block: paragraph('b', '오른쪽'), children: [] }],
+            },
+          ],
+        },
+      ]),
+    ).toEqual([
+      {
+        type: 'column_list',
+        children: [
+          {
+            type: 'column',
+            widthRatio: 0.25,
+            children: [{ type: 'paragraph', richText: [{ text: '왼쪽', link: null }] }],
+          },
+          {
+            type: 'column',
+            widthRatio: null,
+            children: [{ type: 'paragraph', richText: [{ text: '오른쪽', link: null }] }],
+          },
+        ],
+      },
+    ]);
+    expect(warn).not.toHaveBeenCalled();
+  });
+
   it('하위 블록을 품지 못하는 블록의 하위 블록은 그 블록 바로 뒤에 둔다', () => {
     expect(
       toPostBlocks([
@@ -249,6 +287,24 @@ describe('Notion 블록:지원하지 않는 블록', () => {
     ]);
   });
 });
+
+/**
+ * 블록 응답을 만든다.
+ * @param id 블록 ID
+ * @param type 블록 종류
+ * @param body 종류 이름 아래의 내용
+ * @returns 블록 응답
+ */
+function block(id: string, type: string, body: Record<string, unknown>): unknown {
+  return {
+    object: 'block',
+    id,
+    type,
+    has_children: true,
+    last_edited_time: '2026-11-06T00:00:00.000Z',
+    [type]: body,
+  };
+}
 
 /**
  * 문단 블록 응답을 만든다.

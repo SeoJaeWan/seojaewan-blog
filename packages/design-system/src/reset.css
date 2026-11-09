@@ -4,3 +4,17 @@
 [data-scrollbar-hidden] {
   scrollbar-width: none;
 }
+
+/*
+ * @codocs [[디자인 시스템:커서]]
+ * 웹 페이지 영역(`data-web-page`, Chrome 창 안의 글 페이지)에서 누를 수 있는 요소는 손가락 커서다. 실제 웹 페이지와 같다.
+ * 목차 항목·목차 접기·이전/다음 카드·검색 결과 줄·새 탭 바로가기·코드 복사 버튼은 Windows 화면과 같은 컴포넌트를
+ * 쓰므로 컴포넌트에 커서를 붙이지 않고, 웹 페이지 영역 안에서만 이 규칙이 준다. Windows 화면은 default 그대로다.
+ * base 층에 두어 요소가 직접 고른 커서 클래스(이미지의 `cursor-zoom-in` 등)가 이긴다.
+ */
+@layer base {
+  [data-web-page]
+    :is(a[href], button, [role='button']):not(:disabled, [data-disabled], [aria-disabled='true']) {
+    cursor: pointer;
+  }
+}

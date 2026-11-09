@@ -10,7 +10,7 @@ import type {
 
 import { ExplorerTab, IconButton, ImageAsset, WindowFrame } from '@seojaewan/design-system';
 
-import { useTabStrip } from '@/shared/hooks/use-tab-strip/use-tab-strip';
+import { TAB_ID_ATTRIBUTE, useTabStrip } from '@/shared/hooks/use-tab-strip/use-tab-strip';
 
 export type ExplorerWindowDevice = 'desktop' | 'mobile';
 
@@ -194,6 +194,7 @@ export function ExplorerWindow({
                   return (
                     <ExplorerTab
                       key={tab.id ?? `${String(index)}-${tab.title}`}
+                      {...{ [TAB_ID_ATTRIBUTE]: tab.id }}
                       isSelected={tab.isSelected}
                       // 선택된 탭 바로 왼쪽 탭은 구분선을 그리지 않는다.
                       hasSeparator={tabs[index + 1]?.isSelected !== true}

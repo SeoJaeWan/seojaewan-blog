@@ -1,4 +1,5 @@
 import type { ComponentProps, JSX, KeyboardEvent, MouseEventHandler, ReactNode, Ref } from 'react';
+import { useEffect, useRef } from 'react';
 
 import {
   cn,
@@ -16,10 +17,12 @@ import {
 
 import { ChromeNewTabSearch } from '@/features/chrome/components/chrome-new-tab-search/chrome-new-tab-search';
 
+import { getTocScrollTop } from './utils/toc-scroll/toc-scroll';
+
 export type ChromePageLayout = 'wide' | 'narrow';
 
-/** 목차 항목 하나 */
-export type ChromePageTocItem = { label: string; isActive?: boolean };
+/** 목차 항목 하나. level은 들여 쓰기 단계(글에서 가장 높은 제목 단계가 1)이고 없으면 1이다 */
+export type ChromePageTocItem = { label: string; isActive?: boolean; level?: 1 | 2 | 3 };
 
 /** 새 탭 최신 글 바로가기 하나. id는 같은 제목의 글을 구분한다 */
 export type ChromePageLatestPost = { id?: string; title: string };
@@ -85,6 +88,8 @@ const WORDMARK = 'seojaewan.com';
  * 글 화면. wide는 글(최대 720)과 오른쪽 목차(220)를 가운데에 놓고, narrow는 글 머리 아래에 접은 목차를 둔다.
  * wide의 목차는 스크롤해도 오른쪽에 붙어 있다(sticky). 목차 항목이 없으면 목차를 그리지 않는다.
  * narrow의 접은 목차를 누르면 펼치고, 펼친 목차의 머리(제목)를 누르면 다시 접는다(클릭·Enter·Space).
+ * 글 맨 아래(꼬리 아래)에 위와 같은 여백을 둔다(피그마 `Chrome/Page` `Page=Post`의 아래 여백, wide `spacing/5xl`·narrow `spacing/2xl`).
+ * @codocs [[Chrome:글 화면]]
  * @param props 컴포넌트 속성
  * @param props.layout 피그마 Layout. wide는 넓은 창, narrow는 좁은 창의 배치다. 쓰는 곳이 창 내용 너비로 고른다
  * @param props.cover 커버 이미지(피그마 PostCover `image`). 있으면 제목 위에 그린다. 글 화면은 Notion 커버를 이미지 서버의 크기별 사본으로 넣는다([[Notion 이미지 제공]])
@@ -117,6 +122,31 @@ function PostPage({
   onNextOpen,
 }: ChromePostPageProps & { layout: ChromePageLayout }): JSX.Element {
   const isWide = layout === 'wide';
+  const tocRef = useRef<HTMLDivElement>(null);
+  const activeTocIndex = toc.findIndex((item) => item.isActive === true);
+
+  useEffect(
+    /**
+     * 지금 읽는 위치 항목이 목차 안에서 가려지면(목차가 최대 높이를 넘어 스크롤할 때) 그 항목이 보이도록 목차만 스크롤한다.
+     * 페이지는 스크롤하지 않는다.
+     * @codocs [[Chrome:글 화면]]
+     */
+    () => {
+      const item = tocRef.current?.querySelector('[aria-current="location"]');
+      const list = item?.parentElement;
+      if (item === null || item === undefined || list === null || list === undefined) {
+        return;
+      }
+      const listRect = list.getBoundingClientRect();
+      const itemRect = item.getBoundingClientRect();
+      list.scrollTop = getTocScrollTop(
+        { top: listRect.top, bottom: listRect.bottom, scrollTop: list.scrollTop },
+        { top: itemRect.top, bottom: itemRect.bottom },
+      );
+    },
+    [activeTocIndex, isWide, isTocExpanded],
+  );
+
   const tocItems = toc.map(
     /**
      * 목차 항목 하나를 그린다.
@@ -129,6 +159,7 @@ function PostPage({
         <TocItem
           key={String(index) + item.label}
           label={item.label}
+          level={item.level}
           isActive={item.isActive}
           {...(onTocItemSelect === undefined
             ? {}
@@ -145,8 +176,8 @@ function PostPage({
     <div
       className={
         isWide
-          ? 'flex justify-center gap-spacing-5xl px-spacing-lg pt-spacing-5xl'
-          : 'flex flex-col items-center px-spacing-lg pt-spacing-2xl'
+          ? 'flex justify-center gap-spacing-5xl px-spacing-3xl pt-spacing-5xl pb-spacing-5xl'
+          : 'flex flex-col items-center px-spacing-lg pt-spacing-2xl pb-spacing-2xl'
       }
     >
       <article className="flex w-full max-w-size-post-width min-w-size-none flex-col items-start gap-spacing-lg">
@@ -163,6 +194,7 @@ function PostPage({
         </h1>
         {!isWide && hasToc && (
           <Toc
+            ref={tocRef}
             isExpanded={isTocExpanded}
             className="w-full"
             {...(onTocToggle === undefined ? {} : getTocToggleProps(isTocExpanded, onTocToggle))}
@@ -200,7 +232,10 @@ function PostPage({
         </nav>
       </article>
       {isWide && hasToc && (
-        <Toc className="sticky top-spacing-5xl w-size-toc-width shrink-shrink-none self-start">
+        <Toc
+          ref={tocRef}
+          className="sticky top-spacing-5xl w-size-toc-width shrink-shrink-none self-start"
+        >
           {tocItems}
         </Toc>
       )}
@@ -414,7 +449,13 @@ export function ChromePage({
     }
   }
   return (
-    <div ref={scrollRef} className={cn('flex flex-col overflow-y-auto bg-color-white', className)}>
+    // @codocs [[디자인 시스템:커서]]
+    // data-web-page: 이 안의 누를 수 있는 요소는 손가락 커서다(디자인 시스템 reset.css).
+    <div
+      ref={scrollRef}
+      data-web-page
+      className={cn('flex flex-col overflow-y-auto bg-color-white', className)}
+    >
       {zoom === undefined ? (
         content
       ) : (

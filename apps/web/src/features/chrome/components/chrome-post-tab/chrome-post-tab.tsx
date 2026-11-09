@@ -1,11 +1,11 @@
 import { type JSX, useRef, useState } from 'react';
 
 import { ChromePage } from '@/features/chrome/components/chrome-page/chrome-page';
+import { LoadingImage } from '@/features/chrome/components/loading-image/loading-image';
 import {
   PostBlocks,
   type PostImageBlock,
 } from '@/features/chrome/components/post-blocks/post-blocks';
-import { ResponsiveImage } from '@/features/chrome/components/responsive-image/responsive-image';
 import { getPostAddress } from '@/features/chrome/utils/chrome-address/chrome-address';
 import type { ChromeTabPage } from '@/shared/utils/chrome-tabs/chrome-tabs';
 import { getTocHeadings, type PostBody } from '@/shared/utils/post-body/post-body';
@@ -40,7 +40,7 @@ type ChromePostTabProps = {
  * 본문은 서버 경로에서 받아 그린다. 받는 동안 본문 자리는 비워 두고, 받지 못하면 찾을 수 없음 화면을 보인다
  * (받는 중·실패 화면은 디자인이 없다). 제목이 1개 이상이면 목차를 보이고, 스크롤하는 동안 지금 읽는 제목을 표시한다.
  * 목차 항목을 누르면 그 제목으로 스크롤한다. 서버가 읽어 넘긴 본문(`preloadedBody`)이 있으면 받지 않고 바로 그린다.
- * 커버가 있으면 본문과 같은 방식(크기별 사본과 크기)으로 제목 위에 그린다.
+ * 커버가 있으면 본문과 같은 방식(크기별 사본과 크기)으로 제목 위에 그리고, 받는 동안 스켈레톤을 보인다([[Notion 이미지 제공:로딩 표시]]).
  * @codocs [[Chrome:글 화면]]
  * @codocs [[SEO와 공유 미리보기:첫 HTML]]
  * @param props 컴포넌트 속성
@@ -129,11 +129,24 @@ export function ChromePostTab({
       zoom={zoom}
       meta={getPostMeta(workspace, post)}
       title={post.name}
-      cover={cover === null ? undefined : <ResponsiveImage image={cover} alt="" />}
-      toc={headings.map((heading, index) => ({
-        label: heading.label,
-        isActive: index === activeIndex,
-      }))}
+      cover={
+        cover === null ? undefined : (
+          <LoadingImage image={cover} alt="" placeholderClassName="size-full" />
+        )
+      }
+      toc={headings.map(
+        /**
+         * 목차 제목 하나를 목차 항목으로 바꾼다. 지금 읽는 위치면 표시한다.
+         * @param heading 목차 제목
+         * @param index 순서
+         * @returns 목차 항목
+         */
+        (heading, index) => ({
+          label: heading.label,
+          level: heading.level,
+          isActive: index === activeIndex,
+        }),
+      )}
       onTocItemSelect={handleTocItemSelect}
       isTocExpanded={isTocExpanded}
       onTocToggle={handleTocToggle}
@@ -145,6 +158,7 @@ export function ChromePostTab({
       {bodyState.status === 'loaded' && (
         <PostBlocks
           blocks={bodyState.body.blocks}
+          layout={layout}
           resolveLink={resolveLink}
           onPageOpen={handleNavigate}
           onImageOpen={handleImageOpen}

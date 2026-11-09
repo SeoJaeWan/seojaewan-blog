@@ -1,5 +1,6 @@
 // 작업 표시줄 앱 버튼을 끌어 순서를 바꿀 때 놓일 자리를 찾는 규칙이다.
 
+import { getLayoutRect } from '@/shared/utils/layout-rect/layout-rect';
 import type { WindowApp } from '@/shared/utils/window-rules/window-rules';
 
 /** 앱 버튼 요소에 다는 속성. 앱 id를 담는다(최소화·복원 모션도 이 속성으로 버튼 자리를 찾는다) */
@@ -7,7 +8,9 @@ export const TASKBAR_APP_ATTRIBUTE = 'data-taskbar-app';
 
 /**
  * 앱 버튼들 가운데 화면 자리 아래에 있는 버튼의 앱을 찾는다. 끌어 순서를 바꿀 때 놓일 자리를 정한다.
+ * 끄는 버튼과 미끄러지는 버튼의 움직이는 모습이 아니라 원래 자리(`getLayoutRect`)로 찾는다.
  * @codocs [[작업 표시줄:고정과 순서]]
+ * @codocs [[항목 조작:순서 바꾸기 끌기]]
  * @param container 앱 버튼들을 담은 요소
  * @param apps 찾을 앱
  * @param x 화면 가로 자리(px)
@@ -22,7 +25,7 @@ export function findTaskbarAppAt(
 ): WindowApp | null {
   const buttons = container?.querySelectorAll(`[${TASKBAR_APP_ATTRIBUTE}]`) ?? [];
   for (const button of buttons) {
-    const rect = button.getBoundingClientRect();
+    const rect = getLayoutRect(button);
     const isInside = x >= rect.left && x < rect.right && y >= rect.top && y < rect.bottom;
     if (isInside) {
       return apps.find((app) => app === button.getAttribute(TASKBAR_APP_ATTRIBUTE)) ?? null;

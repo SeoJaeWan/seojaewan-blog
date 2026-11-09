@@ -8,6 +8,11 @@ import {
 } from 'react';
 
 import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
+import { useReorderMotion } from '@/shared/hooks/use-reorder-motion/use-reorder-motion';
+import { getLayoutRect } from '@/shared/utils/layout-rect/layout-rect';
+
+/** 탭 요소(탭 줄의 바로 아래 자식)에 다는 속성. 탭 id를 담는다. 끌어 순서를 바꿀 때 탭을 움직이는 데 쓴다 */
+export const TAB_ID_ATTRIBUTE = 'data-tab-id';
 
 /**
  * 탭 줄 훅의 설정
@@ -51,7 +56,10 @@ type TabStripControls = {
  * - 닫기: 탭에서 Delete로 닫는다. 포커스가 탭 줄에 있었으면 닫은 뒤 고른 탭으로 옮긴다(가장 가까운 내용).
  * - 끌기: 탭을 누른 뒤 끌기 거리(4px)를 넘게 움직이면, 포인터 가로 자리에 있는 탭 자리로 옮긴다. 끄는 동안 바로 옮긴다.
  *   마우스 왼쪽 버튼과 펜만 받는다. 끄는 동안 탭이 닫히거나 열리면 더 옮기지 않는다.
+ *   끄는 탭은 커진 채 포인터를 가로로 따라오고, 밀려나는 탭은 새 자리로 미끄러지고, 놓으면 새 자리로 들어간다(`useReorderMotion`).
+ *   탭이 움직이려면 탭 요소에 `data-tab-id`(`TAB_ID_ATTRIBUTE`)로 탭 id를 달아야 한다.
  * @codocs [[파일 탐색기:탭]]
+ * @codocs [[항목 조작:순서 바꾸기 끌기]]
  * @codocs [[Chrome:구성]]
  * @codocs [[접근성:포커스]]
  * @param options 고른 탭, 탭 개수, 옮길 때 부를 함수
@@ -65,6 +73,10 @@ export function useTabStrip(options: UseTabStripOptions): TabStripControls {
   // 끄는 동안 탭이 옮겨지면 쓰는 곳이 새 콜백을 넘기므로, 끌기를 시작할 때의 콜백이 아니라 늘 지금 콜백을 부른다.
   const onTabMoveRef = useRef(onTabMove);
   const startPointerDrag = usePointerDrag();
+  const reorderMotion = useReorderMotion(tabListRef, {
+    itemAttribute: TAB_ID_ATTRIBUTE,
+    axis: 'x',
+  });
 
   useEffect(
     /**
@@ -123,8 +135,13 @@ export function useTabStrip(options: UseTabStripOptions): TabStripControls {
     }
     let current = index;
     const startCount = tabListRef.current?.children.length ?? 0;
+    const tab = event.currentTarget;
     startPointerDrag(event, {
+      onStart: (start, point) => {
+        reorderMotion.startDrag(tab, start, point);
+      },
       onMove: (point) => {
+        reorderMotion.moveDrag(point);
         const list = tabListRef.current;
         // 끄는 동안 탭이 닫히거나 열리면 끄던 탭의 차례를 알 수 없어 더 옮기지 않는다.
         if (list === null || list.children.length !== startCount) {
@@ -136,6 +153,8 @@ export function useTabStrip(options: UseTabStripOptions): TabStripControls {
           current = next;
         }
       },
+      onDrop: reorderMotion.endDrag,
+      onCancel: reorderMotion.endDrag,
     });
   }
 
@@ -196,7 +215,9 @@ export function useTabStrip(options: UseTabStripOptions): TabStripControls {
 
 /**
  * 가로 자리에 있는 탭의 차례를 찾는다. 첫 탭보다 왼쪽이면 첫 탭, 마지막 탭보다 오른쪽이면 마지막 탭이다.
+ * 끄는 탭과 미끄러지는 탭의 움직이는 모습이 아니라 원래 자리(`getLayoutRect`)로 찾는다.
  * @codocs [[파일 탐색기:탭]]
+ * @codocs [[항목 조작:순서 바꾸기 끌기]]
  * @param tabs 탭 요소
  * @param x 화면 가로 자리
  * @returns 탭 차례. 탭이 없으면 null
@@ -206,7 +227,7 @@ export function getTabIndexAt(tabs: readonly Element[], x: number): number | nul
     return null;
   }
   const index = tabs.findIndex((tab) => {
-    const rect = tab.getBoundingClientRect();
+    const rect = getLayoutRect(tab);
     return x < rect.right;
   });
   return index === -1 ? tabs.length - 1 : index;

@@ -382,7 +382,7 @@
                                       "maxLinesVariable": null,
                                       "segments": [
                                         {
-                                          "characters": "◦",
+                                          "characters": "•",
                                           "fill": "color/black/89",
                                           "textStyle": "Body Large"
                                         }
@@ -487,7 +487,6 @@
                         "properties": {
                           "Checked": "False",
                           "Has children": false,
-                          "Marker": "◦",
                           "Text": "한 단계 들여쓴 항목",
                           "Variant": "Bulleted"
                         },
@@ -543,7 +542,6 @@
                 "properties": {
                   "Checked": "False",
                   "Has children": true,
-                  "Marker": "•",
                   "Text": "글머리 목록 항목",
                   "Variant": "Bulleted"
                 },
@@ -687,7 +685,6 @@
                 "properties": {
                   "Checked": "False",
                   "Has children": false,
-                  "Marker": "•",
                   "Text": "글머리 목록 두 번째 항목",
                   "Variant": "Bulleted"
                 },
@@ -854,7 +851,7 @@
                                     "name": "marker text",
                                     "size": {
                                       "h": 24,
-                                      "w": 15
+                                      "w": 16
                                     },
                                     "sizing": {
                                       "h": "HUG",
@@ -866,7 +863,7 @@
                                       "maxLinesVariable": null,
                                       "segments": [
                                         {
-                                          "characters": "a.",
+                                          "characters": "1.",
                                           "fill": "color/black/89",
                                           "textStyle": "Body Large"
                                         }
@@ -971,7 +968,6 @@
                         "properties": {
                           "Checked": "False",
                           "Has children": false,
-                          "Marker": "a.",
                           "Text": "한 단계 들여쓴 항목",
                           "Variant": "Numbered"
                         },
@@ -1027,7 +1023,6 @@
                 "properties": {
                   "Checked": "False",
                   "Has children": true,
-                  "Marker": "1.",
                   "Text": "번호 목록 항목",
                   "Variant": "Numbered"
                 },
@@ -1066,7 +1061,7 @@
                               "maxLinesVariable": null,
                               "segments": [
                                 {
-                                  "characters": "2.",
+                                  "characters": "1.",
                                   "fill": "color/black/89",
                                   "textStyle": "Body Large"
                                 }
@@ -1171,7 +1166,6 @@
                 "properties": {
                   "Checked": "False",
                   "Has children": false,
-                  "Marker": "2.",
                   "Text": "번호 목록 두 번째 항목",
                   "Variant": "Numbered"
                 },
@@ -1421,7 +1415,6 @@
                 "properties": {
                   "Checked": "True",
                   "Has children": false,
-                  "Marker": "1.",
                   "Text": "끝낸 할 일",
                   "Variant": "To do"
                 },
@@ -1721,7 +1714,6 @@
                         "properties": {
                           "Checked": "False",
                           "Has children": false,
-                          "Marker": "1.",
                           "Text": "한 단계 들여쓴 할 일",
                           "Variant": "To do"
                         },
@@ -1777,7 +1769,6 @@
                 "properties": {
                   "Checked": "False",
                   "Has children": true,
-                  "Marker": "1.",
                   "Text": "남은 할 일",
                   "Variant": "To do"
                 },
@@ -2607,7 +2598,8 @@
             "name": "figure",
             "properties": {
               "Caption": "이미지 아래에 붙는 캡션",
-              "Has caption": true
+              "Has caption": true,
+              "State": "Loaded"
             },
             "size": {
               "h": 478,
