@@ -77,7 +77,7 @@ function ignoreMinimize(): void {}
 
 /**
  * 창 저장소에서 Chrome 창 내용을 읽어 Chrome 층을 그린다(창 층이 하는 일). 저장소에 Chrome 창이 여럿이면 모두 그린다.
- * 창 자리는 화면을 세로로 나눠 채운다. 피그마 Window/Chrome의 `window` 노드(창 틀, 가로·세로 FILL) 크기 방식을 FigmaFrame으로 준다.
+ * 창 크기는 창 층이 정하므로 창마다 FigmaFrame이 피그마 `Window/Chrome` 조립의 크기(화면 방식별)로 감싼다.
  * @param props
  * @returns Chrome 층
  */
@@ -88,7 +88,7 @@ function ChromeLayerHost(props: ChromeLayerHostProps): JSX.Element {
     <StoryStage placement="fill">
       {Object.entries(windows).map(([id, target]) =>
         target.content.app === 'chrome' ? (
-          <FigmaFrame key={id} source={windowChromeExport} node="window">
+          <FigmaFrame key={id} source={windowChromeExport} args={{ device }}>
             <ChromeWindowLayer
               windowId={id}
               content={target.content}
@@ -982,11 +982,13 @@ export const WindowWidthLayout: Story = {
   },
   play: async ({ canvasElement, step }) => {
     const area = canvasElement.querySelector<HTMLElement>('[data-layout]');
-    const host = canvasElement.firstElementChild;
+    // 창 하나를 감싼 FigmaFrame(피그마 Window/Chrome 크기)의 너비를 바꿔 창 너비를 흉내 낸다.
+    const host = canvasElement.querySelector('[data-story-stage]')?.firstElementChild;
     if (area === null || !(host instanceof HTMLElement)) {
       throw new Error('페이지 영역이 없다');
     }
 
+    const figmaWidth = host.style.width;
     await step('넓은 창은 wide다', async () => {
       await expect(area.dataset.layout).toBe('wide');
     });
@@ -999,7 +1001,7 @@ export const WindowWidthLayout: Story = {
     });
 
     await step('경계를 다시 넘으면 wide로 돌아온다', async () => {
-      host.style.width = '';
+      host.style.width = figmaWidth;
       await waitFor(async () => {
         await expect(area.dataset.layout).toBe('wide');
       });

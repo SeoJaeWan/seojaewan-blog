@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { noCodeVariables } from './code-variables';
-import { layerTree } from './layer-tree';
+import { layerTree, rootFrame } from './layer-tree';
 import type { NodeData } from './node-data';
 import { buttonRoot, node } from './node-data.fixture';
 
@@ -125,5 +125,28 @@ describe('레이어 트리: 주석과 견본 크기', () => {
     expect(tree.sampleSize).toEqual(['width']);
     expect(tree.size).toEqual({ w: 320, h: 40 });
     expect(tree.height).toBe('size/control/height');
+  });
+});
+
+// @codocs [[피그마 연동:피그마 플러그인]]
+describe('조립의 맨 바깥 프레임', () => {
+  it('이름·크기 방식·크기만 적고 안쪽 트리는 적지 않는다', () => {
+    const frame = rootFrame(
+      node({
+        path: '',
+        type: 'COMPONENT',
+        child: null,
+        layout: null,
+        width: { value: 1280 },
+        height: { value: 800 },
+        fills: [{ type: 'SOLID', isVisible: true, blendMode: 'NORMAL', variable: 'color/white' }],
+        children: [node({ path: 'window', type: 'FRAME' })],
+      }),
+    );
+    expect(frame).toEqual({
+      name: '',
+      size: { w: 1280, h: 800 },
+      sizing: { h: 'FIXED', v: 'FIXED' },
+    });
   });
 });

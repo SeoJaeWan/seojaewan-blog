@@ -14,7 +14,7 @@ import {
 } from './check-structure';
 import { noCodeVariables } from './code-variables';
 import { parseVariantDirectives, retiredNotice } from './directives';
-import { layerTree } from './layer-tree';
+import { layerTree, rootFrame } from './layer-tree';
 import type { AssetData, NodeData } from './node-data';
 import { type AnimatedLayer, patternReport } from './pattern-report';
 import { isMotionApiError } from './read-motion';
@@ -111,7 +111,7 @@ export async function exportTargetCore(
       nodeId: variant.id,
       properties,
       node: nodeBox(box, variant.absoluteRenderBounds),
-      tree: layerTree(tree, codeVariables),
+      tree: isPattern ? rootFrame(tree) : layerTree(tree, codeVariables),
       ...(isPattern
         ? {
             report: patternReport(
