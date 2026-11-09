@@ -39,7 +39,7 @@ description: 피그마 플러그인이 연 애니메이션 PR(`feat/figma-motion
    - json(`packages/design-system/figma/motions/<이름>.json`)에서 트랙마다 노드, 항목, 키프레임(시간, 위치, 값, 이징 토큰, 값 토큰), 트랙 길이와 시작 지연의 토큰을 정리한다. PR 본문의 키프레임 표와 토큰 짝 표도 같은 내용이다.
    - json `source`로 움직임을 읽은 자리를 본다(`component`: 컴포넌트·자산 원본의 안쪽 움직임, `flow`: 조립 흐름 프레임의 요소 전체·공통 움직임, `sample`: 옮기기 전 옛 견본).
    - json `iterations`에서 반복을 읽는다. 새 자리는 재생 설정 Loop에서 온다(켜짐 `infinite`, 꺼짐 1).
-   - json `notes`에서 실행 중 값(Development 주석)과 동작 줄이기에서 남기는 움직임(Accessibility 주석)을, `directives`에서 남은 `@` 줄(`hold`, `direction`)을 읽는다(@codocs [[피그마 연동:구조 검사]]). 옛 견본(`source: sample`)은 `directives`의 `runtime`·`reduced-motion`도 읽는다.
+   - json `notes`에서 실행 중 값(Development 주석)과 동작 줄이기에서 남기는 움직임(Accessibility 주석)을, `directives`에서 남은 `@` 줄(`direction`)을 읽는다. 유지 조건(호버·포커스 동안, 끄는 동안, 받는 동안 등)은 json에 없고 기능 문서가 정한다(@codocs [[피그마 연동:구조 검사]]). 옛 견본(`source: sample`)은 `directives`의 `runtime`·`reduced-motion`도 읽는다.
    - 내보낸 json의 키프레임과 `notes`·`directives`를 먼저 보고, 그래도 모르는 것만 피그마(PR 본문 링크)를 열어 확인한다(피그마 MCP, @codocs [[피그마 연동:스킬]]).
 4. `packages/design-system/src/motion.css`에 `@keyframes`와 `@utility <이름>` 클래스를 만든다(@codocs [[피그마 연동:모션 클래스]]).
    - 클래스 이름은 json `name`(견본 이름)이다.
