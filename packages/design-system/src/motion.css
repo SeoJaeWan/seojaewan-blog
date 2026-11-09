@@ -166,7 +166,7 @@
 
   100% {
     opacity: 0;
-    scale: var(--motion-scale-window-enter);
+    scale: var(--motion-scale-window-exit);
   }
 }
 
