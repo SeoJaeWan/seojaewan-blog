@@ -1,5 +1,5 @@
 {
-  "description": "목록 위 섹션 제목으로, Start 메뉴의 고정됨·모두 제목과 글 목차 제목에 쓴다.\n@sample-size width",
+  "description": "목록 위 섹션 제목으로, Start 메뉴의 고정됨·모두 제목과 글 목차 제목에 쓴다.",
   "name": "SectionTitle",
   "nodeId": "388:13925",
   "propertyDefinitions": {
@@ -79,6 +79,9 @@
           "primaryAlign": "MIN"
         },
         "name": "SectionTitle",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 20,
           "w": 574
