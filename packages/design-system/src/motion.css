@@ -261,9 +261,9 @@
 }
 
 /*
- * Start·검색 패널 열기(견본 motion-panel-enter). ShellSurface가 화면 아래에서 제자리로 미끄러져 올라온다.
- * 견본의 720은 견본 패널 높이이고 실행 중 값은 없다. 키프레임은 px 대신 요소 자기 높이(translate 100%)로 써서
- * 실제 패널 높이가 달라도(모바일 640 등) 화면 아래로 빠졌다가 올라오게 한다(견본에서는 720과 같다).
+ * Start·검색 패널 열기(조립 흐름 motion-panel-enter). ShellSurface가 화면 아래에서 제자리로 미끄러져 올라온다(페이드 없음).
+ * 흐름의 862는 패널 기본 높이(size/shell/height)이고 실행 중 값은 없다. 키프레임은 px 대신 요소 자기 높이(translate 100%)로 써서
+ * 실제 패널 높이가 달라도(작은 화면, 모바일 등) 화면 아래로 빠졌다가 올라오게 한다(흐름에서는 862와 같다).
  * 앱이 패널을 열 때(data-starting-style 자리) 붙인다. 시작 모습을 재생 전에도 유지하도록 fill-mode는 both다.
  */
 @keyframes motion-panel-enter {
@@ -278,7 +278,7 @@
 
 @utility motion-panel-enter {
   animation-name: motion-panel-enter;
-  animation-duration: var(--motion-duration-normal);
+  animation-duration: var(--motion-duration-fast);
   animation-timing-function: var(--motion-easing-direct-entrance);
   animation-fill-mode: both;
 }
@@ -584,14 +584,15 @@
 }
 
 /*
- * Start 고정됨 메뉴 이동의 나타남(견본 motion-start-pinned-move-enter). 나머지 칸이 motion-reorder-slide로 미끄러진 뒤,
- * 옮기는 칸 전체(PinnedTile)가 도착할 자리에서 배율 0.5 → 1로 커지며 투명도 0 → 1로 나타난다([[Start 메뉴:고정됨]]).
+ * Start 고정됨 메뉴 이동의 나타남(조립 흐름 motion-start-pinned-move-enter). 세 단계(사라짐 → 교차 페이드 → 나타남)의 마지막으로,
+ * 옮기는 칸 전체(PinnedTile)가 도착할 자리에서 배율 0.96 → 1로 커지며 투명도 0 → 1로 나타난다([[Start 메뉴:고정됨]]).
+ * 시작 시점은 메뉴가 사라진 순간부터 잰 지연(motion/delay/pinned-move-enter)이다. 그래서 앱은 세 단계의 클래스를 메뉴가 사라진 순간에 함께 붙인다.
  * 배율(direct-entrance)과 투명도(fade)는 이징이 달라 animation을 쉼표로 나눈다. 실행 중 값은 없다.
- * 시작 모습(투명도 0)을 재생 전에도 유지하도록 fill-mode는 both다.
+ * 시작 모습(투명도 0)을 지연 동안에도 유지하도록 fill-mode는 both다.
  */
 @keyframes motion-start-pinned-move-enter-scale {
   0% {
-    scale: var(--motion-scale-half);
+    scale: var(--motion-scale-pinned-move-enter);
   }
 
   100% {
@@ -611,9 +612,10 @@
 
 @utility motion-start-pinned-move-enter {
   animation:
-    motion-start-pinned-move-enter-scale var(--motion-duration-normal)
-      var(--motion-easing-direct-entrance) both,
-    motion-start-pinned-move-enter-fade var(--motion-duration-normal) var(--motion-easing-fade) both;
+    motion-start-pinned-move-enter-scale var(--motion-duration-slow)
+      var(--motion-easing-direct-entrance) var(--motion-delay-pinned-move-enter) both,
+    motion-start-pinned-move-enter-fade var(--motion-duration-slow) var(--motion-easing-fade)
+      var(--motion-delay-pinned-move-enter) both;
 }
 
 /*
