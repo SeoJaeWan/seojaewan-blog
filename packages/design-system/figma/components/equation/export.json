@@ -1,5 +1,5 @@
 {
-  "description": "글 본문의 블록 수식 자리로, 글 페이지에 쓴다.\n@sample-size width",
+  "description": "글 본문의 블록 수식 자리로, 글 페이지에 쓴다.",
   "name": "Equation",
   "nodeId": "1380:1119",
   "propertyDefinitions": {
@@ -23,7 +23,10 @@
             "children": [
               {
                 "annotations": [
-                  "@sample-size width height"
+                  {
+                    "category": null,
+                    "text": "@sample-size width height"
+                  }
                 ],
                 "asset": {
                   "path": "images/equation-quadratic-formula"
@@ -33,6 +36,10 @@
                   "IMAGE"
                 ],
                 "name": "formula",
+                "sampleSize": [
+                  "width",
+                  "height"
+                ],
                 "size": {
                   "h": 50,
                   "w": 194
@@ -81,6 +88,9 @@
           "primaryAlign": "CENTER"
         },
         "name": "Equation",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 66,
           "w": 720
