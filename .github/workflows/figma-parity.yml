@@ -1,22 +1,19 @@
 # @codocs [[피그마 연동:CI]]
 # 피그마 캡처 표. PR(초안 포함)에서는 바뀐 파일로 캡처 범위를 정하고(0단계), 범위가 있을 때만
 # 컴포넌트·조립이 쓰는 Storybook을 정적으로 빌드하고(1) 캡처해 표를 PR 댓글 하나로 남긴다(2).
-# 컴포넌트와 조립 모두 `피그마 | 코드 | 차이`다(조립은 참고용). 조립은 parity-captures에 저장된 이전 코드 그림과 비교한 `이전 코드 | 지금 코드 | 차이`도 접어 덧붙인다.
+# 컴포넌트와 조립 모두 `피그마 | 코드 | 차이`다(조립은 참고용).
 # 판정하지 않는다. 사람이 표를 보고 병합한다. 토큰·자산 생성 확인은 figma-generated.yml에서 돈다.
-# main push에서는 범위 안 대상을 캡처해 parity-captures 브랜치에 덮어쓴다.
 # 이 파일이나 tools/figma-parity/가 바뀌면 캡처 범위는 전체다.
 # CI는 PR 브랜치에 커밋하지 않는다.
 name: Figma parity
 
 on:
   pull_request:
-  push:
-    branches: [main]
 
 concurrency:
-  # PR은 새 커밋이 오면 이전 실행을 멈춘다. main은 커밋마다 캡처할 범위가 달라 멈추지 않는다.
-  group: figma-parity-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  # 새 커밋이 오면 이전 실행을 멈춘다.
+  group: figma-parity-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions: {}
 
@@ -28,22 +25,21 @@ jobs:
     name: Figma parity
     runs-on: [self-hosted, linux]
     permissions:
-      # 댓글 이미지(parity-report/pr-<번호>)와 main 캡처(parity-captures)를 브랜치에 올린다
+      # 댓글 이미지를 보고 브랜치(parity-report/pr-<번호>)에 올린다
       contents: write
       # 결과 댓글과 figma 라벨을 남기고 고친다
       pull-requests: write
     env:
       GH_TOKEN: ${{ github.token }}
-      EVENT: ${{ github.event_name }}
       REPOSITORY: ${{ github.repository }}
       SERVER: ${{ github.server_url }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
       # 포크에서 온 PR은 쓰기 토큰이 없어 캡처하지 않는다
-      CAN_WRITE: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
+      CAN_WRITE: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     steps:
       - uses: actions/checkout@v7.0.1
         with:
-          # 캡처 범위를 정하려면 기준 브랜치와의 merge-base가 필요하다. 모든 브랜치를 받아 조립의 이전 코드 그림(origin/parity-captures)도 읽는다
+          # 캡처 범위를 정하려면 기준 브랜치와의 merge-base가 필요하다
           fetch-depth: 0
 
       - uses: actions/setup-node@v7.1.0
@@ -55,15 +51,8 @@ jobs:
         id: range
         env:
           BASE_REF: ${{ github.base_ref }}
-          BEFORE: ${{ github.event.before }}
         run: |
-          if [ "$EVENT" = pull_request ]; then
-            base="origin/$BASE_REF"
-          elif [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
-            base="$BEFORE"
-          else
-            base="HEAD^1"
-          fi
+          base="origin/$BASE_REF"
           range=$(node tools/figma-parity/src/run-capture.ts --print-range --base "$base")
           echo "캡처 범위($base 기준): $range"
           targets=$(jq -r '.targets | join(" ")' <<< "$range")
@@ -78,7 +67,7 @@ jobs:
 
       # 라벨은 실행 조건이 아니라 결과 표시다. 범위가 사라지면 뗀다
       - name: Label
-        if: github.event_name == 'pull_request' && env.CAN_WRITE == 'true'
+        if: env.CAN_WRITE == 'true'
         env:
           HAS_RANGE: ${{ steps.range.outputs.has-range }}
         run: |
@@ -109,8 +98,7 @@ jobs:
         run: pnpm --filter @seojaewan/figma-parity exec playwright install chromium
 
       # 1·2. 빌드와 캡처: 범위에 컴포넌트가 있으면 디자인 시스템 Storybook을, 조립이 있으면 앱 Storybook을
-      # 정적으로 빌드하고, 범위 안 대상을 캡처해 차이 그림을 만든다. 조립은 origin/parity-captures에서 범위와 같은 기준의
-      # merge-base 시점 캡처 커밋을 골라 그 이전 코드 그림과 비교한다
+      # 정적으로 빌드하고, 범위 안 대상을 캡처해 피그마 그림과의 차이 그림을 만든다
       - name: Capture
         id: capture
         if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
@@ -120,28 +108,16 @@ jobs:
           BASE: ${{ steps.range.outputs.base }}
         run: |
           # shellcheck disable=SC2086 # 대상 이름([a-z0-9/-])마다 --target 인자로 나눈다
-          node tools/figma-parity/src/run-capture.ts --base "$BASE" --previous origin/parity-captures $TARGET_ARGS
+          node tools/figma-parity/src/run-capture.ts --base "$BASE" $TARGET_ARGS
 
       - name: Comment results on PR
-        if: >-
-          always() && github.event_name == 'pull_request' && env.CAN_WRITE == 'true' &&
-          steps.range.outputs.has-range == 'true'
+        if: always() && env.CAN_WRITE == 'true' && steps.range.outputs.has-range == 'true'
         env:
           RUN_ID: ${{ github.run_id }}
         run: |
           gh auth setup-git
           node tools/figma-parity/src/post-pr-comment.ts --repository "$REPOSITORY" --server "$SERVER" \
             --run-id "$RUN_ID" --pr "$PR_NUMBER"
-
-      # main: 캡처한 변형을 parity-captures/<컴포넌트>/<변형>.png와
-      # parity-captures/patterns/<영역>/<이름>/<변형>.png에 덮어쓴다
-      - name: Publish captures
-        if: >-
-          github.event_name == 'push' && !cancelled() &&
-          (steps.capture.outcome == 'success' || steps.capture.outcome == 'failure')
-        run: |
-          gh auth setup-git
-          node tools/figma-parity/src/publish-captures.ts --repository "$REPOSITORY" --server "$SERVER" --sha "$GITHUB_SHA"
 
       - uses: actions/upload-artifact@v7.0.2
         if: always() && steps.range.outputs.has-range == 'true'

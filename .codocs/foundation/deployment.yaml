@@ -67,7 +67,7 @@ CI: |
 
   - 저장소를 비공개로 전환한다. 그 뒤에 미니 PC에 GitHub Actions self-hosted runner를 2~3개 단다. 반드시 비공개로 바꾼 뒤에 단다.
   - 워크플로의 `runs-on`은 `[self-hosted, linux]`로 바꾼다. 워크플로, PR 검사, 병합 조건은 바뀌지 않는다.
-  - 비공개 저장소에서는 시나리오 케이스 보고서를 GitHub Pages로 올리지 못한다(무료 계정). 보고서는 미니 PC로 옮겨 Cloudflare 터널과 Access 뒤에서 연다([[테스트 작성 규칙:E2E]]). 캡처 표 댓글의 그림(`parity-report`, `parity-captures` 브랜치)은 비공개 전환 뒤 로그인 없이는 404다. GitHub에 로그인한 브라우저에서는 보인다(그림이 많으면 느리게 뜬다). 2026-11-06에 PR #654로 확인했다([[피그마 연동:CI]]).
+  - 비공개 저장소에서는 시나리오 케이스 보고서를 GitHub Pages로 올리지 못한다(무료 계정). 보고서는 미니 PC로 옮겨 Cloudflare 터널과 Access 뒤에서 연다([[테스트 작성 규칙:E2E]]). 캡처 표 댓글의 그림(`parity-report` 브랜치)은 비공개 전환 뒤 로그인 없이는 404다. GitHub에 로그인한 브라우저에서는 보인다(그림이 많으면 느리게 뜬다). 2026-11-06에 PR #654로 확인했다([[피그마 연동:CI]]).
   - 한 머신에서 runner 셋이 동시에 job을 돌린다. E2E 서버 포트는 runner 번호로 나눈다(`4100 + n`, `scripts/runner-port.mjs`). 3000번은 블로그 컨테이너 자리라 쓰지 않는다.
   - 시험용 데이터는 E2E만 `CONTENT_SOURCE=fixture`로 쓰고, 검사 작업의 빌드는 커밋한 글 JSON으로 한다([[콘텐츠 원천:읽는 곳]]).
   - 앱이나 패키지를 바꾼 PR에는 changeset이 있어야 하고, CI가 `changeset status`로 빠뜨린 것을 잡는다([[배포 환경:배포(CD)]]).

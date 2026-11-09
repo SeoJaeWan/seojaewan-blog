@@ -1,6 +1,6 @@
 /**
  * 캡처 결과(captures.json)로 PR 댓글 본문을 만든다. GitHub를 부르지 않는 순수 함수다.
- * 컴포넌트와 조립마다 `피그마 | 코드 | 차이` 표를 둔다(조립은 참고용). 조립은 이전 코드 그림과의 비교를 접어 덧붙인다. 판정하지 않는다.
+ * 컴포넌트와 조립마다 `피그마 | 코드 | 차이` 표를 둔다(조립은 참고용). 판정하지 않는다.
  * 길이 제한을 넘으면 댓글을 여러 개로 나눈다.
  */
 
@@ -14,10 +14,6 @@ export const COMMENT_LIMIT = 60_000;
 export const CAPTURE_ROWS_PER_TABLE = 40;
 /** 컴포넌트 표 머리: 피그마 그림과 비교한다 */
 const componentHeader = ['| 변형 | 피그마 | 코드 | 차이 |', '|---|---|---|---|'];
-/** 조립의 이전 코드 비교 표 머리: parity-captures의 이전 코드 그림과 비교한다 */
-const patternHeader = ['| 변형 | 이전 코드 | 지금 코드 | 차이 |', '|---|---|---|---|'];
-/** 이전 코드 그림이 없는 변형의 이전 코드 칸 */
-export const NO_PREVIOUS = '이전 그림 없음(새 변형)';
 
 /**
  * 댓글 본문을 만드는 옵션.
@@ -62,17 +58,13 @@ export function renderComments(
   const failed = captures.rows.filter((row) => row.error !== null);
   const targets = new Set(captures.rows.map((row) => row.target));
   const hasPattern = captures.rows.some((row) => row.kind === 'pattern');
-  const previousCommit = captures.previousCommit ?? null;
   const header = [
     `피그마 캡처 표: 대상 ${String(targets.size)}개, 변형 ${String(captures.rows.length)}개` +
       (failed.length > 0 ? `, 캡처 실패 ${String(failed.length)}개` : ''),
     '판정하지 않는다. 차이 그림에서 같은 곳은 검정, 다른 곳은 밝게 보인다. 글자 가장자리나 모서리의 가는 밝은 선은 엔진 차이일 수 있다.',
     ...(hasPattern
       ? [
-          '조립의 피그마 비교는 참고용이다. 조립은 그림 기준이고 구조는 코드가 정해 꼭 같지 않아도 되며, 큰 차이가 보일 때 판단한다. 의도하지 않은 배치 변화는 접어 둔 이전 코드 그림 비교로 본다.' +
-            (previousCommit === null
-              ? ' 이번 실행은 `parity-captures`를 읽지 못해 이전 코드 비교가 없다.'
-              : ` 이전 코드 그림: \`parity-captures\` ${previousCommit.slice(0, 7)}.`),
+          '조립의 피그마 비교는 참고용이다. 조립은 그림 기준이고 구조는 코드가 정해 꼭 같지 않아도 되며, 큰 차이가 보일 때 판단한다.',
         ]
       : []),
   ].join('\n');
@@ -94,7 +86,6 @@ export function renderComments(
 
 /**
  * 대상마다 표를 쓴다. 줄은 변형과 상태다. 컴포넌트와 조립 모두 `피그마 | 코드 | 차이`이고, 조립은 제목에 참고용이라고 쓴다.
- * 조립에 parity-captures의 이전 코드 그림이 있으면 `이전 코드 | 지금 코드 | 차이` 표를 접어 덧붙인다.
  * @codocs [[피그마 연동:캡처 표]]
  * @param rows 캡처 표 줄
  * @param options 이미지 주소
@@ -127,20 +118,6 @@ function captureBlocks(
         ].join('\n'),
       );
     }
-    if (isPattern && own.some((row) => row.previous !== null)) {
-      const cells = own.map((row) => previousCells(row, options));
-      images.push(...cells.flatMap((cell) => cell.images));
-      blocks.push(
-        [
-          `<details><summary>${name}: 이전 코드 그림과 비교 (${String(own.length)}개)</summary>`,
-          '',
-          ...patternHeader,
-          ...cells.map((cell) => cell.line),
-          '',
-          '</details>',
-        ].join('\n'),
-      );
-    }
   }
   return { blocks, images };
 }
@@ -165,24 +142,6 @@ function figmaCells(row: CaptureRow, options: CommentOptions): { line: string; i
         : ''
       : image(row.diff, '차이', options);
   return { line: `| \`${row.variant}\` | ${figma} | ${code} | ${diff} |`, images };
-}
-
-/**
- * 조립의 `이전 코드 | 지금 코드 | 차이` 표 한 줄을 쓴다. 이전 코드 그림이 없는 변형은 그렇다고 쓰고 차이 칸을 비운다.
- * @param row 캡처 표 줄
- * @param options 이미지 주소
- * @returns 표 줄과 쓰인 이미지 파일
- */
-function previousCells(
-  row: CaptureRow,
-  options: CommentOptions,
-): { line: string; images: string[] } {
-  const previousDiff = row.previousDiff ?? null;
-  const images = [row.previous, row.code, previousDiff].filter((file) => file !== null);
-  const code = row.code === null ? '' : image(row.code, '지금 코드', options);
-  const previous = row.previous === null ? NO_PREVIOUS : image(row.previous, '이전 코드', options);
-  const diff = previousDiff === null ? '' : image(previousDiff, '차이', options);
-  return { line: `| \`${row.variant}\` | ${previous} | ${code} | ${diff} |`, images };
 }
 
 /**
