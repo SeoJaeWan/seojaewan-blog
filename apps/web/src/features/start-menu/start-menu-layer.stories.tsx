@@ -291,7 +291,7 @@ export const PinnedTiles: Story = {
 
     // @codocs [[Start 메뉴:고정됨]]
     await step(
-      '메뉴로 옮기면 칸이 사라진 뒤 순서가 바뀌고, 나머지가 미끄러진 뒤 새 자리에서 나타난다',
+      '메뉴로 옮기면 바로 순서가 바뀌고, 옮긴 칸은 옛 자리에서 사라져 새 자리에서 나타나며 나머지는 교차 페이드한다',
       async () => {
         const chrome = pinnedTile(panel, 'Chrome');
         const explorer = pinnedTile(panel, 'File Explorer');
@@ -301,7 +301,18 @@ export const PinnedTiles: Story = {
         await openContextMenu(chrome);
         const chromeMotion = recordMotion(chrome);
         const explorerMotion = recordMotion(explorer);
+        const chromeBefore = chrome.getBoundingClientRect();
         await userEvent.click(screen.getByRole('menuitem', { name: '왼쪽으로 이동' }));
+        // 옮긴 칸의 사본이 옛 자리에서 사라진다.
+        const ghost = await waitFor(() => {
+          const found = panel.querySelector('[data-reorder-motion="exit"]');
+          if (found === null) {
+            throw new Error('옛 자리 사본이 아직 없다');
+          }
+          return found;
+        });
+        await expect(Math.round(ghost.getBoundingClientRect().x)).toBe(Math.round(chromeBefore.x));
+        await expect(Math.round(ghost.getBoundingClientRect().y)).toBe(Math.round(chromeBefore.y));
         await waitFor(() =>
           expect(useWorkspaceStore.getState().startPins.slice(2, 4)).toEqual([
             'app:chrome',
@@ -310,8 +321,10 @@ export const PinnedTiles: Story = {
         );
         await waitFor(() => expect(chrome).not.toHaveAttribute('data-reorder-motion'));
         await waitFor(() => expect(explorer).not.toHaveAttribute('data-reorder-motion'));
-        await expect(chromeMotion.stop()).toEqual(['exit', 'enter', 'none']);
-        await expect(explorerMotion.stop()).toEqual(['slide', 'none']);
+        await expect(chromeMotion.stop()).toEqual(['enter', 'none']);
+        await expect(explorerMotion.stop()).toEqual(['swap', 'none']);
+        // 옛 자리에 둔 사본은 움직임이 끝나면 빠진다.
+        await expect(panel.querySelectorAll('[data-move-place]')).toHaveLength(0);
       },
     );
 
