@@ -617,6 +617,47 @@
 }
 
 /*
+ * Start 고정됨 메뉴 이동의 교차 페이드(조립 흐름 motion-start-pinned-move-swap). 세 단계(사라짐 → 교차 페이드 → 나타남)의 가운데로,
+ * 자리가 바뀌는 나머지 칸(PinnedTile)은 미끄러지지 않고 옛 자리에서 투명도 1 → 0으로 사라지며 동시에 새 자리에서 0 → 1로 나타난다
+ * ([[Start 메뉴:고정됨]]). 시작 시점은 메뉴가 사라진 순간부터 잰 지연(motion/delay/pinned-move-swap)이다.
+ * 앱이 지킬 약속: 칸 하나가 두 자리에 함께 보이므로 앱은 옛 자리에 칸의 사본을 두고 두 요소에 이 클래스를 붙인다.
+ * 옛 자리 요소에는 data-move-place="old"를 달아 사라지게 하고, 새 자리 요소(실제 칸)는 나타난다.
+ * 두 트랙의 시간·지연·이징이 같고 방향만 반대라 키프레임 둘을 자리 속성으로 고른다. 실행 중 값은 없다.
+ * 지연 동안과 끝난 뒤에도 시작·끝 모습을 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-start-pinned-move-swap-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes motion-start-pinned-move-swap-out {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@utility motion-start-pinned-move-swap {
+  animation-name: motion-start-pinned-move-swap-in;
+  animation-duration: var(--motion-duration-fast);
+  animation-timing-function: var(--motion-easing-fade);
+  animation-delay: var(--motion-delay-pinned-move-swap);
+  animation-fill-mode: both;
+
+  &[data-move-place='old'] {
+    animation-name: motion-start-pinned-move-swap-out;
+  }
+}
+
+/*
  * 이미지 스켈레톤 반짝임(견본 motion-image-skeleton). Figure State=Loading의 반짝임 칠(shimmer 레이어)이 칸 왼쪽 밖
  * 자리에서 칸 두 개 너비만큼 오른쪽으로 지나가기를 되풀이한다([[Notion 이미지 제공:로딩 표시]]).
  * 견본의 1440은 견본 칸 너비(720)의 두 배라, px 대신 요소 자기 너비(translate 200%)로 써서 실제 이미지 너비가 달라도
@@ -743,6 +784,7 @@
   .motion-reorder-drop,
   .motion-reorder-slide,
   .motion-start-pinned-move-exit,
+  .motion-start-pinned-move-swap,
   .motion-start-pinned-move-enter,
   .motion-image-skeleton,
   .motion-image-enter,
