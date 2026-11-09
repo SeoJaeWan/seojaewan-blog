@@ -1,5 +1,5 @@
 {
-  "description": "글 본문의 코드 블록으로, 글 페이지에 쓴다.\n@sample-size width\n@runtime 코드는 강조기 색으로 칠한다",
+  "description": "글 본문의 코드 블록으로, 글 페이지에 쓴다.",
   "name": "CodeBlock",
   "nodeId": "399:5519",
   "propertyDefinitions": {
@@ -22,6 +22,12 @@
       "nodeId": "399:5519",
       "properties": {},
       "tree": {
+        "annotations": [
+          {
+            "category": "개발",
+            "text": "코드는 강조기 색으로 칠한다"
+          }
+        ],
         "children": [
           {
             "children": [
@@ -212,6 +218,9 @@
           "radius/overlay",
           "radius/overlay",
           "radius/overlay"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 102,

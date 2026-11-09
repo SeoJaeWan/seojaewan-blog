@@ -1,5 +1,5 @@
 {
-  "description": "경로의 한 칸으로, Breadcrumb의 Items 슬롯에 쓴다.\n@runtime 공간이 모자라면 위치 이름 끝을 …로 줄인다",
+  "description": "경로의 한 칸으로, Breadcrumb의 Items 슬롯에 쓴다.",
   "name": "BreadcrumbItem",
   "nodeId": "31:420",
   "propertyDefinitions": {
@@ -52,7 +52,7 @@
                 },
                 "text": {
                   "autoResize": "WIDTH_AND_HEIGHT",
-                  "maxLines": null,
+                  "maxLines": 1,
                   "maxLinesVariable": null,
                   "segments": [
                     {
@@ -71,7 +71,7 @@
                       "textStyle": "Hangul/Caption"
                     }
                   ],
-                  "truncation": "DISABLED"
+                  "truncation": "ENDING"
                 },
                 "type": "TEXT"
               }
@@ -201,7 +201,7 @@
                 },
                 "text": {
                   "autoResize": "WIDTH_AND_HEIGHT",
-                  "maxLines": null,
+                  "maxLines": 1,
                   "maxLinesVariable": null,
                   "segments": [
                     {
@@ -220,7 +220,7 @@
                       "textStyle": "Hangul/Caption"
                     }
                   ],
-                  "truncation": "DISABLED"
+                  "truncation": "ENDING"
                 },
                 "type": "TEXT"
               }
@@ -332,7 +332,7 @@
                 },
                 "text": {
                   "autoResize": "WIDTH_AND_HEIGHT",
-                  "maxLines": null,
+                  "maxLines": 1,
                   "maxLinesVariable": null,
                   "segments": [
                     {
@@ -351,7 +351,7 @@
                       "textStyle": "Hangul/Caption"
                     }
                   ],
-                  "truncation": "DISABLED"
+                  "truncation": "ENDING"
                 },
                 "type": "TEXT"
               }
