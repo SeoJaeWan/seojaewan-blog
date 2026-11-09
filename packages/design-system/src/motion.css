@@ -527,8 +527,8 @@
 }
 
 /*
- * 순서 바꾸기 미끄러짐(견본 motion-reorder-slide). 순서가 바뀌어 밀려나는 항목이 이전 자리에서 새 자리로 미끄러진다.
- * 작업 표시줄·탭·Start 고정됨의 끌기와 Start 고정됨 메뉴 이동이 함께 쓴다([[항목 조작:순서 바꾸기 끌기]]).
+ * 순서 바꾸기 미끄러짐(조립 흐름 motion-reorder-slide). 순서가 바뀌어 밀려나는 항목이 이전 자리에서 새 자리로 미끄러진다.
+ * 작업 표시줄·탭·Start 고정됨의 끌기가 함께 쓴다([[항목 조작:순서 바꾸기 끌기]]). 끄는 항목의 가운데가 칸 경계를 지나면 시작한다.
  * FLIP 방식이다. 앱이 항목을 새 자리로 옮긴 뒤, 이전 자리에서 새 자리까지의 거리(이전 자리 - 새 자리)를
  * motion-reorder-drop과 같은 --motion-reorder-from-x·-y로 넘기고 이 클래스를 붙인다.
  * 시작 모습을 재생 전에도 유지하도록 fill-mode는 both다.
@@ -545,7 +545,7 @@
 
 @utility motion-reorder-slide {
   animation-name: motion-reorder-slide;
-  animation-duration: var(--motion-duration-normal);
+  animation-duration: var(--motion-duration-slow);
   animation-timing-function: var(--motion-easing-point-to-point);
   animation-fill-mode: both;
 }
