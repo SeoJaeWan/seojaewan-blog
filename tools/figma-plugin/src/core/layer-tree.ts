@@ -289,3 +289,20 @@ function reactionJson(reaction: ReactionData): JsonObject {
 function roundPx(value: number): number {
   return Math.round(value * 100) / 100 + 0;
 }
+
+/**
+ * 조립 변형의 맨 바깥 프레임만 적는다(이름, 크기 방식, 크기). 조립은 그림 기준이고 구조는 코드가 정하므로 안쪽 트리는 내보내지 않는다.
+ * 앱 스토리의 `FigmaFrame`이 이 크기로 조립을 감싼다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[테스트 작성 규칙:스토리 테스트]]
+ * @param node 변형 루트 노드 데이터
+ * @returns 맨 바깥 프레임
+ */
+export function rootFrame(node: NodeData): JsonObject {
+  const sizing = sizingOf(node, true);
+  return {
+    name: node.name,
+    size: { w: roundPx(node.width.value), h: roundPx(node.height.value) },
+    sizing: { h: sizing.horizontal, v: sizing.vertical },
+  };
+}
