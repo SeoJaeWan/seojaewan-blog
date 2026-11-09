@@ -150,6 +150,7 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
   const context = await readCheckContext();
   const components: PlacedTarget[] = [];
   const groups: ViolationGroup[] = [];
+  const targetNotices: string[] = [];
   for (const id of request.componentIds) {
     checkStep(`${await nodeName(id)} 검사·내보내는 중`);
     const outcome = await exportTargetCore(id, SCALE, context, 'component');
@@ -158,6 +159,7 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
       groups.push({ target: outcome.name, kind: 'component', violations: outcome.violations });
       continue;
     }
+    targetNotices.push(...outcome.notices);
     const slug = componentSlug(outcome.target.manifest.name);
     if (components.some((other) => other.folder === `${COMPONENTS_DIR}/${slug}`)) {
       throw new Error(`컴포넌트 폴더 이름 "${slug}"가 겹친다.`);
@@ -194,6 +196,7 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
     if (!outcome.ok || place === null) {
       continue;
     }
+    targetNotices.push(...outcome.notices);
     const folder = patternFolder(place);
     if (patterns.some((other) => other.folder === folder)) {
       throw new Error(`조립 폴더 "${folder}"가 겹친다.`);
@@ -218,13 +221,13 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
   log('토큰 변환 중');
   const tokens = await readTokens(groups);
   if (tokens === null || groups.length > 0) {
-    request.notify(motionNotices);
+    request.notify([...targetNotices, ...motionNotices]);
     return { kind: 'blocked', groups };
   }
   for (const name of tokens.skippedStyles) {
     log(`토큰이 아닌 칠 스타일이라 건너뜀: ${name}`);
   }
-  request.notify([...motionNotices, ...tokens.notices]);
+  request.notify([...targetNotices, ...motionNotices, ...tokens.notices]);
 
   log(`${BASE_BRANCH} 브랜치의 기준 자료를 읽는 중`);
   const main = await readRepoState(token, BASE_BRANCH);

@@ -87,3 +87,43 @@ describe('레이어 트리', () => {
     expect(text).toContain('"color":"text-fill/secondary"');
   });
 });
+
+// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 기반:크기 변수]]
+describe('레이어 트리: 주석과 견본 크기', () => {
+  it('주석을 카테고리와 함께 적는다', () => {
+    const tree = layerTree(
+      node({
+        path: '',
+        type: 'COMPONENT',
+        child: null,
+        annotations: [
+          { text: '넘치면 세로로 스크롤한다', category: 'Development' },
+          { text: '설명', category: null },
+        ],
+      }),
+      noCodeVariables,
+    );
+    expect(tree.annotations).toEqual([
+      { text: '넘치면 세로로 스크롤한다', category: 'Development' },
+      { text: '설명', category: null },
+    ]);
+  });
+
+  it('변수 없는 고정 크기 축만 견본 크기로 적는다', () => {
+    const tree = layerTree(
+      node({
+        path: '',
+        type: 'COMPONENT',
+        child: null,
+        layout: null,
+        width: { value: 320 },
+        height: { value: 40, variable: 'size/control/height' },
+      }),
+      noCodeVariables,
+    );
+    expect(tree.sampleSize).toEqual(['width']);
+    expect(tree.size).toEqual({ w: 320, h: 40 });
+    expect(tree.height).toBe('size/control/height');
+  });
+});

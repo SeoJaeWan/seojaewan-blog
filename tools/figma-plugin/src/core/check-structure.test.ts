@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 import { checkClippingAncestors, type CheckContext, checkVariant } from './check-structure';
-import type { Directives } from './directives';
+import { noCodeVariables } from './code-variables';
+import { layerTree } from './layer-tree';
 import type { MotionVariable } from './motion-data';
 import type { NodeData, ReactionData } from './node-data';
 import { buttonRoot, node, segment, sides, solid } from './node-data.fixture';
@@ -99,16 +100,13 @@ describe('구조 검사: 변수·스타일에 연결되지 않은 시각 값', (
     ]);
   });
 
-  it('고정 크기는 루트와 안쪽 모두 크기 변수에 연결해야 한다', () => {
+  it('변수 없는 고정 크기는 견본 크기라 루트와 안쪽 모두 막지 않는다', () => {
     expect(
       reasonsAfter((root) => {
         must(root.layout).primarySizing = 'FIXED';
         root.children.push(fixedChild({ path: 'icon', type: 'RECTANGLE', width: { value: 16 } }));
       }),
-    ).toEqual([
-      '고정 너비 120가 크기 변수에 연결되어 있지 않다',
-      '고정 너비 16가 크기 변수에 연결되어 있지 않다',
-    ]);
+    ).toEqual([]);
   });
 
   describe('내용 맞춤 축의 크기를 정하는 자식', () => {
@@ -845,11 +843,13 @@ describe('구조 검사: 줄인 인스턴스', () => {
     expect(checkWith(scaledArc(172.8, 0.135))).toEqual([]);
   });
 
-  it('배율이 1인 노드의 고정 크기는 지금처럼 크기 변수에 연결해야 한다', () => {
-    expect(checkWith(scaledArc(16, 1)).map((violation) => violation.reason)).toEqual([
-      '고정 너비 16가 크기 변수에 연결되어 있지 않다',
-      '고정 높이 16가 크기 변수에 연결되어 있지 않다',
+  it('배율이 1인 노드의 변수 없는 고정 크기는 견본 크기로 적는다', () => {
+    expect(checkWith(scaledArc(16, 1))).toEqual([]);
+    expect(layerTree(scaledArc(16, 1), noCodeVariables, false).sampleSize).toEqual([
+      'width',
+      'height',
     ]);
+    expect(layerTree(scaledArc(16, 0.5), noCodeVariables, false).sampleSize).toBeUndefined();
   });
 
   it('줄인 인스턴스 자체는 계속 검사한다', () => {
@@ -889,10 +889,11 @@ describe('구조 검사: 부모 자동 배치 밖 노드의 크기 판단', () =
     expect(reasonsAfter((root) => root.children.push(frameWith('AUTO')))).toEqual([]);
   });
 
-  it('부모가 자동 배치가 아니고 자기 자동 배치가 고정이면 여전히 위반이다', () => {
-    expect(reasonsAfter((root) => root.children.push(frameWith('FIXED')))).toEqual([
-      '고정 너비 208가 크기 변수에 연결되어 있지 않다',
-      '고정 높이 164가 크기 변수에 연결되어 있지 않다',
+  it('부모가 자동 배치가 아니고 자기 자동 배치가 고정이면 두 축을 견본 크기로 적는다', () => {
+    expect(reasonsAfter((root) => root.children.push(frameWith('FIXED')))).toEqual([]);
+    expect(layerTree(frameWith('FIXED'), noCodeVariables, false).sampleSize).toEqual([
+      'width',
+      'height',
     ]);
   });
 
@@ -911,7 +912,11 @@ describe('구조 검사: 부모 자동 배치 밖 노드의 크기 판단', () =
           frameWith('FIXED', { constraints: { horizontal: 'STRETCH', vertical: 'MIN' } }),
         ),
       ),
-    ).toEqual(['고정 높이 164가 크기 변수에 연결되어 있지 않다']);
+    ).toEqual([]);
+    const stretched = frameWith('FIXED', {
+      constraints: { horizontal: 'STRETCH', vertical: 'MIN' },
+    });
+    expect(layerTree(stretched, noCodeVariables, false).sampleSize).toEqual(['height']);
   });
 });
 
@@ -1067,7 +1072,7 @@ describe('이미지 자산 비율', () => {
     expect(reasons).toEqual([]);
   });
 
-  it('비율을 잠갔어도 어느 축도 정해지지 않으면 막는다', () => {
+  it('비율을 잠갔어도 어느 축도 정해지지 않으면 두 축을 견본 크기로 적는다', () => {
     const reasons = reasonsOf(
       imageAsset({
         width: { value: 720 },
@@ -1081,7 +1086,19 @@ describe('이미지 자산 비율', () => {
         },
       }),
     );
-    expect(reasons).toHaveLength(2);
+    expect(reasons).toEqual([]);
+    const locked = imageAsset({
+      width: { value: 720 },
+      height: { value: 450 },
+      aspectRatio: 1.6,
+      child: {
+        sizingHorizontal: 'FIXED',
+        sizingVertical: 'FIXED',
+        positioning: 'AUTO',
+        constraints: { horizontal: 'MIN', vertical: 'MIN' },
+      },
+    });
+    expect(layerTree(locked, noCodeVariables, false).sampleSize).toEqual(['width', 'height']);
   });
 
   it('두 축을 부모가 정하면 틀에 맞춰 자르는 그림이라 막지 않는다', () => {
@@ -1180,16 +1197,13 @@ describe('변형 전환', () => {
   /**
    * 전환이 있는 변형을 검사한다.
    * @param reaction 전환
-   * @param directives 컴포넌트 `@` 줄
    * @returns 위반 이유
    */
-  function check(reaction: ReactionData, directives: Directives = {}): string[] {
-    return checkVariant(
-      fixedRoot({ reactions: [reaction] }),
-      'SearchBox',
-      { ...context, motionVariables },
-      directives,
-    ).map((violation) => violation.reason);
+  function check(reaction: ReactionData): string[] {
+    return checkVariant(fixedRoot({ reactions: [reaction] }), 'SearchBox', {
+      ...context,
+      motionVariables,
+    }).map((violation) => violation.reason);
   }
 
   const hover: ReactionData = {
@@ -1219,12 +1233,9 @@ describe('변형 전환', () => {
     expect(reasons).toHaveLength(2);
   });
 
-  it('Focused 변형으로 가는 전환은 @trigger focus-visible이 있어야 한다', () => {
+  it('트리거는 읽지 않는다. Focused 변형으로 가는 전환도 시간·이징만 본다', () => {
     const focused = { ...hover, trigger: 'ON_CLICK', destination: 'Filled=False, State=Focused' };
-    expect(check(focused)).toEqual([
-      expect.stringContaining('`@trigger focus-visible` 줄이 없다') as string,
-    ]);
-    expect(check(focused, { trigger: ['focus-visible'] })).toEqual([]);
+    expect(check(focused)).toEqual([]);
   });
 });
 
@@ -1273,7 +1284,7 @@ describe('구조 검사: 조립', () => {
    * @returns 위반 이유 목록
    */
   function patternReasons(root: NodeData, kind: 'component' | 'pattern' = 'pattern'): string[] {
-    return checkVariant(root, 'Explorer/Content / Default', context, {}, kind).map(
+    return checkVariant(root, 'Explorer/Content / Default', context, kind).map(
       (violation) => violation.reason,
     );
   }
@@ -1294,10 +1305,7 @@ describe('구조 검사: 조립', () => {
       '조립의 배치 프레임이 칠·선을 가진다',
       '조립의 배치 프레임이 효과를 가진다',
     ]);
-    expect(patternReasons(patternRoot([body, shadow]), 'component')).toEqual([
-      '고정 너비 1280가 크기 변수에 연결되어 있지 않다',
-      '고정 높이 720가 크기 변수에 연결되어 있지 않다',
-    ]);
+    expect(patternReasons(patternRoot([body, shadow]), 'component')).toEqual([]);
   });
 
   it('숨긴 칠·선·효과와 프레임이 아닌 레이어는 보지 않는다', () => {
@@ -1329,7 +1337,6 @@ describe('구조 검사: 조립', () => {
       patternRoot([card]),
       'Explorer/Content / Default',
       context,
-      {},
       'pattern',
     );
     expect(violations.map((violation) => violation.where)).toEqual([
@@ -1387,13 +1394,10 @@ describe('구조 검사: 조립', () => {
 });
 
 // @codocs [[피그마 연동:구조 검사]]
-describe('구조 검사: 컴포넌트 견본 크기(`@sample-size`)', () => {
-  /**
-   * 고정 크기 컴포넌트 루트를 만든다.
-   * @returns 루트
-   */
-  function fixedRoot(): NodeData {
-    return node({
+// @codocs [[디자인 기반:크기 변수]]
+describe('구조 검사: 견본 크기(변수 연결 여부)', () => {
+  it('변수 없는 고정 크기는 견본 크기라 루트와 안쪽 레이어 모두 막지 않는다', () => {
+    const root = node({
       path: '',
       type: 'COMPONENT',
       parentLayoutMode: null,
@@ -1402,66 +1406,17 @@ describe('구조 검사: 컴포넌트 견본 크기(`@sample-size`)', () => {
       height: { value: 40 },
       children: [fixedChild({ path: 'icon', type: 'RECTANGLE', width: { value: 16 } })],
     });
-  }
-
-  /**
-   * 루트를 `@` 줄과 함께 검사한 위반 이유를 돌려준다.
-   * @param directives `@` 줄
-   * @returns 위반 이유 목록
-   */
-  function sampleReasons(directives: Directives): string[] {
-    return checkVariant(fixedRoot(), 'FileRow / Default', context, directives).map(
-      (violation) => violation.reason,
-    );
-  }
-
-  it('`@sample-size`로 표시한 루트 축만 변수 없는 고정 크기를 허용한다', () => {
-    expect(sampleReasons({})).toEqual([
-      '고정 너비 320가 크기 변수에 연결되어 있지 않다',
-      '고정 높이 40가 크기 변수에 연결되어 있지 않다',
-      '고정 너비 16가 크기 변수에 연결되어 있지 않다',
-    ]);
-    expect(sampleReasons({ 'sample-size': ['width'] })).toEqual([
-      '고정 높이 40가 크기 변수에 연결되어 있지 않다',
-      '고정 너비 16가 크기 변수에 연결되어 있지 않다',
-    ]);
-    expect(sampleReasons({ 'sample-size': ['width height'] })).toEqual([
-      '고정 너비 16가 크기 변수에 연결되어 있지 않다',
-    ]);
-    expect(sampleReasons({ 'sample-size': ['height', 'width'] })).toEqual([
-      '고정 너비 16가 크기 변수에 연결되어 있지 않다',
-    ]);
+    expect(checkVariant(root, 'FileRow / Default', context)).toEqual([]);
   });
 
-  it('안쪽 레이어는 그 레이어 주석의 `@sample-size`로 표시한 축만 허용한다', () => {
-    const root = fixedRoot();
-    const icon = must(root.children[0]);
-    /**
-     * 안쪽 레이어에 주석을 달고 검사한 위반 이유를 돌려준다.
-     * @param annotations 레이어 주석
-     * @returns 위반 이유 목록
-     */
-    function reasons(annotations: string[]): string[] {
-      return checkVariant(
-        { ...root, children: [node({ ...icon, height: { value: 16 }, annotations })] },
-        'Equation / Default',
-        context,
-        { 'sample-size': ['width height'] },
-      ).map((violation) => violation.reason);
-    }
-    expect(reasons([])).toEqual([
-      '고정 너비 16가 크기 변수에 연결되어 있지 않다',
-      '고정 높이 16가 크기 변수에 연결되어 있지 않다',
-    ]);
-    expect(reasons(['@sample-size width'])).toEqual([
-      '고정 높이 16가 크기 변수에 연결되어 있지 않다',
-    ]);
-    expect(reasons(['@sample-size width height'])).toEqual([]);
-    // 잘못된 줄은 축으로 치지 않고 따로 막는다.
-    expect(reasons(['@sample-size depth'])).toEqual([
-      '주석의 `@sample-size depth`: width, height만 쓴다',
-      '고정 너비 16가 크기 변수에 연결되어 있지 않다',
-      '고정 높이 16가 크기 변수에 연결되어 있지 않다',
-    ]);
+  it('주석은 `@` 줄로 읽지 않는다', () => {
+    const root = node({
+      path: '',
+      type: 'COMPONENT',
+      parentLayoutMode: null,
+      child: null,
+      annotations: [{ text: '@sample-size depth', category: 'Development' }],
+    });
+    expect(checkVariant(root, 'Equation / Default', context)).toEqual([]);
   });
 });

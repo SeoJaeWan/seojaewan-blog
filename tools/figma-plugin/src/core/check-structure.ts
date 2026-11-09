@@ -5,14 +5,6 @@ import {
   noCodeVariables,
   pairedVariable,
 } from './code-variables';
-import {
-  type Directives,
-  FOCUS_TRIGGER,
-  parseDirectives,
-  parseDirectiveTexts,
-  type SampleAxis,
-  sampleSizeAxes,
-} from './directives';
 import type { MotionVariable } from './motion-data';
 import type { Bound, NodeData, PaintData, ReactionData } from './node-data';
 
@@ -42,16 +34,6 @@ type Add = (node: NodeData, reason: string, fix: string) => void;
 
 /** 검사하는 대상 종류. 조립(03 · Patterns)은 배치 프레임의 모양과 크기를 컴포넌트와 다르게 본다 */
 export type CheckTargetKind = 'component' | 'pattern';
-
-/**
- * 크기 검사 방식.
- * - shouldCheckSizes: 크기(고정·내용 맞춤·최소·최대)의 변수 연결을 검사하는지. 조립 안의 크기는 변수 없는 숫자를 허용한다
- * - sampleAxes: 변수 없는 고정 크기를 허용하는 루트 축(`@sample-size`로 표시한 견본 크기)
- */
-type SizeRule = {
-  shouldCheckSizes: boolean;
-  sampleAxes: ReadonlySet<SampleAxis>;
-};
 
 /**
  * 검사에 쓰는 파일 정보.
@@ -107,8 +89,6 @@ const CURVE_TOLERANCE = 1e-3;
 const TIME_TOLERANCE_MS = 0.5;
 const MOTION_DURATION_PREFIX = 'motion/duration/';
 const MOTION_EASING_PREFIX = 'motion/easing/';
-// 변형 속성 값 `Focused`로 가는 전환을 찾는다.
-const FOCUSED_VARIANT_PATTERN = /=\s*Focused\b/u;
 
 /**
  * 변형 하나의 구조를 검사한다. 숨긴 노드는 이미 빠져 있다.
@@ -117,7 +97,6 @@ const FOCUSED_VARIANT_PATTERN = /=\s*Focused\b/u;
  * @param root 변형 루트 노드 데이터
  * @param where 위치 접두어(`Button / Style=Accent, State=Rest`)
  * @param context 이름 있는 이미지 자산과 코드 전용 변수
- * @param directives 컴포넌트·변형 description의 `@` 줄
  * @param kind 대상 종류(컴포넌트, 조립)
  * @returns 위반 목록(모두)
  */
@@ -125,7 +104,6 @@ export function checkVariant(
   root: NodeData,
   where: string,
   context: CheckContext,
-  directives: Directives = {},
   kind: CheckTargetKind = 'component',
 ): Violation[] {
   const violations: Violation[] = [];
@@ -143,72 +121,37 @@ export function checkVariant(
       nodeId: node.id,
     });
   }
-  checkNode(
-    root,
-    true,
-    context,
-    { shouldCheckSizes: kind === 'component', sampleAxes: sampleSizeAxes(directives) },
-    add,
-  );
+  checkNode(root, true, context, kind === 'component', add);
   checkInstanceOverrides(root, add);
   if (kind === 'pattern') {
     for (const child of root.children) {
       checkPlacementFrames(child, false, add);
     }
   }
-  checkTransitions(root, context.motionVariables, directives, add);
+  if (context.motionVariables !== undefined) {
+    for (const reaction of root.reactions) {
+      checkTransitionValues(root, reaction, context.motionVariables, add);
+    }
+  }
   return violations;
 }
 
 /**
- * 변형 전환을 검사한다. 시간과 이징은 `motion/*` 변수 값이어야 하고, Focused 변형으로 가는 전환은 피그마에 포커스 트리거가 없어
- * `@trigger focus-visible`이 있어야 한다.
+ * 변형 전환의 시간과 이징이 모션 변수 값인지 본다. 재생 시작 조건(트리거)은 읽지 않는다.
  * @codocs [[피그마 연동:구조 검사]]
  * @codocs [[피그마 연동:모션]]
  * @param root 변형 루트
- * @param variables 모션 변수. 없으면 시간·이징을 대조하지 않는다
- * @param directives 컴포넌트·변형 description의 `@` 줄
- * @param add 위반을 더하는 함수
- */
-function checkTransitions(
-  root: NodeData,
-  variables: readonly MotionVariable[] | undefined,
-  directives: Directives,
-  add: Add,
-): void {
-  for (const reaction of root.reactions) {
-    const label = `${reaction.trigger} → ${reaction.destination ?? '알 수 없는 노드'} 전환`;
-    if (
-      FOCUSED_VARIANT_PATTERN.test(reaction.destination ?? '') &&
-      directives.trigger?.includes(FOCUS_TRIGGER) !== true
-    ) {
-      add(
-        root,
-        `${label}이 Focused 변형으로 가는데 \`@trigger ${FOCUS_TRIGGER}\` 줄이 없다`,
-        `피그마에 포커스 트리거가 없으니 컴포넌트 description에 \`@trigger ${FOCUS_TRIGGER}\`를 적는다.`,
-      );
-    }
-    if (variables !== undefined) {
-      checkTransitionValues(root, reaction, label, variables, add);
-    }
-  }
-}
-
-/**
- * 전환 시간과 이징이 모션 변수 값인지 본다.
- * @param root 변형 루트
  * @param reaction 전환
- * @param label 메시지에 쓸 이름
  * @param variables 모션 변수
  * @param add 위반을 더하는 함수
  */
 function checkTransitionValues(
   root: NodeData,
   reaction: ReactionData,
-  label: string,
   variables: readonly MotionVariable[],
   add: Add,
 ): void {
+  const label = `${reaction.trigger} → ${reaction.destination ?? '알 수 없는 노드'} 전환`;
   const { transition } = reaction;
   if (transition === null) {
     return;
@@ -522,14 +465,14 @@ function objectParticle(word: string): string {
  * @param node 노드
  * @param isRoot 변형 루트인지
  * @param context 이름 있는 이미지 자산
- * @param sizes 크기 검사 방식
+ * @param shouldCheckSizes 크기(내용 맞춤·최소·최대)의 변수 연결을 검사하는지. 조립 안의 크기는 변수 없는 숫자를 허용한다
  * @param add 위반을 더하는 함수
  */
 function checkNode(
   node: NodeData,
   isRoot: boolean,
   context: CheckContext,
-  sizes: SizeRule,
+  shouldCheckSizes: boolean,
   add: Add,
 ): void {
   if (!isRoot && !checkType(node, add)) {
@@ -537,8 +480,8 @@ function checkNode(
   }
   checkCommon(node, context.codeVariables ?? noCodeVariables, add);
   // 조립 안의 크기(루트, 인스턴스 크기 덮어쓰기, 배치 프레임)는 화면·영역 크기라 변수 없는 숫자로 둔다.
-  if (sizes.shouldCheckSizes) {
-    checkSizes(node, isRoot, ownSampleAxes(node, isRoot ? sizes.sampleAxes : new Set()), add);
+  if (shouldCheckSizes) {
+    checkSizes(node, isRoot, add);
   }
   if (node.asset !== null) {
     checkImageRatio(node, isRoot, add);
@@ -570,7 +513,7 @@ function checkNode(
     return;
   }
   for (const child of node.children) {
-    checkNode(child, false, context, sizes, add);
+    checkNode(child, false, context, shouldCheckSizes, add);
   }
 }
 
@@ -654,30 +597,12 @@ function requirePair(
 }
 
 /**
- * 견본 크기로 표시한 축을 모은다. 변형 루트는 컴포넌트 description의 축에 더해, 안쪽 레이어(Equation의 `formula` 등)는
- * 그 레이어 주석의 `@sample-size` 줄로 표시한 축이다.
- * @codocs [[피그마 연동:구조 검사]]
- * @param node 노드
- * @param inherited description에서 읽은 축(변형 루트만)
- * @returns 변수 없는 고정 크기를 허용하는 축
- */
-function ownSampleAxes(node: NodeData, inherited: ReadonlySet<SampleAxis>): Set<SampleAxis> {
-  const { directives } = parseDirectiveTexts(node.annotations);
-  return new Set([...inherited, ...sampleSizeAxes(directives)]);
-}
-
-/**
  * 불투명도·회전·비율·제약·마스크와 주석의 `@` 줄을 검사한다.
  * @param node 노드
  * @param codeVariables 코드 전용 변수
  * @param add 위반을 더하는 함수
  */
 function checkCommon(node: NodeData, codeVariables: CodeVariables, add: Add): void {
-  for (const text of node.annotations) {
-    for (const problem of parseDirectives(text).problems) {
-      add(node, `주석의 ${problem}`, '주석 줄을 고친다.');
-    }
-  }
   if (node.rotation !== 0) {
     requirePair(
       node,
@@ -891,26 +816,21 @@ function checkLayout(node: NodeData, add: Add): void {
 }
 
 /**
- * 고정 크기와 최소·최대 크기가 변수에 연결됐는지 검사한다.
+ * 내용 맞춤 축의 크기와 최소·최대 크기가 변수에 연결됐는지 검사한다.
+ * 고정 크기는 막지 않는다. 변수에 연결된 고정 크기는 고정 크기, 변수 없는 숫자는 견본 크기다(layer-tree가 나눠 적는다).
+ * 변수를 빠뜨린 진짜 고정 크기는 캡처 표의 차이로 드러난다.
  * 양쪽 제약(STRETCH)인 축의 크기는 제약이 정하는 값이라 검사하지 않는다.
  * 배율 인스턴스(`scaleFactor`가 1이 아님) 자체의 고정 너비·높이는 검사하지 않는다.
  * 배율이 고정일 수도 칸에 맞춘 값일 수도 있어 결과 크기가 토큰이 아닐 수 있고, 피그마는 배율 인스턴스의 크기를 변수에 연결하면 배율을 풀기 때문이다. 크기는 그것을 담는 칸이 변수로 지킨다.
- * 컴포넌트 변형 루트에서 `@sample-size`로 표시한 축의 고정 크기는 견본 크기(코드에서 부모를 채우는 컴포넌트를 혼자 보이려고 준 크기)라 검사하지 않는다.
  * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 기반:크기 변수]]
  * @param node 노드
  * @param isRoot 변형 루트인지
- * @param sampleAxes 변수 없는 고정 크기를 허용하는 축
  * @param add 위반을 더하는 함수
  */
-function checkSizes(
-  node: NodeData,
-  isRoot: boolean,
-  sampleAxes: ReadonlySet<SampleAxis>,
-  add: Add,
-): void {
+function checkSizes(node: NodeData, isRoot: boolean, add: Add): void {
   const { horizontal, vertical } = sizingOf(node, isRoot);
   if (node.instance === null || Math.abs(node.instance.scaleFactor - 1) <= EPSILON) {
-    checkFixedSizes(node, horizontal, vertical, sampleAxes, add);
     checkHugSizes(node, horizontal, vertical, add);
   }
   for (const [label, bound] of [
@@ -1003,51 +923,6 @@ function isChildrenSized(node: NodeData, axis: 'horizontal' | 'vertical', sizing
   return isPrimary
     ? live.every((child) => isSized(child, axis))
     : live.some((child) => isSized(child, axis));
-}
-
-/**
- * 배율이 1인 노드의 고정 너비·높이가 크기 변수에 연결됐는지 검사한다. 견본 크기로 표시한 축은 보지 않는다.
- * @param node 노드
- * @param horizontal 가로 크기 방식
- * @param vertical 세로 크기 방식
- * @param sampleAxes 견본 크기로 표시한 축
- * @param add 위반을 더하는 함수
- */
-function checkFixedSizes(
-  node: NodeData,
-  horizontal: string,
-  vertical: string,
-  sampleAxes: ReadonlySet<SampleAxis>,
-  add: Add,
-): void {
-  // 비율을 잠근 레이어는 한 축이 정해지면 나머지 축이 비율에서 나온다.
-  const isLocked = node.aspectRatio !== null;
-  const isWidthDerived = isLocked && (vertical !== 'FIXED' || node.height.variable !== undefined);
-  const isHeightDerived = isLocked && (horizontal !== 'FIXED' || node.width.variable !== undefined);
-  if (
-    horizontal === 'FIXED' &&
-    node.width.variable === undefined &&
-    !isWidthDerived &&
-    !sampleAxes.has('width')
-  ) {
-    add(
-      node,
-      `고정 너비 ${String(node.width.value)}가 크기 변수에 연결되어 있지 않다`,
-      '너비를 size 변수에 연결하거나 HUG·FILL로 바꾼다.',
-    );
-  }
-  if (
-    vertical === 'FIXED' &&
-    node.height.variable === undefined &&
-    !isHeightDerived &&
-    !sampleAxes.has('height')
-  ) {
-    add(
-      node,
-      `고정 높이 ${String(node.height.value)}가 크기 변수에 연결되어 있지 않다`,
-      '높이를 size 변수에 연결하거나 HUG·FILL로 바꾼다.',
-    );
-  }
 }
 
 /**

@@ -88,7 +88,9 @@ export function checkMotionSample(
   for (const problem of sample.problems) {
     add(problem.path, problem.reason, problem.fix, problem.nodeId);
   }
-  const { directives, problems } = parseDirectiveTexts(sample.annotations);
+  const { directives, problems } = parseDirectiveTexts(sample.annotations, {
+    isLegacySample: true,
+  });
   for (const problem of problems) {
     add('', `주석의 ${problem}`, '견본 프레임 주석을 고친다.');
   }
