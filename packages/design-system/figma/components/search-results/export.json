@@ -1,5 +1,5 @@
 {
-  "description": "검색 결과 목록과 가장 일치하는 항목 카드를 놓는 틀로, 검색 패널과 Start 검색 결과에 쓴다.\n@sample-size width height",
+  "description": "검색 결과 목록과 가장 일치하는 항목 카드를 놓는 틀로, 검색 패널과 Start 검색 결과에 쓴다.",
   "name": "SearchResults",
   "nodeId": "313:4782",
   "propertyDefinitions": {
@@ -291,10 +291,9 @@
                       "h": "FILL",
                       "v": "HUG"
                     },
-                    "type": "SLOT"
+                    "type": "FRAME"
                   }
                 ],
-                "component": "ListGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/2xs",
@@ -308,9 +307,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "group 최고 일치",
-                "properties": {
-                  "Has header": true
-                },
                 "size": {
                   "h": 86,
                   "w": 300
@@ -319,7 +315,7 @@
                   "h": "FILL",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               },
               {
                 "children": [
@@ -530,10 +526,9 @@
                       "h": "FILL",
                       "v": "HUG"
                     },
-                    "type": "SLOT"
+                    "type": "FRAME"
                   }
                 ],
-                "component": "ListGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/2xs",
@@ -547,9 +542,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "group 폴더",
-                "properties": {
-                  "Has header": true
-                },
                 "size": {
                   "h": 70,
                   "w": 300
@@ -558,7 +550,7 @@
                   "h": "FILL",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               },
               {
                 "children": [
@@ -947,10 +939,9 @@
                       "h": "FILL",
                       "v": "HUG"
                     },
-                    "type": "SLOT"
+                    "type": "FRAME"
                   }
                 ],
-                "component": "ListGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/2xs",
@@ -964,9 +955,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "group 글",
-                "properties": {
-                  "Has header": true
-                },
                 "size": {
                   "h": 108,
                   "w": 300
@@ -975,7 +963,7 @@
                   "h": "FILL",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               },
               {
                 "children": [
@@ -1203,10 +1191,9 @@
                       "h": "FILL",
                       "v": "HUG"
                     },
-                    "type": "SLOT"
+                    "type": "FRAME"
                   }
                 ],
-                "component": "ListGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/2xs",
@@ -1220,9 +1207,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "group 외부 링크",
-                "properties": {
-                  "Has header": true
-                },
                 "size": {
                   "h": 70,
                   "w": 300
@@ -1231,7 +1215,7 @@
                   "h": "FILL",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "layout": {
@@ -1758,6 +1742,10 @@
           "primaryAlign": "MIN"
         },
         "name": "Device=Desktop",
+        "sampleSize": [
+          "width",
+          "height"
+        ],
         "size": {
           "h": 545,
           "w": 574
@@ -2531,10 +2519,9 @@
                           "h": "FILL",
                           "v": "HUG"
                         },
-                        "type": "SLOT"
+                        "type": "FRAME"
                       }
                     ],
-                    "component": "ListGroup",
                     "layout": {
                       "counterAlign": "MIN",
                       "gap": "spacing/2xs",
@@ -2548,9 +2535,6 @@
                       "primaryAlign": "MIN"
                     },
                     "name": "group 최고 일치",
-                    "properties": {
-                      "Has header": true
-                    },
                     "size": {
                       "h": 86,
                       "w": 356
@@ -2559,7 +2543,7 @@
                       "h": "FILL",
                       "v": "HUG"
                     },
-                    "type": "INSTANCE"
+                    "type": "FRAME"
                   },
                   {
                     "children": [
@@ -2770,10 +2754,9 @@
                           "h": "FILL",
                           "v": "HUG"
                         },
-                        "type": "SLOT"
+                        "type": "FRAME"
                       }
                     ],
-                    "component": "ListGroup",
                     "layout": {
                       "counterAlign": "MIN",
                       "gap": "spacing/2xs",
@@ -2787,9 +2770,6 @@
                       "primaryAlign": "MIN"
                     },
                     "name": "group 폴더",
-                    "properties": {
-                      "Has header": true
-                    },
                     "size": {
                       "h": 70,
                       "w": 356
@@ -2798,7 +2778,7 @@
                       "h": "FILL",
                       "v": "HUG"
                     },
-                    "type": "INSTANCE"
+                    "type": "FRAME"
                   },
                   {
                     "children": [
@@ -3187,10 +3167,9 @@
                           "h": "FILL",
                           "v": "HUG"
                         },
-                        "type": "SLOT"
+                        "type": "FRAME"
                       }
                     ],
-                    "component": "ListGroup",
                     "layout": {
                       "counterAlign": "MIN",
                       "gap": "spacing/2xs",
@@ -3204,9 +3183,6 @@
                       "primaryAlign": "MIN"
                     },
                     "name": "group 글",
-                    "properties": {
-                      "Has header": true
-                    },
                     "size": {
                       "h": 108,
                       "w": 356
@@ -3215,7 +3191,7 @@
                       "h": "FILL",
                       "v": "HUG"
                     },
-                    "type": "INSTANCE"
+                    "type": "FRAME"
                   },
                   {
                     "children": [
@@ -3443,10 +3419,9 @@
                           "h": "FILL",
                           "v": "HUG"
                         },
-                        "type": "SLOT"
+                        "type": "FRAME"
                       }
                     ],
-                    "component": "ListGroup",
                     "layout": {
                       "counterAlign": "MIN",
                       "gap": "spacing/2xs",
@@ -3460,9 +3435,6 @@
                       "primaryAlign": "MIN"
                     },
                     "name": "group 외부 링크",
-                    "properties": {
-                      "Has header": true
-                    },
                     "size": {
                       "h": 70,
                       "w": 356
@@ -3471,7 +3443,7 @@
                       "h": "FILL",
                       "v": "HUG"
                     },
-                    "type": "INSTANCE"
+                    "type": "FRAME"
                   }
                 ],
                 "layout": {
@@ -3541,6 +3513,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Device=Mobile",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 611,
           "w": 356

@@ -1,5 +1,5 @@
 {
-  "description": "메뉴의 한 줄 항목으로, Menu 안에서 우클릭 메뉴·전원 메뉴·보기 메뉴에 쓴다.\n@sample-size width",
+  "description": "메뉴의 한 줄 항목으로, Menu 안에서 우클릭 메뉴·전원 메뉴·보기 메뉴에 쓴다.",
   "name": "MenuItem",
   "nodeId": "14:205",
   "propertyDefinitions": {
@@ -199,6 +199,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Default, State=Disabled",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -376,6 +379,9 @@
             "trigger": "ON_PRESS"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -535,6 +541,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Default, State=Pressed",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -712,6 +721,9 @@
             "trigger": "ON_HOVER"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -850,6 +862,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Radio off, State=Disabled",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -988,6 +1003,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Radio off, State=Hover",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -1126,6 +1144,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Radio off, State=Pressed",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -1264,6 +1285,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Radio off, State=Rest",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -1421,6 +1445,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Radio on, State=Disabled",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -1596,6 +1623,9 @@
             "trigger": "ON_PRESS"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -1753,6 +1783,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Radio on, State=Pressed",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -1927,6 +1960,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -2106,6 +2142,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Submenu, State=Disabled",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -2302,6 +2341,9 @@
             "trigger": "ON_PRESS"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -2480,6 +2522,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Submenu, State=Pressed",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -2676,6 +2721,9 @@
             "trigger": "ON_HOVER"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -2814,6 +2862,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Toggle off, State=Disabled",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -2970,6 +3021,9 @@
             "trigger": "ON_PRESS"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -3108,6 +3162,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Toggle off, State=Pressed",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -3264,6 +3321,9 @@
             "trigger": "ON_HOVER"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -3299,18 +3359,18 @@
                       "path": "icons/ic_fluent_checkmark_20_regular"
                     },
                     "component": "ic_fluent_checkmark_20_regular",
-                    "height": "size/icon/sm",
+                    "height": "size/icon/xs",
                     "name": "check",
                     "size": {
-                      "h": 16,
-                      "w": 16
+                      "h": 12,
+                      "w": 12
                     },
                     "sizing": {
                       "h": "FIXED",
                       "v": "FIXED"
                     },
                     "type": "INSTANCE",
-                    "width": "size/icon/sm"
+                    "width": "size/icon/xs"
                   }
                 ],
                 "height": "size/icon/sm",
@@ -3423,6 +3483,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Toggle on, State=Disabled",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -3454,22 +3517,22 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "color/black/89",
+                      "color": "color/black/45",
                       "path": "icons/ic_fluent_checkmark_20_regular"
                     },
                     "component": "ic_fluent_checkmark_20_regular",
-                    "height": "size/icon/sm",
+                    "height": "size/icon/xs",
                     "name": "check",
                     "size": {
-                      "h": 16,
-                      "w": 16
+                      "h": 12,
+                      "w": 12
                     },
                     "sizing": {
                       "h": "FIXED",
                       "v": "FIXED"
                     },
                     "type": "INSTANCE",
-                    "width": "size/icon/sm"
+                    "width": "size/icon/xs"
                   }
                 ],
                 "height": "size/icon/sm",
@@ -3600,6 +3663,9 @@
             "trigger": "ON_PRESS"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -3631,22 +3697,22 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "color/black/61",
+                      "color": "color/black/45",
                       "path": "icons/ic_fluent_checkmark_20_regular"
                     },
                     "component": "ic_fluent_checkmark_20_regular",
-                    "height": "size/icon/sm",
+                    "height": "size/icon/xs",
                     "name": "check",
                     "size": {
-                      "h": 16,
-                      "w": 16
+                      "h": 12,
+                      "w": 12
                     },
                     "sizing": {
                       "h": "FIXED",
                       "v": "FIXED"
                     },
                     "type": "INSTANCE",
-                    "width": "size/icon/sm"
+                    "width": "size/icon/xs"
                   }
                 ],
                 "height": "size/icon/sm",
@@ -3759,6 +3825,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Toggle on, State=Pressed",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
@@ -3790,22 +3859,22 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "color/black/89",
+                      "color": "color/black/45",
                       "path": "icons/ic_fluent_checkmark_20_regular"
                     },
                     "component": "ic_fluent_checkmark_20_regular",
-                    "height": "size/icon/sm",
+                    "height": "size/icon/xs",
                     "name": "check",
                     "size": {
-                      "h": 16,
-                      "w": 16
+                      "h": 12,
+                      "w": 12
                     },
                     "sizing": {
                       "h": "FIXED",
                       "v": "FIXED"
                     },
                     "type": "INSTANCE",
-                    "width": "size/icon/sm"
+                    "width": "size/icon/xs"
                   }
                 ],
                 "height": "size/icon/sm",
@@ -3935,6 +4004,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -4265,6 +4337,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Zoom, State=Rest",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 250
