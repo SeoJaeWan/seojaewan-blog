@@ -42,7 +42,7 @@ export const Figma: Story = {};
 const manyLabels = Array.from({ length: 40 }, (_, index) => `목차 항목 ${String(index + 1)}`);
 
 // @codocs [[Chrome:글 화면]]
-/** 항목이 최대 높이를 넘으면 목차 안에서 세로로 스크롤하고, 항목 높이는 줄지 않는다 */
+/** 항목이 최대 높이를 넘으면 목차 안의 ScrollArea로 세로 스크롤하고, 항목 높이는 줄지 않는다 */
 export const Overflow: Story = {
   render: () => (
     <Toc>
@@ -54,11 +54,14 @@ export const Overflow: Story = {
   play: async ({ canvasElement, step }) => {
     const first = within(canvasElement).getByText(manyLabels[0] ?? '');
     const item = first.parentElement;
-    const items = item?.parentElement;
-    await step('Items 자리가 넘친 만큼 스크롤된다', async () => {
-      await expect(items).not.toBeNull();
-      await expect(items?.scrollHeight).toBeGreaterThan(items?.clientHeight ?? 0);
-      await expect(getComputedStyle(items as Element).overflowY).toBe('auto');
+    const viewport = item?.closest('[data-scrollbar-hidden]');
+    await step('Items 자리를 감싼 ScrollArea가 넘친 만큼 스크롤된다', async () => {
+      await expect(viewport).not.toBeNull();
+      await expect(viewport?.scrollHeight).toBeGreaterThan(viewport?.clientHeight ?? 0);
+      await expect(getComputedStyle(viewport as Element).overflowY).toBe('auto');
+    });
+    await step('항목은 Items 너비를 채운다', async () => {
+      await expect(item?.getBoundingClientRect().width).toBe(viewport?.clientWidth);
     });
     await step('항목은 피그마 높이 그대로다', async () => {
       await expect(item?.getBoundingClientRect().height).toBe(20);
