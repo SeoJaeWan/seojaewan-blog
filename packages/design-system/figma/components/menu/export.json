@@ -354,7 +354,6 @@
                         "type": "INSTANCE"
                       }
                     ],
-                    "component": "MenuSeparator",
                     "layout": {
                       "counterAlign": "MIN",
                       "gap": "spacing/none",
@@ -367,7 +366,7 @@
                       ],
                       "primaryAlign": "MIN"
                     },
-                    "name": "MenuSeparator",
+                    "name": "separator",
                     "size": {
                       "h": 9,
                       "w": 248
@@ -376,7 +375,7 @@
                       "h": "FILL",
                       "v": "HUG"
                     },
-                    "type": "INSTANCE"
+                    "type": "FRAME"
                   },
                   {
                     "children": [
