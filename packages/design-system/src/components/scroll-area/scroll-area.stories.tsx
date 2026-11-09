@@ -104,7 +104,10 @@ function getThumb(scrollbar: HTMLElement): HTMLElement {
 export const Figma: Story = {};
 
 // @codocs [[컴포넌트 목록:기본 컨트롤]]
-/** 내용이 넘치면 스크롤바를 보이고, 마우스를 올리면 펼치고 내리면 접고, 스크롤하면 막대가 움직인다 */
+/**
+ * 내용이 넘치면 가는 스크롤바를 늘 보이고, 마우스를 스크롤바 칸에 올렸을 때만 펼친다.
+ * 막대를 끄는 동안은 칸 밖이어도 펼친 채이고, 스크롤하거나 끌면 막대가 움직인다
+ */
 export const Overflow: Story = {
   args: { material: 'solid' },
   play: async ({ canvasElement, step, userEvent }) => {
@@ -119,11 +122,33 @@ export const Overflow: Story = {
       await expect(scrollbar).toHaveAttribute('data-state', 'rest');
     });
 
-    await step('마우스를 올리면 펼치고 내리면 접는다', async () => {
-      await fireEvent.pointerOver(root);
-      await expect(scrollbar).toHaveAttribute('data-state', 'expanded');
-      await fireEvent.pointerOut(root, { relatedTarget: document.body });
+    // @codocs [[디자인 기반:겹쳐 놓기]]
+    await step('영역에 마우스를 올려도 펼치지 않는다', async () => {
+      await fireEvent.pointerOver(viewport);
       await expect(scrollbar).toHaveAttribute('data-state', 'rest');
+    });
+
+    await step('스크롤바 칸에 올리면 펼치고 칸을 벗어나면 접는다', async () => {
+      await fireEvent.pointerOver(scrollbar);
+      await expect(scrollbar).toHaveAttribute('data-state', 'expanded');
+      await fireEvent.pointerOut(scrollbar, { relatedTarget: viewport });
+      await expect(scrollbar).toHaveAttribute('data-state', 'rest');
+    });
+
+    await step('막대를 끄는 동안은 칸 밖이어도 펼친 채이고 끈 만큼 스크롤된다', async () => {
+      const thumb = getThumb(scrollbar);
+      const startOffset = thumb.offsetTop;
+      const startY = thumb.getBoundingClientRect().top + 1;
+      await fireEvent.pointerOver(scrollbar);
+      await fireEvent.pointerDown(scrollbar, { button: 0, clientY: startY });
+      await fireEvent.pointerOut(scrollbar, { relatedTarget: document.body });
+      await expect(scrollbar).toHaveAttribute('data-state', 'expanded');
+      await fireEvent.pointerMove(window, { clientY: startY + 20 });
+      await waitFor(() => expect(viewport.scrollTop).toBeGreaterThan(0));
+      await fireEvent.pointerUp(window, { clientY: startY + 20 });
+      await expect(scrollbar).toHaveAttribute('data-state', 'rest');
+      viewport.scrollTo({ top: 0 });
+      await waitFor(() => expect(thumb.offsetTop).toBe(startOffset));
     });
 
     await step('목록 항목은 눌리지 않고 넘친 만큼 스크롤된다', async () => {
@@ -145,7 +170,7 @@ export const Overflow: Story = {
 };
 
 // @codocs [[컴포넌트 목록:기본 컨트롤]]
-/** 내용이 넘치지 않으면 스크롤바를 숨기고, 마우스를 올려도 보이지 않으며, 영역은 포커스를 받지 않는다 */
+/** 내용이 넘치지 않으면 스크롤바를 숨기고, 영역은 포커스를 받지 않는다 */
 export const FitsContent: Story = {
   args: { material: 'solid' },
   render: (args) => (
