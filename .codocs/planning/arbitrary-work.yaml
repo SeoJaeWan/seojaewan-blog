@@ -164,3 +164,10 @@ Notion 열 나누기: |
   - 검색 돋보기 강조의 유지 조건은 결정 요약("포커스 동안")보다 넓게, 지금 문서([[검색:입력칸]]의 "호버하거나 포커스하면 켜진다")와 피그마 옛 줄에 맞춰 "호버나 포커스 가운데 하나라도 켜져 있는 동안, 다른 쪽이 더해져도 다시 돌지 않는다"로 적었다. 코드(SearchBox의 `group-hover`·`group-focus-within`로 보이는 돋보기)도 이렇게 동작한다.
   - 플러그인은 `@hold`를 받는 키에서 빼고 더 쓰지 않는 키로 옮겼다. description에 남아 있으면 막지 않고 지울 줄로 알린다. 옛 견본 주석의 `@hold`도 지울 줄이다.
   - 코드 확인: 끌기 배율은 `use-reorder-motion`이 끄는 동안 `motion-reorder-lift`를 붙이고 놓을 때 뗀다. 이미지 스켈레톤은 받는 중인 Figure만 반짝임(`motion-image-skeleton`, 무한 반복)을 붙이고 실패하면 회색 칸 상태로 바뀐다. 세 조건 모두 지금 코드와 같다.
+
+Toc를 ScrollArea로 감쌈: |
+  `feat/figma-toc` 컴포넌트 PR에서 Toc의 Items를 디자인 시스템 ScrollArea로 감싸며 정한 것이다.
+  - ScrollArea 재질은 `solid`로 했다. 목차는 Chrome 글 페이지의 흰 바탕 위에 있어, 같은 불투명한 바탕 위의 탐색기 본문 ScrollArea와 맞췄다.
+  - Items 슬롯 안 항목은 피그마에서 가로 채움(FILL)이라 Toc의 자리 요소가 `[&>*]:w-full`로 채운다.
+  - 지금 읽는 위치 항목을 보이게 하는 목차 스크롤은 항목에서 가장 가까운 ScrollArea 스크롤 영역(`[data-scrollbar-hidden]`)을 스크롤한다. 같은 PR에서 [[Chrome:글 화면]]대로 부드럽게 스크롤하고 동작 줄이기에서는 바로 옮기게 했다.
+  - 캡처 도구가 숨겨 둔 Scrollbar 상자까지 재서 코드 그림이 가로·세로 12px 크게 찍힌다. 노드 위치로 맞추므로 비교에는 영향이 없다.
