@@ -85,11 +85,11 @@ export function ChromeImageViewer({
           onClick={handleClose}
         />
       </div>
-      {/* 피그마 `stage` 배치 프레임. 남은 높이를 채우고 이미지와 캡션을 가운데에 둔다 */}
+      {/* 피그마 `stage` 배치 프레임. 남은 높이를 채우고 이미지와 캡션을 가운데에 둔다. 받는 동안의 이미지 자리(LoadingImage `contain`)가 이 폭을 재도록 `@container`다 */}
       <div
         data-backdrop
         className={cn(
-          'flex min-h-size-none w-full flex-flex-fill flex-col items-center justify-center gap-spacing-md [&>img]:max-h-full [&>img]:min-h-size-none [&>img]:max-w-full [&>img]:object-contain',
+          '@container flex min-h-size-none w-full flex-flex-fill flex-col items-center justify-center gap-spacing-md [&>img]:max-h-full [&>img]:min-h-size-none [&>img]:max-w-full [&>img]:object-contain',
           layout === 'wide' ? 'px-spacing-3xl' : 'px-spacing-none',
         )}
       >

@@ -163,14 +163,7 @@ export function ChromePageArea({
           ref={viewerRef}
           layout={layout}
           // 크게 보기는 페이지 영역을 채우므로 화면 폭 기준으로 크기별 사본을 고른다
-          image={
-            <LoadingImage
-              image={image.block}
-              alt={caption}
-              sizes="100vw"
-              placeholderClassName="w-full"
-            />
-          }
+          image={<LoadingImage image={image.block} alt={caption} sizes="100vw" fit="contain" />}
           caption={caption.length > 0 ? caption : undefined}
           onClose={handleImageClose}
           className="absolute inset-spacing-none"

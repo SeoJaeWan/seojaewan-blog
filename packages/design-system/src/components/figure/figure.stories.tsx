@@ -79,6 +79,42 @@ export const Loading: Story = {
   },
 };
 
+// 이미지 크기를 알면 받는 중 칸을 그 비율로 잡는다. 세로로 긴 이미지(1:2)다.
+// @codocs [[Notion 이미지 제공:로딩 표시]]
+export const LoadingWithImageSize: Story = {
+  render: () => (
+    <Figure
+      state="loading"
+      imageSize={{ width: 300, height: 600 }}
+      image={<ImageAsset name="images/wallpaper-bloom" alt="그림" />}
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    // @codocs [[Notion 이미지 제공:로딩 표시]]
+    await step('받는 중 칸이 이미지 크기의 비율이다', async () => {
+      const placeholder = canvasElement.querySelector('figure')?.firstElementChild
+        ?.firstElementChild as HTMLElement;
+      await expect(placeholder.offsetHeight / placeholder.offsetWidth).toBeCloseTo(2, 1);
+    });
+  },
+};
+
+// 이미지 크기를 주지 않으면 받는 중 칸은 16:9(피그마 견본)다.
+// @codocs [[Notion 이미지 제공:로딩 표시]]
+export const LoadingWithoutImageSize: Story = {
+  render: () => (
+    <Figure state="loading" image={<ImageAsset name="images/wallpaper-bloom" alt="그림" />} />
+  ),
+  play: async ({ canvasElement, step }) => {
+    // @codocs [[Notion 이미지 제공:로딩 표시]]
+    await step('받는 중 칸이 16:9다', async () => {
+      const placeholder = canvasElement.querySelector('figure')?.firstElementChild
+        ?.firstElementChild as HTMLElement;
+      await expect(placeholder.offsetWidth / placeholder.offsetHeight).toBeCloseTo(16 / 9, 1);
+    });
+  },
+};
+
 // 받지 못하면 반짝임 없는 회색 칸으로 남긴다.
 // @codocs [[Notion 이미지 제공:로딩 표시]]
 export const Failed: Story = {

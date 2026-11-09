@@ -129,11 +129,7 @@ export function ChromePostTab({
       zoom={zoom}
       meta={getPostMeta(workspace, post)}
       title={post.name}
-      cover={
-        cover === null ? undefined : (
-          <LoadingImage image={cover} alt="" placeholderClassName="size-full" />
-        )
-      }
+      cover={cover === null ? undefined : <LoadingImage image={cover} alt="" fit="fill" />}
       toc={headings.map(
         /**
          * 목차 제목 하나를 목차 항목으로 바꾼다. 지금 읽는 위치면 표시한다.
