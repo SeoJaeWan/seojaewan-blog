@@ -1,5 +1,5 @@
 {
-  "description": "글 본문의 이미지와 캡션으로, 글 페이지에 쓴다.\n@sample-size width",
+  "description": "글 본문의 이미지와 캡션으로, 글 페이지에 쓴다.",
   "name": "Figure",
   "nodeId": "3348:2152",
   "propertyDefinitions": {
@@ -131,6 +131,9 @@
           "primaryAlign": "MIN"
         },
         "name": "State=Failed",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 433,
           "w": 720
@@ -252,6 +255,9 @@
           "primaryAlign": "MIN"
         },
         "name": "State=Loaded",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 478,
           "w": 720
@@ -275,6 +281,12 @@
         "State": "Loading"
       },
       "tree": {
+        "annotations": [
+          {
+            "category": "개발",
+            "text": "motion-image-skeleton"
+          }
+        ],
         "children": [
           {
             "children": [
@@ -384,6 +396,9 @@
           "primaryAlign": "MIN"
         },
         "name": "State=Loading",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 433,
           "w": 720
