@@ -1,5 +1,5 @@
 {
-  "description": "현재 위치에서 쓸 수 있는 명령 버튼을 담는 막대로, 파일 탐색기 본문의 주소 줄 아래에 쓴다.\n@sample-size width",
+  "description": "현재 위치에서 쓸 수 있는 명령 버튼을 담는 막대로, 파일 탐색기 본문의 주소 줄 아래에 쓴다.",
   "name": "ExplorerCommandBar",
   "nodeId": "439:5732",
   "propertyDefinitions": {
@@ -58,6 +58,9 @@
           "primaryAlign": "MIN"
         },
         "name": "ExplorerCommandBar",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 48,
           "w": 798
