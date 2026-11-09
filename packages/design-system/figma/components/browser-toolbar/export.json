@@ -1,5 +1,5 @@
 {
-  "description": "Chrome 이동 버튼과 주소창 줄로, Chrome 창의 탭 줄 아래에 쓴다.\n@sample-size width",
+  "description": "Chrome 이동 버튼과 주소창 줄로, Chrome 창의 탭 줄 아래에 쓴다.",
   "name": "BrowserToolbar",
   "nodeId": "36:591",
   "propertyDefinitions": {},
@@ -394,6 +394,9 @@
           "primaryAlign": "MIN"
         },
         "name": "BrowserToolbar",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 46,
           "w": 1000
