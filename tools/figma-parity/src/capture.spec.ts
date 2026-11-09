@@ -27,6 +27,7 @@ import {
   FIGMA_CAPTURE_FILE,
   PREVIOUS_CAPTURE_FILE,
   PREVIOUS_COMMIT_ENV,
+  PREVIOUS_DIFF_CAPTURE_FILE,
   RESULTS_DIR_ENV,
   SELECTION_FILE,
 } from './results.ts';
@@ -37,8 +38,8 @@ import { figmaImagePath, loadTargets, type Target, variantResultDir } from './ta
 import type { VariantEntry } from './variant-name.ts';
 
 // @codocs [[피그마 연동:캡처 표]]
-// 변형과 상태마다 코드를 캡처하고 차이 그림을 만든다. 컴포넌트는 피그마 그림과 같은 조건(배율, 여백, 배경, 상태 재현)으로
-// 맞춰 비교하고, 조립은 parity-captures에 저장된 이전 코드 그림과 비교한다(의도하지 않은 배치 변화만 본다).
+// 변형과 상태마다 코드를 캡처하고 차이 그림을 만든다. 컴포넌트와 조립 모두 피그마 그림과 같은 조건(배율, 여백, 배경, 상태 재현)으로
+// 맞춰 비교한다(조립은 참고용). 조립은 parity-captures에 저장된 이전 코드 그림과의 비교도 함께 남긴다(의도하지 않은 배치 변화).
 // 판정은 하지 않는다. 보통은 run-capture.ts가 범위를 정하고 Storybook을 빌드한 뒤 이 파일을 실행한다.
 const resultsDir = process.env[RESULTS_DIR_ENV] ?? '';
 if (resultsDir === '') {
@@ -156,10 +157,9 @@ async function captureVariant(
       }
       return opened.target;
     }
-    if (target.kind === 'component') {
-      await captureComponent(page, target, variant, open, row, write);
-    } else {
-      await capturePattern(page, target, variant, open, row, write);
+    const code = await captureWithFigma(page, target, variant, open, row, write);
+    if (target.kind === 'pattern') {
+      await comparePrevious(page, target, variant, code, row, write);
     }
   } catch (error) {
     row.error = error instanceof Error ? error.message : String(error);
@@ -169,7 +169,7 @@ async function captureVariant(
 }
 
 /**
- * 컴포넌트 변형을 피그마 PNG와 같은 조건으로 찍고 `피그마 | 코드 | 차이`를 남긴다.
+ * 컴포넌트·조립 변형을 피그마 PNG와 같은 조건으로 찍고 `피그마 | 코드 | 차이`를 남긴다. 조립은 참고용이다.
  * @codocs [[피그마 연동:캡처 표]]
  * @param page Playwright 페이지
  * @param target 대상
@@ -177,15 +177,16 @@ async function captureVariant(
  * @param open 스토리를 여는 함수
  * @param row 채울 캡처 표 줄
  * @param write 그림을 쓰는 함수
+ * @returns 지금 코드 그림과 그 배경색
  */
-async function captureComponent(
+async function captureWithFigma(
   page: Page,
   target: Target,
   variant: VariantEntry,
   open: () => Promise<Locator>,
   row: CaptureRow,
   write: WriteImage,
-): Promise<void> {
+): Promise<{ png: Buffer; background: string }> {
   const figmaPng = figmaImagePath(target, variant.variant);
   if (!existsSync(figmaPng)) {
     throw new Error(`피그마 그림이 없다: ${path.basename(figmaPng)}`);
@@ -222,39 +223,29 @@ async function captureComponent(
   });
   row.figma = write(FIGMA_CAPTURE_FILE, figma);
   row.diff = write(DIFF_CAPTURE_FILE, await diffImage(page, figma, codePng, code.background));
+  return { png: codePng, background: code.background };
 }
 
 /**
- * 조립 변형을 피그마 그림 없이 찍고, parity-captures의 이전 코드 그림이 있으면 `이전 코드 | 지금 코드 | 차이`를 남긴다.
- * 코드 그림은 캡처 대상의 테두리 상자에 여백을 더한 크기 그대로다(피그마 PNG 크기에 맞추지 않는다).
+ * 조립의 지금 코드 그림을 parity-captures의 이전 코드 그림과도 비교해 남긴다. 이전 그림이 없으면(새 조립, 새 변형) 남기지 않는다.
  * @codocs [[피그마 연동:캡처 표]]
  * @param page Playwright 페이지
  * @param target 대상
  * @param variant 변형
- * @param open 스토리를 여는 함수
+ * @param code 지금 코드 그림과 배경색
+ * @param code.png 지금 코드 그림
+ * @param code.background 배경색
  * @param row 채울 캡처 표 줄
  * @param write 그림을 쓰는 함수
  */
-async function capturePattern(
+async function comparePrevious(
   page: Page,
   target: Target,
   variant: VariantEntry,
-  open: () => Promise<Locator>,
+  code: { png: Buffer; background: string },
   row: CaptureRow,
   write: WriteImage,
 ): Promise<void> {
-  let storyTarget = await open();
-  // 화면보다 큰 대상은 화면을 대상 크기에 맞춰 키우고 다시 연다. 배치와 상태 재현이 키운 화면에서 일어나게 한다.
-  const footprint = await targetFootprint(storyTarget);
-  if (await growViewport(page, footprint)) {
-    storyTarget = await open();
-  }
-  const margin = captureMargin(
-    await readRenderExtents(storyTarget),
-    await readOverflowExtents(storyTarget),
-  );
-  const code = await captureCode(page, storyTarget, margin);
-  row.code = write(CODE_CAPTURE_FILE, code.png);
   const previous =
     previousCommit === ''
       ? undefined
@@ -263,27 +254,10 @@ async function capturePattern(
     return;
   }
   row.previous = write(PREVIOUS_CAPTURE_FILE, previous);
-  row.diff = write(DIFF_CAPTURE_FILE, await diffImage(page, previous, code.png, code.background));
-}
-
-/**
- * 캡처 대상과 그 둘레로 나간 그림자·자식을 합친 크기를 잰다(피그마 PNG 크기와 같은 뜻).
- * @param target 캡처 대상
- * @returns CSS px 크기
- */
-async function targetFootprint(target: Locator): Promise<Size> {
-  const box = await target.boundingBox();
-  if (box === null) {
-    throw new Error('캡처 대상이 화면에 보이지 않는다.');
-  }
-  const render = await readRenderExtents(target);
-  const overflow = await readOverflowExtents(target);
-  return {
-    width:
-      box.width + Math.max(render.left, overflow.left) + Math.max(render.right, overflow.right),
-    height:
-      box.height + Math.max(render.top, overflow.top) + Math.max(render.bottom, overflow.bottom),
-  };
+  row.previousDiff = write(
+    PREVIOUS_DIFF_CAPTURE_FILE,
+    await diffImage(page, previous, code.png, code.background),
+  );
 }
 
 /**

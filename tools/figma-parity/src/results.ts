@@ -1,7 +1,7 @@
 /**
  * 캡처 결과(parity-results/captures.json)의 모양.
  * CI는 이 파일로 PR 댓글을 만들고, main에서는 코드 캡처를 parity-captures 브랜치에 올린다.
- * 컴포넌트는 피그마 그림과, 조립은 parity-captures에 저장된 이전 코드 그림과 비교한다.
+ * 컴포넌트와 조립 모두 피그마 그림과 비교한다. 조립은 참고용이고, parity-captures에 저장된 이전 코드 그림과의 비교도 함께 남긴다.
  */
 
 export const CAPTURES_FILE = 'captures.json';
@@ -12,6 +12,8 @@ export const CAPTURE_RESULT_FILE = 'capture.json';
 export const FIGMA_CAPTURE_FILE = 'figma.png';
 /** 조립의 이전 코드 그림(parity-captures에서 꺼낸 것) */
 export const PREVIOUS_CAPTURE_FILE = 'previous.png';
+/** 조립의 이전 코드 그림과 지금 코드 그림의 차이 그림 */
+export const PREVIOUS_DIFF_CAPTURE_FILE = 'previous-diff.png';
 export const CODE_CAPTURE_FILE = 'code.png';
 export const DIFF_CAPTURE_FILE = 'diff.png';
 // Playwright Test에 결과 폴더를 넘기는 환경 변수다.
@@ -22,13 +24,14 @@ export const PREVIOUS_COMMIT_ENV = 'FIGMA_PARITY_PREVIOUS';
 /**
  * 캡처 표 한 줄(변형과 상태 하나).
  * - target: 대상(`button`, `patterns/menu/folder`)
- * - kind: 컴포넌트는 피그마 그림과, 조립은 이전 코드 그림과 비교한다
+ * - kind: 컴포넌트는 정확히 같아야 하는 기준, 조립은 참고용이다. 둘 다 피그마 그림과 비교한다
  * - name: 피그마 이름(`Button`, `Menu/Folder`)
  * - variant: 변형 파일 이름
- * - figma: 결과 폴더 기준 피그마 그림 경로(컴포넌트). 조립이거나 만들지 못했으면 null
+ * - figma: 결과 폴더 기준 피그마 그림 경로. 만들지 못했으면 null
  * - previous: 결과 폴더 기준 이전 코드 그림 경로(조립). 컴포넌트이거나 이전 그림이 없으면(새 조립, 새 변형) null
  * - code: 결과 폴더 기준 지금 코드 그림 경로. 캡처하지 못했으면 null
- * - diff: 결과 폴더 기준 차이 그림 경로(피그마 또는 이전 코드와 지금 코드). 만들지 못했으면 null
+ * - diff: 결과 폴더 기준 피그마 그림과 지금 코드 그림의 차이 그림 경로. 만들지 못했으면 null
+ * - previousDiff: 결과 폴더 기준 이전 코드 그림과 지금 코드 그림의 차이 그림 경로(조립). 없으면 null
  * - error: 캡처하지 못한 이유
  */
 export type CaptureRow = {
@@ -40,6 +43,7 @@ export type CaptureRow = {
   previous: string | null;
   code: string | null;
   diff: string | null;
+  previousDiff?: string | null;
   error: string | null;
 };
 
