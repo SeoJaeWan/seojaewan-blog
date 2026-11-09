@@ -14,6 +14,13 @@ export const TOKENS_BRANCH = 'feat/figma-tokens';
 /** 조립 PR 브랜치 앞부분. 뒤에 영역 폴더 이름이 붙는다 */
 const PATTERNS_BRANCH_PREFIX = 'feat/figma-patterns-';
 
+/** 움직임을 읽은 자리의 이름 */
+const sourceTexts: Readonly<Record<MotionExport['source'], string>> = {
+  sample: '옛 견본 프레임(Foundations / Motion)',
+  flow: '조립 흐름 프레임',
+  component: '컴포넌트·자산 원본',
+};
+
 /** 애니메이션 PR 브랜치 앞부분. 뒤에 견본 이름이 붙는다 */
 const MOTION_BRANCH_PREFIX = 'feat/figma-motion-';
 /** 브랜치 이름에서 빼는 견본 이름 앞부분 */
@@ -510,7 +517,7 @@ export function motionCommitSubject(name: string): string {
  */
 export function motionCommitBody(motion: MotionExport): string {
   return [
-    `피그마 Foundations / Motion 프레임의 견본 ${motion.name}에서 키프레임과 토큰 짝을 내보낸다.`,
+    `피그마 ${sourceTexts[motion.source]}에서 ${motion.name}의 키프레임과 토큰 짝을 내보낸다.`,
     '',
     `- 트랙 ${String(motion.tracks.length)}개, 전체 길이 ${timeText(motion.duration)}`,
   ].join('\n');
@@ -527,10 +534,11 @@ export function motionPullRequestBody(motion: MotionExport): string {
   return [
     '## 변경',
     '',
-    `- 견본: [${motion.name}](${motion.url})`,
+    `- 자리: [${motion.name}](${motion.url}) (${sourceTexts[motion.source]})`,
     `- 자료: \`packages/design-system/figma/motions/${motion.name}.json\``,
     `- 전체 길이 ${timeText(motion.duration)}, 시작 지연 ${timeText(motion.delay)}`,
-    `- 반복: ${motion.iterations === null ? '견본 주석에 없음' : String(motion.iterations)}`,
+    `- 반복: ${iterationText(motion)}`,
+    ...motionNoteLines(motion),
     '',
     '## 키프레임',
     '',
@@ -552,6 +560,33 @@ export function motionPullRequestBody(motion: MotionExport): string {
     '- 시간·이징·지연·반복 횟수는 모션 검사(`motion-check.yml`)가 모션 스토리에서 읽어 이 자료와 비교한다.',
     `- 새 모션 토큰이 필요하면 토큰 PR(\`${TOKENS_BRANCH}\`), 키프레임이 걸린 자산이 컴포넌트 PR로 들어오면 그 PR을 먼저 병합한다.`,
   ].join('\n');
+}
+
+/**
+ * 반복을 글로 만든다. 옛 견본은 주석의 `@repeat`, 나머지는 재생 설정 Loop에서 온다.
+ * @codocs [[피그마 연동:모션]]
+ * @param motion 내보낸 모션
+ * @returns 반복 글
+ */
+function iterationText(motion: MotionExport): string {
+  if (motion.iterations === null) {
+    return '읽지 못함';
+  }
+  const from = motion.source === 'sample' ? '견본 주석 @repeat' : '재생 설정 Loop';
+  return `${String(motion.iterations)}(${from})`;
+}
+
+/**
+ * Development·Accessibility 주석 줄을 만든다. 실행 중 값과 동작 줄이기에서 남기는 움직임이다.
+ * @codocs [[피그마 연동:모션]]
+ * @param motion 내보낸 모션
+ * @returns 목록 줄
+ */
+function motionNoteLines(motion: MotionExport): string[] {
+  return motion.notes.map(
+    (note) =>
+      `- ${note.category} 주석${note.path === '' ? '' : `(${note.path})`}: ${note.text.replaceAll('\n', ' ')}`,
+  );
 }
 
 /**

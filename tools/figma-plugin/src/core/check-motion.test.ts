@@ -240,10 +240,7 @@ describe('구조 검사', () => {
         sample.name = 'Window open';
         sample.tracks = [];
       }),
-    ).toEqual([
-      expect.stringContaining('견본 이름이 모션 클래스 이름 꼴'),
-      '견본 안에 키프레임이 걸린 노드가 없다',
-    ]);
+    ).toEqual([expect.stringContaining('모션 클래스 이름 꼴'), '키프레임이 걸린 노드가 없다']);
   });
 
   it('읽는 중에 찾은 문제(정의한 노드를 못 찾은 이징 등)도 위반으로 막는다', () => {
@@ -260,5 +257,64 @@ describe('구조 검사', () => {
         ];
       }),
     ).toEqual(['읽을 수 없다', expect.stringContaining('정의한 노드를 찾지 못해')]);
+  });
+});
+
+/**
+ * 새 자리(흐름 프레임, 원본)에서 읽은 창 열기 움직임을 만든다.
+ * @param change 바꿀 값
+ * @returns 움직임 데이터
+ */
+function currentSample(change: Partial<MotionSampleData> = {}): MotionSampleData {
+  return {
+    ...windowOpenSample(),
+    source: 'flow',
+    annotations: [],
+    isLooping: false,
+    ...change,
+  };
+}
+
+// @codocs [[피그마 연동:모션]]
+// @codocs [[디자인 기반:모션 견본]]
+describe('움직임이 일어나는 자리', () => {
+  it('반복은 재생 설정 Loop로 읽고 @repeat·@trigger 줄을 요구하지 않는다', () => {
+    expect(exported(currentSample()).motion.iterations).toBe(1);
+    expect(exported(currentSample({ isLooping: true })).motion.iterations).toBe('infinite');
+  });
+
+  it('Loop를 읽지 못하면 막는다', () => {
+    const result = checkMotionSample(currentSample({ isLooping: null }), motionVariables, FILE_KEY);
+    expect(result.ok ? [] : result.violations.map((violation) => violation.reason)).toEqual([
+      '재생 설정 Loop를 읽지 못해 반복 여부를 정할 수 없다',
+    ]);
+  });
+
+  it('이름이 없는 원본은 Development 주석으로 이름을 달라고 막는다', () => {
+    const result = checkMotionSample(
+      currentSample({ source: 'component', name: null, label: 'Figure / State=Loading' }),
+      motionVariables,
+      FILE_KEY,
+    );
+    expect(result.ok ? [] : result.violations).toEqual([
+      expect.objectContaining({
+        where: 'Figure / State=Loading',
+        fix: expect.stringContaining('Development 주석') as string,
+      }),
+    ]);
+  });
+
+  it('원본 description의 @ 줄을 읽고 더 쓰지 않는 줄은 알린다', () => {
+    const result = exported(
+      currentSample({ source: 'component', description: '@hold 끄는 동안\n@runtime 거리' }),
+    );
+    expect(result.motion.directives).toEqual({ hold: ['끄는 동안'] });
+    expect(result.notices).toEqual([expect.stringContaining('`@runtime 거리`')]);
+  });
+
+  it('주석과 자리를 json에 싣는다', () => {
+    const notes = [{ path: 'Window', category: 'Development', text: '도착 위치' }];
+    const text = motionText(exported(currentSample({ notes })).motion);
+    expect(JSON.parse(text)).toMatchObject({ source: 'flow', notes });
   });
 });

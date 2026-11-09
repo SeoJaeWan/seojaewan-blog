@@ -1,4 +1,10 @@
-import type { Directives, MotionNodeKind, MotionValue } from './core/motion-data';
+import type {
+  Directives,
+  MotionNodeKind,
+  MotionNote,
+  MotionSource,
+  MotionValue,
+} from './core/motion-data';
 import { type JsonObject, type JsonValue, stableStringify } from './stable-json';
 
 // 애니메이션 견본마다 내보내는 `figma/motions/<이름>.json`의 형식. 형식은 이 파일 한 곳에서 정한다.
@@ -50,23 +56,27 @@ export type MotionTrack = {
 
 /**
  * `figma/motions/<이름>.json`.
- * - name: 견본 이름(모션 클래스 이름, `motion-progress-ring`)
- * - nodeId: 견본 프레임 노드 ID
- * - url: 피그마 견본 링크(figma.json의 파일 키)
+ * - name: 모션 클래스 이름(`motion-progress-ring`)
+ * - source: 움직임을 읽은 자리(옛 견본 `sample`, 조립 흐름 `flow`, 컴포넌트·자산 원본 `component`)
+ * - nodeId: 움직임 자리 노드 ID(프레임이나 컴포넌트)
+ * - url: 피그마 링크(figma.json의 파일 키)
  * - duration: 애니메이션 전체 길이(가장 이른 첫 키프레임 → 가장 늦은 끝 키프레임)와 같은 변수
  * - delay: 애니메이션 시작 지연(가장 이른 첫 키프레임)과 같은 변수
- * - iterations: 반복 횟수. 플러그인 API로 읽을 수 없어 견본 주석의 `@repeat`에서 온다. 옛 내보내기는 null이다
- * - directives: 견본 주석의 `@` 줄
+ * - iterations: 반복 횟수. 재생 설정 Loop가 켜져 있으면 `infinite`, 꺼져 있으면 1이다. 옛 견본은 주석의 `@repeat`에서 오고, 옛 내보내기는 null이다
+ * - directives: `@` 줄(원본은 컴포넌트 description, 옛 견본은 견본 주석)
+ * - notes: 자리와 움직임 레이어의 Development(실행 중 값)·Accessibility(동작 줄이기에서 남김) 주석
  * - tracks: 노드 경로·항목 순으로 정렬한 트랙
  */
 export type MotionExport = {
   name: string;
+  source: MotionSource;
   nodeId: string;
   url: string;
   duration: MotionTime;
   delay: MotionTime;
   iterations: number | 'infinite' | null;
   directives: Directives;
+  notes: MotionNote[];
   tracks: MotionTrack[];
 };
 
@@ -83,12 +93,14 @@ export const MOTION_NAME_PATTERN = /^motion-[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 export function motionText(motion: MotionExport): string {
   return stableStringify({
     name: motion.name,
+    source: motion.source,
     nodeId: motion.nodeId,
     url: motion.url,
     duration: timeJson(motion.duration),
     delay: timeJson(motion.delay),
     iterations: motion.iterations,
     directives: { ...motion.directives },
+    notes: motion.notes.map((note) => ({ ...note })),
     tracks: motion.tracks.map(trackJson),
   });
 }
