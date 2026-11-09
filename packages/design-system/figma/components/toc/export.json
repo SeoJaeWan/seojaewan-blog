@@ -1,5 +1,5 @@
 {
-  "description": "글 페이지의 목차로, 넓은 창에서는 펼치고 좁은 창에서는 접어 쓴다.\n@sample-size width",
+  "description": "글 페이지의 목차로, 넓은 창에서는 펼치고 좁은 창에서는 접어 쓴다.\n@sample-size width\n@runtime State=Expanded의 Items가 최대 높이를 넘으면 목차 안에서 세로로 스크롤한다.",
   "name": "Toc",
   "nodeId": "398:5502",
   "propertyDefinitions": {
@@ -263,7 +263,8 @@
                 "name": "toc item 1",
                 "properties": {
                   "Active": "True",
-                  "Label": "use 훅"
+                  "Label": "use 훅",
+                  "Level": "1"
                 },
                 "size": {
                   "h": 20,
@@ -339,7 +340,8 @@
                 "name": "toc item 2",
                 "properties": {
                   "Active": "False",
-                  "Label": "useActionState"
+                  "Label": "useActionState",
+                  "Level": "1"
                 },
                 "size": {
                   "h": 20,
@@ -415,7 +417,8 @@
                 "name": "toc item 3",
                 "properties": {
                   "Active": "False",
-                  "Label": "useOptimistic"
+                  "Label": "useOptimistic",
+                  "Level": "1"
                 },
                 "size": {
                   "h": 20,
@@ -491,7 +494,8 @@
                 "name": "toc item 4",
                 "properties": {
                   "Active": "False",
-                  "Label": "마이그레이션"
+                  "Label": "마이그레이션",
+                  "Level": "1"
                 },
                 "size": {
                   "h": 20,
@@ -516,6 +520,7 @@
               ],
               "primaryAlign": "MIN"
             },
+            "maxHeight": "size/toc/items-max-height",
             "name": "Items",
             "size": {
               "h": 104,

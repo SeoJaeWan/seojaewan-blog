@@ -43,11 +43,6 @@
       "allowedVersions": "<25"
     },
     {
-      "description": "jsdom 31은 parse5와 맞지 않아 vitest 작업자가 뜨지 않는다(tokenizer.flushCharacters). 고쳐질 때까지 30을 쓴다",
-      "matchPackageNames": ["jsdom"],
-      "allowedVersions": "<31"
-    },
-    {
       "description": "peerDependencies는 범위로 둔다. 고정하면 쓰는 쪽의 버전을 막는다",
       "matchDepTypes": ["peerDependencies"],
       "rangeStrategy": "widen"

@@ -1198,6 +1198,42 @@ export function moveStartPin(state: WorkspaceState, id: string, index: number): 
 }
 
 /**
+ * Start 고정됨의 칸을 화면에 보이는 옆 칸과 자리를 바꾼다(왼쪽·오른쪽으로 이동). 휴지통에 있어 보이지 않는 항목은 건너뛰고
+ * 제자리에 둔다. 보이지 않는 칸이거나 그쪽에 보이는 칸이 없으면 그대로다.
+ * @codocs [[Start 메뉴:고정됨]]
+ * @param state 작업 공간 상태
+ * @param id 항목 id
+ * @param direction 바꿀 옆 칸 방향
+ * @returns 새 상태
+ */
+export function swapStartPin(
+  state: WorkspaceState,
+  id: string,
+  direction: 'left' | 'right',
+): WorkspaceState {
+  const visible = getVisibleStartPins(state);
+  const index = visible.indexOf(id);
+  const neighbor = index === -1 ? undefined : visible[index + (direction === 'left' ? -1 : 1)];
+  if (neighbor === undefined) {
+    return state;
+  }
+  const startPins = state.startPins.map(
+    /**
+     * 두 칸의 id를 서로 바꾼다.
+     * @param pinId 고정 항목 id
+     * @returns 바뀐 id
+     */
+    (pinId) => {
+      if (pinId === id) {
+        return neighbor;
+      }
+      return pinId === neighbor ? id : pinId;
+    },
+  );
+  return { ...state, startPins };
+}
+
+/**
  * Start 고정됨에 보이는 항목 id를 돌려준다. 휴지통에 들어간 항목은 숨기고, 복원하면 다시 보인다.
  * @codocs [[고정:시작 화면 고정]]
  * @param state 작업 공간 상태

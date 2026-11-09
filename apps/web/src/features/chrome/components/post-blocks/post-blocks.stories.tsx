@@ -180,3 +180,80 @@ export const Annotations: Story = {
     });
   },
 };
+
+const columnBlocks: PostBlock[] = [
+  { type: 'heading_2', richText: [text('맨 위')] },
+  {
+    type: 'column_list',
+    children: [
+      {
+        type: 'column',
+        widthRatio: 0.25,
+        children: [
+          { type: 'heading_1', richText: [text('왼쪽 제목')] },
+          { type: 'paragraph', richText: [text('왼쪽 문단')] },
+        ],
+      },
+      {
+        type: 'column',
+        widthRatio: 0.75,
+        children: [{ type: 'paragraph', richText: [text('오른쪽 문단')] }],
+      },
+    ],
+  },
+];
+
+/**
+ * 열 나누기 블록에서 열 요소 둘을 찾는다. 열은 안의 문단을 감싼 가장 가까운 열 칸이다.
+ * @param canvasElement 캔버스
+ * @returns 왼쪽·오른쪽 열
+ */
+function findColumns(canvasElement: HTMLElement): [HTMLElement, HTMLElement] {
+  const canvas = within(canvasElement);
+  const row = canvas.getByText('왼쪽 문단').closest('.flex-col')?.parentElement?.parentElement;
+  const [left, right] = row?.children ?? [];
+  if (!(left instanceof HTMLElement) || !(right instanceof HTMLElement)) {
+    throw new Error('열이 둘이 아니다');
+  }
+  return [left, right];
+}
+
+// @codocs [[Notion 블록:지원 블록]]
+// @codocs [[Notion 블록:모양]]
+/** 넓은 창의 열 나누기: 열을 나란히 놓고 width_ratio 비율로 너비를 나누며, 열 안의 제목도 단계와 목차 id를 갖는다 */
+export const ColumnsWide: Story = {
+  render: () => <PostBlocks blocks={columnBlocks} layout="wide" />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('열을 나란히 놓고 비율대로 너비를 나눈다', async () => {
+      const [left, right] = findColumns(canvasElement);
+      await expect(left.offsetTop).toBe(right.offsetTop);
+      await expect(right.offsetWidth).toBeGreaterThan(left.offsetWidth * 2.5);
+    });
+
+    await step('열 안의 제목이 가장 높은 단계(h2)이고 목차가 찾는 id를 갖는다', async () => {
+      await expect(canvas.getByRole('heading', { name: '왼쪽 제목', level: 2 })).toHaveAttribute(
+        'id',
+        'heading-1-0-0',
+      );
+      await expect(canvas.getByRole('heading', { name: '맨 위', level: 3 })).toHaveAttribute(
+        'id',
+        'heading-0',
+      );
+    });
+  },
+};
+
+// @codocs [[Notion 블록:지원 블록]]
+/** 좁은 창의 열 나누기: 왼쪽 열부터 위에서 아래로 쌓는다 */
+export const ColumnsNarrow: Story = {
+  render: () => <PostBlocks blocks={columnBlocks} layout="narrow" />,
+  play: async ({ canvasElement, step }) => {
+    await step('왼쪽 열 아래에 오른쪽 열을 쌓는다', async () => {
+      const [left, right] = findColumns(canvasElement);
+      await expect(right.offsetTop).toBeGreaterThan(left.offsetTop);
+      await expect(right.offsetWidth).toBe(left.offsetWidth);
+    });
+  },
+};

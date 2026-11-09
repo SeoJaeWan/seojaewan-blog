@@ -145001,50 +145001,182 @@
     ]
   },
   "imageSizes": {
-    "https://images.seojaewan.com/notion/2bfc97ba-fd89-801d-bd28-e46f08cdaeaf/20251204T012400Z": null,
-    "https://images.seojaewan.com/notion/2bfc97ba-fd89-8064-b6c8-f0b2185077e2/20251204T012500Z": null,
-    "https://images.seojaewan.com/notion/2bfc97ba-fd89-806b-9ffe-c088439af28a/20251204T012400Z": null,
-    "https://images.seojaewan.com/notion/2bfc97ba-fd89-806e-83e3-eaaac4d03ee8/20251204T012500Z": null,
-    "https://images.seojaewan.com/notion/2bfc97ba-fd89-80b4-bec9-e4f154117e7a/20251204T012500Z": null,
-    "https://images.seojaewan.com/notion/2bfc97ba-fd89-80cd-917b-ec38a1250b56/20251204T012500Z": null,
-    "https://images.seojaewan.com/notion/2bfc97ba-fd89-80f6-975f-d7efde94a15f/20251204T012600Z": null,
-    "https://images.seojaewan.com/notion/2c0c97ba-fd89-8003-a8ab-fc5835a103fe/20251205T022300Z": null,
-    "https://images.seojaewan.com/notion/2c0c97ba-fd89-8022-955b-e058b1ac5f62/20251205T022100Z": null,
-    "https://images.seojaewan.com/notion/2c0c97ba-fd89-8022-aaf1-f581e8e6dba8/20251205T022300Z": null,
-    "https://images.seojaewan.com/notion/2c0c97ba-fd89-8068-b87f-cc8138cb2dc0/20251205T022400Z": null,
-    "https://images.seojaewan.com/notion/2c0c97ba-fd89-8084-b0a6-f414fa865e1b/20251205T022300Z": null,
-    "https://images.seojaewan.com/notion/2c0c97ba-fd89-80b0-b23c-d2c5f9576cab/20251205T022100Z": null,
-    "https://images.seojaewan.com/notion/2c0c97ba-fd89-80b4-a9d6-c7b2c7efb1d0/20251205T022100Z": null,
-    "https://images.seojaewan.com/notion/2c0c97ba-fd89-80d4-93a4-f91c8dbf658d/20251205T022300Z": null,
-    "https://images.seojaewan.com/notion/2c0c97ba-fd89-80eb-80fa-eee10c0cec56/20251205T022000Z": null,
-    "https://images.seojaewan.com/notion/2c0c97ba-fd89-80fa-95c2-c34bd3bd9386/20251205T022100Z": null,
-    "https://images.seojaewan.com/notion/2c1c97ba-fd89-8001-940b-ca7500a73fba/20251206T055200Z": null,
-    "https://images.seojaewan.com/notion/2c1c97ba-fd89-8025-880d-d32959cfc99c/20251206T055200Z": null,
-    "https://images.seojaewan.com/notion/2c1c97ba-fd89-804d-a66b-f5670599f07b/20251206T055200Z": null,
-    "https://images.seojaewan.com/notion/2c1c97ba-fd89-80e8-8019-e5ee4e382f05/20251206T060800Z": null,
-    "https://images.seojaewan.com/notion/2c9c97ba-fd89-80e3-a10e-c0fafb47763e/20251214T094000Z": null,
-    "https://images.seojaewan.com/notion/2cfc97ba-fd89-80e1-bb8e-f940d5bddde4/20251220T083000Z": null,
-    "https://images.seojaewan.com/notion/304c97ba-fd89-8051-901b-debe1ff5a94e/20260211T122600Z": null,
-    "https://images.seojaewan.com/notion/304c97ba-fd89-806a-8947-d7fe5eff9bd6/20260211T122600Z": null,
-    "https://images.seojaewan.com/notion/304c97ba-fd89-8088-9c17-dd7fc605bfd5/20260211T122500Z": null,
-    "https://images.seojaewan.com/notion/cover/272c97ba-fd89-8046-b886-d4cef9292fd2/e152a9aef45c": null,
-    "https://images.seojaewan.com/notion/cover/295c97ba-fd89-8037-92a0-e4168fdc693c/e152a9aef45c": null,
-    "https://images.seojaewan.com/notion/cover/295c97ba-fd89-8042-8a48-c3e685010c03/e152a9aef45c": null,
-    "https://images.seojaewan.com/notion/cover/298c97ba-fd89-80fd-aec0-c4f989bbe0d7/e152a9aef45c": null,
-    "https://images.seojaewan.com/notion/cover/29bc97ba-fd89-80a6-bd6b-f20553eb2465/2140f0a3ec41": null,
-    "https://images.seojaewan.com/notion/cover/29fc97ba-fd89-80b6-afd3-e7698634f6b7/421a10e64707": null,
-    "https://images.seojaewan.com/notion/cover/2a0c97ba-fd89-802e-b322-ef59ea6baefb/421a10e64707": null,
-    "https://images.seojaewan.com/notion/cover/2a9c97ba-fd89-8021-9ad9-dd30cbd41f72/a7bad3798362": null,
-    "https://images.seojaewan.com/notion/cover/2b5c97ba-fd89-8091-902d-df0e3bb4fd0a/d5f8b562291d": null,
-    "https://images.seojaewan.com/notion/cover/2b5c97ba-fd89-80ab-9acc-dd5eb1f87004/586e5f256eb0": null,
-    "https://images.seojaewan.com/notion/cover/2b5c97ba-fd89-80f5-abc9-ce768638ac31/d7c7e64980fd": null,
-    "https://images.seojaewan.com/notion/cover/2bac97ba-fd89-804e-a537-e0c46ab99093/57ee7e4cb299": null,
-    "https://images.seojaewan.com/notion/cover/2c0c97ba-fd89-801e-a5e7-c09a55d59aeb/a410b9d13f9b": null,
-    "https://images.seojaewan.com/notion/cover/2c0c97ba-fd89-805a-a4c2-fa33c7793a22/798e77400017": null,
-    "https://images.seojaewan.com/notion/cover/2c1c97ba-fd89-80da-b61c-ed8d17e10d87/798e77400017": null,
-    "https://images.seojaewan.com/notion/cover/2c6c97ba-fd89-80c0-a87e-f4f7cc537296/afcae24ce5ff": null,
-    "https://images.seojaewan.com/notion/cover/2c9c97ba-fd89-80d3-a0ba-f68739a939e0/812828e61210": null,
-    "https://images.seojaewan.com/notion/cover/304c97ba-fd89-801e-b111-fdc094fd2461/f91c4406f15c": null
+    "https://images.seojaewan.com/notion/2bfc97ba-fd89-801d-bd28-e46f08cdaeaf/20251204T012400Z": {
+      "height": 430,
+      "width": 800
+    },
+    "https://images.seojaewan.com/notion/2bfc97ba-fd89-8064-b6c8-f0b2185077e2/20251204T012500Z": {
+      "height": 430,
+      "width": 800
+    },
+    "https://images.seojaewan.com/notion/2bfc97ba-fd89-806b-9ffe-c088439af28a/20251204T012400Z": {
+      "height": 533,
+      "width": 978
+    },
+    "https://images.seojaewan.com/notion/2bfc97ba-fd89-806e-83e3-eaaac4d03ee8/20251204T012500Z": {
+      "height": 430,
+      "width": 800
+    },
+    "https://images.seojaewan.com/notion/2bfc97ba-fd89-80b4-bec9-e4f154117e7a/20251204T012500Z": {
+      "height": 430,
+      "width": 800
+    },
+    "https://images.seojaewan.com/notion/2bfc97ba-fd89-80cd-917b-ec38a1250b56/20251204T012500Z": {
+      "height": 430,
+      "width": 800
+    },
+    "https://images.seojaewan.com/notion/2bfc97ba-fd89-80f6-975f-d7efde94a15f/20251204T012600Z": {
+      "height": 615,
+      "width": 1090
+    },
+    "https://images.seojaewan.com/notion/2c0c97ba-fd89-8003-a8ab-fc5835a103fe/20251205T022300Z": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/2c0c97ba-fd89-8022-955b-e058b1ac5f62/20251205T022100Z": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/2c0c97ba-fd89-8022-aaf1-f581e8e6dba8/20251205T022300Z": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/2c0c97ba-fd89-8068-b87f-cc8138cb2dc0/20251205T022400Z": {
+      "height": 860,
+      "width": 1424
+    },
+    "https://images.seojaewan.com/notion/2c0c97ba-fd89-8084-b0a6-f414fa865e1b/20251205T022300Z": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/2c0c97ba-fd89-80b0-b23c-d2c5f9576cab/20251205T022100Z": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/2c0c97ba-fd89-80b4-a9d6-c7b2c7efb1d0/20251205T022100Z": {
+      "height": 724,
+      "width": 1024
+    },
+    "https://images.seojaewan.com/notion/2c0c97ba-fd89-80d4-93a4-f91c8dbf658d/20251205T022300Z": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/2c0c97ba-fd89-80eb-80fa-eee10c0cec56/20251205T022000Z": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/2c0c97ba-fd89-80fa-95c2-c34bd3bd9386/20251205T022100Z": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/2c1c97ba-fd89-8001-940b-ca7500a73fba/20251206T055200Z": {
+      "height": 400,
+      "width": 600
+    },
+    "https://images.seojaewan.com/notion/2c1c97ba-fd89-8025-880d-d32959cfc99c/20251206T055200Z": {
+      "height": 400,
+      "width": 600
+    },
+    "https://images.seojaewan.com/notion/2c1c97ba-fd89-804d-a66b-f5670599f07b/20251206T055200Z": {
+      "height": 570,
+      "width": 1024
+    },
+    "https://images.seojaewan.com/notion/2c1c97ba-fd89-80e8-8019-e5ee4e382f05/20251206T060800Z": {
+      "height": 570,
+      "width": 1024
+    },
+    "https://images.seojaewan.com/notion/2c9c97ba-fd89-80e3-a10e-c0fafb47763e/20251214T094000Z": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/2cfc97ba-fd89-80e1-bb8e-f940d5bddde4/20251220T083000Z": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/304c97ba-fd89-8051-901b-debe1ff5a94e/20260211T122600Z": {
+      "height": 46,
+      "width": 1057
+    },
+    "https://images.seojaewan.com/notion/304c97ba-fd89-806a-8947-d7fe5eff9bd6/20260211T122600Z": {
+      "height": 42,
+      "width": 1055
+    },
+    "https://images.seojaewan.com/notion/304c97ba-fd89-8088-9c17-dd7fc605bfd5/20260211T122500Z": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/cover/272c97ba-fd89-8046-b886-d4cef9292fd2/e152a9aef45c": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/cover/295c97ba-fd89-8037-92a0-e4168fdc693c/e152a9aef45c": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/cover/295c97ba-fd89-8042-8a48-c3e685010c03/e152a9aef45c": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/cover/298c97ba-fd89-80fd-aec0-c4f989bbe0d7/e152a9aef45c": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/cover/29bc97ba-fd89-80a6-bd6b-f20553eb2465/2140f0a3ec41": {
+      "height": 860,
+      "width": 1424
+    },
+    "https://images.seojaewan.com/notion/cover/29fc97ba-fd89-80b6-afd3-e7698634f6b7/421a10e64707": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/cover/2a0c97ba-fd89-802e-b322-ef59ea6baefb/421a10e64707": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/cover/2a9c97ba-fd89-8021-9ad9-dd30cbd41f72/a7bad3798362": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/cover/2b5c97ba-fd89-8091-902d-df0e3bb4fd0a/d5f8b562291d": {
+      "height": 400,
+      "width": 600
+    },
+    "https://images.seojaewan.com/notion/cover/2b5c97ba-fd89-80ab-9acc-dd5eb1f87004/586e5f256eb0": {
+      "height": 644,
+      "width": 966
+    },
+    "https://images.seojaewan.com/notion/cover/2b5c97ba-fd89-80f5-abc9-ce768638ac31/d7c7e64980fd": {
+      "height": 400,
+      "width": 600
+    },
+    "https://images.seojaewan.com/notion/cover/2bac97ba-fd89-804e-a537-e0c46ab99093/57ee7e4cb299": {
+      "height": 724,
+      "width": 1024
+    },
+    "https://images.seojaewan.com/notion/cover/2c0c97ba-fd89-801e-a5e7-c09a55d59aeb/a410b9d13f9b": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/cover/2c0c97ba-fd89-805a-a4c2-fa33c7793a22/798e77400017": {
+      "height": 570,
+      "width": 1024
+    },
+    "https://images.seojaewan.com/notion/cover/2c1c97ba-fd89-80da-b61c-ed8d17e10d87/798e77400017": {
+      "height": 570,
+      "width": 1024
+    },
+    "https://images.seojaewan.com/notion/cover/2c6c97ba-fd89-80c0-a87e-f4f7cc537296/afcae24ce5ff": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/cover/2c9c97ba-fd89-80d3-a0ba-f68739a939e0/812828e61210": {
+      "height": 960,
+      "width": 1440
+    },
+    "https://images.seojaewan.com/notion/cover/304c97ba-fd89-801e-b111-fdc094fd2461/f91c4406f15c": {
+      "height": 960,
+      "width": 1440
+    }
   },
   "pages": {
     "about": [
@@ -145070,7 +145202,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "2a3c97ba-fd89-8032-beb4-000b7017ff1e",
@@ -145091,9 +145223,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "몰입하고 성장하는 웹 개발자",
+                "plain_text": "4년 차 프론트엔드 개발자입니다. React·Next.js·TypeScript로 API 응답을 3.8초에서 0.03초로 줄이고 MSW로 출시를 평균 2주 앞당겼으며, 4인 팀 리딩과 AI 코딩 에이전트 도입을 이끌었습니다.",
                 "text": {
-                  "content": "몰입하고 성장하는 웹 개발자",
+                  "content": "4년 차 프론트엔드 개발자입니다. React·Next.js·TypeScript로 API 응답을 3.8초에서 0.03초로 줄이고 MSW로 출시를 평균 2주 앞당겼으며, 4인 팀 리딩과 AI 코딩 에이전트 도입을 이끌었습니다.",
                   "link": null
                 },
                 "type": "text"
@@ -145205,7 +145337,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-80e5-a934-000b36308178",
@@ -145231,9 +145363,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "자바스크립트의 타입 시스템",
+                "plain_text": "자바스크립트의 원시 타입 7가지와 객체 타입을 정리했습니다. 0.1 + 0.2가 0.3이 아닌 이유, BigInt, 이모지 문자열의 length, typeof null이 object인 버그의 배경까지 다룹니다.",
                 "text": {
-                  "content": "자바스크립트의 타입 시스템",
+                  "content": "자바스크립트의 원시 타입 7가지와 객체 타입을 정리했습니다. 0.1 + 0.2가 0.3이 아닌 이유, BigInt, 이모지 문자열의 length, typeof null이 object인 버그의 배경까지 다룹니다.",
                   "link": null
                 },
                 "type": "text"
@@ -145371,7 +145503,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-80e5-a934-000b36308178",
@@ -145397,9 +145529,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "자바스크립트에는 값을 비교하는 세 가지 방법",
+                "plain_text": "===, ==, Object.is가 값을 비교하는 방식을 정리했습니다. +0·-0과 NaN을 다루는 차이, indexOf는 NaN을 못 찾지만 includes는 찾는 이유(SameValueZero)를 설명합니다.",
                 "text": {
-                  "content": "자바스크립트에는 값을 비교하는 세 가지 방법",
+                  "content": "===, ==, Object.is가 값을 비교하는 방식을 정리했습니다. +0·-0과 NaN을 다루는 차이, indexOf는 NaN을 못 찾지만 includes는 찾는 이유(SameValueZero)를 설명합니다.",
                   "link": null
                 },
                 "type": "text"
@@ -145537,7 +145669,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-80e5-a934-000b36308178",
@@ -145563,9 +145695,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "자바스크립트의 타입 변환",
+                "plain_text": "자바스크립트의 암시적·명시적 타입 변환 규칙을 정리했습니다. 객체가 Symbol.toPrimitive, valueOf, toString 순으로 원시값이 되는 과정과 문자열 연결에 템플릿 리터럴이 나은 이유를 다룹니다.",
                 "text": {
-                  "content": "자바스크립트의 타입 변환",
+                  "content": "자바스크립트의 암시적·명시적 타입 변환 규칙을 정리했습니다. 객체가 Symbol.toPrimitive, valueOf, toString 순으로 원시값이 되는 과정과 문자열 연결에 템플릿 리터럴이 나은 이유를 다룹니다.",
                   "link": null
                 },
                 "type": "text"
@@ -145703,7 +145835,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-80e5-a934-000b36308178",
@@ -145729,9 +145861,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "자바스크립트의 데이터 타입을 공부하면서 ….",
+                "plain_text": "Symbol은 왜 객체가 아니라 원시값인지, 원시값은 힙에 저장되어도 왜 불변인지 따라가 봤습니다. 스펙이 정한 의미와 엔진의 저장 방식(즉치값, 힙)을 나눠 정리했습니다.",
                 "text": {
-                  "content": "자바스크립트의 데이터 타입을 공부하면서 ….",
+                  "content": "Symbol은 왜 객체가 아니라 원시값인지, 원시값은 힙에 저장되어도 왜 불변인지 따라가 봤습니다. 스펙이 정한 의미와 엔진의 저장 방식(즉치값, 힙)을 나눠 정리했습니다.",
                   "link": null
                 },
                 "type": "text"
@@ -145869,7 +146001,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-80e5-a934-000b36308178",
@@ -145895,9 +146027,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "우아콘 2025를 갔다와서",
+                "plain_text": "우아콘 2025에서 들은 세션 4개를 정리했습니다. 배민의 UX 일관성 관리, MSW와 스냅샷으로 하는 로그 회귀 테스트, 데이터 기반 실험, 웹뷰 FCP·LCP 개선에서 얻은 점을 적었습니다.",
                 "text": {
-                  "content": "우아콘 2025를 갔다와서",
+                  "content": "우아콘 2025에서 들은 세션 4개를 정리했습니다. 배민의 UX 일관성 관리, MSW와 스냅샷으로 하는 로그 회귀 테스트, 데이터 기반 실험, 웹뷰 FCP·LCP 개선에서 얻은 점을 적었습니다.",
                   "link": null
                 },
                 "type": "text"
@@ -146025,7 +146157,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-80e5-a934-000b36308178",
@@ -146051,9 +146183,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "우아콘을 통해 웹뷰 성능 개선 딥다이브하기",
+                "plain_text": "배민이 웹뷰를 Next.js SSR에서 React CSR로 바꾼 이유를 FCP 관점에서 따져 봤습니다. CSR, 스켈레톤 CSR, Blocking·Streaming SSR, SSG를 직접 구현해 Web Vitals로 비교했습니다.",
                 "text": {
-                  "content": "우아콘을 통해 웹뷰 성능 개선 딥다이브하기",
+                  "content": "배민이 웹뷰를 Next.js SSR에서 React CSR로 바꾼 이유를 FCP 관점에서 따져 봤습니다. CSR, 스켈레톤 CSR, Blocking·Streaming SSR, SSG를 직접 구현해 Web Vitals로 비교했습니다.",
                   "link": null
                 },
                 "type": "text"
@@ -146191,7 +146323,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-80e5-a934-000b36308178",
@@ -146217,9 +146349,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "Critical JavaScript를 통해서 성능 개선이 어떻게 이루어지는지 학습해봤습니다.",
+                "plain_text": "필수 API 요청을 번들 실행과 병렬로 앞당기는 Critical JavaScript를 Vite 플러그인으로 구현해 봤습니다. 인라인 스크립트와 modulepreload 중 무엇을 언제 쓸지 선택 기준도 정리했습니다.",
                 "text": {
-                  "content": "Critical JavaScript를 통해서 성능 개선이 어떻게 이루어지는지 학습해봤습니다.",
+                  "content": "필수 API 요청을 번들 실행과 병렬로 앞당기는 Critical JavaScript를 Vite 플러그인으로 구현해 봤습니다. 인라인 스크립트와 modulepreload 중 무엇을 언제 쓸지 선택 기준도 정리했습니다.",
                   "link": null
                 },
                 "type": "text"
@@ -146352,7 +146484,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-80e5-a934-000b36308178",
@@ -146378,9 +146510,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "JavaScript의 JIT 기능에 대해서 알아봤습니다. ",
+                "plain_text": "Tailwind CSS의 JIT와 V8 엔진의 JIT를 비교했습니다. 쓰는 클래스만 생성해 캐싱하는 것과 핫 함수를 기계어로 최적화하는 것의 차이, 공통 함수로 재사용하는 코드가 JIT에도 유리한 이유를 다룹니다.",
                 "text": {
-                  "content": "JavaScript의 JIT 기능에 대해서 알아봤습니다. ",
+                  "content": "Tailwind CSS의 JIT와 V8 엔진의 JIT를 비교했습니다. 쓰는 클래스만 생성해 캐싱하는 것과 핫 함수를 기계어로 최적화하는 것의 차이, 공통 함수로 재사용하는 코드가 JIT에도 유리한 이유를 다룹니다.",
                   "link": null
                 },
                 "type": "text"
@@ -146523,7 +146655,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-80e5-a934-000b36308178",
@@ -146549,9 +146681,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "Notion API 데이터를 Next.js에서 호출하려면 어떤 방법이 최선일지 고민해봤습니다. ",
+                "plain_text": "Next.js에서 Notion 데이터를 Jotai와 TanStack Query 중 무엇으로 관리할지 따져 봤습니다. Full Route Cache와 React cache()를 정리하고, 읽기 전용 데이터라 Jotai를 유지했습니다.",
                 "text": {
-                  "content": "Notion API 데이터를 Next.js에서 호출하려면 어떤 방법이 최선일지 고민해봤습니다. ",
+                  "content": "Next.js에서 Notion 데이터를 Jotai와 TanStack Query 중 무엇으로 관리할지 따져 봤습니다. Full Route Cache와 React cache()를 정리하고, 읽기 전용 데이터라 Jotai를 유지했습니다.",
                   "link": null
                 },
                 "type": "text"
@@ -146684,7 +146816,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-80e5-a934-000b36308178",
@@ -146710,9 +146842,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "반복되는 스타일을 어떻게 관리할지에 대한 고민과 제가 찾은 해답을 공유합니다.",
+                "plain_text": "반복되는 버튼 스타일을 컴포넌트로 묶을지 Tailwind 커스텀 유틸리티 클래스로 만들지 비교했습니다. 스타일만 공유하면 @utility 클래스, 동작과 상태까지 다루면 컴포넌트가 맞다는 결론입니다.",
                 "text": {
-                  "content": "반복되는 스타일을 어떻게 관리할지에 대한 고민과 제가 찾은 해답을 공유합니다.",
+                  "content": "반복되는 버튼 스타일을 컴포넌트로 묶을지 Tailwind 커스텀 유틸리티 클래스로 만들지 비교했습니다. 스타일만 공유하면 @utility 클래스, 동작과 상태까지 다루면 컴포넌트가 맞다는 결론입니다.",
                   "link": null
                 },
                 "type": "text"
@@ -146850,7 +146982,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-80e5-a934-000b36308178",
@@ -146876,9 +147008,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "본격적인 “서재완”의 홈페이지를 구현해봤습니다. ",
+                "plain_text": "한 달 만든 블로그형 홈페이지를 접고 Windows 바탕화면 테마로 다시 만든 과정을 돌아봤습니다. Atomic Design을 내려놓고 단순한 폴더 구조로 돌아간 이유와 완벽하지 않아도 공개하기로 한 생각을 적었습니다.",
                 "text": {
-                  "content": "본격적인 “서재완”의 홈페이지를 구현해봤습니다. ",
+                  "content": "한 달 만든 블로그형 홈페이지를 접고 Windows 바탕화면 테마로 다시 만든 과정을 돌아봤습니다. Atomic Design을 내려놓고 단순한 폴더 구조로 돌아간 이유와 완벽하지 않아도 공개하기로 한 생각을 적었습니다.",
                   "link": null
                 },
                 "type": "text"
@@ -147006,7 +147138,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-80e5-a934-000b36308178",
@@ -147032,9 +147164,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "쿠키와 CORS의 동작 방식에 대해서 알아봤습니다. ",
+                "plain_text": "포트만 다른 API에서 로그인 쿠키가 저장되지 않은 원인은 fetch의 credentials 옵션이었습니다. origin 기준의 CORS와 credentials 세 값, 쿠키의 Domain·Path·SameSite를 정리했습니다.",
                 "text": {
-                  "content": "쿠키와 CORS의 동작 방식에 대해서 알아봤습니다. ",
+                  "content": "포트만 다른 API에서 로그인 쿠키가 저장되지 않은 원인은 fetch의 credentials 옵션이었습니다. origin 기준의 CORS와 credentials 세 값, 쿠키의 Domain·Path·SameSite를 정리했습니다.",
                   "link": null
                 },
                 "type": "text"
@@ -147174,10 +147306,10 @@
         "is_archived": false,
         "is_locked": false,
         "last_edited_by": {
-          "id": "16a61bad-d48d-4d46-9b5d-3565362e8c57",
+          "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T07:03:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-80e5-a934-000b36308178",
@@ -147203,9 +147335,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "2025년이 끝나가고 있습니다. 올해는 개발자로서 유난히 변화가 많았던 한 해였습니다",
+                "plain_text": "2025년 회고입니다. 이직 후 미디어 조회를 3.8초에서 0.03초로 줄인 경험, INNER CIRCLE 최우수 프로젝트, 멘토링과 컨퍼런스를 거치며 기술의 폭보다 깊이를 보게 된 변화를 정리했습니다.",
                 "text": {
-                  "content": "2025년이 끝나가고 있습니다. 올해는 개발자로서 유난히 변화가 많았던 한 해였습니다",
+                  "content": "2025년 회고입니다. 이직 후 미디어 조회를 3.8초에서 0.03초로 줄인 경험, INNER CIRCLE 최우수 프로젝트, 멘토링과 컨퍼런스를 거치며 기술의 폭보다 깊이를 보게 된 변화를 정리했습니다.",
                   "link": null
                 },
                 "type": "text"
@@ -147333,7 +147465,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-80e5-a934-000b36308178",
@@ -147351,7 +147483,7 @@
             "rich_text": [
               {
                 "annotations": {
-                  "bold": true,
+                  "bold": false,
                   "code": false,
                   "color": "default",
                   "italic": false,
@@ -147359,9 +147491,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "미디어 리스트 조회 성능 99.2% 개선",
+                "plain_text": "느린 미디어 페이지의 원인을 파일 서버가 아닌 API의 누적 조인에서 찾았습니다. 필요한 값이 이미 테이블에 있어 직접 조회로 바꿨고, 응답 시간을 평균 3.8초에서 0.03초로 약 99.2% 줄였습니다.",
                 "text": {
-                  "content": "미디어 리스트 조회 성능 99.2% 개선",
+                  "content": "느린 미디어 페이지의 원인을 파일 서버가 아닌 API의 누적 조인에서 찾았습니다. 필요한 값이 이미 테이블에 있어 직접 조회로 바꿨고, 응답 시간을 평균 3.8초에서 0.03초로 약 99.2% 줄였습니다.",
                   "link": null
                 },
                 "type": "text"
@@ -147501,7 +147633,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-803b-9c24-000b87f9e216",
@@ -147527,9 +147659,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "여행 순간을 기록하고 공유할 수 있는 모바일 애플리케이션",
+                "plain_text": "여행 일정 단위로 GPS 이동 경로와 스팟별 사진·메모를 기록하는 모바일 앱입니다. 팀 리더이자 프론트엔드 개발자로 기획과 일정을 맡았고, Docker 이미지를 약 4.6GB에서 300MB로 줄였습니다.",
                 "text": {
-                  "content": "여행 순간을 기록하고 공유할 수 있는 모바일 애플리케이션",
+                  "content": "여행 일정 단위로 GPS 이동 경로와 스팟별 사진·메모를 기록하는 모바일 앱입니다. 팀 리더이자 프론트엔드 개발자로 기획과 일정을 맡았고, Docker 이미지를 약 4.6GB에서 300MB로 줄였습니다.",
                   "link": null
                 },
                 "type": "text"
@@ -147649,7 +147781,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-803b-9c24-000b87f9e216",
@@ -147675,77 +147807,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "동네 카페·빵집·식당 같은 ",
+                "plain_text": "마감 시간에 남은 동네 매장 음식을 할인가로 예약·픽업하는 지역 기반 플랫폼입니다. 프론트엔드 리더로 가상·무한 스크롤을 구현하고 발표를 맡았으며, INNER CIRCLE 3기 최우수 프로젝트로 선정됐습니다.",
                 "text": {
-                  "content": "동네 카페·빵집·식당 같은 ",
-                  "link": null
-                },
-                "type": "text"
-              },
-              {
-                "annotations": {
-                  "bold": true,
-                  "code": false,
-                  "color": "default",
-                  "italic": false,
-                  "strikethrough": false,
-                  "underline": false
-                },
-                "href": null,
-                "plain_text": "로컬 소상공인 매장",
-                "text": {
-                  "content": "로컬 소상공인 매장",
-                  "link": null
-                },
-                "type": "text"
-              },
-              {
-                "annotations": {
-                  "bold": false,
-                  "code": false,
-                  "color": "default",
-                  "italic": false,
-                  "strikethrough": false,
-                  "underline": false
-                },
-                "href": null,
-                "plain_text": "과 근처에 사는 ",
-                "text": {
-                  "content": "과 근처에 사는 ",
-                  "link": null
-                },
-                "type": "text"
-              },
-              {
-                "annotations": {
-                  "bold": true,
-                  "code": false,
-                  "color": "default",
-                  "italic": false,
-                  "strikethrough": false,
-                  "underline": false
-                },
-                "href": null,
-                "plain_text": "지역 주민",
-                "text": {
-                  "content": "지역 주민",
-                  "link": null
-                },
-                "type": "text"
-              },
-              {
-                "annotations": {
-                  "bold": false,
-                  "code": false,
-                  "color": "default",
-                  "italic": false,
-                  "strikethrough": false,
-                  "underline": false
-                },
-                "href": null,
-                "plain_text": "을 연결하는 지역 기반 플랫폼",
-                "text": {
-                  "content": "을 연결하는 지역 기반 플랫폼",
+                  "content": "마감 시간에 남은 동네 매장 음식을 할인가로 예약·픽업하는 지역 기반 플랫폼입니다. 프론트엔드 리더로 가상·무한 스크롤을 구현하고 발표를 맡았으며, INNER CIRCLE 3기 최우수 프로젝트로 선정됐습니다.",
                   "link": null
                 },
                 "type": "text"
@@ -147870,7 +147934,7 @@
           "id": "410c97ba-fd89-8129-931f-0027c186804c",
           "object": "user"
         },
-        "last_edited_time": "2026-11-06T02:33:00.000Z",
+        "last_edited_time": "2026-11-08T23:32:00.000Z",
         "object": "page",
         "parent": {
           "data_source_id": "272c97ba-fd89-803b-9c24-000b87f9e216",
@@ -147888,23 +147952,6 @@
             "rich_text": [
               {
                 "annotations": {
-                  "bold": true,
-                  "code": false,
-                  "color": "default",
-                  "italic": false,
-                  "strikethrough": false,
-                  "underline": false
-                },
-                "href": null,
-                "plain_text": "NEU(NEU)",
-                "text": {
-                  "content": "NEU(NEU)",
-                  "link": null
-                },
-                "type": "text"
-              },
-              {
-                "annotations": {
                   "bold": false,
                   "code": false,
                   "color": "default",
@@ -147913,9 +147960,9 @@
                   "underline": false
                 },
                 "href": null,
-                "plain_text": "는 Windows UI를 웹으로 구현한 개인 블로그",
+                "plain_text": "Windows 바탕화면처럼 창을 열어 글을 탐색하는 개인 블로그를 혼자 만들었습니다. Notion을 CMS로 쓰고, 글과 화면을 모두 SSG로 미리 빌드해 내줍니다.",
                 "text": {
-                  "content": "는 Windows UI를 웹으로 구현한 개인 블로그",
+                  "content": "Windows 바탕화면처럼 창을 열어 글을 탐색하는 개인 블로그를 혼자 만들었습니다. Notion을 CMS로 쓰고, 글과 화면을 모두 SSG로 미리 빌드해 내줍니다.",
                   "link": null
                 },
                 "type": "text"

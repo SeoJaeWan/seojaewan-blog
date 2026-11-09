@@ -278,6 +278,107 @@ export const DesktopRoot: Story = {
   },
 };
 
+// 주소창 경로 구분자(백슬래시)다.
+const pathSeparator = String.fromCodePoint(92);
+
+/**
+ * 주소 줄 경로(Breadcrumb)의 빈 곳인 위치 아이콘 자리.
+ * @param canvasElement 캔버스
+ * @returns 위치 아이콘 자리
+ */
+function getBreadcrumbBlank(canvasElement: HTMLElement): HTMLElement {
+  const current = within(canvasElement).getByRole('button', { current: 'page' });
+  const blank =
+    current.closest('[data-separator]')?.parentElement?.parentElement?.firstElementChild;
+  if (!(blank instanceof HTMLElement)) {
+    throw new Error('경로의 빈 곳이 없다');
+  }
+  return blank;
+}
+
+/** 주소창 편집. 경로의 빈 곳을 눌러 경로를 입력하고 Enter로 가며, 찾지 못하면 메시지 상자를 띄운다 */
+export const AddressEdit: Story = {
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+
+    /**
+     * 경로의 빈 곳을 눌러 편집을 시작하고 입력칸을 돌려준다.
+     * @returns 주소 입력칸
+     */
+    async function startEditing(): Promise<HTMLInputElement> {
+      await user.click(getBreadcrumbBlank(canvasElement));
+      const field = await canvas.findByRole('textbox', { name: '주소' });
+      if (!(field instanceof HTMLInputElement)) {
+        throw new Error('주소 입력칸이 없다');
+      }
+      return field;
+    }
+
+    // @codocs [[파일 탐색기:주소창 편집]]
+    await step('경로의 빈 곳을 누르면 경로가 입력칸으로 바뀌고 전체가 선택된다', async () => {
+      const field = await startEditing();
+      const text = ['바탕 화면', 'Blog'].join(pathSeparator);
+      await expect(field).toHaveValue(text);
+      await waitFor(() => expect(field).toHaveFocus());
+      await expect([field.selectionStart, field.selectionEnd]).toEqual([0, text.length]);
+    });
+
+    // @codocs [[파일 탐색기:주소창 편집]]
+    await step('Esc를 누르면 입력을 버리고 경로 모양으로 돌아간다', async () => {
+      await user.keyboard('x{Escape}');
+      await expect(canvas.queryByRole('textbox', { name: '주소' })).not.toBeInTheDocument();
+      await expect(getTabTitles(canvasElement)).toEqual(['Blog']);
+    });
+
+    // @codocs [[파일 탐색기:주소창 편집]]
+    await step(
+      'Enter를 누르면 대소문자를 가리지 않고 경로의 폴더로 가고 뒤로 기록에 남는다',
+      async () => {
+        const field = await startEditing();
+        await user.clear(field);
+        await user.type(field, ['blog', 'REACT'].join(pathSeparator));
+        await user.keyboard('{Enter}');
+        await expect(getTabTitles(canvasElement)).toEqual(['React']);
+        await expect(canvas.queryByRole('textbox', { name: '주소' })).not.toBeInTheDocument();
+        await user.click(canvas.getByRole('button', { name: '뒤로' }));
+        await expect(getTabTitles(canvasElement)).toEqual(['Blog']);
+      },
+    );
+
+    // @codocs [[파일 탐색기:주소창 편집]]
+    await step('찾지 못하면 메시지 상자를 띄우고 입력칸은 그대로 둔다', async () => {
+      const field = await startEditing();
+      await user.clear(field);
+      await user.type(field, '없는 폴더');
+      await user.keyboard('{Enter}');
+      const dialog = await screen.findByRole('alertdialog');
+      await expect(dialog).toHaveTextContent(
+        "'없는 폴더'을(를) 찾을 수 없습니다. 철자를 확인하고 다시 시도하세요.",
+      );
+      await expect(within(dialog).getByText('파일 탐색기')).toBeInTheDocument();
+      await user.click(within(dialog).getByRole('button', { name: '확인' }));
+      await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument());
+      await expect(canvas.getByRole('textbox', { name: '주소' })).toHaveValue('없는 폴더');
+    });
+
+    // @codocs [[파일 탐색기:주소창 편집]]
+    await step('포커스를 잃으면 입력을 버린다', async () => {
+      await user.click(getFolderContent(canvasElement));
+      await expect(canvas.queryByRole('textbox', { name: '주소' })).not.toBeInTheDocument();
+    });
+
+    // @codocs [[파일 탐색기:주소창 편집]]
+    await step('휴지통도 받는다', async () => {
+      const field = await startEditing();
+      await user.clear(field);
+      await user.type(field, '휴지통');
+      await user.keyboard('{Enter}');
+      await expect(getTabTitles(canvasElement)).toEqual(['휴지통']);
+    });
+  },
+};
+
 /** 탭을 열고, 고르고, 닫고, 끌어 순서를 바꾼다 */
 export const Tabs: Story = {
   args: { location: 'folder:React' },
@@ -510,6 +611,15 @@ export const Mobile: Story = {
       await expect(
         within(getFolderContent(canvasElement)).getByText('훅 정리'),
       ).toBeInTheDocument();
+    });
+
+    // @codocs [[파일 탐색기:주소창 편집]]
+    // @codocs [[파일 탐색기:모바일]]
+    await step('모바일은 현재 위치 한 칸을 누르면 입력칸으로 바뀐다', async () => {
+      await user.click(canvas.getByRole('button', { current: 'page' }));
+      await expect(await canvas.findByRole('textbox', { name: '주소' })).toHaveValue(
+        ['바탕 화면', 'Blog', 'React'].join(pathSeparator),
+      );
     });
   },
 };

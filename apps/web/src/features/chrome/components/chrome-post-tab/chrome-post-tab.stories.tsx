@@ -23,6 +23,15 @@ function resolveStoryLink(href: string): ChromeTabPage | null {
     : null;
 }
 
+/**
+ * 요소에 실제로 적용된 마우스 커서 모양을 읽는다.
+ * @param element 요소
+ * @returns CSS cursor 값
+ */
+function getCursor(element: Element): string {
+  return getComputedStyle(element).cursor;
+}
+
 // @codocs [[테스트 작성 규칙:스토리 테스트]]
 // 동작 스토리다. 글 본문은 서버 경로에서 받으므로 `fetch`를 가짜로 바꿔 상황마다의 본문을 준다.
 // 글 화면은 크기를 갖지 않고 창이 정하므로 FigmaFrame이 args의 layout에 맞는 Chrome/Page 원본 크기로 감싼다.
@@ -128,6 +137,16 @@ export const Wide: Story = {
       await expect(writeText).toHaveBeenCalledWith('const a = 1;');
     });
 
+    // @codocs [[디자인 시스템:커서]]
+    await step('목차 항목, 본문 링크, 코드 복사 버튼, 이전·다음 카드는 손가락 커서다', async () => {
+      await expect(getCursor(canvas.getByRole('button', { name: '셋' }))).toBe('pointer');
+      await expect(getCursor(canvas.getByRole('link', { name: '앞 글' }))).toBe('pointer');
+      await expect(getCursor(canvas.getByRole('link', { name: '바깥' }))).toBe('pointer');
+      await expect(getCursor(canvas.getByRole('button', { name: '코드 복사' }))).toBe('pointer');
+      await expect(getCursor(canvas.getByRole('button', { name: /이전 글/ }))).toBe('pointer');
+      await expect(getCursor(canvas.getByRole('button', { name: /다음 글/ }))).toBe('pointer');
+    });
+
     await step('이전 글 카드를 누르면 작성일이 앞선 글로 간다', async () => {
       await userEvent.click(canvas.getByRole('button', { name: /이전 글/ }));
       await expect(args.onNavigate).toHaveBeenLastCalledWith({
@@ -167,6 +186,14 @@ export const Narrow: Story = {
 
     await step('좁은 창의 목차는 처음에 접혀 있다', async () => {
       await expect(getToc()).toHaveAttribute('aria-expanded', 'false');
+    });
+
+    // @codocs [[디자인 시스템:커서]]
+    await step('접은 목차와 펼친 목차 머리는 손가락 커서다', async () => {
+      await expect(getCursor(getToc())).toBe('pointer');
+      await userEvent.click(getToc());
+      await expect(getCursor(getToc())).toBe('pointer');
+      await userEvent.click(getToc());
     });
 
     await step('접은 목차를 누르면 펼친다', async () => {
