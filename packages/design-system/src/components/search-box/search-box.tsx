@@ -44,7 +44,7 @@ export function SearchBox({
         isDefault &&
           'inner-border-color-black-6 h-size-control-height rounded-radius-control py-spacing-sm-nudge pr-spacing-sm pl-spacing-md motion-control-state',
         variant === 'pill' &&
-          'inner-border-color-black-6 h-size-search-box-tall-height rounded-radius-circular px-spacing-lg py-spacing-sm motion-search-box-focus-state',
+          'inner-border-color-black-6 h-size-search-box-pill-height rounded-radius-circular px-spacing-lg py-spacing-xs motion-search-box-focus-state',
         variant === 'taskbar' &&
           'inner-border-color-black-6 h-size-control-height rounded-radius-circular px-spacing-lg py-spacing-sm-nudge motion-search-box-focus-state',
         variant === 'web' &&
