@@ -1,48 +1,46 @@
 {
   "delay": {
-    "ms": 0,
-    "token": null
+    "ms": 90,
+    "token": "motion/delay/pinned-move-exit"
   },
-  "directives": {
-    "reduced-motion": [
-      "움직임 없이 바로 바뀐다"
-    ],
-    "repeat": [
-      "1"
-    ],
-    "trigger": [
-      "Start 고정됨 칸을 메뉴(앞으로·왼쪽으로·오른쪽으로 이동)로 옮길 때 옮기는 칸이 제자리에서 사라진다"
-    ]
-  },
+  "directives": {},
   "duration": {
-    "ms": 167,
-    "token": "motion/duration/fast"
+    "ms": 83,
+    "token": "motion/duration/faster"
   },
   "iterations": 1,
   "name": "motion-start-pinned-move-exit",
   "nodeId": "3356:538",
+  "notes": [
+    {
+      "category": "Development",
+      "path": "PinnedTile",
+      "text": "이동 메뉴를 누른 순간 메뉴가 사라지고, 이 칸이 약 90ms 뒤 사라지기 시작한다(키프레임 시작 시점). 다음 단계: motion-start-pinned-move-swap → motion-start-pinned-move-enter. 시작 시점은 motion/delay/pinned-move-exit 변수 값이다."
+    }
+  ],
+  "source": "flow",
   "tracks": [
     {
       "delay": {
-        "ms": 0,
-        "token": null
+        "ms": 90,
+        "token": "motion/delay/pinned-move-exit"
       },
       "duration": {
-        "ms": 167,
-        "token": "motion/duration/fast"
+        "ms": 83,
+        "token": "motion/duration/faster"
       },
       "keyframes": [
         {
           "easing": null,
           "offset": 0,
-          "time": 0,
+          "time": 90,
           "value": 1,
           "valueToken": null
         },
         {
           "easing": "motion/easing/fade",
           "offset": 1,
-          "time": 167,
+          "time": 173,
           "value": 0,
           "valueToken": null
         }
@@ -55,18 +53,18 @@
     },
     {
       "delay": {
-        "ms": 0,
-        "token": null
+        "ms": 90,
+        "token": "motion/delay/pinned-move-exit"
       },
       "duration": {
-        "ms": 167,
-        "token": "motion/duration/fast"
+        "ms": 83,
+        "token": "motion/duration/faster"
       },
       "keyframes": [
         {
           "easing": null,
           "offset": 0,
-          "time": 0,
+          "time": 90,
           "value": {
             "x": 1,
             "y": 1
@@ -76,12 +74,12 @@
         {
           "easing": "motion/easing/direct-entrance",
           "offset": 1,
-          "time": 167,
+          "time": 173,
           "value": {
-            "x": 0.5,
-            "y": 0.5
+            "x": 0.91,
+            "y": 0.91
           },
-          "valueToken": "motion/scale/half"
+          "valueToken": "motion/scale/pinned-move-exit"
         }
       ],
       "node": "PinnedTile",
