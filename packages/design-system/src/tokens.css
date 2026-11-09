@@ -91,7 +91,7 @@
 
 :root {
   --blur-acrylic: 60px;
-  --blur-mica: 240px;
+  --blur-mica: 20px;
   --border-spacing-none: 0px;
   --breakpoint-chrome-page-width: 1020px;
   --breakpoint-laptop-height: 900px;
@@ -132,6 +132,7 @@
   --color-gray-4-90: #f3f3f3e5;
   --color-gray-4-95: #f3f3f3f2;
   --color-gray-9: #e0e5ed;
+  --color-gray-9-60: #e6e6e699;
   --color-gray-13: #dadada;
   --color-gray-51-40: #75757566;
   --color-gray-70: #474747;
@@ -144,7 +145,9 @@
   --color-white-8: #ffffff14;
   --color-white-15: #ffffff26;
   --color-white-25: #ffffff40;
+  --color-white-30: #ffffff4d;
   --color-white-50: #ffffff80;
+  --color-white-60: #ffffff99;
   --color-white-70: #ffffffb2;
   --color-yellow-3: #ffff00;
   --color-yellow-54: #9d5d00;
@@ -179,6 +182,9 @@
   --material-acrylic-backdrop-blur: var(--blur-acrylic);
   --material-mica-backdrop-blur: var(--blur-mica);
   --motion-delay-boot-screen: 2500ms;
+  --motion-delay-pinned-move-enter: 850ms;
+  --motion-delay-pinned-move-exit: 90ms;
+  --motion-delay-pinned-move-swap: 300ms;
   --motion-duration-fast: 167ms;
   --motion-duration-faster: 83ms;
   --motion-duration-normal: 250ms;
@@ -192,7 +198,12 @@
   --motion-easing-progress-ring: cubic-bezier(0.167, 0.167, 0.833, 0.833);
   --motion-scale-half: 0.5;
   --motion-scale-lift: 1.1;
-  --motion-scale-window-enter: 0.96;
+  --motion-scale-pinned-move-enter: 0.96;
+  --motion-scale-pinned-move-exit: 0.91;
+  --motion-scale-reorder-drag: 1.2;
+  --motion-scale-reorder-press: 0.8;
+  --motion-scale-window-enter: 0.85;
+  --motion-scale-window-exit: 0.96;
   --motion-scale-window-minimize: 0.12;
   --opacity-cut: 62%;
   --position-full: 100%;
@@ -277,6 +288,7 @@
   --size-scrollbar-thumb-hover: 6px;
   --size-scrollbar-thumb-length: 119.4444px;
   --size-scrollbar-thumb-rest: 2px;
+  --size-search-box-pill-height: 30px;
   --size-search-box-tall-height: 36px;
   --size-search-box-taskbar-width: 220px;
   --size-search-box-wide-width: 320px;
@@ -284,13 +296,19 @@
   --size-search-results-list-width: 300px;
   --size-separator-command-height: 24px;
   --size-separator-height: 16px;
-  --size-shell-height: 720px;
+  --size-shell-height: 862px;
   --size-shell-mobile-height: 640px;
-  --size-shell-width: 640px;
+  --size-shell-width: 832px;
   --size-snap-option-column-width: 56px;
   --size-snap-option-height: 56px;
   --size-snap-option-width: 88px;
   --size-snap-option-zone-width: 40px;
+  --size-start-category-folder-height: 376px;
+  --size-start-category-folder-item-width: 96px;
+  --size-start-category-folder-mobile-width: 388px;
+  --size-start-category-folder-page-dot: 4px;
+  --size-start-category-folder-page-dot-current: 6px;
+  --size-start-category-folder-width: 448px;
   --size-status-bar-spacer-height: 1px;
   --size-taskbar-button-indicator-active: 16px;
   --size-taskbar-button-indicator-running: 6px;
@@ -382,6 +400,7 @@
   --color-color-gray-4-90: var(--color-gray-4-90);
   --color-color-gray-4-95: var(--color-gray-4-95);
   --color-color-gray-9: var(--color-gray-9);
+  --color-color-gray-9-60: var(--color-gray-9-60);
   --color-color-gray-13: var(--color-gray-13);
   --color-color-gray-51-40: var(--color-gray-51-40);
   --color-color-gray-70: var(--color-gray-70);
@@ -394,7 +413,9 @@
   --color-color-white-8: var(--color-white-8);
   --color-color-white-15: var(--color-white-15);
   --color-color-white-25: var(--color-white-25);
+  --color-color-white-30: var(--color-white-30);
   --color-color-white-50: var(--color-white-50);
+  --color-color-white-60: var(--color-white-60);
   --color-color-white-70: var(--color-white-70);
   --color-color-yellow-3: var(--color-yellow-3);
   --color-color-yellow-54: var(--color-yellow-54);
@@ -416,10 +437,10 @@
   --inset-position-full: var(--position-full);
   --inset-position-half: var(--position-half);
   --line-clamp-line-clamp-two: var(--line-clamp-two);
-  --material-acrylic-base: rgb(from var(--color-gray-4-90) r g b / 0.9);
-  --material-acrylic-default: rgb(from var(--color-gray-1-85) r g b / 0.85);
+  --material-acrylic-base: rgb(from var(--color-white-60) r g b / 0.6);
+  --material-acrylic-default: rgb(from var(--color-white-50) r g b / 0.5);
   --material-fallback-acrylic-default: var(--color-gray-2);
-  --material-mica-base: rgb(from var(--color-gray-4-95) r g b / 0.95);
+  --material-mica-base: rgb(from var(--color-gray-9-60) r g b / 0.6);
   --opacity-opacity-cut: var(--opacity-cut);
   --radius-radius-circular: var(--radius-circular);
   --radius-radius-control: var(--radius-control);
@@ -506,6 +527,7 @@
   --size-size-scrollbar-thumb-hover: var(--size-scrollbar-thumb-hover);
   --size-size-scrollbar-thumb-length: var(--size-scrollbar-thumb-length);
   --size-size-scrollbar-thumb-rest: var(--size-scrollbar-thumb-rest);
+  --size-size-search-box-pill-height: var(--size-search-box-pill-height);
   --size-size-search-box-tall-height: var(--size-search-box-tall-height);
   --size-size-search-box-taskbar-width: var(--size-search-box-taskbar-width);
   --size-size-search-box-wide-width: var(--size-search-box-wide-width);
@@ -520,6 +542,12 @@
   --size-size-snap-option-height: var(--size-snap-option-height);
   --size-size-snap-option-width: var(--size-snap-option-width);
   --size-size-snap-option-zone-width: var(--size-snap-option-zone-width);
+  --size-size-start-category-folder-height: var(--size-start-category-folder-height);
+  --size-size-start-category-folder-item-width: var(--size-start-category-folder-item-width);
+  --size-size-start-category-folder-mobile-width: var(--size-start-category-folder-mobile-width);
+  --size-size-start-category-folder-page-dot: var(--size-start-category-folder-page-dot);
+  --size-size-start-category-folder-page-dot-current: var(--size-start-category-folder-page-dot-current);
+  --size-size-start-category-folder-width: var(--size-start-category-folder-width);
   --size-size-status-bar-spacer-height: var(--size-status-bar-spacer-height);
   --size-size-taskbar-button-indicator-active: var(--size-taskbar-button-indicator-active);
   --size-size-taskbar-button-indicator-running: var(--size-taskbar-button-indicator-running);
