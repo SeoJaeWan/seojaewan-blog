@@ -7,7 +7,7 @@ import {
   motionUrl,
 } from '../motion-file';
 import type { Violation } from './check-structure';
-import { type Directives, parseDirectiveTexts } from './directives';
+import { type Directives, parseDirectives, parseDirectiveTexts, retiredNotice } from './directives';
 import type {
   EasingData,
   KeyframeData,
@@ -71,46 +71,38 @@ export function checkMotionSample(
    */
   function add(path: string, reason: string, fix: string, nodeId: string = sample.nodeId): void {
     violations.push({
-      where: path === '' ? sample.name : `${sample.name} / ${path}`,
+      where: path === '' ? sample.label : `${sample.label} / ${path}`,
       reason,
       fix,
       nodeId,
     });
   }
 
-  if (!MOTION_NAME_PATTERN.test(sample.name)) {
-    add(
-      '',
-      '견본 이름이 모션 클래스 이름 꼴(`motion-` + 소문자·숫자·`-`)이 아니라 파일과 클래스 이름을 정할 수 없다',
-      '견본 프레임 이름을 00 · Guide Motion의 클래스 이름(예: `motion-window-open`)으로 바꾼다.',
-    );
+  const name = sample.name ?? '';
+  if (!MOTION_NAME_PATTERN.test(name)) {
+    add('', ...nameProblem(sample));
   }
   for (const problem of sample.problems) {
     add(problem.path, problem.reason, problem.fix, problem.nodeId);
   }
-  const { directives, problems } = parseDirectiveTexts(sample.annotations, {
-    isLegacySample: true,
+  const directives = sourceDirectives(sample, notices, (reason, fix) => {
+    add('', reason, fix);
   });
-  for (const problem of problems) {
-    add('', `주석의 ${problem}`, '견본 프레임 주석을 고친다.');
-  }
-  for (const key of REQUIRED_KEYS) {
-    if (directives[key] === undefined) {
-      add(
-        '',
-        `견본 주석에 \`@${key}\` 줄이 없다. 반복과 재생 시작 조건은 API로 읽을 수 없다`,
-        `견본 프레임 주석에 \`@${key} <값>\`을 적는다. 값은 [[피그마 연동:구조 검사]]의 @ 줄 표를 본다.`,
-      );
-    }
+  const iterations = sample.source === 'sample' ? iterationsOf(directives) : loopIterations(sample);
+  if (iterations === null && sample.source !== 'sample') {
+    add(
+      '',
+      '재생 설정 Loop를 읽지 못해 반복 여부를 정할 수 없다',
+      '움직임을 담은 프레임(원본은 컴포넌트)의 재생 설정에서 Loop를 켜거나(무한 반복) 끈다(한 번).',
+    );
   }
   if (sample.tracks.length === 0 && sample.problems.length === 0) {
     add(
       '',
-      '견본 안에 키프레임이 걸린 노드가 없다',
-      '견본에 놓은 인스턴스(요소 전체가 움직이는 것)나 자산 원본(안쪽이 움직이는 것)에 키프레임을 건다.',
+      '키프레임이 걸린 노드가 없다',
+      '안쪽이 움직이는 것은 컴포넌트·자산 원본에, 요소 전체·공통 움직임은 조립 흐름이 도착하는 프레임 안 인스턴스에 키프레임을 건다.',
     );
   }
-
   const durations = byPrefix(variables, DURATION_PREFIX);
   const delays = byPrefix(variables, DELAY_PREFIX);
   const pairs = variables.filter(isValuePairVariable);
@@ -203,13 +195,15 @@ export function checkMotionSample(
     ok: true,
     notices,
     motion: {
-      name: sample.name,
+      name,
+      source: sample.source,
       nodeId: sample.nodeId,
       url: motionUrl(fileKey, sample.nodeId),
       duration: matchTime(end - start, durations, notices, '애니메이션 전체'),
       delay: start === 0 ? { ms: 0, token: null } : matchTime(start, delays, notices, '애니메이션'),
-      iterations: iterationsOf(directives),
+      iterations,
       directives,
+      notes: sample.notes.map((note) => ({ ...note })),
       tracks,
     },
   };
@@ -233,6 +227,82 @@ function clipTrack(
     (keyframe) => keyframe.time * MS_PER_SECOND <= lengthMs + TIME_TOLERANCE_MS,
   );
   return { keyframes, isTruncated: keyframes.length < track.keyframes.length };
+}
+
+/**
+ * 모션 이름을 정할 수 없을 때의 이유와 고칠 방법을 자리마다 만든다.
+ * @codocs [[피그마 연동:모션]]
+ * @param sample 움직임 데이터
+ * @returns 이유와 고칠 방법
+ */
+function nameProblem(sample: MotionSampleData): [string, string] {
+  const reason =
+    '모션 클래스 이름 꼴(`motion-` + 소문자·숫자·`-`)의 이름이 없어 파일과 클래스 이름을 정할 수 없다';
+  switch (sample.source) {
+    case 'component':
+      return [
+        reason,
+        '원본 컴포넌트(변형)에 Development 주석으로 모션 클래스 이름(예: `motion-progress-ring`) 한 줄을 단다.',
+      ];
+    case 'flow':
+      return [reason, '흐름 프레임 이름을 모션 클래스 이름(예: `motion-window-open`)으로 바꾼다.'];
+    case 'sample':
+      return [reason, '견본 프레임 이름을 모션 클래스 이름(예: `motion-window-open`)으로 바꾼다.'];
+  }
+}
+
+/**
+ * 자리마다 `@` 줄을 읽는다. 옛 견본은 주석의 `@repeat`·`@trigger`가 필수이고, 원본은 컴포넌트 description의 `@` 줄이다.
+ * 흐름 프레임은 description이 없어 `@` 줄이 없다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param sample 움직임 데이터
+ * @param notices 알림 목록
+ * @param add 위반을 더하는 함수
+ * @returns 읽은 `@` 줄
+ */
+function sourceDirectives(
+  sample: MotionSampleData,
+  notices: string[],
+  add: (reason: string, fix: string) => void,
+): Directives {
+  if (sample.source !== 'sample') {
+    const { directives, problems, retired } = parseDirectives(sample.description);
+    for (const problem of problems) {
+      add(`description의 ${problem}`, 'description 줄을 고친다.');
+    }
+    if (retired.length > 0) {
+      notices.push(retiredNotice(sample.label, retired));
+    }
+    return directives;
+  }
+  const { directives, problems } = parseDirectiveTexts(sample.annotations, {
+    isLegacySample: true,
+  });
+  for (const problem of problems) {
+    add(`주석의 ${problem}`, '견본 프레임 주석을 고친다.');
+  }
+  for (const key of REQUIRED_KEYS) {
+    if (directives[key] === undefined) {
+      add(
+        `견본 주석에 \`@${key}\` 줄이 없다. 옛 견본은 반복과 재생 시작 조건을 주석으로 읽는다`,
+        `견본 프레임 주석에 \`@${key} <값>\`을 적거나, 움직임을 일어나는 자리로 옮긴다([[디자인 기반:모션 견본]]).`,
+      );
+    }
+  }
+  return directives;
+}
+
+/**
+ * 재생 설정 Loop를 반복 횟수로 바꾼다. 켜면 무한 반복, 끄면 한 번이다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param sample 움직임 데이터
+ * @returns 횟수나 `infinite`, 읽지 못했으면 null
+ */
+function loopIterations(sample: MotionSampleData): number | 'infinite' | null {
+  if (sample.isLooping === null) {
+    return null;
+  }
+  return sample.isLooping ? 'infinite' : 1;
 }
 
 /**

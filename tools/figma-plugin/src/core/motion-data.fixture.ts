@@ -76,9 +76,14 @@ export function track(
 export function windowOpenSample(): MotionSampleData {
   return {
     name: 'motion-window-open',
+    label: 'motion-window-open',
+    source: 'sample',
     nodeId: '12:34',
     problems: [],
     annotations: ['@repeat 1\n@trigger open'],
+    notes: [],
+    description: '',
+    isLooping: null,
     lengthMs: null,
     tracks: [
       track('SCALE_XY', [

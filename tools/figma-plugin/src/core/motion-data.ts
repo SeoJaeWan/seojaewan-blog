@@ -75,17 +75,41 @@ export type ReadProblem = {
 };
 
 /**
- * 모션 견본 하나.
- * - name: 견본 프레임 이름(모션 클래스 이름)
- * - annotations: 견본 프레임 주석의 글
- * - lengthMs: 견본 타임라인 길이(ms). 읽지 못했으면 null
+ * 움직임을 읽은 자리([[디자인 기반:모션 견본]]).
+ * - sample: 옛 견본 프레임(01 · Foundations `Foundations / Motion`). 움직임이 일어나는 자리로 옮기기 전까지만 읽는다
+ * - flow: 조립 프로토타입 흐름이 도착하는 프레임(03 · Patterns). 요소 전체·공통 움직임
+ * - component: 컴포넌트·자산 원본. 안쪽 움직임
+ */
+export type MotionSource = 'sample' | 'flow' | 'component';
+
+/**
+ * 움직임 레이어의 Dev Mode 주석(Development: 실행 중 값, Accessibility: 동작 줄이기에서 남김).
+ * - path: 움직임 기준 레이어 경로. 움직임 자리 자신이면 빈 문자열
+ */
+export type MotionNote = { path: string; category: string; text: string };
+
+/**
+ * 움직임 하나(타임라인 하나).
+ * - name: 모션 클래스 이름. 이름을 정하지 못했으면 null
+ * - label: 메시지에 쓰는 자리 이름(프레임·컴포넌트 이름)
+ * - source: 읽은 자리
+ * - annotations: 옛 견본 프레임 주석의 글(`@` 줄). 다른 자리는 비어 있다
+ * - notes: 자리와 움직임 레이어의 Development·Accessibility 주석
+ * - description: 컴포넌트 원본의 description(`@` 줄). 다른 자리는 빈 문자열
+ * - isLooping: 재생 설정 Loop. 옛 견본은 `@repeat`로 읽어 null이다
+ * - lengthMs: 타임라인 길이(ms). 읽지 못했으면 null
  */
 export type MotionSampleData = {
-  name: string;
+  name: string | null;
+  label: string;
+  source: MotionSource;
   nodeId: string;
   tracks: TrackData[];
   problems: ReadProblem[];
   annotations: string[];
+  notes: MotionNote[];
+  description: string;
+  isLooping: boolean | null;
   lengthMs: number | null;
 };
 

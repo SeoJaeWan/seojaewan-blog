@@ -1,21 +1,32 @@
+import { isComponentsPage } from '../component-pages';
+import { MOTION_NAME_PATTERN } from '../motion-file';
+import { PATTERNS_PAGE_ID } from '../plugin-config';
 import { sourceLayerId } from './bindings';
 import type {
   EasingData,
   KeyframeData,
   MotionNodeKind,
+  MotionNote,
   MotionSampleData,
+  MotionSource,
   MotionValue,
   MotionVariable,
   ReadProblem,
   TrackData,
 } from './motion-data';
-import { annotationTexts, assetGroupOf } from './read-node';
+import { annotationData, annotationTexts, assetGroupOf, type NameCache } from './read-node';
 
-// 피그마 `Foundations / Motion` 프레임의 견본과 모션 변수를 motion-data.ts의 순수 데이터로 읽는다. 노드를 바꾸지 않는다(읽기 전용).
+// 피그마에서 움직임과 모션 변수를 motion-data.ts의 순수 데이터로 읽는다. 노드를 바꾸지 않는다(읽기 전용).
+// 움직임은 움직임이 일어나는 자리(컴포넌트·자산 원본, 조립 흐름이 도착하는 프레임)에서 읽는다([[디자인 기반:모션 견본]]).
+// 옛 견본 프레임(`Foundations / Motion`)은 그 자리로 옮기기 전까지 함께 읽는다.
 // 플러그인과 피그마 MCP(use_figma) 양쪽에서 같은 코드가 실행된다.
 
-/** UI 목록에 보이는 견본 */
-export type MotionSampleSummary = { id: string; name: string };
+/**
+ * UI 목록에 보이는 움직임.
+ * - name: 모션 클래스 이름. 이름을 정하지 못한 원본은 `<컴포넌트 이름> (이름 없음)`이다
+ * - source: 읽은 자리
+ */
+export type MotionSampleSummary = { id: string; name: string; source: MotionSource };
 
 /** 견본이 있는 페이지 이름에 든 글자(01 · Foundations) */
 const FOUNDATIONS_PAGE_KEYWORD = 'Foundations';
@@ -25,6 +36,10 @@ const MOTION_FRAME_NAME = 'Foundations / Motion';
 const LEGACY_MOTION_SECTION_NAME = 'Motion';
 /** 견본 프레임 이름 앞부분 */
 const MOTION_SAMPLE_PREFIX = 'motion-';
+/** 원본의 모션 이름을 적는 주석 카테고리 */
+const NAME_NOTE_CATEGORY = 'Development';
+/** json에 싣는 주석 카테고리(실행 중 값, 동작 줄이기에서 남김) */
+const noteCategories: readonly string[] = ['Development', 'Accessibility'];
 /** 모션 변수 이름 앞부분 */
 const MOTION_VARIABLE_PREFIX = 'motion/';
 // 피그마가 사용자 기능 플래그로 막은 API를 부르면 나오는 오류 문장이다.
@@ -35,30 +50,206 @@ const MAX_SOURCE_DEPTH = 8;
 const MAX_ALIAS_DEPTH = 10;
 
 /**
- * 01 · Foundations 페이지 `Foundations / Motion` 프레임(옛 `Motion` 섹션도 함께) 바로 아래의 견본 프레임(이름이 `motion-`으로 시작)을 문서 순서대로 찾는다.
- * 페이지 ID가 정해져 있지 않아 이름에 `Foundations`가 든 페이지를 읽는다.
+ * 움직임 목록을 문서 순서대로 찾는다. 같은 이름이면 새 자리(원본, 흐름)를 쓰고 옛 견본은 뺀다.
+ * - 컴포넌트·자산 원본: 이름에 `Components`·`Foundations`가 든 페이지의 컴포넌트 가운데, 키프레임을 정의한 것
+ * - 조립 흐름: 03 · Patterns 페이지(섹션 안 포함)의 최상위 프레임 가운데 이름이 모션 클래스 이름 꼴이고 키프레임을 가진 것
+ * - 옛 견본: 01 · Foundations `Foundations / Motion` 프레임(옛 `Motion` 섹션도) 바로 아래 `motion-` 프레임
  * @codocs [[디자인 기반:모션 견본]]
- * @returns 견본 목록
+ * @codocs [[피그마 연동:모션]]
+ * @returns 움직임 목록
  */
 export async function listMotionSamples(): Promise<MotionSampleSummary[]> {
-  const samples: MotionSampleSummary[] = [];
+  const legacy: MotionSampleSummary[] = [];
+  const current: MotionSampleSummary[] = [];
   for (const page of figma.root.children) {
-    if (!page.name.includes(FOUNDATIONS_PAGE_KEYWORD)) {
+    const isFoundations = page.name.includes(FOUNDATIONS_PAGE_KEYWORD);
+    const isPatterns = page.id === PATTERNS_PAGE_ID;
+    if (!isFoundations && !isPatterns && !isComponentsPage(page.name)) {
       continue;
     }
     await page.loadAsync();
-    for (const container of page.findAllWithCriteria({ types: ['FRAME', 'SECTION'] })) {
-      if (!isMotionContainer(container)) {
-        continue;
+    if (isFoundations) {
+      legacy.push(...legacySamples(page));
+    }
+    try {
+      current.push(...(isPatterns ? flowFrames(page) : await originalComponents(page)));
+    } catch (error) {
+      // 모션 API를 쓸 수 없는 계정은 키프레임을 읽지 못해 옛 견본만 보인다(내보낼 때 다시 알린다).
+      if (!isMotionApiError(error)) {
+        throw error;
       }
-      for (const child of container.children) {
-        if (child.type === 'FRAME' && child.name.startsWith(MOTION_SAMPLE_PREFIX)) {
-          samples.push({ id: child.id, name: child.name });
-        }
+    }
+  }
+  const names = new Set(current.map((item) => item.name));
+  return [...current, ...legacy.filter((item) => !names.has(item.name))];
+}
+
+/**
+ * 옛 견본 프레임을 찾는다.
+ * @codocs [[디자인 기반:모션 견본]]
+ * @param page 01 · Foundations 페이지
+ * @returns 견본 목록
+ */
+function legacySamples(page: PageNode): MotionSampleSummary[] {
+  const samples: MotionSampleSummary[] = [];
+  for (const container of page.findAllWithCriteria({ types: ['FRAME', 'SECTION'] })) {
+    if (!isMotionContainer(container)) {
+      continue;
+    }
+    for (const child of container.children) {
+      if (child.type === 'FRAME' && child.name.startsWith(MOTION_SAMPLE_PREFIX)) {
+        samples.push({ id: child.id, name: child.name, source: 'sample' });
       }
     }
   }
   return samples;
+}
+
+/**
+ * 조립 흐름 프레임을 찾는다. 페이지와 섹션 바로 아래 프레임이 타임라인 하나(재생 설정 Loop 하나)다.
+ * @codocs [[디자인 기반:모션 견본]]
+ * @param page 03 · Patterns 페이지
+ * @returns 흐름 프레임 목록
+ */
+function flowFrames(page: PageNode): MotionSampleSummary[] {
+  const result: MotionSampleSummary[] = [];
+  /**
+   * 페이지·섹션의 자식에서 흐름 프레임을 찾는다.
+   * @param parent 페이지나 섹션
+   */
+  function walk(parent: PageNode | SectionNode): void {
+    for (const child of parent.children) {
+      if (child.type === 'SECTION') {
+        walk(child);
+      } else if (
+        child.type === 'FRAME' &&
+        MOTION_NAME_PATTERN.test(child.name) &&
+        child.findOne(hasOwnKeyframes) !== null
+      ) {
+        result.push({ id: child.id, name: child.name, source: 'flow' });
+      }
+    }
+  }
+  walk(page);
+  return result;
+}
+
+/**
+ * 키프레임을 정의한 컴포넌트·자산 원본을 찾는다. 원본 키프레임은 모든 인스턴스로 이어지므로, 인스턴스 안쪽 레이어의
+ * 키프레임은 원본에서 이어진 것이라 보지 않는다. 컴포넌트 세트는 변형마다 타임라인이 있어 변형 하나가 움직임 하나다.
+ * @codocs [[디자인 기반:모션 견본]]
+ * @param page 컴포넌트·Foundations 페이지
+ * @returns 원본 목록
+ */
+async function originalComponents(page: PageNode): Promise<MotionSampleSummary[]> {
+  const result: MotionSampleSummary[] = [];
+  const names: NameCache = new Map();
+  for (const component of page.findAllWithCriteria({ types: ['COMPONENT'] })) {
+    if (isInsideInstance(component) || !hasOriginalKeyframes(component)) {
+      continue;
+    }
+    const name = await originalMotionName(component, names);
+    result.push({
+      id: component.id,
+      name: name ?? `${componentLabel(component)} (이름 없음)`,
+      source: 'component',
+    });
+  }
+  return result;
+}
+
+/**
+ * 원본 컴포넌트(변형)나 그 세트의 Development 주석에서 모션 클래스 이름(`motion-…` 한 줄)을 찾는다.
+ * @codocs [[피그마 연동:모션]]
+ * @param component 원본 컴포넌트
+ * @param names 이름 캐시
+ * @returns 모션 이름, 없으면 null
+ */
+async function originalMotionName(
+  component: ComponentNode,
+  names: NameCache,
+): Promise<string | null> {
+  const owners: BaseNode[] = [component];
+  if (component.parent?.type === 'COMPONENT_SET') {
+    owners.push(component.parent);
+  }
+  for (const owner of owners) {
+    for (const note of await annotationData(owner, names)) {
+      if (note.category !== NAME_NOTE_CATEGORY) {
+        continue;
+      }
+      const line = note.text
+        .split(/\r?\n/u)
+        .map((item) => item.trim())
+        .find((item) => MOTION_NAME_PATTERN.test(item));
+      if (line !== undefined) {
+        return line;
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * 메시지에 쓰는 원본 이름을 만든다. 세트의 변형은 `세트 / 변형`이다.
+ * @param component 원본 컴포넌트
+ * @returns 이름
+ */
+function componentLabel(component: ComponentNode): string {
+  return component.parent?.type === 'COMPONENT_SET'
+    ? `${component.parent.name} / ${component.name}`
+    : component.name;
+}
+
+/**
+ * 노드가 인스턴스 안에 있는지 본다.
+ * @param node 노드
+ * @returns 인스턴스 안이면 true
+ */
+function isInsideInstance(node: BaseNode): boolean {
+  for (let current = node.parent; current !== null; current = current.parent) {
+    if (current.type === 'INSTANCE') {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * 컴포넌트 자신이나 안쪽 레이어(인스턴스 안쪽 제외, 놓은 인스턴스 자신은 포함)가 키프레임을 정의했는지 본다.
+ * @param component 컴포넌트
+ * @returns 정의했으면 true
+ */
+function hasOriginalKeyframes(component: ComponentNode): boolean {
+  return (
+    hasOwnKeyframes(component) ||
+    component.findOne((node) => !isInsideInstance(node) && hasOwnKeyframes(node)) !== null
+  );
+}
+
+/**
+ * 노드가 자기 키프레임(`manualKeyframeTracks`)을 가졌는지 본다.
+ * @param node 노드
+ * @returns 키프레임이 하나라도 있으면 true
+ */
+function hasOwnKeyframes(node: BaseNode): boolean {
+  return 'manualKeyframeTracks' in node && containsKeyframes(node.manualKeyframeTracks);
+}
+
+/**
+ * 수동 키프레임 객체 안에 키프레임이 있는지 찾는다(칠·효과 안쪽 포함).
+ * @param value 객체
+ * @returns 있으면 true
+ */
+function containsKeyframes(value: unknown): boolean {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+  const keyframes: unknown = Reflect.get(value, 'keyframes');
+  if (Array.isArray(keyframes)) {
+    return keyframes.length > 0;
+  }
+  return Object.keys(value).some((key) => containsKeyframes(Reflect.get(value, key)));
 }
 
 /**
@@ -67,10 +258,10 @@ export async function listMotionSamples(): Promise<MotionSampleSummary[]> {
  * @param node 프레임 또는 섹션
  * @returns 견본 묶음이면 true
  */
-function isMotionContainer(node: FrameNode | SectionNode): boolean {
+function isMotionContainer(node: BaseNode): boolean {
   return node.type === 'FRAME'
     ? node.name === MOTION_FRAME_NAME
-    : node.name === LEGACY_MOTION_SECTION_NAME;
+    : node.type === 'SECTION' && node.name === LEGACY_MOTION_SECTION_NAME;
 }
 
 /**
@@ -89,7 +280,7 @@ export function isMotionApiError(error: unknown): boolean {
  */
 export async function isMotionApiAvailable(sampleId: string): Promise<boolean> {
   const node = await figma.getNodeByIdAsync(sampleId);
-  if (node === null || node.type !== 'FRAME') {
+  if (node === null || (node.type !== 'FRAME' && node.type !== 'COMPONENT')) {
     return true;
   }
   try {
@@ -156,55 +347,136 @@ function easingCurve(
 }
 
 /**
- * 견본 프레임 안에서 키프레임이 걸린 노드를 찾아 트랙을 읽는다.
+ * 움직임 하나(옛 견본 프레임, 조립 흐름 프레임, 컴포넌트·자산 원본)에서 키프레임이 걸린 노드를 찾아 트랙을 읽는다.
  * 실제로 재생되는 키프레임(`animations`, 인스턴스 안쪽 레이어로 원본에서 이어진 것 포함)의 시간·값을 쓰고,
  * 이징의 변수 연결은 키프레임을 정의한 노드(자신, 원본 컴포넌트, 원본 레이어)의 `manualKeyframeTracks`에서 읽는다.
  * `animations`에서는 이징이 풀린 곡선으로 나오기 때문이다. 숨긴 노드는 재생되지 않아 읽지 않는다.
+ * 반복은 재생 설정 Loop로 읽는다. 옛 견본은 Loop가 모두 기본값(켜짐)이라 주석의 `@repeat`로 읽는다.
  * @codocs [[피그마 연동:모션]]
  * @codocs [[디자인 기반:모션 견본]]
- * @param sampleId 견본 프레임 ID
- * @returns 견본 데이터
+ * @param sampleId 움직임 자리 노드 ID(프레임이나 컴포넌트)
+ * @returns 움직임 데이터
  */
 export async function readMotionSample(sampleId: string): Promise<MotionSampleData> {
-  const frame = await figma.getNodeByIdAsync(sampleId);
-  if (frame === null || frame.type !== 'FRAME') {
-    throw new Error(`모션 견본 ${sampleId}를 찾을 수 없다.`);
+  const root = await figma.getNodeByIdAsync(sampleId);
+  if (root === null || (root.type !== 'FRAME' && root.type !== 'COMPONENT')) {
+    throw new Error(`움직임 자리 ${sampleId}를 찾을 수 없다.`);
   }
+  const names: NameCache = new Map();
+  const source = motionSource(root);
   const sample: MotionSampleData = {
-    name: frame.name,
-    nodeId: frame.id,
+    name: root.type === 'COMPONENT' ? await originalMotionName(root, names) : root.name,
+    label: root.type === 'COMPONENT' ? componentLabel(root) : root.name,
+    source,
+    nodeId: root.id,
     tracks: [],
     problems: [],
-    annotations: annotationTexts(frame),
-    lengthMs: timelineLength(frame),
+    annotations: source === 'sample' ? annotationTexts(root) : [],
+    notes: [],
+    description: root.type === 'COMPONENT' ? componentDescription(root) : '',
+    isLooping: source === 'sample' ? null : loopOf(root),
+    lengthMs: timelineLength(root),
   };
-  for (const child of frame.children) {
-    await readTracks(child, child.name, sample);
+  await collectNotes(root, '', sample, names);
+  if (root.type === 'COMPONENT') {
+    await readTracks(root, root.name, sample, names);
+  } else {
+    for (const child of root.children) {
+      await readTracks(child, child.name, sample, names);
+    }
   }
   return sample;
 }
 
 /**
- * 견본 타임라인 길이를 읽는다. 견본 안 컴포넌트의 트랙이 더 길면 이 길이에서 잘려 재생된다.
- * `playbackSettings.loop`는 뜻을 알 수 없어 보지 않는다.
+ * 움직임 자리의 종류를 정한다.
+ * @param root 프레임이나 컴포넌트
+ * @returns 컴포넌트는 원본, 견본 묶음 바로 아래 프레임은 옛 견본, 나머지 프레임은 조립 흐름
+ */
+function motionSource(root: FrameNode | ComponentNode): MotionSource {
+  if (root.type === 'COMPONENT') {
+    return 'component';
+  }
+  return root.parent !== null && isMotionContainer(root.parent) ? 'sample' : 'flow';
+}
+
+/**
+ * 원본 컴포넌트의 description을 읽는다. 세트의 변형은 세트와 변형의 description을 잇는다.
+ * @param component 원본 컴포넌트
+ * @returns description
+ */
+function componentDescription(component: ComponentNode): string {
+  return component.parent?.type === 'COMPONENT_SET'
+    ? [component.parent.description, component.description].join('\n')
+    : component.description;
+}
+
+/**
+ * 재생 설정 Loop를 읽는다. 켜면 무한 반복, 끄면 한 번이다. `playbackSettings`는 플러그인 타입 정의에 없어 값의 꼴을 확인한다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param node 움직임을 담은 프레임이나 컴포넌트
+ * @returns Loop, 읽지 못하면 null
+ */
+function loopOf(node: BaseNode): boolean | null {
+  const settings: unknown = Reflect.get(node, 'playbackSettings');
+  if (typeof settings !== 'object' || settings === null) {
+    return null;
+  }
+  const loop: unknown = Reflect.get(settings, 'loop');
+  return typeof loop === 'boolean' ? loop : null;
+}
+
+/**
+ * 타임라인 길이를 읽는다. 자리 안 컴포넌트의 트랙이 더 길면 이 길이에서 잘려 재생된다.
  * @codocs [[피그마 연동:모션]]
- * @param frame 견본 프레임
+ * @param node 움직임을 담은 프레임이나 컴포넌트
  * @returns 길이(ms), 읽지 못했으면 null
  */
-function timelineLength(frame: FrameNode): number | null {
-  const [timeline] = frame.timelines;
+function timelineLength(node: FrameNode | ComponentNode): number | null {
+  const [timeline] = node.timelines;
   return timeline === undefined ? null : timeline.duration * 1000;
 }
 
 /**
- * 노드 하나의 트랙을 읽고 보이는 자식으로 내려간다.
+ * 노드의 Development·Accessibility 주석을 움직임 데이터에 더한다.
+ * @codocs [[피그마 연동:모션]]
  * @param node 노드
- * @param path 견본 기준 레이어 경로
- * @param sample 트랙과 문제를 더할 견본 데이터
+ * @param path 움직임 기준 레이어 경로
+ * @param sample 주석을 더할 움직임 데이터
+ * @param names 이름 캐시
  */
-async function readTracks(node: SceneNode, path: string, sample: MotionSampleData): Promise<void> {
+async function collectNotes(
+  node: BaseNode,
+  path: string,
+  sample: MotionSampleData,
+  names: NameCache,
+): Promise<void> {
+  for (const note of await annotationData(node, names)) {
+    if (note.category !== null && noteCategories.includes(note.category)) {
+      const item: MotionNote = { path, category: note.category, text: note.text };
+      sample.notes.push(item);
+    }
+  }
+}
+
+/**
+ * 노드 하나의 트랙과 주석을 읽고 보이는 자식으로 내려간다. 컴포넌트 원본은 원본 루트도 읽는다.
+ * @param node 노드
+ * @param path 움직임 기준 레이어 경로
+ * @param sample 트랙과 문제를 더할 움직임 데이터
+ * @param names 이름 캐시
+ */
+async function readTracks(
+  node: SceneNode,
+  path: string,
+  sample: MotionSampleData,
+  names: NameCache,
+): Promise<void> {
   if (!node.visible) {
     return;
+  }
+  if (node.id !== sample.nodeId) {
+    await collectNotes(node, path, sample, names);
   }
   // 슬롯(SLOT) 노드처럼 animations 속성이 없는 노드는 트랙이 없는 것으로 보고 자식으로만 내려간다.
   const fields = 'animations' in node ? animatedFields(node.animations) : [];
@@ -245,7 +517,7 @@ async function readTracks(node: SceneNode, path: string, sample: MotionSampleDat
   }
   if ('children' in node) {
     for (const child of node.children) {
-      await readTracks(child, `${path} / ${child.name}`, sample);
+      await readTracks(child, `${path} / ${child.name}`, sample, names);
     }
   }
 }
@@ -424,11 +696,21 @@ function lookup(
 
 /**
  * 키프레임이 걸린 노드의 이름과 종류를 정한다. 인스턴스면 컴포넌트(세트) 이름, 원본이 자산이면 자산 이름이다.
+ * 컴포넌트 원본 루트 자신에 건 키프레임도 같은 규칙으로 컴포넌트(세트)·자산 이름이다.
  * @codocs [[피그마 연동:모션]]
  * @param node 노드
  * @returns 노드 이름과 종류
  */
 async function nodeIdentity(node: SceneNode): Promise<{ node: string; nodeKind: MotionNodeKind }> {
+  if (node.type === 'COMPONENT') {
+    if (assetGroupOf(node) !== null) {
+      return { node: node.name, nodeKind: 'asset' };
+    }
+    return {
+      node: node.parent?.type === 'COMPONENT_SET' ? node.parent.name : node.name,
+      nodeKind: 'component',
+    };
+  }
   if (node.type !== 'INSTANCE') {
     return { node: node.name, nodeKind: 'layer' };
   }

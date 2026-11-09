@@ -94,8 +94,9 @@ describe('피그마 플러그인 브랜치는 대상마다 이름이 고정이�
       'feat(figma): export motion-window-open motion',
     );
     expect(body).toContain(
-      '- 견본: [motion-window-open](https://www.figma.com/design/KEY?node-id=12-34)',
+      '- 자리: [motion-window-open](https://www.figma.com/design/KEY?node-id=12-34) (옛 견본 프레임(Foundations / Motion))',
     );
+    expect(body).toContain('- 반복: 1(견본 주석 @repeat)');
     expect(body).toContain('| 노드 | 항목 | 시간 | 값 | 이징 | 값 토큰 |');
     expect(body).toContain(
       '| Window | `SCALE_XY` | 0ms | x 0.96, y 0.96 | - | `motion/scale/window-enter` |',

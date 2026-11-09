@@ -37,8 +37,10 @@ description: 피그마 플러그인이 연 애니메이션 PR(`feat/figma-motion
 2. PR 브랜치를 받는다(`gh pr checkout <번호>`). `main` 대비 바뀐 파일이 @codocs [[피그마 연동:피그마 플러그인]]에서 애니메이션 PR이 바꾸는 파일뿐인지 확인한다.
 3. json을 읽는다.
    - json(`packages/design-system/figma/motions/<이름>.json`)에서 트랙마다 노드, 항목, 키프레임(시간, 위치, 값, 이징 토큰, 값 토큰), 트랙 길이와 시작 지연의 토큰을 정리한다. PR 본문의 키프레임 표와 토큰 짝 표도 같은 내용이다.
-   - json `directives`에서 실행 중 값(`runtime`), 유지 조건(`hold`), 동작 줄이기(`reduced-motion`)를, `iterations`에서 반복을 읽는다(@codocs [[피그마 연동:구조 검사]]).
-   - 내보낸 json의 키프레임과 `directives`를 먼저 보고, 그래도 모르는 것만 피그마 견본(PR 본문 링크)을 열어 확인한다(피그마 MCP, @codocs [[피그마 연동:스킬]]).
+   - json `source`로 움직임을 읽은 자리를 본다(`component`: 컴포넌트·자산 원본의 안쪽 움직임, `flow`: 조립 흐름 프레임의 요소 전체·공통 움직임, `sample`: 옮기기 전 옛 견본).
+   - json `iterations`에서 반복을 읽는다. 새 자리는 재생 설정 Loop에서 온다(켜짐 `infinite`, 꺼짐 1).
+   - json `notes`에서 실행 중 값(Development 주석)과 동작 줄이기에서 남기는 움직임(Accessibility 주석)을, `directives`에서 남은 `@` 줄(`hold`, `direction`)을 읽는다(@codocs [[피그마 연동:구조 검사]]). 옛 견본(`source: sample`)은 `directives`의 `runtime`·`reduced-motion`도 읽는다.
+   - 내보낸 json의 키프레임과 `notes`·`directives`를 먼저 보고, 그래도 모르는 것만 피그마(PR 본문 링크)를 열어 확인한다(피그마 MCP, @codocs [[피그마 연동:스킬]]).
 4. `packages/design-system/src/motion.css`에 `@keyframes`와 `@utility <이름>` 클래스를 만든다(@codocs [[피그마 연동:모션 클래스]]).
    - 클래스 이름은 json `name`(견본 이름)이다.
    - 토큰 짝(트랙 길이, 시작 지연, 이징, 값 토큰)은 `var(--motion-*)`로 쓴다. CSS 이름은 @codocs [[피그마 연동:토큰 생성]]의 규칙이다.
@@ -50,7 +52,7 @@ description: 피그마 플러그인이 연 애니메이션 PR(`feat/figma-motion
    - 경로 트림(`PATH_TRIM_START`·`PATH_TRIM_END`)은 자산 SVG의 `pathLength="1"`을 기준으로 `stroke-dasharray`와 `stroke-dashoffset`으로 옮긴다.
    - 트랙끼리 이징(또는 길이·지연)이 다르면 `animation`을 쉼표로 여러 개 두고, 트랙마다 자기 `@keyframes`와 요소 쪽 이징을 쓴다. 예: `animation: <이름>-scale var(--motion-duration-normal) var(--motion-easing-direct-entrance) both, <이름>-fade var(--motion-duration-normal) var(--motion-easing-fade) both;`
    - 반복은 json `iterations`대로 `animation-iteration-count`에 쓴다.
-   - 동작 줄이기에서 바로 바꿀 움직임이면 `motion.css`의 `prefers-reduced-motion` 블록에 넣는다.
+   - 동작 줄이기: Accessibility 주석(`notes`)이 없는 움직임은 `motion.css`의 `prefers-reduced-motion` 블록에 넣어 바로 바뀌게 한다. Accessibility 주석이 있는 움직임만 그 블록의 예외로 남긴다(@codocs [[디자인 기반:동작 줄이기]]).
 5. 모션 스토리를 만든다. `packages/design-system/src/motion-story/<이름>.stories.tsx`에 제목이 `Motion/<이름>`인 스토리를 두고, `motion-preview.tsx`의 `MotionPreview`로 견본과 같은 컴포넌트에 클래스를 걸어 재생한다. 실행 중 값은 `runtimeValues`에 견본의 대표값을 넣는다.
 6. 컴포넌트에 늘 붙는 움직임(예: 링 회전)이면 같은 PR에서 그 컴포넌트에 클래스를 붙인다(@codocs [[피그마 연동:PR 흐름]]). 붙인 컴포넌트는 캡처 표를 받으므로 `pnpm --filter @seojaewan/figma-parity capture --target <컴포넌트 폴더>`로 정지 모습이 그대로인지 본다.
 7. 모션 시간 검사를 로컬에서 돌린다: `pnpm --filter @seojaewan/figma-parity motion-check --motion <이름>`. 디자인 시스템 Storybook을 빌드하고 모션 스토리에서 시간·이징·지연을 읽어 json의 토큰 짝과 비교한다. Chromium이 없으면 `pnpm --filter @seojaewan/figma-parity exec playwright install chromium`을 먼저 실행한다. 실패하면 4·5로 돌아가 고친다. 로그의 반복 횟수가 json `iterations`와 같은지도 본다.

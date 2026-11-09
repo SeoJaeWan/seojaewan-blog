@@ -39,7 +39,7 @@ export async function exportMotionCore(
   const sample = await readMotionSample(sampleId);
   const result = checkMotionSample(sample, variables, fileKey);
   if (!result.ok) {
-    return { ok: false, name: sample.name, violations: result.violations };
+    return { ok: false, name: sample.name ?? sample.label, violations: result.violations };
   }
   return {
     ok: true,

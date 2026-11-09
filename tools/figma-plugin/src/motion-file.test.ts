@@ -11,12 +11,14 @@ import { type MotionExport, motionText, motionUrl } from './motion-file';
 function motion(time: number, value: number): MotionExport {
   return {
     name: 'motion-progress-ring',
+    source: 'component',
     nodeId: '1:2',
     url: motionUrl('KEY', '1:2'),
     duration: { ms: time, token: 'motion/duration/progress-ring' },
     delay: { ms: 0, token: null },
     iterations: 1,
-    directives: { repeat: ['1'], trigger: ['open'] },
+    directives: {},
+    notes: [{ path: 'Arc', category: 'Accessibility', text: '동작 줄이기에서도 돈다' }],
     tracks: [
       {
         node: 'progress-ring/Arc',
@@ -55,6 +57,8 @@ describe('모션', () => {
       'iterations',
       'name',
       'nodeId',
+      'notes',
+      'source',
       'tracks',
       'url',
     ]);
