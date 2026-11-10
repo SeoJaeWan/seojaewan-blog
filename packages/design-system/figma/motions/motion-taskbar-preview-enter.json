@@ -1,0 +1,56 @@
+{
+  "delay": {
+    "ms": 0,
+    "token": null
+  },
+  "directives": {},
+  "duration": {
+    "ms": 250,
+    "token": "motion/duration/normal"
+  },
+  "iterations": 1,
+  "name": "motion-taskbar-preview-enter",
+  "nodeId": "3431:5870",
+  "notes": [
+    {
+      "category": "Development",
+      "path": "Taskbar/PreviewList",
+      "text": "작업 표시줄 위 끝에서 잘린 채 위로 미끄러져 올라온다(페이드 없음). 닫을 때는 같은 방향으로 내려간다. 미리보기와 작업 표시줄 사이는 12px."
+    }
+  ],
+  "source": "flow",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 250,
+        "token": "motion/duration/normal"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": 190,
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/direct-entrance",
+          "offset": 1,
+          "time": 250,
+          "value": 0,
+          "valueToken": null
+        }
+      ],
+      "node": "Taskbar/PreviewList",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "Taskbar/PreviewList",
+      "property": "TRANSLATION_Y"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=3431-5870"
+}

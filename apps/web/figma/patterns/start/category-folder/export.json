@@ -15,8 +15,8 @@
   "variants": {
     "device=desktop": {
       "node": {
-        "height": 236,
-        "width": 412,
+        "height": 376,
+        "width": 448,
         "x": 16,
         "y": 8
       },
@@ -24,902 +24,160 @@
       "properties": {
         "Device": "Desktop"
       },
-      "tree": {
-        "children": [
+      "report": {
+        "components": [
           {
-            "children": [
-              {
-                "fills": [
-                  "color/black/89"
-                ],
-                "name": "title",
-                "size": {
-                  "h": 20,
-                  "w": 380
-                },
-                "sizing": {
-                  "h": "FILL",
-                  "v": "HUG"
-                },
-                "text": {
-                  "autoResize": "HEIGHT",
-                  "maxLines": 1,
-                  "maxLinesVariable": null,
-                  "segments": [
-                    {
-                      "characters": "글",
-                      "fill": "color/black/89",
-                      "textStyle": "Hangul/Body Strong"
-                    }
-                  ],
-                  "truncation": "ENDING"
-                },
-                "type": "TEXT"
-              },
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "children": [
-                          {
-                            "children": [
-                              {
-                                "children": [
-                                  {
-                                    "asset": {
-                                      "path": "images/file-document"
-                                    },
-                                    "component": "file/Document",
-                                    "fills": [
-                                      "IMAGE"
-                                    ],
-                                    "height": "size/icon/xl",
-                                    "name": "item icon",
-                                    "size": {
-                                      "h": 32,
-                                      "w": 32
-                                    },
-                                    "sizing": {
-                                      "h": "FIXED",
-                                      "v": "FIXED"
-                                    },
-                                    "type": "INSTANCE",
-                                    "width": "size/icon/xl"
-                                  },
-                                  {
-                                    "fills": [
-                                      "color/black/89"
-                                    ],
-                                    "name": "label",
-                                    "size": {
-                                      "h": 16,
-                                      "w": 87
-                                    },
-                                    "sizing": {
-                                      "h": "FILL",
-                                      "v": "HUG"
-                                    },
-                                    "text": {
-                                      "autoResize": "HEIGHT",
-                                      "maxLines": 1,
-                                      "maxLinesVariable": null,
-                                      "segments": [
-                                        {
-                                          "characters": "CSS ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "컨테이너",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        },
-                                        {
-                                          "characters": " ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "쿼리",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        }
-                                      ],
-                                      "truncation": "ENDING"
-                                    },
-                                    "type": "TEXT"
-                                  }
-                                ],
-                                "component": "PinnedTile",
-                                "height": "size/pinned-tile/height",
-                                "layout": {
-                                  "counterAlign": "CENTER",
-                                  "gap": "spacing/sm",
-                                  "mode": "VERTICAL",
-                                  "padding": [
-                                    "spacing/sm",
-                                    "spacing/xs",
-                                    "spacing/sm",
-                                    "spacing/xs"
-                                  ],
-                                  "primaryAlign": "CENTER"
-                                },
-                                "name": "PinnedTile",
-                                "properties": {
-                                  "Label": "CSS 컨테이너 쿼리",
-                                  "State": "Rest"
-                                },
-                                "radius": [
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control"
-                                ],
-                                "size": {
-                                  "h": 84,
-                                  "w": 95
-                                },
-                                "sizing": {
-                                  "h": "FIXED",
-                                  "v": "FIXED"
-                                },
-                                "type": "INSTANCE",
-                                "width": "size/pinned-tile/width"
-                              },
-                              {
-                                "children": [
-                                  {
-                                    "asset": {
-                                      "path": "images/file-document"
-                                    },
-                                    "component": "file/Document",
-                                    "fills": [
-                                      "IMAGE"
-                                    ],
-                                    "height": "size/icon/xl",
-                                    "name": "item icon",
-                                    "size": {
-                                      "h": 32,
-                                      "w": 32
-                                    },
-                                    "sizing": {
-                                      "h": "FIXED",
-                                      "v": "FIXED"
-                                    },
-                                    "type": "INSTANCE",
-                                    "width": "size/icon/xl"
-                                  },
-                                  {
-                                    "fills": [
-                                      "color/black/89"
-                                    ],
-                                    "name": "label",
-                                    "size": {
-                                      "h": 16,
-                                      "w": 87
-                                    },
-                                    "sizing": {
-                                      "h": "FILL",
-                                      "v": "HUG"
-                                    },
-                                    "text": {
-                                      "autoResize": "HEIGHT",
-                                      "maxLines": 1,
-                                      "maxLinesVariable": null,
-                                      "segments": [
-                                        {
-                                          "characters": "Next.js App Router ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "캐시",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        }
-                                      ],
-                                      "truncation": "ENDING"
-                                    },
-                                    "type": "TEXT"
-                                  }
-                                ],
-                                "component": "PinnedTile",
-                                "height": "size/pinned-tile/height",
-                                "layout": {
-                                  "counterAlign": "CENTER",
-                                  "gap": "spacing/sm",
-                                  "mode": "VERTICAL",
-                                  "padding": [
-                                    "spacing/sm",
-                                    "spacing/xs",
-                                    "spacing/sm",
-                                    "spacing/xs"
-                                  ],
-                                  "primaryAlign": "CENTER"
-                                },
-                                "name": "PinnedTile",
-                                "properties": {
-                                  "Label": "Next.js App Router 캐시",
-                                  "State": "Rest"
-                                },
-                                "radius": [
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control"
-                                ],
-                                "size": {
-                                  "h": 84,
-                                  "w": 95
-                                },
-                                "sizing": {
-                                  "h": "FIXED",
-                                  "v": "FIXED"
-                                },
-                                "type": "INSTANCE",
-                                "width": "size/pinned-tile/width"
-                              },
-                              {
-                                "children": [
-                                  {
-                                    "asset": {
-                                      "path": "images/file-document"
-                                    },
-                                    "component": "file/Document",
-                                    "fills": [
-                                      "IMAGE"
-                                    ],
-                                    "height": "size/icon/xl",
-                                    "name": "item icon",
-                                    "size": {
-                                      "h": 32,
-                                      "w": 32
-                                    },
-                                    "sizing": {
-                                      "h": "FIXED",
-                                      "v": "FIXED"
-                                    },
-                                    "type": "INSTANCE",
-                                    "width": "size/icon/xl"
-                                  },
-                                  {
-                                    "fills": [
-                                      "color/black/89"
-                                    ],
-                                    "name": "label",
-                                    "size": {
-                                      "h": 16,
-                                      "w": 87
-                                    },
-                                    "sizing": {
-                                      "h": "FILL",
-                                      "v": "HUG"
-                                    },
-                                    "text": {
-                                      "autoResize": "HEIGHT",
-                                      "maxLines": 1,
-                                      "maxLinesVariable": null,
-                                      "segments": [
-                                        {
-                                          "characters": "React 19 ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "훅",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        },
-                                        {
-                                          "characters": " ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "정리",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        }
-                                      ],
-                                      "truncation": "ENDING"
-                                    },
-                                    "type": "TEXT"
-                                  }
-                                ],
-                                "component": "PinnedTile",
-                                "height": "size/pinned-tile/height",
-                                "layout": {
-                                  "counterAlign": "CENTER",
-                                  "gap": "spacing/sm",
-                                  "mode": "VERTICAL",
-                                  "padding": [
-                                    "spacing/sm",
-                                    "spacing/xs",
-                                    "spacing/sm",
-                                    "spacing/xs"
-                                  ],
-                                  "primaryAlign": "CENTER"
-                                },
-                                "name": "PinnedTile",
-                                "properties": {
-                                  "Label": "React 19 훅 정리",
-                                  "State": "Rest"
-                                },
-                                "radius": [
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control"
-                                ],
-                                "size": {
-                                  "h": 84,
-                                  "w": 95
-                                },
-                                "sizing": {
-                                  "h": "FIXED",
-                                  "v": "FIXED"
-                                },
-                                "type": "INSTANCE",
-                                "width": "size/pinned-tile/width"
-                              },
-                              {
-                                "children": [
-                                  {
-                                    "asset": {
-                                      "path": "images/file-document"
-                                    },
-                                    "component": "file/Document",
-                                    "fills": [
-                                      "IMAGE"
-                                    ],
-                                    "height": "size/icon/xl",
-                                    "name": "item icon",
-                                    "size": {
-                                      "h": 32,
-                                      "w": 32
-                                    },
-                                    "sizing": {
-                                      "h": "FIXED",
-                                      "v": "FIXED"
-                                    },
-                                    "type": "INSTANCE",
-                                    "width": "size/icon/xl"
-                                  },
-                                  {
-                                    "fills": [
-                                      "color/black/89"
-                                    ],
-                                    "name": "label",
-                                    "size": {
-                                      "h": 16,
-                                      "w": 87
-                                    },
-                                    "sizing": {
-                                      "h": "FILL",
-                                      "v": "HUG"
-                                    },
-                                    "text": {
-                                      "autoResize": "HEIGHT",
-                                      "maxLines": 1,
-                                      "maxLinesVariable": null,
-                                      "segments": [
-                                        {
-                                          "characters": "TypeScript 5 ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "데코레이터",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        }
-                                      ],
-                                      "truncation": "ENDING"
-                                    },
-                                    "type": "TEXT"
-                                  }
-                                ],
-                                "component": "PinnedTile",
-                                "height": "size/pinned-tile/height",
-                                "layout": {
-                                  "counterAlign": "CENTER",
-                                  "gap": "spacing/sm",
-                                  "mode": "VERTICAL",
-                                  "padding": [
-                                    "spacing/sm",
-                                    "spacing/xs",
-                                    "spacing/sm",
-                                    "spacing/xs"
-                                  ],
-                                  "primaryAlign": "CENTER"
-                                },
-                                "name": "PinnedTile",
-                                "properties": {
-                                  "Label": "TypeScript 5 데코레이터",
-                                  "State": "Rest"
-                                },
-                                "radius": [
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control"
-                                ],
-                                "size": {
-                                  "h": 84,
-                                  "w": 95
-                                },
-                                "sizing": {
-                                  "h": "FIXED",
-                                  "v": "FIXED"
-                                },
-                                "type": "INSTANCE",
-                                "width": "size/pinned-tile/width"
-                              },
-                              {
-                                "children": [
-                                  {
-                                    "asset": {
-                                      "path": "images/file-document"
-                                    },
-                                    "component": "file/Document",
-                                    "fills": [
-                                      "IMAGE"
-                                    ],
-                                    "height": "size/icon/xl",
-                                    "name": "item icon",
-                                    "size": {
-                                      "h": 32,
-                                      "w": 32
-                                    },
-                                    "sizing": {
-                                      "h": "FIXED",
-                                      "v": "FIXED"
-                                    },
-                                    "type": "INSTANCE",
-                                    "width": "size/icon/xl"
-                                  },
-                                  {
-                                    "fills": [
-                                      "color/black/89"
-                                    ],
-                                    "name": "label",
-                                    "size": {
-                                      "h": 16,
-                                      "w": 87
-                                    },
-                                    "sizing": {
-                                      "h": "FILL",
-                                      "v": "HUG"
-                                    },
-                                    "text": {
-                                      "autoResize": "HEIGHT",
-                                      "maxLines": 1,
-                                      "maxLinesVariable": null,
-                                      "segments": [
-                                        {
-                                          "characters": "Vite ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "플러그인",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        },
-                                        {
-                                          "characters": " ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "만들기",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        }
-                                      ],
-                                      "truncation": "ENDING"
-                                    },
-                                    "type": "TEXT"
-                                  }
-                                ],
-                                "component": "PinnedTile",
-                                "height": "size/pinned-tile/height",
-                                "layout": {
-                                  "counterAlign": "CENTER",
-                                  "gap": "spacing/sm",
-                                  "mode": "VERTICAL",
-                                  "padding": [
-                                    "spacing/sm",
-                                    "spacing/xs",
-                                    "spacing/sm",
-                                    "spacing/xs"
-                                  ],
-                                  "primaryAlign": "CENTER"
-                                },
-                                "name": "PinnedTile",
-                                "properties": {
-                                  "Label": "Vite 플러그인 만들기",
-                                  "State": "Rest"
-                                },
-                                "radius": [
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control"
-                                ],
-                                "size": {
-                                  "h": 84,
-                                  "w": 95
-                                },
-                                "sizing": {
-                                  "h": "FIXED",
-                                  "v": "FIXED"
-                                },
-                                "type": "INSTANCE",
-                                "width": "size/pinned-tile/width"
-                              },
-                              {
-                                "children": [
-                                  {
-                                    "asset": {
-                                      "path": "images/file-document"
-                                    },
-                                    "component": "file/Document",
-                                    "fills": [
-                                      "IMAGE"
-                                    ],
-                                    "height": "size/icon/xl",
-                                    "name": "item icon",
-                                    "size": {
-                                      "h": 32,
-                                      "w": 32
-                                    },
-                                    "sizing": {
-                                      "h": "FIXED",
-                                      "v": "FIXED"
-                                    },
-                                    "type": "INSTANCE",
-                                    "width": "size/icon/xl"
-                                  },
-                                  {
-                                    "fills": [
-                                      "color/black/89"
-                                    ],
-                                    "name": "label",
-                                    "size": {
-                                      "h": 16,
-                                      "w": 87
-                                    },
-                                    "sizing": {
-                                      "h": "FILL",
-                                      "v": "HUG"
-                                    },
-                                    "text": {
-                                      "autoResize": "HEIGHT",
-                                      "maxLines": 1,
-                                      "maxLinesVariable": null,
-                                      "segments": [
-                                        {
-                                          "characters": "리액트",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        },
-                                        {
-                                          "characters": " ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "서버",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        },
-                                        {
-                                          "characters": " ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "컴포넌트",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        },
-                                        {
-                                          "characters": " ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "이해하기",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        }
-                                      ],
-                                      "truncation": "ENDING"
-                                    },
-                                    "type": "TEXT"
-                                  }
-                                ],
-                                "component": "PinnedTile",
-                                "height": "size/pinned-tile/height",
-                                "layout": {
-                                  "counterAlign": "CENTER",
-                                  "gap": "spacing/sm",
-                                  "mode": "VERTICAL",
-                                  "padding": [
-                                    "spacing/sm",
-                                    "spacing/xs",
-                                    "spacing/sm",
-                                    "spacing/xs"
-                                  ],
-                                  "primaryAlign": "CENTER"
-                                },
-                                "name": "PinnedTile",
-                                "properties": {
-                                  "Label": "리액트 서버 컴포넌트 이해하기",
-                                  "State": "Rest"
-                                },
-                                "radius": [
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control"
-                                ],
-                                "size": {
-                                  "h": 84,
-                                  "w": 95
-                                },
-                                "sizing": {
-                                  "h": "FIXED",
-                                  "v": "FIXED"
-                                },
-                                "type": "INSTANCE",
-                                "width": "size/pinned-tile/width"
-                              }
-                            ],
-                            "layout": {
-                              "counterAlign": "MIN",
-                              "gap": "spacing/none",
-                              "mode": "HORIZONTAL",
-                              "padding": [
-                                "spacing/none",
-                                "spacing/none",
-                                "spacing/none",
-                                "spacing/none"
-                              ],
-                              "primaryAlign": "MIN",
-                              "wrap": true
-                            },
-                            "name": "Tiles",
-                            "size": {
-                              "h": 168,
-                              "w": 380
-                            },
-                            "sizing": {
-                              "h": "FILL",
-                              "v": "HUG"
-                            },
-                            "type": "SLOT"
-                          }
-                        ],
-                        "component": "TileGrid",
-                        "layout": {
-                          "counterAlign": "MIN",
-                          "gap": "spacing/none",
-                          "mode": "VERTICAL",
-                          "padding": [
-                            "spacing/none",
-                            "spacing/none",
-                            "spacing/none",
-                            "spacing/none"
-                          ],
-                          "primaryAlign": "MIN"
-                        },
-                        "name": "tile grid",
-                        "properties": {
-                          "Align": "Start"
-                        },
-                        "size": {
-                          "h": 168,
-                          "w": 380
-                        },
-                        "sizing": {
-                          "h": "FILL",
-                          "v": "HUG"
-                        },
-                        "type": "INSTANCE"
-                      }
-                    ],
-                    "layout": {
-                      "counterAlign": "MIN",
-                      "gap": "spacing/none",
-                      "mode": "VERTICAL",
-                      "padding": [
-                        "spacing/none",
-                        "spacing/none",
-                        "spacing/none",
-                        "spacing/none"
-                      ],
-                      "primaryAlign": "MIN"
-                    },
-                    "name": "Content",
-                    "size": {
-                      "h": 168,
-                      "w": 380
-                    },
-                    "sizing": {
-                      "h": "FILL",
-                      "v": "HUG"
-                    },
-                    "type": "SLOT"
-                  },
-                  {
-                    "absolute": {
-                      "horizontal": "MAX",
-                      "vertical": "STRETCH"
-                    },
-                    "children": [
-                      {
-                        "absolute": {
-                          "horizontal": "CENTER",
-                          "vertical": "MIN"
-                        },
-                        "fills": [
-                          "color/black/45"
-                        ],
-                        "height": "size/scrollbar/thumb-length",
-                        "name": "thumb",
-                        "radius": [
-                          "radius/circular",
-                          "radius/circular",
-                          "radius/circular",
-                          "radius/circular"
-                        ],
-                        "size": {
-                          "h": 119.44,
-                          "w": 2
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "FIXED"
-                        },
-                        "type": "RECTANGLE",
-                        "width": "size/scrollbar/thumb-rest"
-                      }
-                    ],
-                    "component": "Scrollbar",
-                    "layout": {
-                      "counterAlign": "CENTER",
-                      "gap": "spacing/none",
-                      "mode": "VERTICAL",
-                      "padding": [
-                        "spacing/2xs",
-                        "spacing/2xs",
-                        "spacing/2xs",
-                        "spacing/2xs"
-                      ],
-                      "primaryAlign": "SPACE_BETWEEN"
-                    },
-                    "name": "Scrollbar",
-                    "properties": {
-                      "Material": "Acrylic",
-                      "State": "Rest"
-                    },
-                    "size": {
-                      "h": 160,
-                      "w": 12
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "DERIVED"
-                    },
-                    "type": "INSTANCE",
-                    "width": "size/scrollbar/thickness"
-                  }
-                ],
-                "component": "ScrollArea",
-                "layout": {
-                  "counterAlign": "MIN",
-                  "gap": "spacing/none",
-                  "mode": "VERTICAL",
-                  "padding": [
-                    "spacing/none",
-                    "spacing/none",
-                    "spacing/none",
-                    "spacing/none"
-                  ],
-                  "primaryAlign": "MIN"
-                },
-                "name": "scroll area",
-                "properties": {
-                  "Material": "Acrylic",
-                  "State": "Rest"
-                },
-                "size": {
-                  "h": 168,
-                  "w": 380
-                },
-                "sizing": {
-                  "h": "FILL",
-                  "v": "FILL"
-                },
-                "type": "INSTANCE"
-              }
-            ],
             "component": "StartCategoryFolder",
-            "effectStyle": "Surface/Flyout (Acrylic)",
-            "fillStyle": "Material/Acrylic Default",
-            "layout": {
-              "counterAlign": "MIN",
-              "gap": "spacing/lg",
-              "mode": "VERTICAL",
-              "padding": [
-                "spacing/lg",
-                "spacing/lg",
-                "spacing/lg",
-                "spacing/lg"
-              ],
-              "primaryAlign": "MIN"
-            },
-            "name": "folder",
+            "paths": [
+              "folder"
+            ],
             "properties": {
+              "Device": "Desktop",
+              "Has pages": true,
               "Label": "글"
-            },
-            "radius": [
-              "radius/overlay",
-              "radius/overlay",
-              "radius/overlay",
-              "radius/overlay"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
             ],
-            "size": {
-              "h": 236,
-              "w": 412
-            },
-            "sizing": {
-              "h": "FILL",
-              "v": "FIXED"
-            },
-            "strokeWeight": [
-              "stroke-width/default",
-              "stroke-width/default",
-              "stroke-width/default",
-              "stroke-width/default"
+            "properties": {
+              "Label": "React 19 훅 정리",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
             ],
-            "strokes": [
-              "color/black/6"
+            "properties": {
+              "Label": "리액트 서버 컴포넌트 이해하기",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
             ],
-            "strokesIncludedInLayout": false,
-            "type": "INSTANCE"
+            "properties": {
+              "Label": "Next.js App Router 캐시",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "TypeScript 타입 좁히기",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "useEffect 바로 쓰기",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "CSS 컨테이너 쿼리",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "Turborepo 캐시 정리",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "Storybook 상호작용 테스트",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "Playwright 화면 비교",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "Figma 변수와 토큰",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "pnpm 워크스페이스",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "Tailwind v4 테마",
+              "State": "Rest"
+            }
           }
         ],
-        "layout": {
-          "counterAlign": "MIN",
-          "gap": "spacing/none",
-          "mode": "VERTICAL",
-          "padding": [
-            "spacing/none",
-            "spacing/none",
-            "spacing/none",
-            "spacing/none"
-          ],
-          "primaryAlign": "MIN"
-        },
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
         "name": "Device=Desktop",
         "size": {
-          "h": 236,
-          "w": 412
+          "h": 376,
+          "w": 448
         },
         "sizing": {
-          "h": "FIXED",
+          "h": "HUG",
           "v": "HUG"
-        },
-        "type": "COMPONENT"
+        }
       }
     },
     "device=mobile": {
       "node": {
-        "height": 236,
+        "height": 376,
         "width": 388,
         "x": 16,
         "y": 8
@@ -928,897 +186,155 @@
       "properties": {
         "Device": "Mobile"
       },
-      "tree": {
-        "children": [
+      "report": {
+        "components": [
           {
-            "children": [
-              {
-                "fills": [
-                  "color/black/89"
-                ],
-                "name": "title",
-                "size": {
-                  "h": 20,
-                  "w": 356
-                },
-                "sizing": {
-                  "h": "FILL",
-                  "v": "HUG"
-                },
-                "text": {
-                  "autoResize": "HEIGHT",
-                  "maxLines": 1,
-                  "maxLinesVariable": null,
-                  "segments": [
-                    {
-                      "characters": "글",
-                      "fill": "color/black/89",
-                      "textStyle": "Hangul/Body Strong"
-                    }
-                  ],
-                  "truncation": "ENDING"
-                },
-                "type": "TEXT"
-              },
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "children": [
-                          {
-                            "children": [
-                              {
-                                "children": [
-                                  {
-                                    "asset": {
-                                      "path": "images/file-document"
-                                    },
-                                    "component": "file/Document",
-                                    "fills": [
-                                      "IMAGE"
-                                    ],
-                                    "height": "size/icon/xl",
-                                    "name": "item icon",
-                                    "size": {
-                                      "h": 32,
-                                      "w": 32
-                                    },
-                                    "sizing": {
-                                      "h": "FIXED",
-                                      "v": "FIXED"
-                                    },
-                                    "type": "INSTANCE",
-                                    "width": "size/icon/xl"
-                                  },
-                                  {
-                                    "fills": [
-                                      "color/black/89"
-                                    ],
-                                    "name": "label",
-                                    "size": {
-                                      "h": 16,
-                                      "w": 81
-                                    },
-                                    "sizing": {
-                                      "h": "FILL",
-                                      "v": "HUG"
-                                    },
-                                    "text": {
-                                      "autoResize": "HEIGHT",
-                                      "maxLines": 1,
-                                      "maxLinesVariable": null,
-                                      "segments": [
-                                        {
-                                          "characters": "CSS ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "컨테이너",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        },
-                                        {
-                                          "characters": " ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "쿼리",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        }
-                                      ],
-                                      "truncation": "ENDING"
-                                    },
-                                    "type": "TEXT"
-                                  }
-                                ],
-                                "component": "PinnedTile",
-                                "height": "size/pinned-tile/height",
-                                "layout": {
-                                  "counterAlign": "CENTER",
-                                  "gap": "spacing/sm",
-                                  "mode": "VERTICAL",
-                                  "padding": [
-                                    "spacing/sm",
-                                    "spacing/xs",
-                                    "spacing/sm",
-                                    "spacing/xs"
-                                  ],
-                                  "primaryAlign": "CENTER"
-                                },
-                                "name": "PinnedTile",
-                                "properties": {
-                                  "Label": "CSS 컨테이너 쿼리",
-                                  "State": "Rest"
-                                },
-                                "radius": [
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control"
-                                ],
-                                "size": {
-                                  "h": 84,
-                                  "w": 89
-                                },
-                                "sizing": {
-                                  "h": "FIXED",
-                                  "v": "FIXED"
-                                },
-                                "type": "INSTANCE",
-                                "width": "size/pinned-tile/mobile-width"
-                              },
-                              {
-                                "children": [
-                                  {
-                                    "asset": {
-                                      "path": "images/file-document"
-                                    },
-                                    "component": "file/Document",
-                                    "fills": [
-                                      "IMAGE"
-                                    ],
-                                    "height": "size/icon/xl",
-                                    "name": "item icon",
-                                    "size": {
-                                      "h": 32,
-                                      "w": 32
-                                    },
-                                    "sizing": {
-                                      "h": "FIXED",
-                                      "v": "FIXED"
-                                    },
-                                    "type": "INSTANCE",
-                                    "width": "size/icon/xl"
-                                  },
-                                  {
-                                    "fills": [
-                                      "color/black/89"
-                                    ],
-                                    "name": "label",
-                                    "size": {
-                                      "h": 16,
-                                      "w": 81
-                                    },
-                                    "sizing": {
-                                      "h": "FILL",
-                                      "v": "HUG"
-                                    },
-                                    "text": {
-                                      "autoResize": "HEIGHT",
-                                      "maxLines": 1,
-                                      "maxLinesVariable": null,
-                                      "segments": [
-                                        {
-                                          "characters": "Next.js App Router ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "캐시",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        }
-                                      ],
-                                      "truncation": "ENDING"
-                                    },
-                                    "type": "TEXT"
-                                  }
-                                ],
-                                "component": "PinnedTile",
-                                "height": "size/pinned-tile/height",
-                                "layout": {
-                                  "counterAlign": "CENTER",
-                                  "gap": "spacing/sm",
-                                  "mode": "VERTICAL",
-                                  "padding": [
-                                    "spacing/sm",
-                                    "spacing/xs",
-                                    "spacing/sm",
-                                    "spacing/xs"
-                                  ],
-                                  "primaryAlign": "CENTER"
-                                },
-                                "name": "PinnedTile",
-                                "properties": {
-                                  "Label": "Next.js App Router 캐시",
-                                  "State": "Rest"
-                                },
-                                "radius": [
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control"
-                                ],
-                                "size": {
-                                  "h": 84,
-                                  "w": 89
-                                },
-                                "sizing": {
-                                  "h": "FIXED",
-                                  "v": "FIXED"
-                                },
-                                "type": "INSTANCE",
-                                "width": "size/pinned-tile/mobile-width"
-                              },
-                              {
-                                "children": [
-                                  {
-                                    "asset": {
-                                      "path": "images/file-document"
-                                    },
-                                    "component": "file/Document",
-                                    "fills": [
-                                      "IMAGE"
-                                    ],
-                                    "height": "size/icon/xl",
-                                    "name": "item icon",
-                                    "size": {
-                                      "h": 32,
-                                      "w": 32
-                                    },
-                                    "sizing": {
-                                      "h": "FIXED",
-                                      "v": "FIXED"
-                                    },
-                                    "type": "INSTANCE",
-                                    "width": "size/icon/xl"
-                                  },
-                                  {
-                                    "fills": [
-                                      "color/black/89"
-                                    ],
-                                    "name": "label",
-                                    "size": {
-                                      "h": 16,
-                                      "w": 81
-                                    },
-                                    "sizing": {
-                                      "h": "FILL",
-                                      "v": "HUG"
-                                    },
-                                    "text": {
-                                      "autoResize": "HEIGHT",
-                                      "maxLines": 1,
-                                      "maxLinesVariable": null,
-                                      "segments": [
-                                        {
-                                          "characters": "React 19 ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "훅",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        },
-                                        {
-                                          "characters": " ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "정리",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        }
-                                      ],
-                                      "truncation": "ENDING"
-                                    },
-                                    "type": "TEXT"
-                                  }
-                                ],
-                                "component": "PinnedTile",
-                                "height": "size/pinned-tile/height",
-                                "layout": {
-                                  "counterAlign": "CENTER",
-                                  "gap": "spacing/sm",
-                                  "mode": "VERTICAL",
-                                  "padding": [
-                                    "spacing/sm",
-                                    "spacing/xs",
-                                    "spacing/sm",
-                                    "spacing/xs"
-                                  ],
-                                  "primaryAlign": "CENTER"
-                                },
-                                "name": "PinnedTile",
-                                "properties": {
-                                  "Label": "React 19 훅 정리",
-                                  "State": "Rest"
-                                },
-                                "radius": [
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control"
-                                ],
-                                "size": {
-                                  "h": 84,
-                                  "w": 89
-                                },
-                                "sizing": {
-                                  "h": "FIXED",
-                                  "v": "FIXED"
-                                },
-                                "type": "INSTANCE",
-                                "width": "size/pinned-tile/mobile-width"
-                              },
-                              {
-                                "children": [
-                                  {
-                                    "asset": {
-                                      "path": "images/file-document"
-                                    },
-                                    "component": "file/Document",
-                                    "fills": [
-                                      "IMAGE"
-                                    ],
-                                    "height": "size/icon/xl",
-                                    "name": "item icon",
-                                    "size": {
-                                      "h": 32,
-                                      "w": 32
-                                    },
-                                    "sizing": {
-                                      "h": "FIXED",
-                                      "v": "FIXED"
-                                    },
-                                    "type": "INSTANCE",
-                                    "width": "size/icon/xl"
-                                  },
-                                  {
-                                    "fills": [
-                                      "color/black/89"
-                                    ],
-                                    "name": "label",
-                                    "size": {
-                                      "h": 16,
-                                      "w": 81
-                                    },
-                                    "sizing": {
-                                      "h": "FILL",
-                                      "v": "HUG"
-                                    },
-                                    "text": {
-                                      "autoResize": "HEIGHT",
-                                      "maxLines": 1,
-                                      "maxLinesVariable": null,
-                                      "segments": [
-                                        {
-                                          "characters": "TypeScript 5 ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "데코레이터",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        }
-                                      ],
-                                      "truncation": "ENDING"
-                                    },
-                                    "type": "TEXT"
-                                  }
-                                ],
-                                "component": "PinnedTile",
-                                "height": "size/pinned-tile/height",
-                                "layout": {
-                                  "counterAlign": "CENTER",
-                                  "gap": "spacing/sm",
-                                  "mode": "VERTICAL",
-                                  "padding": [
-                                    "spacing/sm",
-                                    "spacing/xs",
-                                    "spacing/sm",
-                                    "spacing/xs"
-                                  ],
-                                  "primaryAlign": "CENTER"
-                                },
-                                "name": "PinnedTile",
-                                "properties": {
-                                  "Label": "TypeScript 5 데코레이터",
-                                  "State": "Rest"
-                                },
-                                "radius": [
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control"
-                                ],
-                                "size": {
-                                  "h": 84,
-                                  "w": 89
-                                },
-                                "sizing": {
-                                  "h": "FIXED",
-                                  "v": "FIXED"
-                                },
-                                "type": "INSTANCE",
-                                "width": "size/pinned-tile/mobile-width"
-                              },
-                              {
-                                "children": [
-                                  {
-                                    "asset": {
-                                      "path": "images/file-document"
-                                    },
-                                    "component": "file/Document",
-                                    "fills": [
-                                      "IMAGE"
-                                    ],
-                                    "height": "size/icon/xl",
-                                    "name": "item icon",
-                                    "size": {
-                                      "h": 32,
-                                      "w": 32
-                                    },
-                                    "sizing": {
-                                      "h": "FIXED",
-                                      "v": "FIXED"
-                                    },
-                                    "type": "INSTANCE",
-                                    "width": "size/icon/xl"
-                                  },
-                                  {
-                                    "fills": [
-                                      "color/black/89"
-                                    ],
-                                    "name": "label",
-                                    "size": {
-                                      "h": 16,
-                                      "w": 81
-                                    },
-                                    "sizing": {
-                                      "h": "FILL",
-                                      "v": "HUG"
-                                    },
-                                    "text": {
-                                      "autoResize": "HEIGHT",
-                                      "maxLines": 1,
-                                      "maxLinesVariable": null,
-                                      "segments": [
-                                        {
-                                          "characters": "Vite ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "플러그인",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        },
-                                        {
-                                          "characters": " ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "만들기",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        }
-                                      ],
-                                      "truncation": "ENDING"
-                                    },
-                                    "type": "TEXT"
-                                  }
-                                ],
-                                "component": "PinnedTile",
-                                "height": "size/pinned-tile/height",
-                                "layout": {
-                                  "counterAlign": "CENTER",
-                                  "gap": "spacing/sm",
-                                  "mode": "VERTICAL",
-                                  "padding": [
-                                    "spacing/sm",
-                                    "spacing/xs",
-                                    "spacing/sm",
-                                    "spacing/xs"
-                                  ],
-                                  "primaryAlign": "CENTER"
-                                },
-                                "name": "PinnedTile",
-                                "properties": {
-                                  "Label": "Vite 플러그인 만들기",
-                                  "State": "Rest"
-                                },
-                                "radius": [
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control"
-                                ],
-                                "size": {
-                                  "h": 84,
-                                  "w": 89
-                                },
-                                "sizing": {
-                                  "h": "FIXED",
-                                  "v": "FIXED"
-                                },
-                                "type": "INSTANCE",
-                                "width": "size/pinned-tile/mobile-width"
-                              },
-                              {
-                                "children": [
-                                  {
-                                    "asset": {
-                                      "path": "images/file-document"
-                                    },
-                                    "component": "file/Document",
-                                    "fills": [
-                                      "IMAGE"
-                                    ],
-                                    "height": "size/icon/xl",
-                                    "name": "item icon",
-                                    "size": {
-                                      "h": 32,
-                                      "w": 32
-                                    },
-                                    "sizing": {
-                                      "h": "FIXED",
-                                      "v": "FIXED"
-                                    },
-                                    "type": "INSTANCE",
-                                    "width": "size/icon/xl"
-                                  },
-                                  {
-                                    "fills": [
-                                      "color/black/89"
-                                    ],
-                                    "name": "label",
-                                    "size": {
-                                      "h": 16,
-                                      "w": 81
-                                    },
-                                    "sizing": {
-                                      "h": "FILL",
-                                      "v": "HUG"
-                                    },
-                                    "text": {
-                                      "autoResize": "HEIGHT",
-                                      "maxLines": 1,
-                                      "maxLinesVariable": null,
-                                      "segments": [
-                                        {
-                                          "characters": "리액트",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        },
-                                        {
-                                          "characters": " ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "서버",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        },
-                                        {
-                                          "characters": " ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "컴포넌트",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        },
-                                        {
-                                          "characters": " ",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Caption"
-                                        },
-                                        {
-                                          "characters": "이해하기",
-                                          "fill": "color/black/89",
-                                          "textStyle": "Hangul/Caption"
-                                        }
-                                      ],
-                                      "truncation": "ENDING"
-                                    },
-                                    "type": "TEXT"
-                                  }
-                                ],
-                                "component": "PinnedTile",
-                                "height": "size/pinned-tile/height",
-                                "layout": {
-                                  "counterAlign": "CENTER",
-                                  "gap": "spacing/sm",
-                                  "mode": "VERTICAL",
-                                  "padding": [
-                                    "spacing/sm",
-                                    "spacing/xs",
-                                    "spacing/sm",
-                                    "spacing/xs"
-                                  ],
-                                  "primaryAlign": "CENTER"
-                                },
-                                "name": "PinnedTile",
-                                "properties": {
-                                  "Label": "리액트 서버 컴포넌트 이해하기",
-                                  "State": "Rest"
-                                },
-                                "radius": [
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control"
-                                ],
-                                "size": {
-                                  "h": 84,
-                                  "w": 89
-                                },
-                                "sizing": {
-                                  "h": "FIXED",
-                                  "v": "FIXED"
-                                },
-                                "type": "INSTANCE",
-                                "width": "size/pinned-tile/mobile-width"
-                              }
-                            ],
-                            "layout": {
-                              "counterAlign": "MIN",
-                              "gap": "spacing/none",
-                              "mode": "HORIZONTAL",
-                              "padding": [
-                                "spacing/none",
-                                "spacing/none",
-                                "spacing/none",
-                                "spacing/none"
-                              ],
-                              "primaryAlign": "MIN",
-                              "wrap": true
-                            },
-                            "name": "Tiles",
-                            "size": {
-                              "h": 168,
-                              "w": 356
-                            },
-                            "sizing": {
-                              "h": "FILL",
-                              "v": "HUG"
-                            },
-                            "type": "SLOT"
-                          }
-                        ],
-                        "component": "TileGrid",
-                        "layout": {
-                          "counterAlign": "MIN",
-                          "gap": "spacing/none",
-                          "mode": "VERTICAL",
-                          "padding": [
-                            "spacing/none",
-                            "spacing/none",
-                            "spacing/none",
-                            "spacing/none"
-                          ],
-                          "primaryAlign": "MIN"
-                        },
-                        "name": "tile grid",
-                        "properties": {
-                          "Align": "Start"
-                        },
-                        "size": {
-                          "h": 168,
-                          "w": 356
-                        },
-                        "sizing": {
-                          "h": "FILL",
-                          "v": "HUG"
-                        },
-                        "type": "INSTANCE"
-                      }
-                    ],
-                    "layout": {
-                      "counterAlign": "MIN",
-                      "gap": "spacing/none",
-                      "mode": "VERTICAL",
-                      "padding": [
-                        "spacing/none",
-                        "spacing/none",
-                        "spacing/none",
-                        "spacing/none"
-                      ],
-                      "primaryAlign": "MIN"
-                    },
-                    "name": "Content",
-                    "size": {
-                      "h": 168,
-                      "w": 356
-                    },
-                    "sizing": {
-                      "h": "FILL",
-                      "v": "HUG"
-                    },
-                    "type": "SLOT"
-                  },
-                  {
-                    "absolute": {
-                      "horizontal": "MAX",
-                      "vertical": "STRETCH"
-                    },
-                    "children": [
-                      {
-                        "absolute": {
-                          "horizontal": "CENTER",
-                          "vertical": "MIN"
-                        },
-                        "fills": [
-                          "color/black/45"
-                        ],
-                        "height": "size/scrollbar/thumb-length",
-                        "name": "thumb",
-                        "radius": [
-                          "radius/circular",
-                          "radius/circular",
-                          "radius/circular",
-                          "radius/circular"
-                        ],
-                        "size": {
-                          "h": 119.44,
-                          "w": 2
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "FIXED"
-                        },
-                        "type": "RECTANGLE",
-                        "width": "size/scrollbar/thumb-rest"
-                      }
-                    ],
-                    "component": "Scrollbar",
-                    "layout": {
-                      "counterAlign": "CENTER",
-                      "gap": "spacing/none",
-                      "mode": "VERTICAL",
-                      "padding": [
-                        "spacing/2xs",
-                        "spacing/2xs",
-                        "spacing/2xs",
-                        "spacing/2xs"
-                      ],
-                      "primaryAlign": "SPACE_BETWEEN"
-                    },
-                    "name": "Scrollbar",
-                    "properties": {
-                      "Material": "Acrylic",
-                      "State": "Rest"
-                    },
-                    "size": {
-                      "h": 160,
-                      "w": 12
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "DERIVED"
-                    },
-                    "type": "INSTANCE",
-                    "width": "size/scrollbar/thickness"
-                  }
-                ],
-                "component": "ScrollArea",
-                "layout": {
-                  "counterAlign": "MIN",
-                  "gap": "spacing/none",
-                  "mode": "VERTICAL",
-                  "padding": [
-                    "spacing/none",
-                    "spacing/none",
-                    "spacing/none",
-                    "spacing/none"
-                  ],
-                  "primaryAlign": "MIN"
-                },
-                "name": "scroll area",
-                "properties": {
-                  "Material": "Acrylic",
-                  "State": "Rest"
-                },
-                "size": {
-                  "h": 168,
-                  "w": 356
-                },
-                "sizing": {
-                  "h": "FILL",
-                  "v": "FILL"
-                },
-                "type": "INSTANCE"
-              }
-            ],
             "component": "StartCategoryFolder",
-            "effectStyle": "Surface/Flyout (Acrylic)",
-            "fillStyle": "Material/Acrylic Default",
-            "layout": {
-              "counterAlign": "MIN",
-              "gap": "spacing/lg",
-              "mode": "VERTICAL",
-              "padding": [
-                "spacing/lg",
-                "spacing/lg",
-                "spacing/lg",
-                "spacing/lg"
-              ],
-              "primaryAlign": "MIN"
-            },
-            "name": "folder",
+            "paths": [
+              "folder"
+            ],
             "properties": {
+              "Device": "Mobile",
+              "Has pages": true,
               "Label": "글"
-            },
-            "radius": [
-              "radius/overlay",
-              "radius/overlay",
-              "radius/overlay",
-              "radius/overlay"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
             ],
-            "size": {
-              "h": 236,
-              "w": 388
-            },
-            "sizing": {
-              "h": "FILL",
-              "v": "FIXED"
-            },
-            "strokeWeight": [
-              "stroke-width/default",
-              "stroke-width/default",
-              "stroke-width/default",
-              "stroke-width/default"
+            "properties": {
+              "Label": "React 19 훅 정리",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
             ],
-            "strokes": [
-              "color/black/6"
+            "properties": {
+              "Label": "리액트 서버 컴포넌트 이해하기",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
             ],
-            "strokesIncludedInLayout": false,
-            "type": "INSTANCE"
+            "properties": {
+              "Label": "Next.js App Router 캐시",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "TypeScript 타입 좁히기",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "useEffect 바로 쓰기",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "CSS 컨테이너 쿼리",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "Turborepo 캐시 정리",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "Storybook 상호작용 테스트",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "Playwright 화면 비교",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "Figma 변수와 토큰",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "pnpm 워크스페이스",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "PinnedTile",
+            "paths": [
+              "folder/page/tile grid/Tiles/PinnedTile"
+            ],
+            "properties": {
+              "Label": "Tailwind v4 테마",
+              "State": "Rest"
+            }
           }
         ],
-        "layout": {
-          "counterAlign": "MIN",
-          "gap": "spacing/none",
-          "mode": "VERTICAL",
-          "padding": [
-            "spacing/none",
-            "spacing/none",
-            "spacing/none",
-            "spacing/none"
-          ],
-          "primaryAlign": "MIN"
-        },
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
         "name": "Device=Mobile",
         "size": {
-          "h": 236,
+          "h": 376,
           "w": 388
         },
         "sizing": {
-          "h": "FIXED",
+          "h": "HUG",
           "v": "HUG"
-        },
-        "type": "COMPONENT"
+        }
       }
     }
   }

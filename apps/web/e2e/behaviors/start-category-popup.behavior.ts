@@ -23,7 +23,8 @@ async function openPostsPopup(page: Page) {
 export const behavior = defineBehavior({
   name: 'Start 범주 펼침 팝업을 쓴다',
   area: 'Start',
-  summary: '팝업 안에서 스크롤됨·항목을 눌러 열림·바깥 클릭과 Esc로 닫힘',
+  summary:
+    'Start 가운데에 열림·휠로 뒤 본문이 스크롤되지 않음·항목을 눌러 열림·바깥 클릭과 Esc로 닫힘',
   conditions: {
     input: {
       label: '팝업에 하는 입력',
@@ -34,32 +35,48 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'wheel-in-popup',
-      scenario:
-        '화면 높이가 낮아 글 펼침 팝업이 넘치는 브라우저에서 Start 범주 보기의 글 카드를 눌러 팝업을 열고, 팝업 위에서 마우스 휠을 굴린다',
-      result: '팝업 안에서 스크롤됨',
-      expected: ['팝업 안 목록이 스크롤된다', '뒤의 Start 본문은 스크롤되지 않는다'],
+      scenario: 'Start 범주 보기의 글 카드를 눌러 펼침 팝업을 열고, 팝업 위에서 마우스 휠을 굴린다',
+      result: '가운데에 열린 팝업은 그대로이고 뒤 본문도 스크롤되지 않음',
+      expected: [
+        '팝업이 Start 패널 가운데에 스크롤바 없이 열린다',
+        '글이 한 쪽에 다 들어가 휠을 굴려도 넘어가지 않는다',
+        '뒤의 Start 본문은 스크롤되지 않는다',
+      ],
       docs: ['[[Start 메뉴:모두]]'],
       async run({ page, check }) {
-        // 팝업이 넘치고 Start 본문도 스크롤되는 높이다.
+        // Start 본문도 스크롤되는 높이다.
         await page.setViewportSize({ width: 1280, height: 560 });
-        const { all, popup } = await openPostsPopup(page);
-        const popupScroller = popup
-          .locator('div')
-          .filter({ has: page.locator('button') })
-          .locator('xpath=descendant-or-self::div[contains(@class, "overflow-y-auto")]');
+        const { startMenu, all, popup } = await openPostsPopup(page);
+        const panel = startMenu.locator('[data-start-menu-panel]');
         const bodyScroller = all.locator(
           'xpath=ancestor::div[contains(@class, "overflow-y-auto")][1]',
         );
-        await expect(popupScroller).toHaveCount(1);
-        const bodyBefore = await bodyScroller.evaluate((element) => element.scrollTop);
+        const firstTile = popup.getByRole('button').first();
 
+        await check('팝업이 Start 패널 가운데에 스크롤바 없이 열린다', async () => {
+          await expect
+            .poll(async () => {
+              const popupBox = await popup.boundingBox();
+              const panelBox = await panel.boundingBox();
+              if (popupBox === null || panelBox === null) {
+                return Number.POSITIVE_INFINITY;
+              }
+              return Math.max(
+                Math.abs(popupBox.x + popupBox.width / 2 - (panelBox.x + panelBox.width / 2)),
+                Math.abs(popupBox.y + popupBox.height / 2 - (panelBox.y + panelBox.height / 2)),
+              );
+            })
+            .toBeLessThanOrEqual(1);
+          await expect(popup.locator('.overflow-y-auto')).toHaveCount(0);
+        });
+
+        const tileBefore = await firstTile.boundingBox();
+        const bodyBefore = await bodyScroller.evaluate((element) => element.scrollTop);
         await popup.getByRole('button', { name: 'Next.js App Router 캐시' }).hover();
         await wheelScroll(page, 200);
 
-        await check('팝업 안 목록이 스크롤된다', async () => {
-          await expect
-            .poll(() => popupScroller.evaluate((element) => element.scrollTop))
-            .toBeGreaterThan(0);
+        await check('글이 한 쪽에 다 들어가 휠을 굴려도 넘어가지 않는다', async () => {
+          expect(await firstTile.boundingBox()).toEqual(tileBefore);
         });
         await check('뒤의 Start 본문은 스크롤되지 않는다', async () => {
           expect(await bodyScroller.evaluate((element) => element.scrollTop)).toBe(bodyBefore);
@@ -98,9 +115,10 @@ export const behavior = defineBehavior({
       expected: ['팝업이 닫힌다', 'Start 메뉴는 열려 있다'],
       docs: ['[[Start 메뉴:모두]]'],
       async run({ page, check }) {
-        const { startMenu, all, popup } = await openPostsPopup(page);
+        const { startMenu, popup } = await openPostsPopup(page);
 
-        await all.getByRole('heading', { name: '모두' }).click();
+        // 팝업은 Start 가운데에 열려 모두 제목을 덮을 수 있어, 팝업이 덮지 않는 위쪽 고정됨 제목을 누른다.
+        await startMenu.getByRole('heading', { name: '고정됨' }).click();
 
         await check('팝업이 닫힌다', async () => {
           await expect(popup).toBeHidden();

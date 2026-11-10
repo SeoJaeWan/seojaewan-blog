@@ -68,7 +68,7 @@ const contentInsetClassNames = {
  * @codocs [[검색:입력 전 화면]]
  * @param props 컴포넌트 속성
  * @param props.device 피그마 Device. 결과 화면에서 고른 항목의 카드를 옆(desktop)이나 위(mobile)에 둔다
- * @param props.contentClassName 기기별 좌우 여백에 더할 내용 둘레 여백 클래스(예: Start 결과 화면의 아래 24). 좌우 여백과 같은 칸에 준다
+ * @param props.contentClassName 기기별 좌우 여백에 더할 내용 둘레 여백 클래스(예: Start 결과 화면의 위아래 24). 좌우 여백과 같은 칸에 준다
  * @param props.onItemOpen 항목 줄(최근, 추천, 결과)이나 카드의 `열기`를 눌렀을 때 그 항목의 id로 부른다. 항목을 여는 일은 쓰는 곳이 한다
  * @param props.view 보일 화면. before-typing은 최근 항목과 추천 글(피그마 View=Before typing), results는 고른 항목의 카드(처음에는 최고 일치)와 종류별 결과(View=Results), no-results는 "검색 결과 없음" 안내(View=No results)다
  * @param props.recent (before-typing) 최근에 연 항목. 없으면 최근 묶음을 그리지 않는다
