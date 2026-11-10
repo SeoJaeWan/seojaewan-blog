@@ -76,3 +76,33 @@ export function getPanelMaxHeight(workAreaHeight: number, device: 'desktop' | 'm
   const gap = device === 'desktop' ? PANEL_GAP : 0;
   return workAreaHeight - gap;
 }
+
+/**
+ * 데스크톱 Start·검색 패널이 가질 수 있는 가장 큰 너비를 구한다. 화면 너비에서 좌우 여백(패널과 작업 표시줄 사이 틈과 같은 값)을 뺀 값이다.
+ * 패널의 원래 너비(ShellSurface의 `size/shell/width` 토큰)보다 작을 때만 줄어든다. 모바일 패널은 화면 폭을 채우므로 쓰지 않는다.
+ * @codocs [[Start 메뉴:구성]]
+ * @codocs [[검색:개요]]
+ * @param viewportWidth 화면(작업 영역) 너비
+ * @returns 패널의 최대 너비(px)
+ */
+export function getPanelMaxWidth(viewportWidth: number): number {
+  return viewportWidth - PANEL_GAP * 2;
+}
+
+/**
+ * 데스크톱 검색 패널의 왼쪽 끝 자리를 구한다. 작업 표시줄 검색 상자의 왼쪽 끝에 맞추고,
+ * 화면 밖으로 나가면 좌우 여백 안쪽으로 민다. 패널이 화면보다 넓으면 왼쪽 여백에 붙인다.
+ * @codocs [[검색:개요]]
+ * @param anchorLeft 작업 표시줄 검색 상자의 왼쪽 끝(패널 층 왼쪽 끝 기준, px)
+ * @param panelWidth 패널 너비(px)
+ * @param viewportWidth 패널 층 너비(px)
+ * @returns 패널 왼쪽 끝(패널 층 왼쪽 끝 기준, px)
+ */
+export function getSearchPanelLeft(
+  anchorLeft: number,
+  panelWidth: number,
+  viewportWidth: number,
+): number {
+  const maxLeft = viewportWidth - PANEL_GAP - panelWidth;
+  return Math.max(PANEL_GAP, Math.min(anchorLeft, maxLeft));
+}

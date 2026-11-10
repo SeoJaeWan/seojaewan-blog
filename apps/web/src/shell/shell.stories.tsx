@@ -283,6 +283,21 @@ export const Search: Story = {
       },
     );
 
+    // @codocs [[검색:개요]]
+    await step(
+      '데스크톱 검색 패널은 왼쪽 끝을 작업 표시줄 검색 상자의 왼쪽 끝에 맞춘다',
+      async () => {
+        const panel = await body.findByRole('dialog', { name: '검색' });
+        const searchBox = canvasElement.ownerDocument.querySelector(
+          '[data-search-panel-anchor] > *',
+        );
+        // 여는 움직임은 세로로만 옮기므로 왼쪽 끝은 움직이는 동안에도 같다.
+        await expect(Math.round(panel.getBoundingClientRect().left)).toBe(
+          Math.round(searchBox?.getBoundingClientRect().left ?? Number.NaN),
+        );
+      },
+    );
+
     // @codocs [[검색:결과 화면]]
     // @codocs [[접근성:포커스]]
     await step('Esc를 누르면 닫히고 포커스는 검색칸에 남는다', async () => {
