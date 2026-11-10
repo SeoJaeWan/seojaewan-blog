@@ -744,14 +744,31 @@
 }
 
 /*
+ * 열기 움직임(motion-menu-enter, motion-taskbar-menu-enter, motion-taskbar-preview-enter)의 자르는 틀이 시작 가장자리를 자르는 자리다.
+ * 틀이 처음 그려질 때(@starting-style, Base UI 팝업은 data-starting-style) 시작 가장자리 값을 갖고, 안의 요소가 움직이는 시간만큼 지난 뒤
+ * (transition-delay) 정지 값(-100vmax, 자르지 않음)으로 바로 바뀐다. 그래서 자르기는 움직이는 동안만 있고, 움직임과 전환을 끄면 처음부터
+ * 정지 값이라 자르지 않는다. Base UI 팝업은 처음 그릴 때 전환을 끄고(인라인 transition: none) data-starting-style을 달았다가 다음 프레임에
+ * 둘 다 떼므로, 그 속성에도 시작 값을 주어 떼는 순간부터 전환이 돈다. 닫을 때(data-ending-style)는 전환을 멈춰 Base UI가 남은 지연을
+ * 기다리느라 늦게 닫히지 않게 한다.
+ * 패딩·바깥 여백으로 틀을 넓히지 않고 clip-path로 자르므로 틀의 크기와 자리는 바뀌지 않는다.
+ * 길이 값으로 등록해야 지연 뒤에 값이 바뀌는 전환이 되고, 쪽(data-side)마다 다른 가장자리에 같은 값을 쓸 수 있다.
+ */
+@property --motion-enter-clip-edge {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0;
+}
+
+/*
  * 드롭다운·우클릭 메뉴 열기(조립 흐름 motion-menu-enter). 메뉴가 열리는 쪽으로 미끄러져 나오고, 시작 가장자리(아래로 열면 위)에서
  * 잘린다. 페이드는 없다. 흐름의 -102는 흐름 메뉴(Menu/ViewOptions)의 높이라 px 대신 요소 자기 높이(translate -100%)로 써서
  * 실제 메뉴 높이가 달라도 시작 가장자리 밖에서 나오게 한다(흐름에서는 -102와 같다). 실행 중 값은 없다.
  * 클래스는 잘라 내는 틀(흐름의 menu clip, 앱에서는 Base UI 메뉴 팝업)에 붙이고 바로 안의 메뉴 바탕이 움직인다.
- * 틀은 시작 가장자리만 자르고, 나머지 세 쪽은 그림자가 보이도록 안쪽 여백만큼 넓힌 뒤 같은 만큼 바깥 여백을 줄여 자리는 그대로다.
- * 열린 뒤에는 시작 가장자리의 그림자까지 보이도록 쓰는 곳이 움직임이 끝나면 클래스를 뗀다.
+ * 틀은 움직이는 동안만 시작 가장자리를 자르고(clip-path), 나머지 세 쪽은 그림자가 보이도록 자르지 않는다. 자르는 자리는
+ * 아래 --motion-enter-clip-edge가 정하고, 열린 뒤에는 자르지 않아 시작 가장자리의 그림자까지 보인다.
+ * 틀의 상자(크기·자리)는 바꾸지 않아, 움직임을 끄면(캡처, 동작 줄이기) 클래스가 남아도 정지 모습이 그대로다([[피그마 연동:캡처 범위]]).
  * 열리는 쪽은 Base UI가 틀에 단 data-side로 고른다(top이면 위로, 나머지는 아래로). 피그마 흐름은 아래로 여는 모습이다.
- * 틀의 넓힌 여백은 누르는 영역이 되지 않게 포인터 이벤트를 메뉴 바탕에만 둔다.
+ * 쓰는 곳은 움직임이 끝나면 클래스를 뗀다. 열린 뒤 data-side가 바뀌어도 다시 움직이지 않게 하기 위해서다.
  * 하위 메뉴는 측정하지 않아 지금처럼 motion-flyout-enter, 작업 표시줄 앱 버튼 메뉴는 아래 motion-taskbar-menu-enter를 쓴다.
  */
 @keyframes motion-menu-enter {
@@ -775,13 +792,24 @@
 }
 
 @utility motion-menu-enter {
-  overflow: hidden;
-  padding: 0 var(--spacing-3xl) var(--spacing-3xl);
-  margin: 0 calc(var(--spacing-3xl) * -1) calc(var(--spacing-3xl) * -1);
-  pointer-events: none;
+  --motion-enter-clip-edge: -100vmax;
+  clip-path: inset(var(--motion-enter-clip-edge) -100vmax -100vmax);
+  transition-property: --motion-enter-clip-edge;
+  transition-delay: var(--motion-duration-fast);
+
+  @starting-style {
+    --motion-enter-clip-edge: 0;
+  }
+
+  &[data-starting-style] {
+    --motion-enter-clip-edge: 0;
+  }
+
+  &[data-ending-style] {
+    transition: none;
+  }
 
   & > * {
-    pointer-events: auto;
     animation-name: motion-menu-enter;
     animation-duration: var(--motion-duration-fast);
     animation-timing-function: var(--motion-easing-direct-entrance);
@@ -789,8 +817,7 @@
   }
 
   &[data-side='top'] {
-    padding: var(--spacing-3xl) var(--spacing-3xl) 0;
-    margin: calc(var(--spacing-3xl) * -1) calc(var(--spacing-3xl) * -1) 0;
+    clip-path: inset(-100vmax -100vmax var(--motion-enter-clip-edge));
   }
 
   &[data-side='top'] > * {
@@ -802,10 +829,10 @@
  * 작업 표시줄 앱 버튼 우클릭 메뉴 열기(조립 흐름 motion-taskbar-menu-enter). 메뉴가 작업 표시줄 위 끝에서 잘린 채 위로 미끄러져 올라온다.
  * 페이드는 없고 실행 중 값도 없다. 시작 이동은 흐름에서 메뉴(Menu/TaskbarApp) 높이 111에 아래 여백 24를 더한 135이고,
  * 실제 메뉴 높이는 달라질 수 있어 실행 중 값이다. 키프레임은 --motion-taskbar-menu-offset을 읽고, 앱이 넘기지 않으면 요소 자기 높이(100%)에
- * 틀의 아래 여백(--spacing-md)을 더한 값을 쓴다. 작업 표시줄과 메뉴 사이는 12px(Development 주석)이라 틀의 아래를 그만큼만 넓혀
- * 작업 표시줄 위 끝을 틀의 아래 끝으로 삼고, 그 끝 밖(높이 100% + 12px)에서 시작해 메뉴가 틀 아래로 완전히 숨는다.
- * 나머지 세 쪽은 그림자가 보이도록 안쪽 여백만큼 넓힌 뒤 같은 만큼 바깥 여백을 줄여 자리는 그대로다. 열린 뒤에는 쓰는 곳이 클래스를 뗀다.
- * 클래스는 잘라 내는 틀(앱에서는 Base UI 메뉴 팝업)에 붙이고 바로 안의 메뉴 바탕이 움직인다. 틀의 넓힌 여백은 누르는 영역이 되지 않는다.
+ * 작업 표시줄과의 간격(--spacing-md)을 더한 값을 쓴다. 작업 표시줄과 메뉴 사이는 12px(Development 주석)이라 틀은 아래 끝에서
+ * 그만큼 아래(작업 표시줄 위 끝)를 자르고, 그 끝 밖(높이 100% + 12px)에서 시작해 메뉴가 자르는 자리 아래로 완전히 숨는다.
+ * 자르기는 움직이는 동안만 있고(--motion-enter-clip-edge), 나머지 세 쪽은 그림자가 보이도록 자르지 않는다. 열린 뒤에는 쓰는 곳이 클래스를 뗀다.
+ * 클래스는 잘라 내는 틀(앱에서는 Base UI 메뉴 팝업)에 붙이고 바로 안의 메뉴 바탕이 움직인다.
  */
 @keyframes motion-taskbar-menu-enter {
   0% {
@@ -818,13 +845,25 @@
 }
 
 @utility motion-taskbar-menu-enter {
-  overflow: hidden;
-  padding: var(--spacing-3xl) var(--spacing-3xl) var(--spacing-md);
-  margin: calc(var(--spacing-3xl) * -1) calc(var(--spacing-3xl) * -1) calc(var(--spacing-md) * -1);
-  pointer-events: none;
+  /* 움직이는 동안만 작업 표시줄 위 끝(틀 아래 끝에서 12px 아래)을 자른다. 나머지 세 쪽은 그림자가 보이도록 자르지 않는다. */
+  --motion-enter-clip-edge: -100vmax;
+  clip-path: inset(-100vmax -100vmax var(--motion-enter-clip-edge));
+  transition-property: --motion-enter-clip-edge;
+  transition-delay: var(--motion-duration-fast);
+
+  @starting-style {
+    --motion-enter-clip-edge: calc(var(--spacing-md) * -1);
+  }
+
+  &[data-starting-style] {
+    --motion-enter-clip-edge: calc(var(--spacing-md) * -1);
+  }
+
+  &[data-ending-style] {
+    transition: none;
+  }
 
   & > * {
-    pointer-events: auto;
     animation-name: motion-taskbar-menu-enter;
     animation-duration: var(--motion-duration-fast);
     animation-timing-function: var(--motion-easing-direct-entrance);
@@ -836,10 +875,10 @@
  * 작업 표시줄 창 미리보기 목록 열기(조립 흐름 motion-taskbar-preview-enter). 목록이 작업 표시줄 위 끝에서 잘린 채 위로 미끄러져 올라온다.
  * 페이드는 없고 실행 중 값도 없다. 시작 이동은 흐름에서 목록(Taskbar/PreviewList) 높이 166에 아래 여백 24를 더한 190이고,
  * 실제 목록 높이는 달라질 수 있어 실행 중 값이다. 키프레임은 --motion-taskbar-preview-offset을 읽고, 앱이 넘기지 않으면 요소 자기 높이(100%)에
- * 틀의 아래 여백(--spacing-md)을 더한 값을 쓴다. 작업 표시줄과 목록 사이는 12px(Development 주석)이라 틀의 아래를 그만큼만 넓혀
- * 작업 표시줄 위 끝을 틀의 아래 끝으로 삼고, 그 끝 밖(높이 100% + 12px)에서 시작해 목록이 틀 아래로 완전히 숨는다.
- * 나머지 세 쪽은 그림자가 보이도록 안쪽 여백만큼 넓힌 뒤 같은 만큼 바깥 여백을 줄여 자리는 그대로다. 열린 뒤에는 쓰는 곳이 클래스를 뗀다.
- * 클래스는 잘라 내는 틀(앱에서는 미리보기 목록 팝업)에 붙이고 바로 안의 목록이 움직인다. 틀의 넓힌 여백은 누르는 영역이 되지 않는다.
+ * 작업 표시줄과의 간격(--spacing-md)을 더한 값을 쓴다. 작업 표시줄과 목록 사이는 12px(Development 주석)이라 틀은 아래 끝에서
+ * 그만큼 아래(작업 표시줄 위 끝)를 자르고, 그 끝 밖(높이 100% + 12px)에서 시작해 목록이 자르는 자리 아래로 완전히 숨는다.
+ * 자르기는 움직이는 동안만 있고(--motion-enter-clip-edge), 나머지 세 쪽은 그림자가 보이도록 자르지 않는다. 열린 뒤에는 쓰는 곳이 클래스를 뗀다.
+ * 클래스는 잘라 내는 틀(앱에서는 미리보기 목록 팝업)에 붙이고 바로 안의 목록이 움직인다.
  */
 @keyframes motion-taskbar-preview-enter {
   0% {
@@ -852,13 +891,25 @@
 }
 
 @utility motion-taskbar-preview-enter {
-  overflow: hidden;
-  padding: var(--spacing-3xl) var(--spacing-3xl) var(--spacing-md);
-  margin: calc(var(--spacing-3xl) * -1) calc(var(--spacing-3xl) * -1) calc(var(--spacing-md) * -1);
-  pointer-events: none;
+  /* 움직이는 동안만 작업 표시줄 위 끝(틀 아래 끝에서 12px 아래)을 자른다. 나머지 세 쪽은 그림자가 보이도록 자르지 않는다. */
+  --motion-enter-clip-edge: -100vmax;
+  clip-path: inset(-100vmax -100vmax var(--motion-enter-clip-edge));
+  transition-property: --motion-enter-clip-edge;
+  transition-delay: var(--motion-duration-normal);
+
+  @starting-style {
+    --motion-enter-clip-edge: calc(var(--spacing-md) * -1);
+  }
+
+  &[data-starting-style] {
+    --motion-enter-clip-edge: calc(var(--spacing-md) * -1);
+  }
+
+  &[data-ending-style] {
+    transition: none;
+  }
 
   & > * {
-    pointer-events: auto;
     animation-name: motion-taskbar-preview-enter;
     animation-duration: var(--motion-duration-normal);
     animation-timing-function: var(--motion-easing-direct-entrance);
@@ -984,13 +1035,12 @@
     animation: none;
   }
 
-  /* 메뉴 열기(작업 표시줄 앱 메뉴 포함)와 작업 표시줄 미리보기 목록 열기의 자르는 틀은 움직임이 없으면 필요 없어 그림자가 모두 보이게 푼다. */
+  /* 메뉴 열기(작업 표시줄 앱 메뉴 포함)와 작업 표시줄 미리보기 목록 열기의 자르는 틀은 움직임이 없으면 필요 없어 처음부터 자르지 않는다. */
   .motion-menu-enter,
   .motion-taskbar-menu-enter,
   .motion-taskbar-preview-enter {
-    overflow: visible;
-    padding: 0;
-    margin: 0;
+    clip-path: none;
+    transition: none;
   }
 
   .motion-control-state,
