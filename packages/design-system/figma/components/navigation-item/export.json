@@ -1,5 +1,5 @@
 {
-  "description": "폴더 트리의 한 항목으로, 탐색기 NavigationPane에 쓴다.\n@sample-size width",
+  "description": "폴더 트리의 한 항목으로, 탐색기 NavigationPane에 쓴다.",
   "name": "NavigationItem",
   "nodeId": "29:427",
   "propertyDefinitions": {
@@ -160,6 +160,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -301,6 +304,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -444,6 +450,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -585,6 +594,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -728,6 +740,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -886,6 +901,9 @@
             "trigger": "ON_HOVER"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -1042,6 +1060,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -1200,6 +1221,9 @@
             "trigger": "ON_HOVER"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -1327,6 +1351,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -1470,6 +1497,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -1611,6 +1641,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -1754,6 +1787,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -1885,6 +1921,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -2032,6 +2071,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -2177,6 +2219,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -2324,6 +2369,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -2470,6 +2518,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -2632,6 +2683,9 @@
             "trigger": "ON_HOVER"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -2792,6 +2846,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -2954,6 +3011,9 @@
             "trigger": "ON_HOVER"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -3085,6 +3145,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -3232,6 +3295,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -3377,6 +3443,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -3524,6 +3593,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -3646,6 +3718,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -3784,6 +3859,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -3920,6 +3998,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -4058,6 +4139,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -4195,6 +4279,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -4348,6 +4435,9 @@
             "trigger": "ON_HOVER"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -4499,6 +4589,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -4652,6 +4745,9 @@
             "trigger": "ON_HOVER"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -4774,6 +4870,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
@@ -4912,6 +5011,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -5049,6 +5151,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 240
@@ -5185,6 +5290,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,

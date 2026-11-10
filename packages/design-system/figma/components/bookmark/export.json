@@ -1,5 +1,5 @@
 {
-  "description": "글 본문의 링크 카드로, 글 페이지에 쓴다.\n@sample-size width",
+  "description": "글 본문의 링크 카드로, 글 페이지에 쓴다.",
   "name": "Bookmark",
   "nodeId": "1380:6869",
   "propertyDefinitions": {
@@ -179,6 +179,9 @@
           "radius/overlay",
           "radius/overlay",
           "radius/overlay"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 86,

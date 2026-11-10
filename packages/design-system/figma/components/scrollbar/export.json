@@ -1,5 +1,5 @@
 {
-  "description": "얇은 스크롤 막대로, 넘치는 영역의 오른쪽(가로 막대는 아래쪽)에 겹쳐 놓아 스크롤 위치를 보여 줄 때 쓴다.\n@sample-size height",
+  "description": "얇은 스크롤 막대로, 넘치는 영역의 오른쪽(가로 막대는 아래쪽)에 겹쳐 놓아 스크롤 위치를 보여 줄 때 쓴다. State=Expanded는 마우스가 이 막대 칸 위에 있을 때 펼친 모양이다.",
   "name": "Scrollbar",
   "nodeId": "16:137",
   "propertyDefinitions": {
@@ -126,6 +126,9 @@
           "radius/circular",
           "radius/circular"
         ],
+        "sampleSize": [
+          "height"
+        ],
         "size": {
           "h": 200,
           "w": 12
@@ -242,6 +245,9 @@
           "radius/circular",
           "radius/circular"
         ],
+        "sampleSize": [
+          "height"
+        ],
         "size": {
           "h": 200,
           "w": 12
@@ -309,6 +315,9 @@
           "primaryAlign": "SPACE_BETWEEN"
         },
         "name": "State=Rest, Material=Acrylic",
+        "sampleSize": [
+          "height"
+        ],
         "size": {
           "h": 200,
           "w": 12
@@ -376,6 +385,9 @@
           "primaryAlign": "SPACE_BETWEEN"
         },
         "name": "State=Rest, Material=Solid",
+        "sampleSize": [
+          "height"
+        ],
         "size": {
           "h": 200,
           "w": 12
