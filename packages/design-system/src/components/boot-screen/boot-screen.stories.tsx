@@ -48,13 +48,13 @@ export const AutoDevice: Story = {
   play: async ({ canvasElement, step }) => {
     // @codocs [[컴포넌트 목록:Windows 화면 요소]]
     await step(
-      '진행 링 이름을 쓰는 곳이 정하고, 로고는 PC 구간에서 desktop 크기(120px)다',
+      '진행 링 이름을 쓰는 곳이 정하고, 로고는 PC 구간에서 desktop 크기(100px)다',
       async () => {
         const canvas = within(canvasElement);
         const ring = canvas.getByRole('progressbar', { name: '시작하는 중' });
         await expect(ring).toBeInTheDocument();
         const logo = ring.parentElement?.firstElementChild;
-        await expect(logo?.getBoundingClientRect().width).toBe(120);
+        await expect(logo?.getBoundingClientRect().width).toBe(100);
       },
     );
   },

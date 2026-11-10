@@ -2372,9 +2372,9 @@
           {
             "asset": {
               "color": "color/black/36",
-              "path": "icons/ic_fluent_search_16_regular"
+              "path": "icons/ic_fluent_search_16_filled"
             },
-            "component": "ic_fluent_search_16_regular",
+            "component": "ic_fluent_search_16_filled",
             "height": "size/icon/sm",
             "name": "icon",
             "size": {
@@ -2395,7 +2395,7 @@
             "name": "label",
             "size": {
               "h": 20,
-              "w": 164
+              "w": 168
             },
             "sizing": {
               "h": "FILL",
@@ -2429,7 +2429,7 @@
             "spacing/sm-nudge",
             "spacing/lg",
             "spacing/sm-nudge",
-            "spacing/lg"
+            "spacing/md"
           ],
           "primaryAlign": "MIN"
         },
@@ -2531,7 +2531,7 @@
             "name": "label",
             "size": {
               "h": 20,
-              "w": 164
+              "w": 168
             },
             "sizing": {
               "h": "FILL",
@@ -2565,7 +2565,7 @@
             "spacing/sm-nudge",
             "spacing/lg",
             "spacing/sm-nudge",
-            "spacing/lg"
+            "spacing/md"
           ],
           "primaryAlign": "MIN"
         },
@@ -2667,7 +2667,7 @@
             "name": "label",
             "size": {
               "h": 20,
-              "w": 164
+              "w": 168
             },
             "sizing": {
               "h": "FILL",
@@ -2701,7 +2701,7 @@
             "spacing/sm-nudge",
             "spacing/lg",
             "spacing/sm-nudge",
-            "spacing/lg"
+            "spacing/md"
           ],
           "primaryAlign": "MIN"
         },
@@ -2803,7 +2803,7 @@
             "name": "label",
             "size": {
               "h": 20,
-              "w": 164
+              "w": 168
             },
             "sizing": {
               "h": "FILL",
@@ -2837,7 +2837,7 @@
             "spacing/sm-nudge",
             "spacing/lg",
             "spacing/sm-nudge",
-            "spacing/lg"
+            "spacing/md"
           ],
           "primaryAlign": "MIN"
         },
@@ -2889,10 +2889,10 @@
         "children": [
           {
             "asset": {
-              "color": "color/black/61",
-              "path": "icons/ic_fluent_search_16_regular"
+              "color": "color/black/89",
+              "path": "icons/ic_fluent_search_16_filled"
             },
-            "component": "ic_fluent_search_16_regular",
+            "component": "ic_fluent_search_16_filled",
             "height": "size/icon/sm",
             "name": "icon",
             "size": {
@@ -2913,7 +2913,7 @@
             "name": "label",
             "size": {
               "h": 20,
-              "w": 164
+              "w": 168
             },
             "sizing": {
               "h": "FILL",
@@ -2947,7 +2947,7 @@
             "spacing/sm-nudge",
             "spacing/lg",
             "spacing/sm-nudge",
-            "spacing/lg"
+            "spacing/md"
           ],
           "primaryAlign": "MIN"
         },
@@ -3034,9 +3034,9 @@
           {
             "asset": {
               "color": "color/black/36",
-              "path": "icons/ic_fluent_search_16_regular"
+              "path": "icons/ic_fluent_search_16_filled"
             },
-            "component": "ic_fluent_search_16_regular",
+            "component": "ic_fluent_search_16_filled",
             "height": "size/icon/sm",
             "name": "icon",
             "size": {
@@ -3057,7 +3057,7 @@
             "name": "label",
             "size": {
               "h": 20,
-              "w": 164
+              "w": 168
             },
             "sizing": {
               "h": "FILL",
@@ -3091,7 +3091,7 @@
             "spacing/sm-nudge",
             "spacing/lg",
             "spacing/sm-nudge",
-            "spacing/lg"
+            "spacing/md"
           ],
           "primaryAlign": "MIN"
         },
@@ -3193,7 +3193,7 @@
             "name": "label",
             "size": {
               "h": 20,
-              "w": 164
+              "w": 168
             },
             "sizing": {
               "h": "FILL",
@@ -3227,7 +3227,7 @@
             "spacing/sm-nudge",
             "spacing/lg",
             "spacing/sm-nudge",
-            "spacing/lg"
+            "spacing/md"
           ],
           "primaryAlign": "MIN"
         },
@@ -3329,7 +3329,7 @@
             "name": "label",
             "size": {
               "h": 20,
-              "w": 164
+              "w": 168
             },
             "sizing": {
               "h": "FILL",
@@ -3363,7 +3363,7 @@
             "spacing/sm-nudge",
             "spacing/lg",
             "spacing/sm-nudge",
-            "spacing/lg"
+            "spacing/md"
           ],
           "primaryAlign": "MIN"
         },
@@ -3465,7 +3465,7 @@
             "name": "label",
             "size": {
               "h": 20,
-              "w": 164
+              "w": 168
             },
             "sizing": {
               "h": "FILL",
@@ -3499,7 +3499,7 @@
             "spacing/sm-nudge",
             "spacing/lg",
             "spacing/sm-nudge",
-            "spacing/lg"
+            "spacing/md"
           ],
           "primaryAlign": "MIN"
         },
@@ -3551,10 +3551,10 @@
         "children": [
           {
             "asset": {
-              "color": "color/black/61",
-              "path": "icons/ic_fluent_search_16_regular"
+              "color": "color/black/89",
+              "path": "icons/ic_fluent_search_16_filled"
             },
-            "component": "ic_fluent_search_16_regular",
+            "component": "ic_fluent_search_16_filled",
             "height": "size/icon/sm",
             "name": "icon",
             "size": {
@@ -3575,7 +3575,7 @@
             "name": "label",
             "size": {
               "h": 20,
-              "w": 164
+              "w": 168
             },
             "sizing": {
               "h": "FILL",
@@ -3609,7 +3609,7 @@
             "spacing/sm-nudge",
             "spacing/lg",
             "spacing/sm-nudge",
-            "spacing/lg"
+            "spacing/md"
           ],
           "primaryAlign": "MIN"
         },

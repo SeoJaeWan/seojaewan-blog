@@ -4,25 +4,32 @@ import { expect, fn } from 'storybook/test';
 import { IconButton } from './icon-button';
 
 // 피그마 IconButton의 변형 속성 값이다(정규화한 이름).
-const VARIANTS = ['standard', 'subtle', 'chrome'] as const;
+const VARIANTS = ['standard', 'subtle', 'chrome', 'close'] as const;
 const STATES = ['rest', 'hover', 'pressed', 'disabled', 'focused'] as const;
 
 type FigmaArgs = {
   variant: (typeof VARIANTS)[number];
   state: (typeof STATES)[number];
+  isChecked: boolean;
   /** 동작 스토리에서 호출 횟수를 확인하는 핸들러 */
   onClick?: () => void;
 };
 
 const meta = {
   title: 'Components/IconButton',
-  args: { variant: 'standard', state: 'rest' },
+  args: { variant: 'standard', state: 'rest', isChecked: false },
   argTypes: {
     variant: { control: 'inline-radio', options: VARIANTS },
     state: { control: 'inline-radio', options: STATES },
+    isChecked: { control: 'boolean' },
   },
   render: (args) => (
-    <IconButton variant={args.variant} label="더 보기" disabled={args.state === 'disabled'} />
+    <IconButton
+      variant={args.variant}
+      label="더 보기"
+      isChecked={args.isChecked}
+      disabled={args.state === 'disabled'}
+    />
   ),
 } satisfies Meta<FigmaArgs>;
 

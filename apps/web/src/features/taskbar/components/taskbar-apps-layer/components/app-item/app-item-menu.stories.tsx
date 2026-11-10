@@ -68,7 +68,7 @@ export const OpensMenu: Story = {
       await body.findByRole('menu');
       await expect(body.getAllByRole('menuitem').map((item) => item.textContent)).toEqual([
         '파일 탐색기',
-        '작업 표시줄에서 고정 해제',
+        '작업 표시줄에서 제거',
         '창 닫기',
       ]);
     });
