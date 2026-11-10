@@ -52,7 +52,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Figma: Story = {};
 
-/** 앱 버튼을 우클릭하면 Menu가 열린다. 피그마 설명의 `@runtime` 항목이 열린 메뉴에 보인다 */
+/** 앱 버튼을 우클릭하면 Menu/TaskbarApp 항목의 메뉴가 열린다 */
 export const OpensMenu: Story = {
   play: async ({ canvasElement, step }) => {
     const body = within(canvasElement.ownerDocument.body);

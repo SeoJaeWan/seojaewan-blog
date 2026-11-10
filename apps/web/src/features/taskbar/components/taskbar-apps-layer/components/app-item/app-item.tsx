@@ -48,7 +48,7 @@ type TaskbarAppItemProps = {
  * @param props 컴포넌트 속성
  * @param props.app 버튼이 가리키는 앱
  * @param props.indicator 앱 버튼 아래 표시(피그마 TaskbarButton Indicator)
- * @param props.isOpen true면 창 미리보기 목록을 연 모습, false면 버튼만 보인다. 피그마 조립은 닫힌 모양만 그리고 열림은 `@runtime` 설명이다
+ * @param props.isOpen true면 창 미리보기 목록을 연 모습, false면 버튼만 보인다. 피그마 조립은 닫힌 모양만 그린다
  * @param props.previews 창 미리보기 목록 자리. 그 앱 창들의 `TaskbarWindowPreviewList`를 넣는다
  * @param props.isCentered 목록을 버튼이 아닌 작업 표시줄 위 가운데에 띄울지. 모바일에서 화면 폭에 맞춘 목록을 가운데 놓을 때 쓴다
  * @param props.onButtonClick 앱 버튼을 눌렀을 때 부른다. 목록을 열고 닫는 일은 쓰는 곳이 한다
