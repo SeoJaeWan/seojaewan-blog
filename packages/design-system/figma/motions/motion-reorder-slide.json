@@ -3,27 +3,22 @@
     "ms": 0,
     "token": null
   },
-  "directives": {
-    "reduced-motion": [
-      "움직임 없이 바로 바뀐다"
-    ],
-    "repeat": [
-      "1"
-    ],
-    "runtime": [
-      "이전 자리에서 새 자리까지의 거리"
-    ],
-    "trigger": [
-      "순서가 바뀌어 밀려나는 항목이 새 자리로 갈 때(작업 표시줄·탭·Start 고정됨, Start 고정됨 메뉴 이동 공용)"
-    ]
-  },
+  "directives": {},
   "duration": {
-    "ms": 250,
-    "token": "motion/duration/normal"
+    "ms": 333,
+    "token": "motion/duration/slow"
   },
   "iterations": 1,
   "name": "motion-reorder-slide",
   "nodeId": "3356:525",
+  "notes": [
+    {
+      "category": "Development",
+      "path": "TaskbarButton",
+      "text": "밀려나는 거리는 실행 중에 정해진다(옛 자리에서 새 자리까지). 끄는 항목의 가운데가 칸 경계를 지나면 시작한다. 여기 44px은 대표값(한 칸)이다."
+    }
+  ],
+  "source": "flow",
   "tracks": [
     {
       "delay": {
@@ -31,8 +26,8 @@
         "token": null
       },
       "duration": {
-        "ms": 250,
-        "token": "motion/duration/normal"
+        "ms": 333,
+        "token": "motion/duration/slow"
       },
       "keyframes": [
         {
@@ -48,7 +43,7 @@
         {
           "easing": "motion/easing/point-to-point",
           "offset": 1,
-          "time": 250,
+          "time": 333,
           "value": {
             "x": 0,
             "y": 0

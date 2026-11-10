@@ -250,6 +250,7 @@ function StartListView({
     axis: 'both',
     moveClassNames: {
       exit: 'motion-start-pinned-move-exit',
+      swap: 'motion-start-pinned-move-swap',
       enter: 'motion-start-pinned-move-enter',
     },
   });

@@ -1,5 +1,5 @@
 {
-  "description": "지원하지 않는 Notion 블록 자리의 안내 상자로, 글 페이지에 쓴다.\n@sample-size width",
+  "description": "지원하지 않는 Notion 블록 자리의 안내 상자로, 글 페이지에 쓴다.",
   "name": "UnsupportedBlock",
   "nodeId": "1380:6880",
   "propertyDefinitions": {
@@ -134,6 +134,9 @@
           "radius/overlay",
           "radius/overlay",
           "radius/overlay"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 46,
