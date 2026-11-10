@@ -3,6 +3,14 @@
   "name": "FileItem",
   "nodeId": "29:527",
   "propertyDefinitions": {
+    "Current": {
+      "default": "False",
+      "options": [
+        "False",
+        "True"
+      ],
+      "type": "VARIANT"
+    },
     "Icon": {
       "type": "INSTANCE_SWAP"
     },
@@ -28,7 +36,8 @@
         "Focused",
         "Rename",
         "Cut",
-        "Cut selected"
+        "Cut selected",
+        "Selected unfocused"
       ],
       "type": "VARIANT"
     },
@@ -42,7 +51,7 @@
     }
   },
   "variants": {
-    "surface=desktop,size=large,state=cut": {
+    "surface=desktop,size=large,state=cut,current=false": {
       "node": {
         "height": 122,
         "width": 112,
@@ -51,6 +60,7 @@
       },
       "nodeId": "69:2165",
       "properties": {
+        "Current": "False",
         "Size": "Large",
         "State": "Cut",
         "Surface": "Desktop"
@@ -132,7 +142,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Large, State=Cut",
+        "name": "Surface=Desktop, Size=Large, State=Cut, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -151,7 +161,7 @@
         "width": "size/file-item/large-width"
       }
     },
-    "surface=desktop,size=large,state=cut-selected": {
+    "surface=desktop,size=large,state=cut-selected,current=false": {
       "node": {
         "height": 122,
         "width": 112,
@@ -160,6 +170,7 @@
       },
       "nodeId": "69:2169",
       "properties": {
+        "Current": "False",
         "Size": "Large",
         "State": "Cut selected",
         "Surface": "Desktop"
@@ -244,7 +255,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Large, State=Cut selected",
+        "name": "Surface=Desktop, Size=Large, State=Cut selected, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -263,7 +274,7 @@
         "width": "size/file-item/large-width"
       }
     },
-    "surface=desktop,size=large,state=focused": {
+    "surface=desktop,size=large,state=focused,current=false": {
       "node": {
         "height": 122,
         "width": 112,
@@ -272,6 +283,7 @@
       },
       "nodeId": "29:294",
       "properties": {
+        "Current": "False",
         "Size": "Large",
         "State": "Focused",
         "Surface": "Desktop"
@@ -351,7 +363,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Large, State=Focused",
+        "name": "Surface=Desktop, Size=Large, State=Focused, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -380,7 +392,7 @@
         "width": "size/file-item/large-width"
       }
     },
-    "surface=desktop,size=large,state=hover": {
+    "surface=desktop,size=large,state=hover,current=false": {
       "node": {
         "height": 122,
         "width": 112,
@@ -389,6 +401,7 @@
       },
       "nodeId": "29:286",
       "properties": {
+        "Current": "False",
         "Size": "Large",
         "State": "Hover",
         "Surface": "Desktop"
@@ -471,7 +484,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Large, State=Hover",
+        "name": "Surface=Desktop, Size=Large, State=Hover, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -490,7 +503,7 @@
         "width": "size/file-item/large-width"
       }
     },
-    "surface=desktop,size=large,state=rename": {
+    "surface=desktop,size=large,state=rename,current=false": {
       "node": {
         "height": 128,
         "width": 112,
@@ -499,6 +512,7 @@
       },
       "nodeId": "29:298",
       "properties": {
+        "Current": "False",
         "Size": "Large",
         "State": "Rename",
         "Surface": "Desktop"
@@ -639,7 +653,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Large, State=Rename",
+        "name": "Surface=Desktop, Size=Large, State=Rename, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -658,7 +672,7 @@
         "width": "size/file-item/large-width"
       }
     },
-    "surface=desktop,size=large,state=rest": {
+    "surface=desktop,size=large,state=rest,current=false": {
       "node": {
         "height": 122,
         "width": 112,
@@ -667,6 +681,7 @@
       },
       "nodeId": "29:282",
       "properties": {
+        "Current": "False",
         "Size": "Large",
         "State": "Rest",
         "Surface": "Desktop"
@@ -746,7 +761,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Large, State=Rest",
+        "name": "Surface=Desktop, Size=Large, State=Rest, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -765,7 +780,7 @@
         "width": "size/file-item/large-width"
       }
     },
-    "surface=desktop,size=large,state=selected": {
+    "surface=desktop,size=large,state=selected,current=false": {
       "node": {
         "height": 122,
         "width": 112,
@@ -774,6 +789,7 @@
       },
       "nodeId": "29:290",
       "properties": {
+        "Current": "False",
         "Size": "Large",
         "State": "Selected",
         "Surface": "Desktop"
@@ -856,7 +872,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Large, State=Selected",
+        "name": "Surface=Desktop, Size=Large, State=Selected, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -875,7 +891,7 @@
         "width": "size/file-item/large-width"
       }
     },
-    "surface=desktop,size=medium,state=cut": {
+    "surface=desktop,size=medium,state=cut,current=false": {
       "node": {
         "height": 74,
         "width": 76,
@@ -884,6 +900,7 @@
       },
       "nodeId": "69:2173",
       "properties": {
+        "Current": "False",
         "Size": "Medium",
         "State": "Cut",
         "Surface": "Desktop"
@@ -965,7 +982,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Medium, State=Cut",
+        "name": "Surface=Desktop, Size=Medium, State=Cut, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -984,7 +1001,7 @@
         "width": "size/file-item/desktop-width"
       }
     },
-    "surface=desktop,size=medium,state=cut-selected": {
+    "surface=desktop,size=medium,state=cut-selected,current=false": {
       "node": {
         "height": 74,
         "width": 76,
@@ -993,6 +1010,7 @@
       },
       "nodeId": "69:2177",
       "properties": {
+        "Current": "False",
         "Size": "Medium",
         "State": "Cut selected",
         "Surface": "Desktop"
@@ -1077,7 +1095,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Medium, State=Cut selected",
+        "name": "Surface=Desktop, Size=Medium, State=Cut selected, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -1096,7 +1114,7 @@
         "width": "size/file-item/desktop-width"
       }
     },
-    "surface=desktop,size=medium,state=focused": {
+    "surface=desktop,size=medium,state=focused,current=false": {
       "node": {
         "height": 74,
         "width": 76,
@@ -1105,6 +1123,7 @@
       },
       "nodeId": "29:317",
       "properties": {
+        "Current": "False",
         "Size": "Medium",
         "State": "Focused",
         "Surface": "Desktop"
@@ -1184,7 +1203,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Medium, State=Focused",
+        "name": "Surface=Desktop, Size=Medium, State=Focused, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -1213,7 +1232,7 @@
         "width": "size/file-item/desktop-width"
       }
     },
-    "surface=desktop,size=medium,state=hover": {
+    "surface=desktop,size=medium,state=hover,current=false": {
       "node": {
         "height": 74,
         "width": 76,
@@ -1222,6 +1241,7 @@
       },
       "nodeId": "29:309",
       "properties": {
+        "Current": "False",
         "Size": "Medium",
         "State": "Hover",
         "Surface": "Desktop"
@@ -1304,7 +1324,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Medium, State=Hover",
+        "name": "Surface=Desktop, Size=Medium, State=Hover, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -1323,7 +1343,7 @@
         "width": "size/file-item/desktop-width"
       }
     },
-    "surface=desktop,size=medium,state=rename": {
+    "surface=desktop,size=medium,state=rename,current=false": {
       "node": {
         "height": 80,
         "width": 76,
@@ -1332,6 +1352,7 @@
       },
       "nodeId": "29:321",
       "properties": {
+        "Current": "False",
         "Size": "Medium",
         "State": "Rename",
         "Surface": "Desktop"
@@ -1472,7 +1493,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Medium, State=Rename",
+        "name": "Surface=Desktop, Size=Medium, State=Rename, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -1491,7 +1512,7 @@
         "width": "size/file-item/desktop-width"
       }
     },
-    "surface=desktop,size=medium,state=rest": {
+    "surface=desktop,size=medium,state=rest,current=false": {
       "node": {
         "height": 74,
         "width": 76,
@@ -1500,6 +1521,7 @@
       },
       "nodeId": "29:305",
       "properties": {
+        "Current": "False",
         "Size": "Medium",
         "State": "Rest",
         "Surface": "Desktop"
@@ -1579,7 +1601,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Medium, State=Rest",
+        "name": "Surface=Desktop, Size=Medium, State=Rest, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -1598,7 +1620,7 @@
         "width": "size/file-item/desktop-width"
       }
     },
-    "surface=desktop,size=medium,state=selected": {
+    "surface=desktop,size=medium,state=selected,current=false": {
       "node": {
         "height": 74,
         "width": 76,
@@ -1607,6 +1629,7 @@
       },
       "nodeId": "29:313",
       "properties": {
+        "Current": "False",
         "Size": "Medium",
         "State": "Selected",
         "Surface": "Desktop"
@@ -1689,7 +1712,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Medium, State=Selected",
+        "name": "Surface=Desktop, Size=Medium, State=Selected, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -1708,7 +1731,7 @@
         "width": "size/file-item/desktop-width"
       }
     },
-    "surface=desktop,size=small,state=cut": {
+    "surface=desktop,size=small,state=cut,current=false": {
       "node": {
         "height": 58,
         "width": 76,
@@ -1717,6 +1740,7 @@
       },
       "nodeId": "69:2181",
       "properties": {
+        "Current": "False",
         "Size": "Small",
         "State": "Cut",
         "Surface": "Desktop"
@@ -1798,7 +1822,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Small, State=Cut",
+        "name": "Surface=Desktop, Size=Small, State=Cut, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -1817,7 +1841,7 @@
         "width": "size/file-item/desktop-width"
       }
     },
-    "surface=desktop,size=small,state=cut-selected": {
+    "surface=desktop,size=small,state=cut-selected,current=false": {
       "node": {
         "height": 58,
         "width": 76,
@@ -1826,6 +1850,7 @@
       },
       "nodeId": "69:2185",
       "properties": {
+        "Current": "False",
         "Size": "Small",
         "State": "Cut selected",
         "Surface": "Desktop"
@@ -1910,7 +1935,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Small, State=Cut selected",
+        "name": "Surface=Desktop, Size=Small, State=Cut selected, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -1929,7 +1954,7 @@
         "width": "size/file-item/desktop-width"
       }
     },
-    "surface=desktop,size=small,state=focused": {
+    "surface=desktop,size=small,state=focused,current=false": {
       "node": {
         "height": 58,
         "width": 76,
@@ -1938,6 +1963,7 @@
       },
       "nodeId": "29:340",
       "properties": {
+        "Current": "False",
         "Size": "Small",
         "State": "Focused",
         "Surface": "Desktop"
@@ -2017,7 +2043,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Small, State=Focused",
+        "name": "Surface=Desktop, Size=Small, State=Focused, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -2046,7 +2072,7 @@
         "width": "size/file-item/desktop-width"
       }
     },
-    "surface=desktop,size=small,state=hover": {
+    "surface=desktop,size=small,state=hover,current=false": {
       "node": {
         "height": 58,
         "width": 76,
@@ -2055,6 +2081,7 @@
       },
       "nodeId": "29:332",
       "properties": {
+        "Current": "False",
         "Size": "Small",
         "State": "Hover",
         "Surface": "Desktop"
@@ -2137,7 +2164,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Small, State=Hover",
+        "name": "Surface=Desktop, Size=Small, State=Hover, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -2156,7 +2183,7 @@
         "width": "size/file-item/desktop-width"
       }
     },
-    "surface=desktop,size=small,state=rename": {
+    "surface=desktop,size=small,state=rename,current=false": {
       "node": {
         "height": 64,
         "width": 76,
@@ -2165,6 +2192,7 @@
       },
       "nodeId": "29:344",
       "properties": {
+        "Current": "False",
         "Size": "Small",
         "State": "Rename",
         "Surface": "Desktop"
@@ -2305,7 +2333,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Small, State=Rename",
+        "name": "Surface=Desktop, Size=Small, State=Rename, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -2324,7 +2352,7 @@
         "width": "size/file-item/desktop-width"
       }
     },
-    "surface=desktop,size=small,state=rest": {
+    "surface=desktop,size=small,state=rest,current=false": {
       "node": {
         "height": 58,
         "width": 76,
@@ -2333,6 +2361,7 @@
       },
       "nodeId": "29:328",
       "properties": {
+        "Current": "False",
         "Size": "Small",
         "State": "Rest",
         "Surface": "Desktop"
@@ -2412,7 +2441,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Small, State=Rest",
+        "name": "Surface=Desktop, Size=Small, State=Rest, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -2431,7 +2460,7 @@
         "width": "size/file-item/desktop-width"
       }
     },
-    "surface=desktop,size=small,state=selected": {
+    "surface=desktop,size=small,state=selected,current=false": {
       "node": {
         "height": 58,
         "width": 76,
@@ -2440,6 +2469,7 @@
       },
       "nodeId": "29:336",
       "properties": {
+        "Current": "False",
         "Size": "Small",
         "State": "Selected",
         "Surface": "Desktop"
@@ -2522,7 +2552,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Desktop, Size=Small, State=Selected",
+        "name": "Surface=Desktop, Size=Small, State=Selected, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -2541,7 +2571,7 @@
         "width": "size/file-item/desktop-width"
       }
     },
-    "surface=explorer,size=large,state=cut": {
+    "surface=explorer,size=large,state=cut,current=false": {
       "node": {
         "height": 124,
         "width": 112,
@@ -2550,6 +2580,7 @@
       },
       "nodeId": "69:2133",
       "properties": {
+        "Current": "False",
         "Size": "Large",
         "State": "Cut",
         "Surface": "Explorer"
@@ -2630,7 +2661,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Explorer, Size=Large, State=Cut",
+        "name": "Surface=Explorer, Size=Large, State=Cut, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -2649,7 +2680,7 @@
         "width": "size/file-item/large-width"
       }
     },
-    "surface=explorer,size=large,state=cut-selected": {
+    "surface=explorer,size=large,state=cut-selected,current=false": {
       "node": {
         "height": 124,
         "width": 112,
@@ -2658,6 +2689,7 @@
       },
       "nodeId": "69:2137",
       "properties": {
+        "Current": "False",
         "Size": "Large",
         "State": "Cut selected",
         "Surface": "Explorer"
@@ -2741,7 +2773,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Explorer, Size=Large, State=Cut selected",
+        "name": "Surface=Explorer, Size=Large, State=Cut selected, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -2760,123 +2792,7 @@
         "width": "size/file-item/large-width"
       }
     },
-    "surface=explorer,size=large,state=focused": {
-      "node": {
-        "height": 124,
-        "width": 112,
-        "x": 0,
-        "y": 0
-      },
-      "nodeId": "29:450",
-      "properties": {
-        "Size": "Large",
-        "State": "Focused",
-        "Surface": "Explorer"
-      },
-      "tree": {
-        "children": [
-          {
-            "asset": {
-              "path": "images/file-folder"
-            },
-            "component": "file/Folder",
-            "fills": [
-              "IMAGE"
-            ],
-            "height": "size/icon/4xl",
-            "name": "item icon",
-            "size": {
-              "h": 96,
-              "w": 96
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FIXED"
-            },
-            "type": "INSTANCE",
-            "width": "size/icon/4xl"
-          },
-          {
-            "fills": [
-              "color/black/89"
-            ],
-            "name": "name",
-            "size": {
-              "h": 16,
-              "w": 104
-            },
-            "sizing": {
-              "h": "FILL",
-              "v": "HUG"
-            },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 2,
-              "maxLinesVariable": "line-clamp/two",
-              "segments": [
-                {
-                  "characters": "파일",
-                  "fill": "color/black/89",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "color/black/89",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "이름",
-                  "fill": "color/black/89",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT"
-          }
-        ],
-        "layout": {
-          "counterAlign": "CENTER",
-          "gap": "spacing/xs",
-          "mode": "VERTICAL",
-          "padding": [
-            "spacing/xs",
-            "spacing/xs",
-            "spacing/xs",
-            "spacing/xs"
-          ],
-          "primaryAlign": "MIN"
-        },
-        "name": "Surface=Explorer, Size=Large, State=Focused",
-        "radius": [
-          "radius/control",
-          "radius/control",
-          "radius/control",
-          "radius/control"
-        ],
-        "size": {
-          "h": 124,
-          "w": 112
-        },
-        "sizing": {
-          "h": "FIXED",
-          "v": "HUG"
-        },
-        "strokeWeight": [
-          "stroke-width/default",
-          "stroke-width/default",
-          "stroke-width/default",
-          "stroke-width/default"
-        ],
-        "strokes": [
-          "color/blue/18"
-        ],
-        "strokesIncludedInLayout": false,
-        "type": "COMPONENT",
-        "width": "size/file-item/large-width"
-      }
-    },
-    "surface=explorer,size=large,state=hover": {
+    "surface=explorer,size=large,state=hover,current=false": {
       "node": {
         "height": 124,
         "width": 112,
@@ -2885,6 +2801,7 @@
       },
       "nodeId": "29:442",
       "properties": {
+        "Current": "False",
         "Size": "Large",
         "State": "Hover",
         "Surface": "Explorer"
@@ -2966,7 +2883,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Explorer, Size=Large, State=Hover",
+        "name": "Surface=Explorer, Size=Large, State=Hover, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -2985,7 +2902,7 @@
         "width": "size/file-item/large-width"
       }
     },
-    "surface=explorer,size=large,state=rename": {
+    "surface=explorer,size=large,state=rename,current=false": {
       "node": {
         "height": 130,
         "width": 112,
@@ -2994,6 +2911,7 @@
       },
       "nodeId": "29:454",
       "properties": {
+        "Current": "False",
         "Size": "Large",
         "State": "Rename",
         "Surface": "Explorer"
@@ -3137,7 +3055,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Explorer, Size=Large, State=Rename",
+        "name": "Surface=Explorer, Size=Large, State=Rename, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -3156,7 +3074,7 @@
         "width": "size/file-item/large-width"
       }
     },
-    "surface=explorer,size=large,state=rest": {
+    "surface=explorer,size=large,state=rest,current=false": {
       "node": {
         "height": 124,
         "width": 112,
@@ -3165,6 +3083,7 @@
       },
       "nodeId": "29:438",
       "properties": {
+        "Current": "False",
         "Size": "Large",
         "State": "Rest",
         "Surface": "Explorer"
@@ -3243,7 +3162,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Explorer, Size=Large, State=Rest",
+        "name": "Surface=Explorer, Size=Large, State=Rest, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -3252,7 +3171,7 @@
         ],
         "reactions": [
           {
-            "destination": "Surface=Explorer, Size=Large, State=Hover",
+            "destination": "Surface=Explorer, Size=Large, State=Hover, Current=False",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -3280,7 +3199,124 @@
         "width": "size/file-item/large-width"
       }
     },
-    "surface=explorer,size=large,state=selected": {
+    "surface=explorer,size=large,state=rest,current=true": {
+      "node": {
+        "height": 124,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "29:450",
+      "properties": {
+        "Current": "True",
+        "Size": "Large",
+        "State": "Rest",
+        "Surface": "Explorer"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "fills": [
+              "color/black/89"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 104
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "color/black/89",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, Size=Large, State=Rest, Current=True",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 124,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "color/black/89"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
+      }
+    },
+    "surface=explorer,size=large,state=selected,current=false": {
       "node": {
         "height": 124,
         "width": 112,
@@ -3289,6 +3325,7 @@
       },
       "nodeId": "29:446",
       "properties": {
+        "Current": "False",
         "Size": "Large",
         "State": "Selected",
         "Surface": "Explorer"
@@ -3370,7 +3407,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Explorer, Size=Large, State=Selected",
+        "name": "Surface=Explorer, Size=Large, State=Selected, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -3389,7 +3426,357 @@
         "width": "size/file-item/large-width"
       }
     },
-    "surface=explorer,size=medium,state=cut": {
+    "surface=explorer,size=large,state=selected,current=true": {
+      "node": {
+        "height": 126,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:15610",
+      "properties": {
+        "Current": "True",
+        "Size": "Large",
+        "State": "Selected",
+        "Surface": "Explorer"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "fills": [
+              "color/black/89"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 102
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "color/black/89",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/blue/9"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, Size=Large, State=Selected, Current=True",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 126,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "color/black/89"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
+      }
+    },
+    "surface=explorer,size=large,state=selected-unfocused,current=false": {
+      "node": {
+        "height": 124,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:15613",
+      "properties": {
+        "Current": "False",
+        "Size": "Large",
+        "State": "Selected unfocused",
+        "Surface": "Explorer"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "fills": [
+              "color/black/89"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 104
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "color/black/89",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/gray/13"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, Size=Large, State=Selected unfocused, Current=False",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 124,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
+      }
+    },
+    "surface=explorer,size=large,state=selected-unfocused,current=true": {
+      "node": {
+        "height": 126,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:15616",
+      "properties": {
+        "Current": "True",
+        "Size": "Large",
+        "State": "Selected unfocused",
+        "Surface": "Explorer"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "fills": [
+              "color/black/89"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 102
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "color/black/89",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/gray/13"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, Size=Large, State=Selected unfocused, Current=True",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 126,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "color/gray/39"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
+      }
+    },
+    "surface=explorer,size=medium,state=cut,current=false": {
       "node": {
         "height": 76,
         "width": 88,
@@ -3398,6 +3785,7 @@
       },
       "nodeId": "69:2141",
       "properties": {
+        "Current": "False",
         "Size": "Medium",
         "State": "Cut",
         "Surface": "Explorer"
@@ -3478,7 +3866,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Explorer, Size=Medium, State=Cut",
+        "name": "Surface=Explorer, Size=Medium, State=Cut, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -3497,7 +3885,7 @@
         "width": "size/file-item/explorer-width"
       }
     },
-    "surface=explorer,size=medium,state=cut-selected": {
+    "surface=explorer,size=medium,state=cut-selected,current=false": {
       "node": {
         "height": 76,
         "width": 88,
@@ -3506,6 +3894,7 @@
       },
       "nodeId": "69:2145",
       "properties": {
+        "Current": "False",
         "Size": "Medium",
         "State": "Cut selected",
         "Surface": "Explorer"
@@ -3589,7 +3978,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Explorer, Size=Medium, State=Cut selected",
+        "name": "Surface=Explorer, Size=Medium, State=Cut selected, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -3608,123 +3997,7 @@
         "width": "size/file-item/explorer-width"
       }
     },
-    "surface=explorer,size=medium,state=focused": {
-      "node": {
-        "height": 76,
-        "width": 88,
-        "x": 0,
-        "y": 0
-      },
-      "nodeId": "29:473",
-      "properties": {
-        "Size": "Medium",
-        "State": "Focused",
-        "Surface": "Explorer"
-      },
-      "tree": {
-        "children": [
-          {
-            "asset": {
-              "path": "images/file-folder"
-            },
-            "component": "file/Folder",
-            "fills": [
-              "IMAGE"
-            ],
-            "height": "size/icon/2xl",
-            "name": "item icon",
-            "size": {
-              "h": 48,
-              "w": 48
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FIXED"
-            },
-            "type": "INSTANCE",
-            "width": "size/icon/2xl"
-          },
-          {
-            "fills": [
-              "color/black/89"
-            ],
-            "name": "name",
-            "size": {
-              "h": 16,
-              "w": 80
-            },
-            "sizing": {
-              "h": "FILL",
-              "v": "HUG"
-            },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 2,
-              "maxLinesVariable": "line-clamp/two",
-              "segments": [
-                {
-                  "characters": "파일",
-                  "fill": "color/black/89",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "color/black/89",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "이름",
-                  "fill": "color/black/89",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT"
-          }
-        ],
-        "layout": {
-          "counterAlign": "CENTER",
-          "gap": "spacing/xs",
-          "mode": "VERTICAL",
-          "padding": [
-            "spacing/xs",
-            "spacing/xs",
-            "spacing/xs",
-            "spacing/xs"
-          ],
-          "primaryAlign": "MIN"
-        },
-        "name": "Surface=Explorer, Size=Medium, State=Focused",
-        "radius": [
-          "radius/control",
-          "radius/control",
-          "radius/control",
-          "radius/control"
-        ],
-        "size": {
-          "h": 76,
-          "w": 88
-        },
-        "sizing": {
-          "h": "FIXED",
-          "v": "HUG"
-        },
-        "strokeWeight": [
-          "stroke-width/default",
-          "stroke-width/default",
-          "stroke-width/default",
-          "stroke-width/default"
-        ],
-        "strokes": [
-          "color/blue/18"
-        ],
-        "strokesIncludedInLayout": false,
-        "type": "COMPONENT",
-        "width": "size/file-item/explorer-width"
-      }
-    },
-    "surface=explorer,size=medium,state=hover": {
+    "surface=explorer,size=medium,state=hover,current=false": {
       "node": {
         "height": 76,
         "width": 88,
@@ -3733,6 +4006,7 @@
       },
       "nodeId": "29:465",
       "properties": {
+        "Current": "False",
         "Size": "Medium",
         "State": "Hover",
         "Surface": "Explorer"
@@ -3814,7 +4088,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Explorer, Size=Medium, State=Hover",
+        "name": "Surface=Explorer, Size=Medium, State=Hover, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -3833,7 +4107,7 @@
         "width": "size/file-item/explorer-width"
       }
     },
-    "surface=explorer,size=medium,state=rename": {
+    "surface=explorer,size=medium,state=rename,current=false": {
       "node": {
         "height": 82,
         "width": 88,
@@ -3842,6 +4116,7 @@
       },
       "nodeId": "29:477",
       "properties": {
+        "Current": "False",
         "Size": "Medium",
         "State": "Rename",
         "Surface": "Explorer"
@@ -3985,7 +4260,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Explorer, Size=Medium, State=Rename",
+        "name": "Surface=Explorer, Size=Medium, State=Rename, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -4004,7 +4279,7 @@
         "width": "size/file-item/explorer-width"
       }
     },
-    "surface=explorer,size=medium,state=rest": {
+    "surface=explorer,size=medium,state=rest,current=false": {
       "node": {
         "height": 76,
         "width": 88,
@@ -4013,6 +4288,7 @@
       },
       "nodeId": "29:461",
       "properties": {
+        "Current": "False",
         "Size": "Medium",
         "State": "Rest",
         "Surface": "Explorer"
@@ -4091,7 +4367,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Explorer, Size=Medium, State=Rest",
+        "name": "Surface=Explorer, Size=Medium, State=Rest, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -4100,7 +4376,7 @@
         ],
         "reactions": [
           {
-            "destination": "Surface=Explorer, Size=Medium, State=Hover",
+            "destination": "Surface=Explorer, Size=Medium, State=Hover, Current=False",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -4128,7 +4404,124 @@
         "width": "size/file-item/explorer-width"
       }
     },
-    "surface=explorer,size=medium,state=selected": {
+    "surface=explorer,size=medium,state=rest,current=true": {
+      "node": {
+        "height": 76,
+        "width": 88,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "29:473",
+      "properties": {
+        "Current": "True",
+        "Size": "Medium",
+        "State": "Rest",
+        "Surface": "Explorer"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "fills": [
+              "color/black/89"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 80
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "color/black/89",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, Size=Medium, State=Rest, Current=True",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 76,
+          "w": 88
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "color/black/89"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/file-item/explorer-width"
+      }
+    },
+    "surface=explorer,size=medium,state=selected,current=false": {
       "node": {
         "height": 76,
         "width": 88,
@@ -4137,6 +4530,7 @@
       },
       "nodeId": "29:469",
       "properties": {
+        "Current": "False",
         "Size": "Medium",
         "State": "Selected",
         "Surface": "Explorer"
@@ -4218,7 +4612,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Surface=Explorer, Size=Medium, State=Selected",
+        "name": "Surface=Explorer, Size=Medium, State=Selected, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -4233,6 +4627,356 @@
           "h": "FIXED",
           "v": "HUG"
         },
+        "type": "COMPONENT",
+        "width": "size/file-item/explorer-width"
+      }
+    },
+    "surface=explorer,size=medium,state=selected,current=true": {
+      "node": {
+        "height": 78,
+        "width": 88,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:15619",
+      "properties": {
+        "Current": "True",
+        "Size": "Medium",
+        "State": "Selected",
+        "Surface": "Explorer"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "fills": [
+              "color/black/89"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 78
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "color/black/89",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/blue/9"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, Size=Medium, State=Selected, Current=True",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 78,
+          "w": 88
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "color/black/89"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/file-item/explorer-width"
+      }
+    },
+    "surface=explorer,size=medium,state=selected-unfocused,current=false": {
+      "node": {
+        "height": 76,
+        "width": 88,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:15622",
+      "properties": {
+        "Current": "False",
+        "Size": "Medium",
+        "State": "Selected unfocused",
+        "Surface": "Explorer"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "fills": [
+              "color/black/89"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 80
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "color/black/89",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/gray/13"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, Size=Medium, State=Selected unfocused, Current=False",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 76,
+          "w": 88
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/explorer-width"
+      }
+    },
+    "surface=explorer,size=medium,state=selected-unfocused,current=true": {
+      "node": {
+        "height": 78,
+        "width": 88,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:15625",
+      "properties": {
+        "Current": "True",
+        "Size": "Medium",
+        "State": "Selected unfocused",
+        "Surface": "Explorer"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "fills": [
+              "color/black/89"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 78
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "color/black/89",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/gray/13"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, Size=Medium, State=Selected unfocused, Current=True",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 78,
+          "w": 88
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "color/gray/39"
+        ],
+        "strokesIncludedInLayout": true,
         "type": "COMPONENT",
         "width": "size/file-item/explorer-width"
       }
