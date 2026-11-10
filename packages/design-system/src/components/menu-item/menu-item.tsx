@@ -142,9 +142,10 @@ export function MenuItem({
             variant="checkbox"
             leading={
               <Menu.CheckboxItemIndicator className="flex">
+                {/* 선택 표시는 16px 자리 가운데의 12px 연한 회색 글리프다. 누름 상태에도 색이 그대로다. */}
                 <Asset
                   name="icons/ic_fluent_checkmark_20_regular.svg"
-                  className="size-size-icon-sm"
+                  className="size-size-icon-xs text-color-black-45 group-data-disabled:text-color-black-36"
                 />
               </Menu.CheckboxItemIndicator>
             }
