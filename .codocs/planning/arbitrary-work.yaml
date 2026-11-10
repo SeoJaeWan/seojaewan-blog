@@ -242,6 +242,18 @@ Notion 열 나누기: |
   - 순서 바꾸기의 자리는 Start 고정의 `moveStartPin`처럼 휴지통에 있어 보이지 않는 폴더까지 센 `favoritePins`의 자리다.
   - 다시 들어올 때 없어진 폴더는 목록에서 뺀다(Start 고정의 정리와 같은 `cleanReferences`). 휴지통에 든 폴더는 목록에 남기고 보일 때만 숨긴다.
   - 끌어 놓은 자리에 고정하는 것(자리 인자)은 끌기 PR에서 더한다. 이번에는 맨 뒤 고정만 두었다.
+  - 컴포넌트 PR(#880, #883, #891, #873, #890, #889, #888, #887): 앞 PR의 코드가 필요한 PR은 그 브랜치를 병합해 쌓고 앞 PR부터 병합했다(#889는 #890 위, #887은 #888 위). CI를 모두 통과한 PR은 파일 탐색기 세션이 병합했다.
+  - `ExplorerStatusBar`의 `view` 값 이름은 앱의 `ExplorerViewMode`(`large`, `medium`, `details`)와 같게 했다. 큰 아이콘 버튼 아이콘은 검수 문서 후보(`square`)가 아니라 export의 `laptop`을 따랐다.
+  - `DropDownButton`의 `hasIcon`·`icon`은 export에 위치 정보가 없어 `Button`과 같게 글자 앞, 기본 `add` 아이콘으로 했다.
+  - `BreadcrumbChevron`의 열림은 `aria-expanded`를 CSS로 읽지 않고 `isOpen` prop으로 받는다. 열린 동안 hover 바탕은 덧씌우지 않는다(피그마에 Open+Hover가 없음). `BreadcrumbItem`의 메뉴 연결은 `BrowserToolbar`의 `renderMenuButton` 방식(`renderSeparator`)을 따랐다.
+  - 경로 맨 앞 꺾쇠의 접근성 이름은 `최상위 항목`이다. 처음의 `최상위 위치`는 검색 결과 `위치` 열 제목과 이름이 겹쳐 E2E가 두 버튼을 찾았다. 마디 꺾쇠는 `하위 폴더`이고, 마디 이름을 붙이면 같은 이유로 E2E가 겹쳐 붙이지 않았다.
+  - 주소창 `×`는 누를 때 포커스를 가져가지 않고 Tab으로 닿지 않는다(`tabIndex={-1}`). 입력칸이 포커스를 잃으면 편집이 끝나기 때문이다. 값을 `value`로 정하는 앱은 `onClear`에서 직접 비운다.
+  - 탭 기록 칸은 따로 배열을 두지 않고 `history`를 `{ location, selection? }` 배열로 바꿨다. 탭을 바꾸거나 새 탭을 열 때도 지금 칸에 선택을 적어 돌아오면 되살린다.
+  - 즐겨찾기로 끌 때 놓을 자리는 칸 높이의 위·아래 1/4과 구분선이고, 가로선은 2px(`stroke-width-focus-outer`)이다. 여러 폴더를 한꺼번에 끌 수 있어 자리 인자는 `pinToFavorites`에 더하지 않고 `placeFavoritePins(ids, slot)`을 새로 두었다(자리는 휴지통에 든 폴더를 빼고 센 차례). 메뉴용 `toggleFavoritePin`도 두었다.
+  - 놓을 수 없을 때 툴팁 글자는 검수 문서의 "🚫 즐겨찾기에 고정" 대신 피그마대로 "즐겨찾기에 고정"으로 하고 커서만 `not-allowed`로 했다.
+  - 휴지통 마디 뒤에는 꺾쇠를 두지 않는다. 휴지통 안의 폴더는 열 수 없다. 꺾쇠 목록 코드는 lint 폴더 경계 규칙에 따라 `features/file-explorer/breadcrumb-menu/`에 두었다.
+  - 위치 아이콘 함수는 자산 이름을 고르는 `getExplorerLocationIcon` 하나로 탭·위치 칸·탐색 창·꺾쇠 목록이 함께 쓴다.
+  - 이 섹션 위의 `@hold를 없앰` 키가 `@`로 시작해 YAML로 읽히지 않아 따옴표로 감쌌다. 내용은 바꾸지 않았다.
 
 작업 표시줄 세션: |
   `fix/taskbar-review` PR에서 작업 표시줄 검수(마지막 PR에서 지웠다)의 2·3·7번과 10번의 앱 이름을 고치며 규칙으로 정한 것이다.
