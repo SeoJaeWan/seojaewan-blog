@@ -227,3 +227,10 @@ Notion 열 나누기: |
   - 파일 탐색기: 경로 꺾쇠는 열린 `⌄` 모양과 목록 자리가 피그마에 없어 `BreadcrumbChevron`(Rest·Hover·Open)과 `Explorer/BreadcrumbMenu`를 그렸다. 끌기 툴팁의 🚫는 피그마에서 그림 문자가 그려지지 않아 글자만 두었다. `정렬`·`보기` 꺾쇠를 위해 `DropDownButton`에 `Has icon`·`Icon`을 더했다.
   - 창 흐림: 창 열기·복원 클래스를 `entered`에서 떼고, 스냅 클래스는 `animationend`에서 뗀다. `data-window-motion` 값은 스토리 테스트가 보므로 그대로 둔다.
   - 내보내기: 피그마 MCP 진입점(`use-figma-export.js`, 66,526자)이 `use_figma` 코드 길이 제한(5만 자)을 넘어, 이번에는 플러그인 화면으로 내보냈다(사람 결정). 진입점을 나누는 일은 [[남은 작업]]에 올릴 후보다.
+  - 포커스 없는 선택을 고르는 방법은 사람이 정했다(#901, 목록 role 기준). 아래는 컴포넌트 PR에서 정한 것이다.
+  - #872 IconButton: 피그마에 켜짐의 hover·pressed를 그리지 않아 Subtle 규칙을 그대로 따른다(켜짐 선은 hover에도 남는다). `close` 눌림 아이콘은 CaptionButton의 `white-70`이 아니라 흰색이다. 피그마 Close 호버·눌림 아이콘이 처음 내보낼 때 검정으로 나가 피그마를 흰색으로 고쳐 다시 내보냈다.
+  - #877 MenuItem: 확인·라디오의 아이콘 칸은 Default 아이콘 칸과 같은 16px 틀이다. 모바일 단축키 숨김은 메뉴 데이터 쪽 규칙이라 컴포넌트에는 더하지 않았다. 코드 타입 자리를 지키려고 동작 스토리 `CheckIconsAndShortcut`을 더했다.
+  - #879 NavigationItem: `isCurrent`는 `isSelected`와 따로 받는다(선택하지 않은 현재 칸에도 선이 붙는다). 현재 칸 선은 피그마처럼 레이아웃에 들어가는 `border`다. 압정 자리는 피그마의 숨은 `pin icon` 레이어를 보고 라벨 뒤 `gap-spacing-xs`로 두었다. `Figma` 스토리는 Selected일 때만 render 안 ref 콜백으로 칸에 포커스를 준다(div의 `autoFocus`는 동작하지 않음).
+  - #882 FileRow: `Figma` 스토리는 클래스 없는 `role="listbox"` 래퍼와 ref 콜백 포커스로 파랑 변형을 그리고, `Selected unfocused`만 포커스를 주지 않는다. 이름 바꾸기 입력창의 포커스는 빼앗지 않는다. Cut selected·Rename의 선택 바탕도 Selected와 같이 포커스 유무로 고른다. Hover 바탕은 포커스와 상관없이 그대로다. 동작 스토리 `ListFocus`는 색을 숫자로 적지 않고 포커스 전후 계산된 색이 바뀌는지로 확인한다.
+  - #895·#897 메뉴·창 조립: 그림만 담는 PR도 새 자산이 들어오면 `generate:assets` 결과와 changeset이 있어야 CI를 통과해, 둘을 더해 병합했다.
+  - `피그마 작업 검수` 문서는 다른 검수 문서가 섹션 링크로 가리키고 있어, 끝난 섹션을 지우지 않고 "끝남"과 PR 번호로 줄였다. 영역 세션이 모두 끝나면 문서를 지우고 링크를 정리한다.
