@@ -800,15 +800,16 @@
 
 /*
  * 작업 표시줄 앱 버튼 우클릭 메뉴 열기(조립 흐름 motion-taskbar-menu-enter). 메뉴가 작업 표시줄 위 끝에서 잘린 채 위로 미끄러져 올라온다.
- * 페이드는 없고 실행 중 값도 없다. 이동 거리 135는 흐름 메뉴(Menu/TaskbarApp) 높이 111에 아래 여백 24를 더한 값을 흐름 그대로 옮긴 것이다.
- * 작업 표시줄과 메뉴 사이는 12px(Development 주석)이라 틀의 아래를 그만큼만 넓혀 작업 표시줄 위 끝을 틀의 아래 끝으로 삼는다.
- * 그러면 높이 123px 이하 메뉴는 시작할 때 틀 밖에 있다.
+ * 페이드는 없고 실행 중 값도 없다. 시작 이동은 흐름에서 메뉴(Menu/TaskbarApp) 높이 111에 아래 여백 24를 더한 135이고,
+ * 실제 메뉴 높이는 달라질 수 있어 실행 중 값이다. 키프레임은 --motion-taskbar-menu-offset을 읽고, 앱이 넘기지 않으면 요소 자기 높이(100%)에
+ * 틀의 아래 여백(--spacing-md)을 더한 값을 쓴다. 작업 표시줄과 메뉴 사이는 12px(Development 주석)이라 틀의 아래를 그만큼만 넓혀
+ * 작업 표시줄 위 끝을 틀의 아래 끝으로 삼고, 그 끝 밖(높이 100% + 12px)에서 시작해 메뉴가 틀 아래로 완전히 숨는다.
  * 나머지 세 쪽은 그림자가 보이도록 안쪽 여백만큼 넓힌 뒤 같은 만큼 바깥 여백을 줄여 자리는 그대로다. 열린 뒤에는 쓰는 곳이 클래스를 뗀다.
  * 클래스는 잘라 내는 틀(앱에서는 Base UI 메뉴 팝업)에 붙이고 바로 안의 메뉴 바탕이 움직인다. 틀의 넓힌 여백은 누르는 영역이 되지 않는다.
  */
 @keyframes motion-taskbar-menu-enter {
   0% {
-    translate: 0 135px;
+    translate: 0 var(--motion-taskbar-menu-offset, calc(100% + var(--spacing-md)));
   }
 
   100% {
@@ -833,15 +834,16 @@
 
 /*
  * 작업 표시줄 창 미리보기 목록 열기(조립 흐름 motion-taskbar-preview-enter). 목록이 작업 표시줄 위 끝에서 잘린 채 위로 미끄러져 올라온다.
- * 페이드는 없고 실행 중 값도 없다. 이동 거리 190은 흐름 목록(Taskbar/PreviewList) 높이 166에 아래 여백 24를 더한 값을 흐름 그대로 옮긴 것이다.
- * 작업 표시줄과 목록 사이는 12px(Development 주석)이라 틀의 아래를 그만큼만 넓혀 작업 표시줄 위 끝을 틀의 아래 끝으로 삼는다.
- * 그러면 높이 178px 이하 목록은 시작할 때 틀 밖에 있다.
+ * 페이드는 없고 실행 중 값도 없다. 시작 이동은 흐름에서 목록(Taskbar/PreviewList) 높이 166에 아래 여백 24를 더한 190이고,
+ * 실제 목록 높이는 달라질 수 있어 실행 중 값이다. 키프레임은 --motion-taskbar-preview-offset을 읽고, 앱이 넘기지 않으면 요소 자기 높이(100%)에
+ * 틀의 아래 여백(--spacing-md)을 더한 값을 쓴다. 작업 표시줄과 목록 사이는 12px(Development 주석)이라 틀의 아래를 그만큼만 넓혀
+ * 작업 표시줄 위 끝을 틀의 아래 끝으로 삼고, 그 끝 밖(높이 100% + 12px)에서 시작해 목록이 틀 아래로 완전히 숨는다.
  * 나머지 세 쪽은 그림자가 보이도록 안쪽 여백만큼 넓힌 뒤 같은 만큼 바깥 여백을 줄여 자리는 그대로다. 열린 뒤에는 쓰는 곳이 클래스를 뗀다.
  * 클래스는 잘라 내는 틀(앱에서는 미리보기 목록 팝업)에 붙이고 바로 안의 목록이 움직인다. 틀의 넓힌 여백은 누르는 영역이 되지 않는다.
  */
 @keyframes motion-taskbar-preview-enter {
   0% {
-    translate: 0 190px;
+    translate: 0 var(--motion-taskbar-preview-offset, calc(100% + var(--spacing-md)));
   }
 
   100% {
@@ -945,7 +947,7 @@
  * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다. 멈추면 정보가 사라지는 움직임만 남긴다([[디자인 기반:동작 줄이기]]).
  * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환, 순서 바꾸기 끌기는 여기서 움직임 없이 바로 바꾼다.
  * hover·pressed·focus 색 전환도 서서히 바뀌지 않고 바로 바뀐다.
- * 검색 돋보기 페이드, ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
+ * 검색 돋보기 강조(배율·그라데이션 페이드·회전)는 움직임 없이 끝 모습으로 바로 바뀐다. ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
  * 이미지 스켈레톤 반짝임은 반짝이지 않고 회색 칸만 보인다(반짝임 칠은 칸 밖 정지 자리에 남는다).
  * 애니메이션을 없애면 사라지는 요소는 기다릴 애니메이션이 없어 바로 빠진다([[피그마 연동:모션 클래스]]).
  */
@@ -974,6 +976,8 @@
   .motion-start-category-folder-open,
   .motion-image-skeleton,
   .motion-image-enter,
+  .motion-search-box-focus,
+  .motion-search-box-focus rect,
   .motion-menu-enter > *,
   .motion-taskbar-menu-enter > *,
   .motion-taskbar-preview-enter > * {
@@ -992,6 +996,11 @@
   .motion-control-state,
   .motion-search-box-focus-state {
     transition: none;
+  }
+
+  /* 검색 돋보기 강조의 끝 모습(배율 1.1)은 motion-search-box-focus-rest와 같다. 그라데이션은 보이고(투명도 1) 회전 160deg는 사각형 규칙이 이미 갖는다. */
+  .motion-search-box-focus {
+    scale: var(--motion-scale-lift);
   }
 
   /* 끄는 동안의 1.2배는 움직임 없이 바로 갖는다. */
