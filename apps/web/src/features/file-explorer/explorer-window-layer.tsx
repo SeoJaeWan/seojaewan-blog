@@ -142,11 +142,12 @@ export function ExplorerWindowLayer({
   }
 
   /**
-   * 고른 탭에서 위치로 간다.
+   * 고른 탭에서 위치로 간다. 같은 동작 안에서 작업 공간을 바꾼 뒤 갈 수 있으므로(주소창에서 휴지통 폴더를 복원하고 그 폴더로 가기)
+   * 그린 때의 배치가 아니라 저장소의 지금 배치로 위치를 확인한다.
    * @param target 갈 위치
    */
   function handleNavigate(target: ExplorerLocation): void {
-    update(navigateTo(content, workspace, target));
+    update(navigateTo(content, { items: useWorkspaceStore.getState().items }, target));
   }
 
   /** 뒤로 간다. */

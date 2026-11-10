@@ -2,10 +2,12 @@ import { describe, expect, it } from 'vitest';
 
 import {
   BLOG_FOLDER_ID,
+  createFolder,
   createInitialWorkspace,
   getLinkItemId,
   getPostItemId,
   RECYCLE_BIN_ID,
+  renameFolder,
   trashItems,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
@@ -150,7 +152,7 @@ describe('파일 탐색기:주소창 편집', () => {
     expect(findExplorerAddressTarget(workspace, '')).toBeUndefined();
   });
 
-  it('휴지통 안의 항목은 찾지 않는다', () => {
+  it('휴지통에 보낸 항목은 원래 경로로도, 휴지통 아래 경로로도 찾아 휴지통 항목으로 돌려준다', () => {
     const result = trashItems(
       workspace,
       ['folder:React', getLinkItemId('github')],
@@ -159,7 +161,52 @@ describe('파일 탐색기:주소창 편집', () => {
     if (!result.ok) {
       throw new Error(result.reason);
     }
-    expect(findExplorerAddressTarget(result.state, joinPath('Blog', 'React'))).toBeUndefined();
-    expect(findExplorerAddressTarget(result.state, 'github')).toBeUndefined();
+    const trashedFolder = { kind: 'trashed', id: 'folder:React', itemKind: 'folder' };
+    const trashedPost = {
+      kind: 'trashed',
+      id: getPostItemId({ collection: 'blog', slug: 'a' }),
+      itemKind: 'post',
+    };
+    expect(findExplorerAddressTarget(result.state, joinPath('Blog', 'React'))).toEqual(
+      trashedFolder,
+    );
+    expect(findExplorerAddressTarget(result.state, joinPath('휴지통', 'react'))).toEqual(
+      trashedFolder,
+    );
+    expect(findExplorerAddressTarget(result.state, joinPath('Blog', 'React', '가'))).toEqual(
+      trashedPost,
+    );
+    expect(findExplorerAddressTarget(result.state, joinPath('휴지통', 'React', '가'))).toEqual(
+      trashedPost,
+    );
+    expect(findExplorerAddressTarget(result.state, 'github')).toEqual({
+      kind: 'trashed',
+      id: getLinkItemId('github'),
+      itemKind: 'link',
+    });
+    expect(
+      findExplorerAddressTarget(result.state, joinPath('휴지통', '없는 항목')),
+    ).toBeUndefined();
+  });
+
+  it('같은 원래 경로에 휴지통 밖의 항목과 휴지통 항목이 함께 있으면 휴지통 밖의 항목을 고른다', () => {
+    const trashed = trashItems(workspace, ['folder:React'], '2026-10-28T09:00:00.000Z');
+    if (!trashed.ok) {
+      throw new Error(trashed.reason);
+    }
+    const created = createFolder(trashed.state, BLOG_FOLDER_ID, {
+      id: 'folder:new',
+      createdAt: '2026-10-29T09:00:00.000Z',
+    });
+    if (!created.ok) {
+      throw new Error(created.reason);
+    }
+    const renamed = renameFolder(created.state, 'folder:new', 'React');
+    if (!renamed.ok) {
+      throw new Error(renamed.reason);
+    }
+    expect(findExplorerAddressTarget(renamed.state, joinPath('Blog', 'React'))).toEqual(
+      location('folder:new'),
+    );
   });
 });

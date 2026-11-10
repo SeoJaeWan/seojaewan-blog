@@ -2,16 +2,13 @@ import type { JSX, MouseEventHandler } from 'react';
 
 import { MessageBox } from '@seojaewan/design-system';
 
+import { getTrashedItemMessage } from '@/shared/utils/trashed-item-message/trashed-item-message';
+
 /**
  * 휴지통에 있는 글 메시지 상자의 글자와 버튼. 조립(`MessageBoxTrashedPost`)과 모달로 띄우는 곳(`MessageBoxDialog`)이 같은 값을 쓴다.
+ * 탐색기 주소창의 휴지통 항목 상자와 같은 글자를 쓰도록 `getTrashedItemMessage`에서 만든다.
  */
-export const TRASHED_POST_MESSAGE = {
-  buttons: 'two',
-  title: '휴지통에 있는 글',
-  message: '이 글은 휴지통에 있어요. 복원하고 열까요?',
-  primaryLabel: '복원',
-  secondaryLabel: '취소',
-} as const;
+export const trashedPostMessage = getTrashedItemMessage('post');
 
 type MessageBoxTrashedPostProps = {
   onPrimaryClick?: MouseEventHandler<HTMLElement>;
@@ -36,7 +33,7 @@ export function MessageBoxTrashedPost({
 }: MessageBoxTrashedPostProps): JSX.Element {
   return (
     <MessageBox
-      {...TRASHED_POST_MESSAGE}
+      {...trashedPostMessage}
       onPrimaryClick={handlePrimaryClick}
       onSecondaryClick={handleSecondaryClick}
       className={className}
