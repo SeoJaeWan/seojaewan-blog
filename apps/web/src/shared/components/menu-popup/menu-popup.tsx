@@ -28,6 +28,8 @@ export type MenuPopupSubmenu = {
 export type MenuPopupCheckbox = {
   kind: 'checkbox';
   label: string;
+  icon?: MenuItemIcon;
+  shortcut?: string;
   isChecked: boolean;
   isDisabled?: boolean;
   onCheckedChange?: (checked: boolean) => void;
@@ -37,6 +39,8 @@ export type MenuPopupCheckbox = {
 export type MenuPopupRadioOption = {
   value: string;
   label: string;
+  icon?: MenuItemIcon;
+  shortcut?: string;
 };
 
 /**
@@ -229,6 +233,8 @@ function MenuEntry({ entry }: { entry: MenuPopupEntry }): JSX.Element {
         <MenuItem
           variant="checkbox"
           label={entry.label}
+          icon={entry.icon}
+          shortcut={entry.shortcut}
           isChecked={entry.isChecked}
           isDisabled={entry.isDisabled}
           onCheckedChange={handleCheckedChange}
@@ -251,6 +257,8 @@ function MenuEntry({ entry }: { entry: MenuPopupEntry }): JSX.Element {
                 key={option.value}
                 variant="radio"
                 label={option.label}
+                icon={option.icon}
+                shortcut={option.shortcut}
                 value={option.value}
               />
             ),
