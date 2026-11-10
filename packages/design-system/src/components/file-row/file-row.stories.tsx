@@ -3,18 +3,29 @@ import { expect } from 'storybook/test';
 
 import fileRowExport from '../../../figma/components/file-row/export.json';
 import { figmaFrame } from '../../story/figma-frame';
+import { StoryListbox } from '../../story/story-listbox';
 import { FileRow } from './file-row';
 
 // 피그마 FileRow Icon 속성의 기본 인스턴스(폴더 이미지)다. Vite와 Next.js가 모두 파일 주소로 바꿔 준다.
 const folderIcon = new URL('../../assets/images/file-folder.webp', import.meta.url).href;
 
-// 피그마 FileRow의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로, Focused는 Tab 키로 재현한다.
+// 피그마 FileRow의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로 재현한다.
 const VIEWS = ['default', 'recycle-bin'] as const;
-const STATES = ['rest', 'hover', 'selected', 'focused', 'rename', 'cut', 'cut-selected'] as const;
+const STATES = [
+  'rest',
+  'hover',
+  'selected',
+  'rename',
+  'cut',
+  'cut-selected',
+  'selected-unfocused',
+] as const;
 
 type FigmaArgs = {
   view: (typeof VIEWS)[number];
   state: (typeof STATES)[number];
+  /** 피그마 VARIANT 속성 Current */
+  isCurrent: boolean;
   /** 피그마 TEXT 속성 Name */
   name: string;
   /** 피그마 TEXT 속성 Date */
@@ -38,6 +49,7 @@ const meta = {
   args: {
     view: 'default',
     state: 'rest',
+    isCurrent: false,
     name: '파일 이름',
     date: '수정한 날짜',
     type: '유형',
@@ -49,6 +61,7 @@ const meta = {
   argTypes: {
     view: { control: 'inline-radio', options: VIEWS },
     state: { control: 'select', options: STATES },
+    isCurrent: { control: 'boolean' },
     name: { control: 'text' },
     date: { control: 'text' },
     type: { control: 'text' },
@@ -57,25 +70,31 @@ const meta = {
     originalLocation: { control: 'text' },
     deletedDate: { control: 'text' },
   },
-  // 너비는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 크기(size/file-row/width)로 감싼다([[디자인 시스템:컴포넌트 조립 규칙]]).
+  // 줄 너비는 칸 너비의 합(HUG)이고, FigmaFrame이 피그마 원본의 크기 방식대로 감싼다.
   decorators: [figmaFrame(fileRowExport)],
-  // Focused는 캡처 도구가 Tab으로 포커스를 옮기므로 줄이 포커스를 받을 수 있게 한다. 선은 :focus-visible로 그린다.
+  // 선택 바탕과 현재 항목 선의 색은 목록 포커스로 고른다. 피그마 Selected unfocused만 포커스가 목록 밖에 있는 모습이고,
+  // 나머지 변형은 포커스가 목록 안에 있는 모습이라 StoryListbox가 줄에 포커스를 둔다.
   render: (args) => (
-    <FileRow
-      tabIndex={0}
-      view={args.view}
-      name={args.name}
-      date={args.date}
-      type={args.type}
-      location={args.location}
-      hasLocation={args.hasLocation}
-      originalLocation={args.originalLocation}
-      deletedDate={args.deletedDate}
-      icon={<img src={folderIcon} alt="" />}
-      isSelected={args.state === 'selected' || args.state === 'cut-selected'}
-      isCut={args.state === 'cut' || args.state === 'cut-selected'}
-      isRenaming={args.state === 'rename'}
-    />
+    <StoryListbox label="폴더 내용" isFocused={args.state !== 'selected-unfocused'}>
+      <FileRow
+        role="option"
+        aria-selected={args.state.includes('selected')}
+        tabIndex={0}
+        view={args.view}
+        name={args.name}
+        date={args.date}
+        type={args.type}
+        location={args.location}
+        hasLocation={args.hasLocation}
+        originalLocation={args.originalLocation}
+        deletedDate={args.deletedDate}
+        icon={<img src={folderIcon} alt="" />}
+        isSelected={args.state.includes('selected')}
+        isCut={args.state === 'cut' || args.state === 'cut-selected'}
+        isRenaming={args.state === 'rename'}
+        isCurrent={args.isCurrent}
+      />
+    </StoryListbox>
   ),
 } satisfies Meta<FigmaArgs>;
 
@@ -163,19 +182,64 @@ export const Renaming: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:상태]]
-/** 포커스 선은 prop 없이 키보드 포커스일 때만 그리고, 크기에 넣지 않으므로 포커스를 받아도 줄 크기가 같다 */
-export const Focused: Story = {
-  render: () => <FileRow data-testid="row" icon={<i />} tabIndex={0} />,
-  play: async ({ canvas, userEvent }) => {
-    const row = canvas.getByTestId('row');
-    const { offsetWidth, offsetHeight } = row;
+// @codocs [[바탕화면 검수:12. 탐색기 항목의 포커스 테두리]]
+// @codocs [[바탕화면 검수:13. 포커스가 없는 선택은 회색]]
+/**
+ * 선택 바탕과 현재 항목 선의 색은 목록(group/list)에 포커스가 있는지로 바뀐다. 현재 항목 선은 포커스가 목록을 떠나도 남고,
+ * 현재 항목이 아닌 줄에는 없다. 선은 크기에 넣지 않는다
+ */
+export const ListFocus: Story = {
+  render: () => (
+    <StoryListbox label="폴더 내용">
+      <FileRow
+        data-testid="current"
+        role="option"
+        aria-selected
+        tabIndex={0}
+        icon={<i />}
+        name="현재"
+        isSelected
+        isCurrent
+      />
+      <FileRow
+        data-testid="other"
+        role="option"
+        aria-selected={false}
+        tabIndex={-1}
+        icon={<i />}
+        name="다른 항목"
+      />
+    </StoryListbox>
+  ),
+  play: async ({ canvas, userEvent, step }) => {
+    const current = canvas.getByTestId('current');
+    const other = canvas.getByTestId('other');
+    const { offsetWidth, offsetHeight } = current;
+    const unfocusedBackground = getComputedStyle(current).backgroundColor;
+    const unfocusedLine = getComputedStyle(current, '::before').backgroundColor;
 
-    await userEvent.tab();
+    await step(
+      '포커스가 목록 밖이어도 현재 항목 선은 있고, 현재 항목이 아닌 줄에는 없다',
+      async () => {
+        await expect(getComputedStyle(current, '::before').content).not.toBe('none');
+        await expect(getComputedStyle(other, '::before').content).toBe('none');
+      },
+    );
 
-    await expect(row).toHaveFocus();
-    await expect(row.matches(':focus-visible')).toBe(true);
-    await expect(row.offsetWidth).toBe(offsetWidth);
-    await expect(row.offsetHeight).toBe(offsetHeight);
+    await step('포커스가 목록 안에 들어오면 선택 바탕과 선 색이 바뀌고 크기는 같다', async () => {
+      await userEvent.tab();
+      await expect(current).toHaveFocus();
+      await expect(getComputedStyle(current).backgroundColor).not.toBe(unfocusedBackground);
+      await expect(getComputedStyle(current, '::before').backgroundColor).not.toBe(unfocusedLine);
+      await expect(current.offsetWidth).toBe(offsetWidth);
+      await expect(current.offsetHeight).toBe(offsetHeight);
+    });
+
+    await step('포커스가 목록을 떠나면 회색으로 돌아가고 선은 남는다', async () => {
+      current.blur();
+      await expect(current).not.toHaveFocus();
+      await expect(getComputedStyle(current).backgroundColor).toBe(unfocusedBackground);
+      await expect(getComputedStyle(current, '::before').backgroundColor).toBe(unfocusedLine);
+    });
   },
 };
