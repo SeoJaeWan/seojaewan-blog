@@ -1,0 +1,62 @@
+{
+  "delay": {
+    "ms": 0,
+    "token": null
+  },
+  "directives": {},
+  "duration": {
+    "ms": 167,
+    "token": "motion/duration/fast"
+  },
+  "iterations": 1,
+  "name": "motion-reorder-press",
+  "nodeId": "3431:5661",
+  "notes": [
+    {
+      "category": "Development",
+      "path": "TaskbarButton",
+      "text": "누르면 아이콘이 작아지고(motion-reorder-press), 4px 넘게 움직이면 끌기가 시작된다(motion-reorder-lift). 끄는 항목 가운데가 칸 경계를 지나면 옆 항목이 밀리고(motion-reorder-slide), 놓으면 새 자리로 들어간다(motion-reorder-drop). 실제로는 아이콘만 크기가 바뀌고 끄는 동안 버튼 바탕은 보이지 않는다."
+    }
+  ],
+  "source": "flow",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 167,
+        "token": "motion/duration/fast"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": {
+            "x": 1,
+            "y": 1
+          },
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/direct-entrance",
+          "offset": 1,
+          "time": 167,
+          "value": {
+            "x": 0.8,
+            "y": 0.8
+          },
+          "valueToken": "motion/scale/reorder-press"
+        }
+      ],
+      "node": "TaskbarButton",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "TaskbarButton",
+      "property": "SCALE_XY"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=3431-5661"
+}

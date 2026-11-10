@@ -1,5 +1,5 @@
 {
-  "description": "눌러서 정렬하는 열 제목 하나로, DetailsHeader에 쓴다.\n@sample-size width",
+  "description": "눌러서 정렬하는 열 제목 하나로, DetailsHeader에 쓴다.",
   "name": "ColumnHeader",
   "nodeId": "31:359",
   "propertyDefinitions": {
@@ -119,6 +119,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Sort=Ascending, State=Hover",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 188
@@ -248,6 +251,9 @@
             "trigger": "ON_HOVER"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 188
@@ -358,6 +364,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Sort=Descending, State=Hover",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 188
@@ -483,6 +492,9 @@
             "trigger": "ON_HOVER"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 188
@@ -574,6 +586,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Sort=None, State=Hover",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 32,
           "w": 188
@@ -679,6 +694,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 32,
