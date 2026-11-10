@@ -256,3 +256,8 @@ Chrome 세션: |
   - #884 BrowserTab: 활성 탭 오목 모서리는 검수 문서의 가상 요소 원형 그라디언트 대신 export.json대로 Shapes 자산(`shapes/browser-tab-corner-left·right`)을 `Asset`으로 탭 밖 아래 양옆에 그렸다. 크기는 견본 크기(8, 변수 없음)라 같은 값의 `size-spacing-sm`으로, 위치는 `right-position-full`·`left-position-full`과 `bottom-spacing-none`으로 두었다. 칠은 탭 바탕과 같은 `text-color-white`다.
   - #884 BrowserTab: 모서리 조각은 탭 밖으로 나오므로 `pointer-events-none`을 주어 옆 탭의 누르기·호버를 막지 않게 했다.
   - #884 BrowserTab: 피그마 기본 파비콘이 아직 `file/Document`라 `Figma` 스토리는 그대로 두었다(검수 8번의 Material `description`은 내보낸 그림에 아직 없다).
+  - #885 AddressBar: 피그마 `Filled`는 SearchBox처럼 prop을 두지 않고 입력값으로 정한다. 앞 아이콘은 CSS `:placeholder-shown`(`group-has-placeholder-shown:`)으로 사이트 정보(i)와 돋보기를 바꿔, 제어·비제어 입력 모두 상태 없이 따라간다.
+  - #885 AddressBar: `placeholder` 기본값은 url·query처럼 피그마 TEXT 속성 기본값("글 검색 또는 URL 입력")을 그대로 쓴다. `Figma` 스토리는 `isFilled`가 거짓이면 url·query를 비운다.
+  - #885 AddressBar: 빈 주소창 동작 스토리 `Empty`는 아이콘을 viewBox(Material 20, Fluent 24)로 구분해 비었을 때 돋보기, 입력하면 사이트 정보 아이콘인지 확인한다.
+  - #892 BrowserTabStrip: 탭 검색(⌄) 버튼은 모양과 자리만 그리고, 앱이 메뉴를 붙일 수 있게 BrowserToolbar의 `renderMenuButton`과 같은 방식으로 `renderTabSearchButton`(버튼 요소를 받아 감싸는 함수)과 `onTabSearch`를 열었다. 접근성 이름은 `tabSearchLabel`(기본 "탭 검색")이고, + 버튼 이름도 같은 꼴로 `newTabLabel`(기본 "새 탭")을 열었다. ⌄ 감싸기는 + 감싸기와 같은 `shrink-shrink-none items-start overflow-clip pb-spacing-2xs`다.
+  - #893 BrowserToolbar: 아래 1px 안쪽 선은 이 저장소의 한 면 선 방식(`border-b-stroke-width-default border-color-black-22`, LayerSurface의 `border-t-*`와 같다)으로 그렸다. 박스 크기를 border-box로 두므로 높이 46은 그대로이고 선은 안쪽에 들어간다. 데스크톱·모바일 Chrome 창이 같은 `toolbar`를 쓰므로 둘 다에 들어간다.

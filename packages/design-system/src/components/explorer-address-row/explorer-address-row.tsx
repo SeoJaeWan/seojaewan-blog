@@ -1,4 +1,4 @@
-import type { ChangeEvent, ComponentProps, JSX, ReactNode } from 'react';
+import type { ChangeEvent, ComponentProps, JSX, ReactElement, ReactNode } from 'react';
 
 import { cn } from '../../cn';
 import { Breadcrumb } from '../breadcrumb/breadcrumb';
@@ -16,6 +16,10 @@ type ExplorerAddressRowProps = Omit<ComponentProps<'div'>, 'children'> & {
   locationIcon: ReactNode;
   isBreadcrumbEditing?: boolean;
   breadcrumbEditFieldProps?: ComponentProps<typeof Breadcrumb>['editFieldProps'];
+  onBreadcrumbClear?: () => void;
+  breadcrumbSeparatorLabel?: string;
+  isBreadcrumbSeparatorOpen?: boolean;
+  renderBreadcrumbSeparator?: (separator: ReactElement) => ReactNode;
   onBack?: () => void;
   canGoBack?: boolean;
   canGoForward?: boolean;
@@ -42,6 +46,11 @@ type ExplorerAddressRowProps = Omit<ComponentProps<'div'>, 'children'> & {
  * @param props.locationIcon 피그마 Breadcrumb의 `Location icon` 인스턴스 교체 속성. 경로 앞 위치 아이콘이다. 쓰는 곳마다 다르므로 꼭 넘긴다
  * @param props.isBreadcrumbEditing 안쪽 Breadcrumb의 피그마 State=Editing. 경로 칸 대신 경로 글자 입력칸을 그린다
  * @param props.breadcrumbEditFieldProps 안쪽 Breadcrumb의 편집 입력칸에 넘길 값·동작·접근성 속성(Breadcrumb `editFieldProps`). `isBreadcrumbEditing`일 때만 쓴다
+ * @param props.onBreadcrumbClear 안쪽 Breadcrumb 편집 입력칸의 지우기 버튼을 눌렀을 때(Breadcrumb `onClear`). `value`로 값을 정하면 여기서 비운다
+ * @param props.breadcrumbSeparatorLabel 안쪽 Breadcrumb 맨 앞 꺾쇠 버튼의 접근성 이름(Breadcrumb `separatorLabel`)
+ * @param props.isBreadcrumbSeparatorOpen 안쪽 Breadcrumb 맨 앞 꺾쇠 버튼이 연 메뉴가 열려 있는지(Breadcrumb `isSeparatorOpen`)
+ * @param props.renderBreadcrumbSeparator 안쪽 Breadcrumb 맨 앞 꺾쇠 버튼을 메뉴 트리거로 감싸 그린다(Breadcrumb `renderSeparator`).
+ *   마디마다의 꺾쇠 메뉴는 children의 BreadcrumbItem에 같은 이름 속성으로 붙인다
  * @param props.onBack 뒤로 버튼을 눌렀을 때
  * @param props.canGoBack 뒤로 갈 수 있는지. false면 뒤로 버튼을 비활성(IconButton disabled)으로 둔다
  * @param props.canGoForward 앞으로 갈 수 있는지. false면 앞으로 버튼을 비활성으로 둔다. desktop만 보인다
@@ -63,6 +72,10 @@ export function ExplorerAddressRow({
   locationIcon,
   isBreadcrumbEditing = false,
   breadcrumbEditFieldProps,
+  onBreadcrumbClear: handleBreadcrumbClear,
+  breadcrumbSeparatorLabel,
+  isBreadcrumbSeparatorOpen,
+  renderBreadcrumbSeparator,
   onBack: handleBack,
   canGoBack = true,
   canGoForward = true,
@@ -80,7 +93,8 @@ export function ExplorerAddressRow({
 }: ExplorerAddressRowProps): JSX.Element {
   const isDesktop = device === 'desktop';
   const rowClassName = cn(
-    'flex items-center gap-spacing-xs overflow-clip px-spacing-sm py-spacing-sm-nudge',
+    // 아래 1px 선은 명령 모음과 가르는 구분선이다(피그마 아래쪽 stroke, 레이아웃에 든다).
+    'flex items-center gap-spacing-xs overflow-clip border-b-stroke-width-default border-color-black-8 px-spacing-sm py-spacing-sm-nudge',
     className,
   );
   /**
@@ -151,6 +165,10 @@ export function ExplorerAddressRow({
         locationIcon={locationIcon}
         isEditing={isBreadcrumbEditing}
         editFieldProps={breadcrumbEditFieldProps}
+        onClear={handleBreadcrumbClear}
+        separatorLabel={breadcrumbSeparatorLabel}
+        isSeparatorOpen={isBreadcrumbSeparatorOpen}
+        renderSeparator={renderBreadcrumbSeparator}
         className="min-w-size-none flex-flex-fill"
       >
         {children}

@@ -179,3 +179,58 @@ export const DesktopSearchOpen: Story = {
     });
   },
 };
+
+type BreadcrumbPassThroughArgs = {
+  onBreadcrumbClear: () => void;
+};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** 안쪽 Breadcrumb의 맨 앞 꺾쇠와 편집 입력칸의 지우기 동작을 그대로 넘긴다 */
+export const BreadcrumbPassThrough: StoryObj<BreadcrumbPassThroughArgs> = {
+  args: { onBreadcrumbClear: fn() },
+  render: (args) => {
+    const { onBreadcrumbClear: handleBreadcrumbClear } = args;
+    return (
+      <>
+        <FigmaFrame source={explorerAddressRowExport} args={{ device: 'desktop' }}>
+          <ExplorerAddressRow
+            locationIcon={<img src={folderIcon} alt="" />}
+            breadcrumbSeparatorLabel="최상위 위치"
+            isBreadcrumbSeparatorOpen
+            renderBreadcrumbSeparator={(separator) => (
+              <span data-testid="root-menu">{separator}</span>
+            )}
+          >
+            {figmaItems}
+          </ExplorerAddressRow>
+        </FigmaFrame>
+        <FigmaFrame source={explorerAddressRowExport} args={{ device: 'desktop' }}>
+          <ExplorerAddressRow
+            locationIcon={<img src={folderIcon} alt="" />}
+            isBreadcrumbEditing
+            breadcrumbEditFieldProps={{ defaultValue: '바탕 화면\\Blog', 'aria-label': '주소' }}
+            onBreadcrumbClear={handleBreadcrumbClear}
+          />
+        </FigmaFrame>
+      </>
+    );
+  },
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+    await step('맨 앞 꺾쇠의 이름·열림·감싸기를 넘긴다', async () => {
+      const chevron = within(canvas.getByTestId('root-menu')).getByRole('button', {
+        name: '최상위 위치',
+      });
+      await expect(chevron).toHaveAttribute('data-open', 'true');
+    });
+
+    // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+    await step('지우기 버튼을 누르면 onBreadcrumbClear를 부른다', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: '지우기' }));
+      await expect(args.onBreadcrumbClear).toHaveBeenCalledTimes(1);
+      await expect(canvas.getByRole('textbox', { name: '주소' })).toHaveValue('');
+    });
+  },
+};
