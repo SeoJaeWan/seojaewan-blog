@@ -9,12 +9,14 @@ const ITEM_OPTIONS = {
   isInRecycleBin: false,
   isMobile: false,
   isPinned: false,
+  isFavorite: false,
   canTrash: true,
   onOpen: vi.fn(),
   onOpenInNewTab: vi.fn(),
   onOpenInNewWindow: vi.fn(),
   onCopyLink: vi.fn(),
   onTogglePin: vi.fn(),
+  onToggleFavorite: vi.fn(),
   onCut: vi.fn(),
   onRename: vi.fn(),
   onTrash: vi.fn(),
@@ -32,11 +34,12 @@ function labels(entries: readonly MenuPopupEntry[]): string[] {
 
 // @codocs [[파일 탐색기:우클릭 메뉴]]
 describe('파일 탐색기:우클릭 메뉴', () => {
-  it('폴더 메뉴는 열기·새 탭에서 열기·새 창에서 열기·고정·잘라내기·이름 바꾸기·삭제다', () => {
+  it('폴더 메뉴는 열기·새 탭에서 열기·새 창에서 열기·즐겨찾기·고정·잘라내기·이름 바꾸기·삭제다', () => {
     expect(labels(getItemMenuEntries(ITEM_OPTIONS))).toEqual([
       '열기',
       '새 탭에서 열기',
       '새 창에서 열기',
+      '즐겨찾기에 고정',
       '시작 화면에 고정',
       '-',
       '잘라내기',
@@ -81,6 +84,17 @@ describe('파일 탐색기:우클릭 메뉴', () => {
     expect(labels(getItemMenuEntries({ ...ITEM_OPTIONS, isPinned: true }))).toContain(
       '시작 화면에서 고정 해제',
     );
+  });
+
+  it('이미 즐겨찾기에 있는 폴더는 즐겨찾기에서 제거이고, 글과 외부 링크에는 즐겨찾기 항목이 없다', () => {
+    expect(labels(getItemMenuEntries({ ...ITEM_OPTIONS, isFavorite: true }))).toContain(
+      '즐겨찾기에서 제거',
+    );
+    for (const kind of ['post', 'link'] as const) {
+      expect(labels(getItemMenuEntries({ ...ITEM_OPTIONS, kind }))).not.toContain(
+        '즐겨찾기에 고정',
+      );
+    }
   });
 
   it('휴지통 안의 항목 메뉴는 복원뿐이다', () => {

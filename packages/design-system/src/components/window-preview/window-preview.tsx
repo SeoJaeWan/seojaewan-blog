@@ -24,7 +24,7 @@ type WindowPreviewProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[디자인 시스템:아이콘 자리]]
  * @codocs [[접근성:Tab]]
- * @codocs [[작업 표시줄 검수:6. 미리보기 카드 폭과 축소 화면]]
+ * @codocs [[작업 표시줄:창 미리보기]]
  * @param props 컴포넌트 속성
  * @param props.appIcon 피그마 WindowTitle의 노출 속성 App icon. 앱마다 다른 아이콘이라 꼭 넘긴다
  * @param props.title 피그마 WindowTitle의 노출 속성 Title. 창 제목 글자다

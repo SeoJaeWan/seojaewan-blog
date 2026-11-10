@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 
-import { getAppMenuEntries } from './app-menu-entries';
+import { getAppMenuEntries, getChromeJumpListEntries } from './app-menu-entries';
 
 /**
  * 메뉴 항목의 이름을 차례로 돌려준다. 구분선은 `-`다.
@@ -83,5 +83,74 @@ describe('작업 표시줄:우클릭 메뉴', () => {
       'Google Chrome',
       '작업 표시줄에서 제거',
     ]);
+  });
+
+  it('점프 목록이 있으면 맨 위에 두고 앱 묶음과의 사이에만 구분선을 둔다', () => {
+    const jumpList = getChromeJumpListEntries({
+      posts: [{ id: 'post:a', title: '글 A' }],
+      onOpenPost: vi.fn(),
+      onNewWindow: vi.fn(),
+    });
+    expect(toLabels(getAppMenuEntries({ ...menuOptions, app: 'chrome', jumpList }))).toEqual([
+      '자주 방문',
+      '작업',
+      '-',
+      'Google Chrome',
+      '작업 표시줄에서 제거',
+      '창 닫기',
+    ]);
+  });
+
+  it('점프 목록이 비면 구분선도 두지 않는다', () => {
+    expect(toLabels(getAppMenuEntries({ ...menuOptions, jumpList: [] }))).toEqual([
+      '파일 탐색기',
+      '작업 표시줄에서 제거',
+      '창 닫기',
+    ]);
+  });
+});
+
+// @codocs [[작업 표시줄:우클릭 메뉴]]
+describe('작업 표시줄:우클릭 메뉴 - Chrome 점프 목록', () => {
+  const posts = [
+    { id: 'post:a', title: '글 A' },
+    { id: 'post:b', title: '글 B' },
+  ];
+
+  it('"자주 방문"에 받은 글을 글 아이콘과 함께, "작업"에 새 창 하나를 둔다', () => {
+    const entries = getChromeJumpListEntries({ posts, onOpenPost: vi.fn(), onNewWindow: vi.fn() });
+    expect(entries).toMatchObject([
+      {
+        kind: 'group',
+        label: '자주 방문',
+        entries: [
+          { label: '글 A', icon: 'images/file-document' },
+          { label: '글 B', icon: 'images/file-document' },
+        ],
+      },
+      { kind: 'group', label: '작업', entries: [{ label: '새 창', icon: 'images/app-chrome' }] },
+    ]);
+  });
+
+  it('글을 고르면 그 글 id로, 새 창을 고르면 새 창으로 알린다', () => {
+    const onOpenPost = vi.fn();
+    const onNewWindow = vi.fn();
+    const [visited, tasks] = getChromeJumpListEntries({ posts, onOpenPost, onNewWindow });
+    if (visited?.kind !== 'group' || tasks?.kind !== 'group') {
+      throw new Error('묶음이 없다');
+    }
+    select(visited.entries, '글 B');
+    select(tasks.entries, '새 창');
+    expect(onOpenPost).toHaveBeenCalledWith('post:b');
+    expect(onNewWindow).toHaveBeenCalledOnce();
+  });
+
+  it('글이 없으면 "자주 방문" 칸을 숨긴다', () => {
+    const entries = getChromeJumpListEntries({
+      posts: [],
+      onOpenPost: vi.fn(),
+      onNewWindow: vi.fn(),
+    });
+    expect(toLabels(entries)).toEqual(['작업']);
   });
 });

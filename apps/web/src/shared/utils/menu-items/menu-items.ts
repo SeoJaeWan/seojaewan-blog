@@ -79,6 +79,20 @@ export function startPinMenuItem(isPinned: boolean, onClick: () => void): MenuPo
 }
 
 /**
+ * 폴더를 탐색기 즐겨찾기에 고정하거나 빼는 항목을 만든다. 탐색기·바탕화면 폴더 메뉴가 쓴다.
+ * @codocs [[파일 탐색기:우클릭 메뉴]]
+ * @codocs [[고정:즐겨찾기 고정]]
+ * @param isFavorite 이미 즐겨찾기에 있는지
+ * @param onClick 골랐을 때 할 일
+ * @returns 메뉴 항목
+ */
+export function favoritePinMenuItem(isFavorite: boolean, onClick: () => void): MenuPopupCommand {
+  return isFavorite
+    ? { label: '즐겨찾기에서 제거', icon: MENU_ICONS.pinOff, onClick }
+    : { label: '즐겨찾기에 고정', icon: MENU_ICONS.pin, onClick };
+}
+
+/**
  * 작업 표시줄에 앱을 고정하거나 고정을 푸는 항목을 만든다. 둘 다 고정 아이콘이다(피그마 `Menu/TaskbarApp`).
  * 작업 표시줄 앱 메뉴와 Start 모두 목록 메뉴가 쓴다.
  * @codocs [[작업 표시줄:우클릭 메뉴]]

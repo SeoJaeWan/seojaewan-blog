@@ -88,7 +88,8 @@ export const behavior = defineBehavior({
         await check('탐색 창의 Next.js를 누르면 창이 Next.js 폴더로 바뀐다', async () => {
           await expect(page.getByRole('region', { name: 'Next.js - 파일 탐색기' })).toBeVisible();
         });
-        await tree.getByText('Blog').click();
+        // Blog는 맨 위 즐겨찾기에도 있어 아래쪽 폴더 트리의 칸을 누른다.
+        await tree.getByText('Blog').last().click();
         await check('탐색 창의 Blog를 누르면 창이 Blog 폴더로 돌아온다', async () => {
           await expect(page.getByRole('region', { name: 'Blog - 파일 탐색기' })).toBeVisible();
         });

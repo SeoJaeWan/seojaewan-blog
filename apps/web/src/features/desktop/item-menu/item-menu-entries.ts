@@ -3,6 +3,7 @@ import {
   copyLinkMenuItem,
   cutMenuItem,
   emptyRecycleBinMenuItem,
+  favoritePinMenuItem,
   MENU_SEPARATOR,
   openInNewWindowMenuItem,
   openMenuItem,
@@ -16,12 +17,14 @@ import type { WorkspaceItemKind } from '@/shared/utils/workspace-rules/workspace
 type ItemMenuOptions = {
   kind: WorkspaceItemKind | null;
   isPinned: boolean;
+  isFavorite: boolean;
   canTrash: boolean;
   isRecycleBinEmpty: boolean;
   onOpen: () => void;
   onOpenInNewWindow: () => void;
   onCopyLink: () => void;
   onTogglePin: () => void;
+  onToggleFavorite: () => void;
   onCut: () => void;
   onRename: () => void;
   onTrash: () => void;
@@ -50,6 +53,7 @@ export function getItemMenuEntries(options: ItemMenuOptions): MenuPopupEntry[] {
       return [
         open,
         openInNewWindow,
+        favoritePinMenuItem(options.isFavorite, options.onToggleFavorite),
         pin,
         MENU_SEPARATOR,
         cut,

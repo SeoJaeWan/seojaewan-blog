@@ -74,6 +74,12 @@ export const OpensMenu: Story = {
     });
 
     // @codocs [[작업 표시줄:우클릭 메뉴]]
+    await step('메뉴 너비는 작업 표시줄 메뉴 너비(size/menu/taskbar-width, 294)다', async () => {
+      const panel = body.getByRole('menu').firstElementChild;
+      await expect(panel?.getBoundingClientRect().width).toBe(294);
+    });
+
+    // @codocs [[작업 표시줄:우클릭 메뉴]]
     await step('항목을 고르면 메뉴가 닫힌다', async () => {
       await fireEvent.click(body.getByRole('menuitem', { name: '창 닫기' }));
       await waitFor(() => expect(body.queryByRole('menu')).not.toBeInTheDocument());

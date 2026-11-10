@@ -48,32 +48,87 @@ export function getThumbnailScale(
 /** 모바일 창 미리보기 목록의 좌우 화면 여백(px) */
 export const MOBILE_PREVIEW_MARGIN = 12;
 
-/** 창 미리보기 카드의 원래 너비(px). 디자인 시스템 WindowPreview가 정한 값이다 */
-export const PREVIEW_CARD_WIDTH = 208;
+// 창 미리보기 카드(디자인 시스템 WindowPreview)의 치수다. 최대 너비 size/window-preview/width, 축소 화면 높이
+// size/window-preview/thumbnail-height, 카드 안쪽 여백 spacing/sm이다. 카드 너비 계산은 WindowPreview가 CSS로 하고,
+// 여기서는 축소 화면 자리 크기와 모바일 목록 너비를 같은 규칙으로 구한다.
+const PREVIEW_CARD_MAX_WIDTH = 208;
+const PREVIEW_THUMBNAIL_HEIGHT = 108;
+const PREVIEW_CARD_PADDING = 8;
 
 // 목록 판의 바깥 여백(테두리 1을 양쪽에), 카드 사이 간격이다. 판에는 안쪽 여백이 없고 카드는 틈 없이 붙는다([[작업 표시줄:창 미리보기]]).
 const PREVIEW_LIST_CHROME = 2;
 const PREVIEW_CARD_GAP = 0;
 
-/** 모바일 창 미리보기 목록의 크기. cardWidth는 카드 하나의 너비이며 카드가 많으면 같은 비율로 줄어든다. */
+/**
+ * 창 비율(너비 ÷ 높이)을 구한다. WindowPreview의 `aspectRatio`로 넘겨 카드 너비를 정한다.
+ * @param size 창이 화면에서 차지한 크기
+ * @param size.width 창 너비
+ * @param size.height 창 높이
+ * @returns 창 비율. 크기가 0이면 최대 너비가 되는 넓은 비율(16:9)
+ */
+export function getWindowAspectRatio(size: { width: number; height: number }): number {
+  if (size.width <= 0 || size.height <= 0) {
+    return (PREVIEW_CARD_MAX_WIDTH - PREVIEW_CARD_PADDING * 2) / PREVIEW_THUMBNAIL_HEIGHT;
+  }
+  return size.width / size.height;
+}
+
+/**
+ * 창 미리보기 카드 너비를 구한다. 축소 화면 높이 × 창 비율 + 좌우 여백이고 최대 208이다. WindowPreview가 CSS로 그리는 너비와 같다.
+ * @codocs [[작업 표시줄:창 미리보기]]
+ * @param aspectRatio 창 비율(너비 ÷ 높이)
+ * @returns 카드 너비(px)
+ */
+export function getPreviewCardWidth(aspectRatio: number): number {
+  return Math.min(
+    PREVIEW_THUMBNAIL_HEIGHT * aspectRatio + PREVIEW_CARD_PADDING * 2,
+    PREVIEW_CARD_MAX_WIDTH,
+  );
+}
+
+/**
+ * 카드 너비에서 축소 화면 자리 크기를 구한다. 자리 높이는 일정하고 너비는 카드 너비에서 좌우 여백을 뺀 것이다.
+ * 창 비율 그대로의 카드면 창 그림이 자리를 꽉 채운다.
+ * @codocs [[작업 표시줄:창 미리보기]]
+ * @param cardWidth 카드 너비(px)
+ * @returns 축소 화면 자리 크기
+ */
+export function getPreviewThumbnailBox(cardWidth: number): { width: number; height: number } {
+  return {
+    width: Math.max(0, cardWidth - PREVIEW_CARD_PADDING * 2),
+    height: PREVIEW_THUMBNAIL_HEIGHT,
+  };
+}
+
+/** 모바일 창 미리보기 목록의 크기. cardWidth는 줄인 카드 하나의 너비이며, 목록이 화면에 들어가면 undefined(카드마다 창 비율 폭)다. */
 export type MobilePreviewLayout = {
   listWidth: number;
-  cardWidth: number;
+  cardWidth: number | undefined;
 };
 
 /**
- * 모바일 창 미리보기 목록의 크기를 구한다. 카드를 원래 너비(208)로 놓은 목록이 화면 폭에서 좌우 12px 여백을 뺀 폭에 들어가면
+ * 모바일 창 미리보기 목록의 크기를 구한다. 카드마다 창 비율 폭으로 놓은 목록이 화면 폭에서 좌우 12px 여백을 뺀 폭에 들어가면
  * 그대로 두고, 넘치면 목록을 그 폭에 맞추고 카드를 같은 너비로 줄인다.
  * @codocs [[작업 표시줄:모바일]]
  * @param screenWidth 화면 폭
- * @param count 카드 개수
- * @returns 목록 판과 카드 너비
+ * @param aspectRatios 카드마다 창 비율(너비 ÷ 높이)
+ * @returns 목록 판과 줄인 카드 너비
  */
-export function getMobilePreviewLayout(screenWidth: number, count: number): MobilePreviewLayout {
-  const cards = Math.max(count, 1);
+export function getMobilePreviewLayout(
+  screenWidth: number,
+  aspectRatios: readonly number[],
+): MobilePreviewLayout {
+  const cards = Math.max(aspectRatios.length, 1);
   const gaps = PREVIEW_CARD_GAP * (cards - 1);
-  const naturalWidth = PREVIEW_CARD_WIDTH * cards + gaps + PREVIEW_LIST_CHROME;
-  const listWidth = Math.max(0, Math.min(naturalWidth, screenWidth - MOBILE_PREVIEW_MARGIN * 2));
+  const naturalWidth =
+    aspectRatios.reduce((sum, ratio) => sum + getPreviewCardWidth(ratio), 0) +
+    gaps +
+    PREVIEW_LIST_CHROME;
+  const maxWidth = screenWidth - MOBILE_PREVIEW_MARGIN * 2;
+  if (naturalWidth <= maxWidth) {
+    return { listWidth: naturalWidth, cardWidth: undefined };
+  }
+  const listWidth = Math.max(0, maxWidth);
   const cardWidth = Math.max(0, Math.floor((listWidth - PREVIEW_LIST_CHROME - gaps) / cards));
   return { listWidth, cardWidth };
 }

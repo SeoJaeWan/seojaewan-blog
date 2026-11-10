@@ -1,0 +1,417 @@
+{
+  "description": "탐색 창 즐겨찾기로 끌기. 항목 사이에 놓을 자리면 가로선과 \"즐겨찾기에 고정\" 툴팁(포인터 오른쪽 아래 16px), 글·외부 링크면 가로선 없이 not-allowed 커서와 \"🚫 즐겨찾기에 고정\" 툴팁. 복제본은 FileItem State=Cut.",
+  "name": "Explorer/FavoritesDrag",
+  "nodeId": "3477:21179",
+  "propertyDefinitions": {
+    "Drop": {
+      "default": "Allowed",
+      "options": [
+        "Allowed",
+        "Not allowed"
+      ],
+      "type": "VARIANT"
+    }
+  },
+  "variants": {
+    "drop=allowed": {
+      "node": {
+        "height": 365,
+        "width": 360,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:20923",
+      "properties": {
+        "Drop": "Allowed"
+      },
+      "report": {
+        "components": [
+          {
+            "component": "NavigationPane",
+            "paths": [
+              "navigation pane"
+            ],
+            "properties": {}
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/fav/Project"
+            ],
+            "properties": {
+              "Current": "False",
+              "Expand": "None",
+              "Has pin": true,
+              "Label": "Project",
+              "Level": "0",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/fav/Blog"
+            ],
+            "properties": {
+              "Current": "False",
+              "Expand": "None",
+              "Has pin": true,
+              "Label": "Blog",
+              "Level": "0",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/fav/About"
+            ],
+            "properties": {
+              "Current": "False",
+              "Expand": "None",
+              "Has pin": true,
+              "Label": "About",
+              "Level": "0",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "Separator",
+            "paths": [
+              "navigation pane/Items/favorites divider/Separator"
+            ],
+            "properties": {
+              "Orientation": "Horizontal"
+            }
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/nav/바탕 화면"
+            ],
+            "properties": {
+              "Current": "False",
+              "Expand": "Expanded",
+              "Has pin": false,
+              "Label": "바탕 화면",
+              "Level": "0",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/nav/Blog"
+            ],
+            "properties": {
+              "Current": "True",
+              "Expand": "Expanded",
+              "Has pin": false,
+              "Label": "Blog",
+              "Level": "1",
+              "State": "Selected unfocused"
+            }
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/nav/React"
+            ],
+            "properties": {
+              "Current": "False",
+              "Expand": "Collapsed",
+              "Has pin": false,
+              "Label": "React",
+              "Level": "2",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/nav/Next.js"
+            ],
+            "properties": {
+              "Current": "False",
+              "Expand": "None",
+              "Has pin": false,
+              "Label": "Next.js",
+              "Level": "2",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/nav/TypeScript"
+            ],
+            "properties": {
+              "Current": "False",
+              "Expand": "None",
+              "Has pin": false,
+              "Label": "TypeScript",
+              "Level": "2",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/nav/휴지통"
+            ],
+            "properties": {
+              "Current": "False",
+              "Expand": "None",
+              "Has pin": false,
+              "Label": "휴지통",
+              "Level": "0",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "FileItem",
+            "paths": [
+              "drag ghost"
+            ],
+            "properties": {
+              "Current": "False",
+              "Name": "TypeScript",
+              "Size": "Large",
+              "State": "Cut",
+              "Surface": "Explorer"
+            }
+          },
+          {
+            "component": "Tooltip",
+            "paths": [
+              "drag tooltip"
+            ],
+            "properties": {
+              "Message": "메시지 내용",
+              "Text": "즐겨찾기에 고정",
+              "Variant": "Default"
+            }
+          }
+        ],
+        "displayOnly": [],
+        "drawn": [
+          {
+            "nodeId": "3477:21047",
+            "path": "drop line",
+            "text": "칠·모양"
+          }
+        ],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
+        "name": "Drop=Allowed",
+        "size": {
+          "h": 365,
+          "w": 360
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        }
+      }
+    },
+    "drop=not-allowed": {
+      "node": {
+        "height": 381,
+        "width": 360,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:21053",
+      "properties": {
+        "Drop": "Not allowed"
+      },
+      "report": {
+        "components": [
+          {
+            "component": "NavigationPane",
+            "paths": [
+              "navigation pane"
+            ],
+            "properties": {}
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/fav/Project"
+            ],
+            "properties": {
+              "Current": "False",
+              "Expand": "None",
+              "Has pin": true,
+              "Label": "Project",
+              "Level": "0",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/fav/Blog"
+            ],
+            "properties": {
+              "Current": "False",
+              "Expand": "None",
+              "Has pin": true,
+              "Label": "Blog",
+              "Level": "0",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/fav/About"
+            ],
+            "properties": {
+              "Current": "False",
+              "Expand": "None",
+              "Has pin": true,
+              "Label": "About",
+              "Level": "0",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "Separator",
+            "paths": [
+              "navigation pane/Items/favorites divider/Separator"
+            ],
+            "properties": {
+              "Orientation": "Horizontal"
+            }
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/nav/바탕 화면"
+            ],
+            "properties": {
+              "Current": "False",
+              "Expand": "Expanded",
+              "Has pin": false,
+              "Label": "바탕 화면",
+              "Level": "0",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/nav/Blog"
+            ],
+            "properties": {
+              "Current": "True",
+              "Expand": "Expanded",
+              "Has pin": false,
+              "Label": "Blog",
+              "Level": "1",
+              "State": "Selected unfocused"
+            }
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/nav/React"
+            ],
+            "properties": {
+              "Current": "False",
+              "Expand": "Collapsed",
+              "Has pin": false,
+              "Label": "React",
+              "Level": "2",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/nav/Next.js"
+            ],
+            "properties": {
+              "Current": "False",
+              "Expand": "None",
+              "Has pin": false,
+              "Label": "Next.js",
+              "Level": "2",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/nav/TypeScript"
+            ],
+            "properties": {
+              "Current": "False",
+              "Expand": "None",
+              "Has pin": false,
+              "Label": "TypeScript",
+              "Level": "2",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "NavigationItem",
+            "paths": [
+              "navigation pane/Items/nav/휴지통"
+            ],
+            "properties": {
+              "Current": "False",
+              "Expand": "None",
+              "Has pin": false,
+              "Label": "휴지통",
+              "Level": "0",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "FileItem",
+            "paths": [
+              "drag ghost"
+            ],
+            "properties": {
+              "Current": "False",
+              "Name": "Notion 블로그 이전기",
+              "Size": "Large",
+              "State": "Cut",
+              "Surface": "Explorer"
+            }
+          },
+          {
+            "component": "Tooltip",
+            "paths": [
+              "drag tooltip"
+            ],
+            "properties": {
+              "Message": "메시지 내용",
+              "Text": "즐겨찾기에 고정",
+              "Variant": "Default"
+            }
+          }
+        ],
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
+        "name": "Drop=Not allowed",
+        "size": {
+          "h": 381,
+          "w": 360
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        }
+      }
+    }
+  }
+}

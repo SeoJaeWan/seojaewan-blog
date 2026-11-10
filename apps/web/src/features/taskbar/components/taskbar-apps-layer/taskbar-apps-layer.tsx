@@ -1,8 +1,10 @@
 import type { JSX, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
+import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thumbnail';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
+import { useOpenItem } from '@/shared/hooks/use-open-item/use-open-item';
 import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
 import { useReorderMotion } from '@/shared/hooks/use-reorder-motion/use-reorder-motion';
 import { useRovingFocus } from '@/shared/hooks/use-roving-focus/use-roving-focus';
@@ -11,7 +13,10 @@ import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import {
   getMobilePreviewLayout,
+  getPreviewCardWidth,
+  getPreviewThumbnailBox,
   getThumbnailScale,
+  getWindowAspectRatio,
 } from '@/shared/utils/window-geometry/window-geometry';
 import type { OpenWindow, RenderWindow, WindowApp } from '@/shared/utils/window-rules/window-rules';
 import {
@@ -20,21 +25,19 @@ import {
   getTaskbarAppIndicator,
   getWindowRect,
 } from '@/shared/utils/window-rules/window-rules';
+import {
+  CHROME_LATEST_POST_COUNT,
+  getLatestPosts,
+} from '@/shared/utils/workspace-rules/workspace-rules';
 
 import type { TaskbarAppMenuAction } from './app-menu/app-menu-entries';
-import { getAppMenuEntries } from './app-menu/app-menu-entries';
+import { getAppMenuEntries, getChromeJumpListEntries } from './app-menu/app-menu-entries';
 import { TaskbarAppItem } from './components/app-item/app-item';
 import { TaskbarWindowPreviewList } from './components/taskbar-window-preview-list/taskbar-window-preview-list';
 import { useHoverPreview } from './hooks/use-hover-preview/use-hover-preview';
 import { useOpenApp } from './hooks/use-open-app/use-open-app';
 import { findTaskbarAppAt, TASKBAR_APP_ATTRIBUTE } from './utils/taskbar-app-drag/taskbar-app-drag';
 import { getTaskbarApps } from './utils/taskbar-app-rules/taskbar-app-rules';
-
-/** 창 미리보기 축소 화면 자리(WindowPreview Thumbnail, 208 너비에서 안쪽 여백을 뺀 192×108) */
-const PREVIEW_THUMBNAIL_BOX = { width: 192, height: 108 } as const;
-
-/** 창 미리보기 카드의 안쪽 여백(px). 카드 너비에서 양쪽을 빼면 축소 화면 자리 너비다 */
-const PREVIEW_CARD_PADDING = 8;
 
 /** 지금 띄운 창 미리보기. 어느 앱의 것이고 클릭으로 열었는지(click) 마우스를 올려 열었는지(hover)다 */
 type OpenedPreview = {
@@ -55,11 +58,13 @@ export type TaskbarAppsLayerProps = {
  *   터치는 올리는 동작이 없어 기존 클릭 동작만 쓴다. 클릭으로 연 목록도 마우스가 나가면 같은 시간 뒤에 닫힌다.
  *   마우스를 올려 연 목록을 누르면 닫지 않고 그대로 둔다(누른 뜻은 목록을 보는 것이라 이미 이뤄졌다).
  * - 그리는 앱은 고정한 앱(작업 공간 저장소의 고정 순서)과 창이 열린 앱이다. 고정하지 않은 실행 중인 앱은 뒤에 붙고, 창을 모두 닫으면 사라진다.
- * - 버튼을 우클릭(모바일은 길게 누르기)하면 버튼 위 가운데에 우클릭 메뉴를 연다. 앱 이름(새 창), 고정·고정 해제, 창 닫기·모든 창 닫기다.
+ * - 버튼을 우클릭(모바일은 길게 누르기)하면 버튼 위 가운데에 우클릭 메뉴를 연다. 앱 이름(새 창), 고정·제거, 창 닫기·모든 창 닫기다.
+ *   점프 목록이 있는 앱(Chrome)은 그 위에 점프 목록을 붙인다(`getAppJumpList`).
  *   메뉴가 열리면 미리보기는 닫는다.
  * - 데스크톱에서 고정한 앱 버튼을 끌어 다른 고정 앱 버튼 자리에 놓으면 순서가 바뀐다. 끌기 뒤에 따라오는 클릭은 버튼 동작을 하지 않는다. 모바일은 끌기가 없다.
  *   끄는 버튼은 커진 채 포인터를 가로로 따라오고, 밀려나는 버튼은 새 자리로 미끄러지고, 놓으면 새 자리로 들어간다(`useReorderMotion`).
  *   끄는 동안 그 버튼은 호버·눌림 바탕을 끄고 실행 표시를 숨긴다. 놓으면 돌아온다.
+ * - 미리보기 카드 너비는 창 비율을 따르고(`aspectRatio`), 축소 화면은 그 카드의 자리를 꽉 채운다.
  * - 모바일은 미리보기 목록을 화면 폭(좌우 12px 여백)에 맞춰 작업 표시줄 위 가운데에 띄우고, 카드가 많으면 카드를 같은 너비로 줄인다.
  * - 미리보기 목록은 실제 창을 `WindowThumbnail`로 줄여 보여 주고, 고르면 그 창을 맨 앞으로, 닫기를 누르면 그 창을 닫는다.
  *   바깥을 누르거나 Esc를 누르면 닫힌다. 축소 화면 안의 창 내용과 제목은 앱을 아는 쓰는 곳이 `renderWindow`·`getWindowTitle`로 넘긴다.
@@ -88,6 +93,8 @@ export function TaskbarAppsLayer({
   const taskbarPins = useWorkspaceStore((state) => state.taskbarPins);
   const pinToTaskbar = useWorkspaceStore((state) => state.pinToTaskbar);
   const unpinFromTaskbar = useWorkspaceStore((state) => state.unpinFromTaskbar);
+  const workspaceItems = useWorkspaceStore((state) => state.items);
+  const openItem = useOpenItem();
   const startPointerDrag = usePointerDrag();
   const openApp = useOpenApp();
   const device = useDevice();
@@ -280,6 +287,38 @@ export function TaskbarAppsLayer({
   }
 
   /**
+   * 앱 우클릭 메뉴의 앱 묶음 위에 붙일 점프 목록을 만든다. 점프 목록이 없는 앱은 undefined다.
+   * Chrome은 새 탭 페이지와 같은 Blog 최신 글("자주 방문")과 "새 창"("작업")이다. 글을 고르면 그 글을 Chrome 맨 앞 창의 새 탭으로(없으면 새 창으로) 연다.
+   * @codocs [[작업 표시줄:우클릭 메뉴]]
+   * @param app 메뉴가 달린 버튼의 앱
+   * @returns 점프 목록 항목
+   */
+  function getAppJumpList(app: WindowApp): MenuPopupEntry[] | undefined {
+    switch (app) {
+      case 'chrome':
+        return getChromeJumpListEntries({
+          posts: getLatestPosts({ items: workspaceItems }, CHROME_LATEST_POST_COUNT).map(
+            /**
+             * 글을 점프 목록 글로 바꾼다.
+             * @param post 글
+             * @returns 점프 목록 글
+             */
+            (post) => ({ id: post.id, title: post.name }),
+          ),
+          onOpenPost: (id) => {
+            setMenuApp(null);
+            openItem(id);
+          },
+          onNewWindow: () => {
+            handleMenuAction(app, 'open-new');
+          },
+        });
+      case 'file-explorer':
+        return undefined;
+    }
+  }
+
+  /**
    * 데스크톱에서 고정한 앱 버튼 위에서 포인터를 누르면 끌어 순서 바꾸기를 시작한다. 끄는 동안 포인터 아래 고정 앱 버튼 자리로 바로 옮긴다.
    * @param app 누른 버튼의 앱
    * @param event 누르기 이벤트
@@ -350,6 +389,18 @@ export function TaskbarAppsLayer({
   }
 
   /**
+   * 창이 화면에서 차지한 크기를 구한다. 최대화·스냅한 창은 그 자리 크기이고, 창을 늘 최대화해 보이는 모바일은 작업 영역 크기다.
+   * @param target 열린 창
+   * @returns 창 크기
+   */
+  function getShownWindowSize(target: OpenWindow): { width: number; height: number } {
+    if (workArea === null) {
+      return target.bounds;
+    }
+    return device === 'mobile' ? workArea : getWindowRect(target, workArea);
+  }
+
+  /**
    * 창 하나의 축소 화면을 그린다. 실제 창 조립을 같은 크기로 그린 뒤 미리보기 자리에 맞게 줄인다.
    * @param target 열린 창
    * @param box 축소 화면이 들어갈 자리 크기
@@ -361,8 +412,7 @@ export function TaskbarAppsLayer({
     target: OpenWindow,
     box: { width: number; height: number },
   ): JSX.Element {
-    // 최대화·스냅한 창은 화면에서 차지한 크기 그대로 줄인다.
-    const size = workArea === null ? target.bounds : getWindowRect(target, workArea);
+    const size = getShownWindowSize(target);
     return (
       <WindowThumbnail width={size.width} height={size.height} scale={getThumbnailScale(size, box)}>
         {renderWindow(target, {
@@ -420,35 +470,39 @@ export function TaskbarAppsLayer({
       app,
       isPinned: taskbarPins.includes(app),
       windowCount: appWindows.length,
+      jumpList: getAppJumpList(app),
       onAction: (action) => {
         handleMenuAction(app, action);
       },
     });
     const isPreviewOpen = openPreviewApp === app;
     const isMobile = device === 'mobile';
-    // 모바일은 목록을 화면 폭에 맞추고 카드를 줄인다. 축소 화면 자리도 카드 너비에 맞춰 줄인다(카드 안쪽 여백 8씩).
+    // 카드 너비는 창 비율을 따르고, 축소 화면 자리는 그 카드 너비에서 안쪽 여백을 뺀 너비다.
+    // 모바일은 목록이 화면 폭을 넘치면 목록을 화면 폭에 맞추고 카드를 같은 너비로 줄인다.
+    const aspectRatios = appWindows.map((target) =>
+      getWindowAspectRatio(getShownWindowSize(target)),
+    );
     const mobileLayout =
       isMobile && workArea !== null
-        ? getMobilePreviewLayout(workArea.width, appWindows.length)
+        ? getMobilePreviewLayout(workArea.width, aspectRatios)
         : undefined;
-    const thumbnailBox =
-      mobileLayout === undefined
-        ? PREVIEW_THUMBNAIL_BOX
-        : {
-            width: mobileLayout.cardWidth - PREVIEW_CARD_PADDING * 2,
-            height: PREVIEW_THUMBNAIL_BOX.height,
-          };
     const previews = appWindows.map(
       /**
        * 창 하나의 미리보기 데이터를 만든다.
        * @param target 열린 창
+       * @param index 창 순서
        * @returns 미리보기 데이터
        */
-      (target) => ({
-        id: target.id,
-        title: getWindowTitle(target),
-        thumbnail: renderThumbnail(target, thumbnailBox),
-      }),
+      (target, index) => {
+        const aspectRatio = aspectRatios[index] ?? getWindowAspectRatio(target.bounds);
+        const cardWidth = mobileLayout?.cardWidth ?? getPreviewCardWidth(aspectRatio);
+        return {
+          id: target.id,
+          title: getWindowTitle(target),
+          aspectRatio,
+          thumbnail: renderThumbnail(target, getPreviewThumbnailBox(cardWidth)),
+        };
+      },
     );
     return (
       <TaskbarAppItem

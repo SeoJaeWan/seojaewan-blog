@@ -21,6 +21,7 @@ import { isSamePost, type PostRef } from '@/shared/utils/post-address/post-addre
 import type { PostBody } from '@/shared/utils/post-body/post-body';
 import type { WindowFrameControls } from '@/shared/utils/window-rules/window-rules';
 import {
+  CHROME_LATEST_POST_COUNT,
   getLatestPosts,
   getPostItemId,
   isItemInTrash,
@@ -69,9 +70,6 @@ import {
 } from './utils/chrome-navigation/chrome-navigation';
 import { getChromeTabTitle } from './utils/chrome-tab-title/chrome-tab-title';
 import { DEFAULT_ZOOM } from './utils/chrome-zoom/chrome-zoom';
-
-// Chrome 새 탭 페이지에 보이는 최신 글 개수(피그마 Chrome/Page `Page=New tab`).
-const NEW_TAB_LATEST_POST_COUNT = 6;
 
 /** 열린 찾기 막대와 그 막대를 연 페이지. pageKey는 막대를 연 페이지(탭과 기록 차례)이며 다른 페이지로 가면 막대를 닫는다. */
 type FindState = ChromePageFind & {
@@ -591,7 +589,7 @@ function ChromeTabContent({
 }: ChromeTabContentProps): JSX.Element {
   const posts =
     page.kind === 'new-tab'
-      ? getLatestPosts(workspace, NEW_TAB_LATEST_POST_COUNT)
+      ? getLatestPosts(workspace, CHROME_LATEST_POST_COUNT)
       : page.kind === 'search'
         ? searchPosts(workspace, page.query)
         : [];
