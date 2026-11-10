@@ -13,7 +13,6 @@ _codocs:
 배경화면: |
   배경화면은 피그마 Foundations `Assets` 섹션의 Images 자산(`wallpaper/Bloom`)이다. Microsoft 저작물이지만 앱 로고와 마찬가지로 화면 재현 용도로 쓴다.
   코드는 `object-fit: cover`로 그린다.
-  같은 이미지를 창의 Mica 효과에도 쓴다([[디자인 기반:재질 효과]]).
 
   배경화면 변경 기능은 두지 않는다.
 모바일: |
