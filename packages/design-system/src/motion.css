@@ -479,6 +479,29 @@
 }
 
 /*
+ * 순서 바꾸기 누름(조립 흐름 motion-reorder-press). 끌 항목(작업 표시줄 앱 버튼·탭·Start 고정됨 칸)을 누르면 전체가
+ * 배율 1 → 눌린 배율(reorder-press)로 작아진다. 한 트랙이라 키프레임 하나다. 끌기가 시작되면 motion-reorder-lift가
+ * 이 끝 모습(눌린 배율)에서 이어받는다([[항목 조작:순서 바꾸기 끌기]]).
+ * 앱이 누를 때 붙이고 누르고 있는 동안 붙여 둔다. 끝 모습을 유지하도록 fill-mode는 both다. 실행 중 값은 없다.
+ */
+@keyframes motion-reorder-press {
+  0% {
+    scale: 1;
+  }
+
+  100% {
+    scale: var(--motion-scale-reorder-press);
+  }
+}
+
+@utility motion-reorder-press {
+  animation-name: motion-reorder-press;
+  animation-duration: var(--motion-duration-fast);
+  animation-timing-function: var(--motion-easing-direct-entrance);
+  animation-fill-mode: both;
+}
+
+/*
  * 순서 바꾸기 끌기 시작(견본 motion-reorder-lift). 끄는 항목(작업 표시줄 앱 버튼·탭·Start 고정됨 칸) 전체가 배율 1 → 1.1로 커진다.
  * 앱이 끌기를 시작할 때 붙이고 끄는 동안 붙여 둔다. 끝 모습(1.1배)을 끄는 동안 유지하도록 fill-mode는 both다.
  * 놓을 때는 이 클래스를 떼고 motion-reorder-drop을 붙인다([[항목 조작:순서 바꾸기 끌기]]). 실행 중 값은 없다.
@@ -785,6 +808,7 @@
   .motion-boot-screen-exit,
   .motion-start-jump-list-enter [data-jump-list],
   .motion-start-jump-list-exit [data-jump-list],
+  .motion-reorder-press,
   .motion-reorder-lift,
   .motion-reorder-drop,
   .motion-reorder-slide,
