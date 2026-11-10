@@ -1,5 +1,5 @@
 {
-  "description": "글 페이지의 목차로, 넓은 창에서는 펼치고 좁은 창에서는 접어 쓴다.\n@sample-size width\n@runtime State=Expanded의 Items가 최대 높이를 넘으면 목차 안에서 세로로 스크롤한다.",
+  "description": "글 페이지의 목차로, 넓은 창에서는 펼치고 좁은 창에서는 접어 쓴다.",
   "name": "Toc",
   "nodeId": "398:5502",
   "propertyDefinitions": {
@@ -99,6 +99,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 38,
           "w": 220
@@ -193,25 +196,15 @@
             "type": "INSTANCE"
           },
           {
+            "annotations": [
+              {
+                "category": "개발",
+                "text": "항목이 넘치면 목차 안에서 세로로 스크롤한다(코드의 Toc가 ScrollArea로 감싼다)."
+              }
+            ],
             "children": [
               {
                 "children": [
-                  {
-                    "fills": [
-                      "color/blue/59"
-                    ],
-                    "name": "indicator",
-                    "size": {
-                      "h": 20,
-                      "w": 3
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FILL"
-                    },
-                    "type": "RECTANGLE",
-                    "width": "stroke-width/indicator"
-                  },
                   {
                     "fills": [
                       "color/blue/72"
@@ -219,15 +212,15 @@
                     "name": "label",
                     "size": {
                       "h": 20,
-                      "w": 39
+                      "w": 204
                     },
                     "sizing": {
-                      "h": "HUG",
+                      "h": "FILL",
                       "v": "HUG"
                     },
                     "text": {
-                      "autoResize": "WIDTH_AND_HEIGHT",
-                      "maxLines": null,
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
                       "maxLinesVariable": null,
                       "segments": [
                         {
@@ -241,7 +234,7 @@
                           "textStyle": "Hangul/Body"
                         }
                       ],
-                      "truncation": "DISABLED"
+                      "truncation": "ENDING"
                     },
                     "type": "TEXT"
                   }
@@ -249,14 +242,14 @@
                 "component": "TocItem",
                 "height": "size/file-row/name-height",
                 "layout": {
-                  "counterAlign": "MIN",
-                  "gap": "spacing/sm",
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
                   "mode": "HORIZONTAL",
                   "padding": [
-                    0,
-                    0,
-                    0,
-                    0
+                    "spacing/none",
+                    "spacing/sm",
+                    "spacing/none",
+                    "spacing/sm"
                   ],
                   "primaryAlign": "MIN"
                 },
@@ -264,8 +257,15 @@
                 "properties": {
                   "Active": "True",
                   "Label": "use 훅",
-                  "Level": "1"
+                  "Level": "1",
+                  "State": "Rest"
                 },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
                 "size": {
                   "h": 20,
                   "w": 220
@@ -280,36 +280,20 @@
                 "children": [
                   {
                     "fills": [
-                      "color/black/8"
-                    ],
-                    "name": "indicator",
-                    "size": {
-                      "h": 20,
-                      "w": 3
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FILL"
-                    },
-                    "type": "RECTANGLE",
-                    "width": "stroke-width/indicator"
-                  },
-                  {
-                    "fills": [
                       "color/black/61"
                     ],
                     "name": "label",
                     "size": {
                       "h": 20,
-                      "w": 98
+                      "w": 204
                     },
                     "sizing": {
-                      "h": "HUG",
+                      "h": "FILL",
                       "v": "HUG"
                     },
                     "text": {
-                      "autoResize": "WIDTH_AND_HEIGHT",
-                      "maxLines": null,
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
                       "maxLinesVariable": null,
                       "segments": [
                         {
@@ -318,7 +302,7 @@
                           "textStyle": "Body"
                         }
                       ],
-                      "truncation": "DISABLED"
+                      "truncation": "ENDING"
                     },
                     "type": "TEXT"
                   }
@@ -326,14 +310,14 @@
                 "component": "TocItem",
                 "height": "size/file-row/name-height",
                 "layout": {
-                  "counterAlign": "MIN",
-                  "gap": "spacing/sm",
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
                   "mode": "HORIZONTAL",
                   "padding": [
-                    0,
-                    0,
-                    0,
-                    0
+                    "spacing/none",
+                    "spacing/sm",
+                    "spacing/none",
+                    "spacing/sm"
                   ],
                   "primaryAlign": "MIN"
                 },
@@ -341,8 +325,15 @@
                 "properties": {
                   "Active": "False",
                   "Label": "useActionState",
-                  "Level": "1"
+                  "Level": "1",
+                  "State": "Rest"
                 },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
                 "size": {
                   "h": 20,
                   "w": 220
@@ -357,36 +348,20 @@
                 "children": [
                   {
                     "fills": [
-                      "color/black/8"
-                    ],
-                    "name": "indicator",
-                    "size": {
-                      "h": 20,
-                      "w": 3
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FILL"
-                    },
-                    "type": "RECTANGLE",
-                    "width": "stroke-width/indicator"
-                  },
-                  {
-                    "fills": [
                       "color/black/61"
                     ],
                     "name": "label",
                     "size": {
                       "h": 20,
-                      "w": 90
+                      "w": 204
                     },
                     "sizing": {
-                      "h": "HUG",
+                      "h": "FILL",
                       "v": "HUG"
                     },
                     "text": {
-                      "autoResize": "WIDTH_AND_HEIGHT",
-                      "maxLines": null,
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
                       "maxLinesVariable": null,
                       "segments": [
                         {
@@ -395,7 +370,7 @@
                           "textStyle": "Body"
                         }
                       ],
-                      "truncation": "DISABLED"
+                      "truncation": "ENDING"
                     },
                     "type": "TEXT"
                   }
@@ -403,14 +378,14 @@
                 "component": "TocItem",
                 "height": "size/file-row/name-height",
                 "layout": {
-                  "counterAlign": "MIN",
-                  "gap": "spacing/sm",
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
                   "mode": "HORIZONTAL",
                   "padding": [
-                    0,
-                    0,
-                    0,
-                    0
+                    "spacing/none",
+                    "spacing/sm",
+                    "spacing/none",
+                    "spacing/sm"
                   ],
                   "primaryAlign": "MIN"
                 },
@@ -418,8 +393,15 @@
                 "properties": {
                   "Active": "False",
                   "Label": "useOptimistic",
-                  "Level": "1"
+                  "Level": "1",
+                  "State": "Rest"
                 },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
                 "size": {
                   "h": 20,
                   "w": 220
@@ -434,36 +416,20 @@
                 "children": [
                   {
                     "fills": [
-                      "color/black/8"
-                    ],
-                    "name": "indicator",
-                    "size": {
-                      "h": 20,
-                      "w": 3
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FILL"
-                    },
-                    "type": "RECTANGLE",
-                    "width": "stroke-width/indicator"
-                  },
-                  {
-                    "fills": [
                       "color/black/61"
                     ],
                     "name": "label",
                     "size": {
                       "h": 20,
-                      "w": 73
+                      "w": 204
                     },
                     "sizing": {
-                      "h": "HUG",
+                      "h": "FILL",
                       "v": "HUG"
                     },
                     "text": {
-                      "autoResize": "WIDTH_AND_HEIGHT",
-                      "maxLines": null,
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
                       "maxLinesVariable": null,
                       "segments": [
                         {
@@ -472,7 +438,7 @@
                           "textStyle": "Hangul/Body"
                         }
                       ],
-                      "truncation": "DISABLED"
+                      "truncation": "ENDING"
                     },
                     "type": "TEXT"
                   }
@@ -480,14 +446,14 @@
                 "component": "TocItem",
                 "height": "size/file-row/name-height",
                 "layout": {
-                  "counterAlign": "MIN",
-                  "gap": "spacing/sm",
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
                   "mode": "HORIZONTAL",
                   "padding": [
-                    0,
-                    0,
-                    0,
-                    0
+                    "spacing/none",
+                    "spacing/sm",
+                    "spacing/none",
+                    "spacing/sm"
                   ],
                   "primaryAlign": "MIN"
                 },
@@ -495,8 +461,15 @@
                 "properties": {
                   "Active": "False",
                   "Label": "마이그레이션",
-                  "Level": "1"
+                  "Level": "1",
+                  "State": "Rest"
                 },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
                 "size": {
                   "h": 20,
                   "w": 220
@@ -546,6 +519,9 @@
           "primaryAlign": "MIN"
         },
         "name": "State=Expanded",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 136,
           "w": 220
