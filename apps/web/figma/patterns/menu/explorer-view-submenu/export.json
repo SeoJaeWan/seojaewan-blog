@@ -28,10 +28,10 @@
               "Menu/Flyout/Content/radio 큰 아이콘"
             ],
             "properties": {
-              "Has icon": false,
-              "Has shortcut": false,
+              "Has icon": true,
+              "Has shortcut": true,
               "Label": "큰 아이콘",
-              "Shortcut": "Ctrl+O",
+              "Shortcut": "Ctrl+Shift+2",
               "State": "Rest",
               "Value": "100%",
               "Variant": "Radio off"
@@ -44,9 +44,9 @@
             ],
             "properties": {
               "Has icon": true,
-              "Has shortcut": false,
+              "Has shortcut": true,
               "Label": "보통 아이콘",
-              "Shortcut": "Ctrl+O",
+              "Shortcut": "Ctrl+Shift+3",
               "State": "Rest",
               "Value": "100%",
               "Variant": "Radio on"
@@ -58,10 +58,10 @@
               "Menu/Flyout/Content/radio 자세히"
             ],
             "properties": {
-              "Has icon": false,
-              "Has shortcut": false,
+              "Has icon": true,
+              "Has shortcut": true,
               "Label": "자세히",
-              "Shortcut": "Ctrl+O",
+              "Shortcut": "Ctrl+Shift+6",
               "State": "Rest",
               "Value": "100%",
               "Variant": "Radio off"
