@@ -1,18 +1,37 @@
 {
-  "description": "파일 탐색기 빈 곳을 우클릭하면 여는 메뉴로, 탐색기 빈 곳 우클릭 화면에 쓴다.",
   "name": "Menu/ExplorerEmpty",
-  "nodeId": "518:6437",
-  "propertyDefinitions": {},
+  "nodeId": "3477:18730",
+  "propertyDefinitions": {
+    "Paste": {
+      "default": "False",
+      "options": [
+        "False",
+        "True"
+      ],
+      "type": "VARIANT"
+    },
+    "Placement": {
+      "default": "Below",
+      "options": [
+        "Below",
+        "Above"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
-    "default": {
+    "paste=false,placement=below": {
       "node": {
-        "height": 143,
+        "height": 111,
         "width": 250,
         "x": 16,
         "y": 8
       },
       "nodeId": "518:6437",
-      "properties": {},
+      "properties": {
+        "Paste": "False",
+        "Placement": "Below"
+      },
       "report": {
         "components": [
           {
@@ -64,16 +83,223 @@
           {
             "component": "MenuItem",
             "paths": [
-              "Menu/Flyout/Content/item 붙여넣기"
+              "Menu/Flyout/Content/item 새로 만들기"
             ],
             "properties": {
               "Has icon": true,
-              "Has shortcut": true,
-              "Label": "붙여넣기",
-              "Shortcut": "Ctrl+V",
+              "Has shortcut": false,
+              "Label": "새로 만들기",
+              "Shortcut": "Ctrl+O",
               "State": "Rest",
               "Value": "100%",
-              "Variant": "Default"
+              "Variant": "Submenu"
+            }
+          }
+        ],
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
+        "name": "Paste=False, Placement=Below",
+        "size": {
+          "h": 111,
+          "w": 250
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        }
+      }
+    },
+    "paste=true,placement=above": {
+      "node": {
+        "height": 172,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "3477:18583",
+      "properties": {
+        "Paste": "True",
+        "Placement": "Above"
+      },
+      "report": {
+        "components": [
+          {
+            "component": "Menu",
+            "paths": [
+              "Menu"
+            ],
+            "properties": {}
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item 보기"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "보기",
+              "Shortcut": "Ctrl+O",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Submenu"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item 정렬 기준"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "정렬 기준",
+              "Shortcut": "Ctrl+O",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Submenu"
+            }
+          },
+          {
+            "component": "Separator",
+            "paths": [
+              "Menu/Flyout/Content/separator/Separator",
+              "Menu/Flyout/Content/separator/Separator"
+            ],
+            "properties": {
+              "Orientation": "Horizontal"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item 새로 만들기"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "새로 만들기",
+              "Shortcut": "Ctrl+O",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Submenu"
+            }
+          },
+          {
+            "component": "MenuCommandBar",
+            "paths": [
+              "Menu/Flyout/Content/command bar"
+            ],
+            "properties": {}
+          },
+          {
+            "component": "MenuCommandButton",
+            "paths": [
+              "Menu/Flyout/Content/command bar/Items/MenuCommandButton"
+            ],
+            "properties": {
+              "Label": "붙여넣기",
+              "State": "Rest"
+            }
+          }
+        ],
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
+        "name": "Paste=True, Placement=Above",
+        "size": {
+          "h": 172,
+          "w": 250
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        }
+      }
+    },
+    "paste=true,placement=below": {
+      "node": {
+        "height": 172,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "3477:18574",
+      "properties": {
+        "Paste": "True",
+        "Placement": "Below"
+      },
+      "report": {
+        "components": [
+          {
+            "component": "Menu",
+            "paths": [
+              "Menu"
+            ],
+            "properties": {}
+          },
+          {
+            "component": "MenuCommandBar",
+            "paths": [
+              "Menu/Flyout/Content/command bar"
+            ],
+            "properties": {}
+          },
+          {
+            "component": "MenuCommandButton",
+            "paths": [
+              "Menu/Flyout/Content/command bar/Items/MenuCommandButton"
+            ],
+            "properties": {
+              "Label": "붙여넣기",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "Separator",
+            "paths": [
+              "Menu/Flyout/Content/separator/Separator",
+              "Menu/Flyout/Content/separator/Separator"
+            ],
+            "properties": {
+              "Orientation": "Horizontal"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item 보기"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "보기",
+              "Shortcut": "Ctrl+O",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Submenu"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item 정렬 기준"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "정렬 기준",
+              "Shortcut": "Ctrl+O",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Submenu"
             }
           },
           {
@@ -98,9 +324,9 @@
         "offToken": []
       },
       "tree": {
-        "name": "Menu/ExplorerEmpty",
+        "name": "Paste=True, Placement=Below",
         "size": {
-          "h": 143,
+          "h": 172,
           "w": 250
         },
         "sizing": {

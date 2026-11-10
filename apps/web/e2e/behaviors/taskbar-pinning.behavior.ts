@@ -4,12 +4,12 @@ import { restart } from './app-steps.ts';
 import { defineBehavior } from './define-behavior.ts';
 
 /**
- * 작업 표시줄 Chrome 버튼을 우클릭해 메뉴의 작업 표시줄에서 고정 해제를 누른다.
+ * 작업 표시줄 Chrome 버튼을 우클릭해 메뉴의 작업 표시줄에서 제거를 누른다.
  * @param page 앱 페이지
  */
 async function unpinChromeFromTaskbar(page: Page): Promise<void> {
-  await page.getByRole('button', { name: 'Chrome' }).click({ button: 'right' });
-  await page.getByRole('menuitem', { name: '작업 표시줄에서 고정 해제' }).click();
+  await page.getByRole('button', { name: 'Google Chrome' }).click({ button: 'right' });
+  await page.getByRole('menuitem', { name: '작업 표시줄에서 제거' }).click();
 }
 
 export const behavior = defineBehavior({
@@ -63,7 +63,7 @@ export const behavior = defineBehavior({
       ],
       async run({ page, check }) {
         await page.goto('/');
-        const taskbarChrome = page.getByRole('button', { name: 'Chrome' });
+        const taskbarChrome = page.getByRole('button', { name: 'Google Chrome' });
         await unpinChromeFromTaskbar(page);
         await check('고정을 해제하면 Chrome 버튼이 작업 표시줄에서 사라진다', async () => {
           await expect(taskbarChrome).toBeHidden();
@@ -105,7 +105,7 @@ export const behavior = defineBehavior({
       ],
       async run({ page, check }) {
         await page.goto('/');
-        const taskbarChrome = page.getByRole('button', { name: 'Chrome' });
+        const taskbarChrome = page.getByRole('button', { name: 'Google Chrome' });
         await unpinChromeFromTaskbar(page);
         await check('고정을 해제하면 Chrome 버튼이 작업 표시줄에서 사라진다', async () => {
           await expect(taskbarChrome).toBeHidden();
@@ -131,7 +131,7 @@ export const behavior = defineBehavior({
       ],
       async run({ page, check }) {
         await page.goto('/');
-        const taskbarChrome = page.getByRole('button', { name: 'Chrome' });
+        const taskbarChrome = page.getByRole('button', { name: 'Google Chrome' });
         await unpinChromeFromTaskbar(page);
         await expect(taskbarChrome).toBeHidden();
 

@@ -31,6 +31,33 @@ type Story = StoryObj<typeof meta>;
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
+// @codocs [[작업 표시줄 검수:6. 미리보기 카드 폭과 축소 화면]]
+/** 카드 너비는 축소 화면 높이(108) × 창 비율 + 좌우 여백(8 × 2)이고, 최대 208이다 */
+export const AspectRatio: Story = {
+  render: () => (
+    <>
+      <WindowPreview
+        data-testid="narrow"
+        appIcon={<span>앱</span>}
+        title="좁은 창"
+        aspectRatio={1}
+      />
+      <WindowPreview data-testid="wide" appIcon={<span>앱</span>} title="넓은 창" aspectRatio={2} />
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('창 비율이 1이면 108 + 16 = 124 너비다', async () => {
+      await expect(canvas.getByTestId('narrow').getBoundingClientRect().width).toBe(124);
+    });
+
+    await step('넓은 창은 최대 너비 208에서 멈춘다', async () => {
+      await expect(canvas.getByTestId('wide').getBoundingClientRect().width).toBe(208);
+    });
+  },
+};
+
 type CloseArgs = { onClose: () => void; onClick: () => void };
 type CloseStory = StoryObj<CloseArgs>;
 

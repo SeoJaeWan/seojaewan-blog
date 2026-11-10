@@ -227,6 +227,41 @@ export const Icons: Story = {
 };
 
 // @codocs [[컴포넌트 목록:기본 컨트롤]]
+/** 확인·라디오 항목도 선택 표시 다음에 아이콘을, 이름 뒤에 단축키를 그린다 */
+export const CheckIconsAndShortcut: Story = {
+  parameters: baseUiFocusGuardParameters,
+  render: () => (
+    <OpenMenu>
+      <MenuItem
+        variant="checkbox"
+        label="숨김 항목"
+        icon="icons/ic_fluent_open_20_regular.svg"
+        shortcut="Ctrl+H"
+        isDefaultChecked
+      />
+      <Menu.RadioGroup defaultValue="name">
+        <MenuItem
+          variant="radio"
+          label="이름"
+          value="name"
+          icon="icons/ic_fluent_open_20_regular.svg"
+          shortcut="Ctrl+N"
+        />
+      </Menu.RadioGroup>
+    </OpenMenu>
+  ),
+  play: async ({ canvas }) => {
+    const checkbox = await canvas.findByRole('menuitemcheckbox', { name: /숨김 항목/u });
+    const radio = canvas.getByRole('menuitemradio', { name: /이름/u });
+
+    await expect(checkbox.querySelectorAll('svg')).toHaveLength(2);
+    await expect(radio.querySelector('svg')).not.toBeNull();
+    await expect(canvas.getByText('Ctrl+H')).toBeInTheDocument();
+    await expect(canvas.getByText('Ctrl+N')).toBeInTheDocument();
+  },
+};
+
+// @codocs [[컴포넌트 목록:기본 컨트롤]]
 /** 메뉴 밖에 홀로 둔(standalone) 항목은 버튼으로 그리고, 누르면 onClick을 부른다 */
 export const Standalone: Story = {
   args: { onClick: fn() },
@@ -266,13 +301,13 @@ function FigmaMenuItem(props: FigmaArgs): JSX.Element {
         </Menu.SubmenuRoot>
       );
     case 'toggle-on':
-      return <MenuItem {...common} variant="checkbox" isDefaultChecked />;
+      return <MenuItem {...common} variant="checkbox" icon={icon} isDefaultChecked />;
     case 'toggle-off':
-      return <MenuItem {...common} variant="checkbox" isDefaultChecked={false} />;
+      return <MenuItem {...common} variant="checkbox" icon={icon} isDefaultChecked={false} />;
     case 'radio-on':
       return (
         <Menu.RadioGroup defaultValue={LABEL}>
-          <MenuItem {...common} variant="radio" value={LABEL} />
+          <MenuItem {...common} variant="radio" icon={icon} value={LABEL} />
         </Menu.RadioGroup>
       );
     case 'zoom':
@@ -281,7 +316,7 @@ function FigmaMenuItem(props: FigmaArgs): JSX.Element {
       // 묶음의 값이 이 항목과 달라 골라지지 않은 라디오 항목이다.
       return (
         <Menu.RadioGroup defaultValue="">
-          <MenuItem {...common} variant="radio" value={LABEL} />
+          <MenuItem {...common} variant="radio" icon={icon} value={LABEL} />
         </Menu.RadioGroup>
       );
   }
