@@ -3,24 +3,27 @@
     "ms": 0,
     "token": null
   },
-  "directives": {
-    "reduced-motion": [
-      "그대로 돈다. 진행 정보라서"
-    ],
-    "repeat": [
-      "infinite"
-    ],
-    "trigger": [
-      "ProgressRing이 화면에 있는 동안"
-    ]
-  },
+  "directives": {},
   "duration": {
     "ms": 2000,
     "token": "motion/duration/progress-ring"
   },
   "iterations": "infinite",
   "name": "motion-progress-ring",
-  "nodeId": "739:8230",
+  "nodeId": "356:23128",
+  "notes": [
+    {
+      "category": "Development",
+      "path": "",
+      "text": "motion-progress-ring"
+    },
+    {
+      "category": "Accessibility",
+      "path": "progress-ring/Arc / Arc",
+      "text": "동작 줄이기에서도 그대로 돈다. 진행 정보라서"
+    }
+  ],
+  "source": "component",
   "tracks": [
     {
       "delay": {
@@ -57,7 +60,7 @@
       "node": "Arc",
       "nodeKind": "layer",
       "operation": "SET",
-      "path": "ProgressRing / arc / Arc",
+      "path": "progress-ring/Arc / Arc",
       "property": "PATH_TRIM_END"
     },
     {
@@ -95,7 +98,7 @@
       "node": "Arc",
       "nodeKind": "layer",
       "operation": "SET",
-      "path": "ProgressRing / arc / Arc",
+      "path": "progress-ring/Arc / Arc",
       "property": "PATH_TRIM_START"
     },
     {
@@ -133,9 +136,9 @@
       "node": "Arc",
       "nodeKind": "layer",
       "operation": "SET",
-      "path": "ProgressRing / arc / Arc",
+      "path": "progress-ring/Arc / Arc",
       "property": "ROTATION"
     }
   ],
-  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=739-8230"
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=356-23128"
 }

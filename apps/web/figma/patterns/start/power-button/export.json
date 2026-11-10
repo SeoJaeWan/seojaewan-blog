@@ -1,5 +1,5 @@
 {
-  "description": "Start 아래 줄의 전원 버튼과 전원 메뉴로, Start 메뉴 바닥 줄에 쓴다.\n@runtime 누르면 Menu가 열린다: 다시 시작",
+  "description": "Start 아래 줄의 전원 버튼과 전원 메뉴로, Start 메뉴 바닥 줄에 쓴다.",
   "name": "Start/PowerButton",
   "nodeId": "554:5157",
   "propertyDefinitions": {},
@@ -13,137 +13,25 @@
       },
       "nodeId": "554:5157",
       "properties": {},
-      "tree": {
-        "children": [
+      "report": {
+        "components": [
           {
-            "children": [
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "asset": {
-                          "color": "color/black/89",
-                          "path": "icons/ic_fluent_power_20_regular"
-                        },
-                        "component": "ic_fluent_power_20_regular",
-                        "height": "size/icon/sm",
-                        "name": "icon",
-                        "size": {
-                          "h": 16,
-                          "w": 16
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "FIXED"
-                        },
-                        "type": "INSTANCE",
-                        "width": "size/icon/sm"
-                      }
-                    ],
-                    "component": "IconButton",
-                    "fills": [
-                      "color/white/0"
-                    ],
-                    "layout": {
-                      "counterAlign": "CENTER",
-                      "gap": 0,
-                      "mode": "HORIZONTAL",
-                      "padding": [
-                        "spacing/sm",
-                        "spacing/sm",
-                        "spacing/sm",
-                        "spacing/sm"
-                      ],
-                      "primaryAlign": "CENTER"
-                    },
-                    "name": "power button",
-                    "properties": {
-                      "State": "Rest",
-                      "Variant": "Subtle"
-                    },
-                    "radius": [
-                      "radius/control",
-                      "radius/control",
-                      "radius/control",
-                      "radius/control"
-                    ],
-                    "size": {
-                      "h": 32,
-                      "w": 32
-                    },
-                    "sizing": {
-                      "h": "HUG",
-                      "v": "HUG"
-                    },
-                    "type": "INSTANCE"
-                  }
-                ],
-                "layout": {
-                  "counterAlign": "MIN",
-                  "gap": 0,
-                  "mode": "HORIZONTAL",
-                  "padding": [
-                    0,
-                    0,
-                    0,
-                    0
-                  ],
-                  "primaryAlign": "MIN"
-                },
-                "name": "Trigger",
-                "size": {
-                  "h": 32,
-                  "w": 32
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "type": "SLOT"
-              }
+            "component": "IconButton",
+            "paths": [
+              "popover/Trigger/power button"
             ],
-            "component": "Popover",
-            "layout": {
-              "counterAlign": "MIN",
-              "gap": "spacing/xs",
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/none",
-                "spacing/none",
-                "spacing/none",
-                "spacing/none"
-              ],
-              "primaryAlign": "MIN"
-            },
-            "name": "popover",
             "properties": {
-              "Placement": "Top end",
-              "State": "Closed"
-            },
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+              "State": "Rest",
+              "Variant": "Subtle"
+            }
           }
         ],
-        "layout": {
-          "counterAlign": "MIN",
-          "gap": "spacing/none",
-          "mode": "HORIZONTAL",
-          "padding": [
-            "spacing/none",
-            "spacing/none",
-            "spacing/none",
-            "spacing/none"
-          ],
-          "primaryAlign": "MIN"
-        },
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
         "name": "Start/PowerButton",
         "size": {
           "h": 32,
@@ -152,8 +40,7 @@
         "sizing": {
           "h": "HUG",
           "v": "HUG"
-        },
-        "type": "COMPONENT"
+        }
       }
     }
   }

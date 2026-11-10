@@ -554,7 +554,7 @@ export const AllList: Story = {
 
     // @codocs [[Start 메뉴:모두]]
     await step(
-      '범주 카드의 묶음이나 빈 곳을 누르면 펼침 팝업이 열리고, Esc나 바깥 누르기로 팝업만 닫힌다',
+      '범주 카드의 묶음이나 빈 곳을 누르면 펼침 팝업이 Start 가운데에 열리고, Esc나 바깥 누르기로 팝업만 닫히며, 열린 채 다른 카드를 누르면 닫히기만 한다',
       async () => {
         /**
          * 범주 카드의 빈 곳(카드 바탕)을 누른다.
@@ -571,6 +571,21 @@ export const AllList: Story = {
         await clickCard('글');
         const popup = await screen.findByRole('dialog', { name: '글' });
         await expect(within(popup).getByRole('button', { name: 'Next.js 캐시' })).toBeVisible();
+        // 누른 카드와 상관없이 Start 패널의 가로·세로 정가운데에 연다.
+        const shell = panel.querySelector('[data-start-menu-panel]');
+        if (shell === null) {
+          throw new Error('Start 패널 바탕이 없다');
+        }
+        await waitFor(async () => {
+          const popupRect = popup.getBoundingClientRect();
+          const shellRect = shell.getBoundingClientRect();
+          await expect(
+            Math.abs(popupRect.left + popupRect.width / 2 - (shellRect.left + shellRect.width / 2)),
+          ).toBeLessThanOrEqual(1);
+          await expect(
+            Math.abs(popupRect.top + popupRect.height / 2 - (shellRect.top + shellRect.height / 2)),
+          ).toBeLessThanOrEqual(1);
+        });
         await expect(
           await openContextMenu(within(popup).getByRole('button', { name: 'Next.js 캐시' })),
         ).toContain('열기');
@@ -585,6 +600,13 @@ export const AllList: Story = {
         await userEvent.click(within(panel).getByText('고정됨'));
         await waitFor(() => expect(screen.queryByRole('dialog', { name: '글' })).toBeNull());
         await expect(usePanelStore.getState().openPanel).toBe('start');
+
+        // 열린 채 다른 카드를 누르면 닫히기만 하고 그 카드의 팝업은 열지 않는다.
+        await clickCard('글');
+        await screen.findByRole('dialog', { name: '글' });
+        await userEvent.click(within(all()).getByText('외부 링크'));
+        await waitFor(() => expect(screen.queryByRole('dialog', { name: '글' })).toBeNull());
+        await expect(screen.queryByRole('dialog', { name: '외부 링크' })).toBeNull();
       },
     );
 

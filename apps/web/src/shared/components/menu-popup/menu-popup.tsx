@@ -110,7 +110,8 @@ type MenuPopupProps = MenuPanelProps & {
  * Base UI Menu의 팝업(`Menu.Popup`)이라 키보드 조작과 접근성은 Base UI가 맡고, 쓰는 곳이 `Menu.Root`·`Menu.Positioner`로
  * 열고 닫기와 위치를 정한다. 나머지 속성은 팝업 요소에 준다.
  * 열 때 `motion-menu-enter`로 열리는 쪽으로 미끄러져 나온다(페이드 없음). 팝업이 자르는 틀이고 안의 메뉴 바탕이 움직이며,
- * 열리는 쪽은 Base UI가 팝업에 다는 `data-side`로 정해진다. 틀이 시작 가장자리의 그림자를 자르지 않도록 움직임이 끝나면 클래스를 뗀다.
+ * 열리는 쪽은 Base UI가 팝업에 다는 `data-side`로 정해진다. 틀은 움직이는 동안만 시작 가장자리를 자른다. 움직임이 끝나면 클래스를 떼어,
+ * 열린 뒤 `data-side`가 바뀌어도 다시 움직이지 않게 한다.
  * 하위 메뉴는 측정하지 않아 지금처럼 `motion-flyout-enter`로 페이드해 나타난다. 사라지는 움직임은 없어 Base UI가 기다리지 않고 바로 닫는다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[피그마 연동:모션 클래스]]
