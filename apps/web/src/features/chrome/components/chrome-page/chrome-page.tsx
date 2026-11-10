@@ -268,7 +268,7 @@ function NewTabPage({
   return (
     <div
       className={cn(
-        'flex flex-col items-center gap-spacing-2xl px-spacing-lg',
+        'flex flex-col items-center gap-spacing-2xl px-spacing-lg pb-spacing-2xl',
         isWide ? 'pt-spacing-5xl' : 'pt-spacing-4xl',
       )}
     >
@@ -326,7 +326,7 @@ function SearchResultsPage({
   return (
     <div
       className={cn(
-        'flex flex-col items-center px-spacing-lg',
+        'flex flex-col items-center px-spacing-lg pb-spacing-2xl',
         isWide ? 'pt-spacing-5xl' : 'pt-spacing-2xl',
       )}
     >
@@ -380,7 +380,7 @@ function NotFoundPage({
   onReload: handleReload,
 }: ChromeNotFoundPageProps & { layout: ChromePageLayout }): JSX.Element {
   return (
-    <div className="flex flex-flex-fill items-center justify-center px-spacing-2xl">
+    <div className="flex flex-flex-fill items-center justify-center p-spacing-2xl">
       <EmptyState
         heading={`${WORDMARK} 페이지를 찾을 수 없음`}
         message={`다음 웹 주소에 대한 웹페이지를 찾을 수 없습니다: ${url}`}
