@@ -404,7 +404,7 @@
         "children": [
           {
             "asset": {
-              "color": "color/black/89",
+              "color": "color/white",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
@@ -472,7 +472,7 @@
         "children": [
           {
             "asset": {
-              "color": "color/black/61",
+              "color": "color/white",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
