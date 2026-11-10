@@ -1,0 +1,87 @@
+{
+  "delay": {
+    "ms": 300,
+    "token": "motion/delay/pinned-move-swap"
+  },
+  "directives": {},
+  "duration": {
+    "ms": 167,
+    "token": "motion/duration/fast"
+  },
+  "iterations": 1,
+  "name": "motion-start-pinned-move-swap",
+  "nodeId": "3431:5898",
+  "notes": [
+    {
+      "category": "Development",
+      "path": "old place",
+      "text": "나머지 칸은 미끄러지지 않고 옛 자리에서 사라지며 새 자리에서 동시에 나타난다(교차 페이드). 메뉴가 사라진 뒤 약 300ms에 시작한다(키프레임 시작 시점). 시작 시점은 motion/delay/pinned-move-swap 변수 값이다."
+    }
+  ],
+  "source": "flow",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 300,
+        "token": "motion/delay/pinned-move-swap"
+      },
+      "duration": {
+        "ms": 167,
+        "token": "motion/duration/fast"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 300,
+          "value": 0,
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/fade",
+          "offset": 1,
+          "time": 467,
+          "value": 1,
+          "valueToken": null
+        }
+      ],
+      "node": "PinnedTile",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "new place",
+      "property": "OPACITY"
+    },
+    {
+      "delay": {
+        "ms": 300,
+        "token": "motion/delay/pinned-move-swap"
+      },
+      "duration": {
+        "ms": 167,
+        "token": "motion/duration/fast"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 300,
+          "value": 1,
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/fade",
+          "offset": 1,
+          "time": 467,
+          "value": 0,
+          "valueToken": null
+        }
+      ],
+      "node": "PinnedTile",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "old place",
+      "property": "OPACITY"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=3431-5898"
+}
