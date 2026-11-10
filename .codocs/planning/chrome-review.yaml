@@ -5,8 +5,8 @@ _codocs:
     - seojaewan 블로그
 개요: |
   2026-11-10에 구현한 Chrome 창의 크롬(탭 줄·도구 모음·주소창)을 실제 Windows Chrome과 비교해 찾은 차이와, 사람과 논의해 정한 해결이다.
-  1~8번은 모두 끝났다(코드·문서·피그마). 다른 문서(피그마 작업 검수, 남은 작업, 임의 작업)가 이 문서를 가리키고 있어 지우지 않고, 끝난 섹션을 "끝남"과 PR 번호로 줄였다. 다른 검수 문서를 지울 때 링크와 함께 정리한다.
-  스스로 정한 것은 임의 작업 문서의 Chrome 세션 섹션에 있다.
+  1~8번은 모두 끝났다(코드·문서·피그마). 다른 문서([[피그마 작업 검수]], [[남은 작업]], [[임의 작업]])가 이 문서를 가리키고 있어 지우지 않고, 끝난 섹션을 "끝남"과 PR 번호로 줄였다. 다른 검수 문서를 지울 때 링크와 함께 정리한다.
+  스스로 정한 것은 [[임의 작업:Chrome 세션]]에 있다.
 세션 사이 약속: |
   공통 약속은 [[피그마 작업 검수:세션 사이 약속]]을 따른다. 이 문서에만 해당하는 것은 다음이다.
   - 맡은 컴포넌트 PR: `BrowserTab`(`feat/figma-browser-tab`), `BrowserTabStrip`(`feat/figma-browser-tab-strip`), `BrowserToolbar`(`feat/figma-browser-toolbar`), `AddressBar`(`feat/figma-address-bar`). 조립 PR은 `feat/figma-patterns-chrome`이다.
