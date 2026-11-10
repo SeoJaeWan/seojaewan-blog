@@ -752,7 +752,7 @@
  * 열린 뒤에는 시작 가장자리의 그림자까지 보이도록 쓰는 곳이 움직임이 끝나면 클래스를 뗀다.
  * 열리는 쪽은 Base UI가 틀에 단 data-side로 고른다(top이면 위로, 나머지는 아래로). 피그마 흐름은 아래로 여는 모습이다.
  * 틀의 넓힌 여백은 누르는 영역이 되지 않게 포인터 이벤트를 메뉴 바탕에만 둔다.
- * 하위 메뉴는 측정하지 않아 지금처럼 motion-flyout-enter, 작업 표시줄 앱 버튼 메뉴는 motion-taskbar-menu-enter를 쓴다.
+ * 하위 메뉴는 측정하지 않아 지금처럼 motion-flyout-enter, 작업 표시줄 앱 버튼 메뉴는 아래 motion-taskbar-menu-enter를 쓴다.
  */
 @keyframes motion-menu-enter {
   0% {
@@ -795,6 +795,72 @@
 
   &[data-side='top'] > * {
     animation-name: motion-menu-enter-up;
+  }
+}
+
+/*
+ * 작업 표시줄 앱 버튼 우클릭 메뉴 열기(조립 흐름 motion-taskbar-menu-enter). 메뉴가 작업 표시줄 위 끝에서 잘린 채 위로 미끄러져 올라온다.
+ * 페이드는 없고 실행 중 값도 없다. 이동 거리 135는 흐름 메뉴(Menu/TaskbarApp) 높이 111에 아래 여백 24를 더한 값을 흐름 그대로 옮긴 것이다.
+ * 작업 표시줄과 메뉴 사이는 12px(Development 주석)이라 틀의 아래를 그만큼만 넓혀 작업 표시줄 위 끝을 틀의 아래 끝으로 삼는다.
+ * 그러면 높이 123px 이하 메뉴는 시작할 때 틀 밖에 있다.
+ * 나머지 세 쪽은 그림자가 보이도록 안쪽 여백만큼 넓힌 뒤 같은 만큼 바깥 여백을 줄여 자리는 그대로다. 열린 뒤에는 쓰는 곳이 클래스를 뗀다.
+ * 클래스는 잘라 내는 틀(앱에서는 Base UI 메뉴 팝업)에 붙이고 바로 안의 메뉴 바탕이 움직인다. 틀의 넓힌 여백은 누르는 영역이 되지 않는다.
+ */
+@keyframes motion-taskbar-menu-enter {
+  0% {
+    translate: 0 135px;
+  }
+
+  100% {
+    translate: 0 0;
+  }
+}
+
+@utility motion-taskbar-menu-enter {
+  overflow: hidden;
+  padding: var(--spacing-3xl) var(--spacing-3xl) var(--spacing-md);
+  margin: calc(var(--spacing-3xl) * -1) calc(var(--spacing-3xl) * -1) calc(var(--spacing-md) * -1);
+  pointer-events: none;
+
+  & > * {
+    pointer-events: auto;
+    animation-name: motion-taskbar-menu-enter;
+    animation-duration: var(--motion-duration-fast);
+    animation-timing-function: var(--motion-easing-direct-entrance);
+    animation-fill-mode: both;
+  }
+}
+
+/*
+ * 작업 표시줄 창 미리보기 목록 열기(조립 흐름 motion-taskbar-preview-enter). 목록이 작업 표시줄 위 끝에서 잘린 채 위로 미끄러져 올라온다.
+ * 페이드는 없고 실행 중 값도 없다. 이동 거리 190은 흐름 목록(Taskbar/PreviewList) 높이 166에 아래 여백 24를 더한 값을 흐름 그대로 옮긴 것이다.
+ * 작업 표시줄과 목록 사이는 12px(Development 주석)이라 틀의 아래를 그만큼만 넓혀 작업 표시줄 위 끝을 틀의 아래 끝으로 삼는다.
+ * 그러면 높이 178px 이하 목록은 시작할 때 틀 밖에 있다.
+ * 나머지 세 쪽은 그림자가 보이도록 안쪽 여백만큼 넓힌 뒤 같은 만큼 바깥 여백을 줄여 자리는 그대로다. 열린 뒤에는 쓰는 곳이 클래스를 뗀다.
+ * 클래스는 잘라 내는 틀(앱에서는 미리보기 목록 팝업)에 붙이고 바로 안의 목록이 움직인다. 틀의 넓힌 여백은 누르는 영역이 되지 않는다.
+ */
+@keyframes motion-taskbar-preview-enter {
+  0% {
+    translate: 0 190px;
+  }
+
+  100% {
+    translate: 0 0;
+  }
+}
+
+@utility motion-taskbar-preview-enter {
+  overflow: hidden;
+  padding: var(--spacing-3xl) var(--spacing-3xl) var(--spacing-md);
+  margin: calc(var(--spacing-3xl) * -1) calc(var(--spacing-3xl) * -1) calc(var(--spacing-md) * -1);
+  pointer-events: none;
+
+  & > * {
+    pointer-events: auto;
+    animation-name: motion-taskbar-preview-enter;
+    animation-duration: var(--motion-duration-normal);
+    animation-timing-function: var(--motion-easing-direct-entrance);
+    animation-fill-mode: both;
   }
 }
 
@@ -856,12 +922,16 @@
   .motion-start-category-folder-open,
   .motion-image-skeleton,
   .motion-image-enter,
-  .motion-menu-enter > * {
+  .motion-menu-enter > *,
+  .motion-taskbar-menu-enter > *,
+  .motion-taskbar-preview-enter > * {
     animation: none;
   }
 
-  /* 메뉴 열기의 자르는 틀은 움직임이 없으면 필요 없어 그림자가 모두 보이게 푼다. */
-  .motion-menu-enter {
+  /* 메뉴 열기(작업 표시줄 앱 메뉴 포함)와 작업 표시줄 미리보기 목록 열기의 자르는 틀은 움직임이 없으면 필요 없어 그림자가 모두 보이게 푼다. */
+  .motion-menu-enter,
+  .motion-taskbar-menu-enter,
+  .motion-taskbar-preview-enter {
     overflow: visible;
     padding: 0;
     margin: 0;

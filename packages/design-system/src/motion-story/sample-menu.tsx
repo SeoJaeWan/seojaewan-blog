@@ -12,7 +12,7 @@ type SampleMenuProps = {
 };
 
 /**
- * 메뉴 모션 흐름(motion-menu-enter 등)의 자르는 틀과 그 안의 메뉴 조립을 그리고, 모션 클래스를 틀에 건다.
+ * 메뉴 모션 흐름(motion-menu-enter, motion-taskbar-menu-enter)의 자르는 틀과 그 안의 메뉴 조립을 그리고, 모션 클래스를 틀에 건다.
  * 메뉴 높이가 흐름과 같아야 translate %가 흐름의 px 값으로 읽히므로 흐름과 같은 항목 수를 메뉴 항목의 피그마 크기로 그린다.
  * @codocs [[피그마 연동:모션]]
  * @param props 컴포넌트 속성
