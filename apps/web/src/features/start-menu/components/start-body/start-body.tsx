@@ -126,7 +126,7 @@ const contentInsetClassNames = {
  */
 export function StartBody({ device = 'desktop', ...viewProps }: StartBodyProps): JSX.Element {
   switch (viewProps.view) {
-    // 검색 결과 화면은 검색 본문을 그대로 쓴다. 좌우 여백은 검색 본문이 갖고, Start는 아래 24만 같은 칸(모바일은 스크롤되는 칸)에 더한다.
+    // 검색 결과 화면은 검색 본문을 그대로 쓴다. 좌우 여백은 검색 본문이 갖고, Start는 위아래 24만 같은 칸(모바일은 스크롤되는 칸)에 더한다.
     case 'results': {
       const { onItemOpen: handleItemOpen, onCopyLink: handleCopyLink } = viewProps;
       return (
@@ -137,18 +137,18 @@ export function StartBody({ device = 'desktop', ...viewProps }: StartBodyProps):
           selectedId={viewProps.selectedId}
           onItemOpen={handleItemOpen}
           onCopyLink={handleCopyLink}
-          contentClassName="pb-spacing-2xl"
+          contentClassName="py-spacing-2xl"
         />
       );
     }
     case 'no-results':
-      return <SearchBody view="no-results" device={device} contentClassName="pb-spacing-2xl" />;
+      return <SearchBody view="no-results" device={device} contentClassName="py-spacing-2xl" />;
     case 'jump-list':
       return (
         <StartJumpListView
           availableLetters={viewProps.availableLetters}
           className={cn(
-            'flex flex-col items-start gap-spacing-lg overflow-clip pb-spacing-2xl',
+            'flex flex-col items-start gap-spacing-lg overflow-clip py-spacing-2xl',
             contentInsetClassNames[device],
           )}
         />
@@ -410,7 +410,7 @@ function StartListView({
           className="min-h-size-none flex-flex-fill"
           contentClassName={contentInsetClassNames[device]}
         >
-          <div className="flex w-full shrink-shrink-none flex-col items-start gap-spacing-lg pb-spacing-2xl">
+          <div className="flex w-full shrink-shrink-none flex-col items-start gap-spacing-lg py-spacing-2xl">
             {/* 화면 읽기 프로그램이 "고정됨"과 "모두" 영역을 구분하도록 보이는 제목을 영역 이름으로 쓴다 */}
             <section
               aria-labelledby={pinnedTitleId}
@@ -485,7 +485,7 @@ function StartListView({
           isInert={jumpList.status === 'exiting'}
           availableLetters={getAvailableLetters(groups)}
           className={cn(
-            'absolute inset-spacing-none flex flex-col items-start gap-spacing-lg overflow-clip pb-spacing-2xl',
+            'absolute inset-spacing-none flex flex-col items-start gap-spacing-lg overflow-clip py-spacing-2xl',
             contentInsetClassNames[device],
           )}
           onBack={handleBack}

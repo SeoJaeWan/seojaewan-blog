@@ -1,7 +1,6 @@
 import type { ComponentProps, JSX, ReactNode } from 'react';
 
 import { cn } from '../../cn';
-import { ScrollArea } from '../scroll-area/scroll-area';
 
 export type StartCategoryFolderDevice = 'desktop' | 'mobile';
 
@@ -11,6 +10,7 @@ type StartCategoryFolderProps = Omit<ComponentProps<'div'>, 'children'> & {
   hasPages?: boolean;
   pageCount?: number;
   currentPage?: number;
+  gridProps?: Omit<ComponentProps<'div'>, 'children'>;
   children?: ReactNode;
 };
 
@@ -34,7 +34,8 @@ const deviceClassNames = {
  * 아크릴 바탕 위에 가운데 정렬한 범주 이름과 범주의 항목 격자(4열)를 놓는다. 크기는 항목 수와 상관없이 고정이고,
  * 모바일은 너비와 가로 여백만 다르다(@codocs [[Start 메뉴:모두]]).
  * 항목 칸 너비는 팝업이 정하므로 쓰는 곳은 항목에 너비 클래스를 주지 않는다.
- * 쪽 넘김과 그 움직임, 여닫기(바깥 클릭, Esc)와 놓을 자리는 쓰는 곳이 한다. 넘친 항목은 격자 영역 안에서 스크롤한다.
+ * 넘친 항목은 스크롤바 없이 격자 영역(피그마 `page`) 경계에서 잘린다. 쪽 넘김과 그 움직임은 쓰는 곳이 `gridProps`로 격자(피그마 `tile grid`)를
+ * 옮겨 한다. 여닫기(바깥 클릭, Esc)와 놓을 자리도 쓰는 곳이 한다.
  * @codocs [[Start 메뉴:모두]]
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
  * @param props 컴포넌트 속성
@@ -43,6 +44,7 @@ const deviceClassNames = {
  * @param props.hasPages 피그마 `Has pages` 속성. 격자 오른쪽에 쪽 표시 점을 보일지 정한다
  * @param props.pageCount 쪽 표시 점의 수. 피그마 기본 내용은 3쪽이다
  * @param props.currentPage 크게 보일 지금 쪽(0부터)
+ * @param props.gridProps 항목 격자(피그마 `tile grid`) 요소에 줄 속성. 쓰는 곳이 쪽 넘김 위치·모션 클래스·ref를 준다
  * @param props.children 피그마 `Tiles` 슬롯. 범주의 항목(PinnedTile)을 넣는다
  * @param props.className 덧붙이거나 덮어쓸 클래스
  */
@@ -52,6 +54,7 @@ export function StartCategoryFolder({
   hasPages = false,
   pageCount = 3,
   currentPage = 0,
+  gridProps,
   children,
   className,
   ...divProps
@@ -71,11 +74,18 @@ export function StartCategoryFolder({
       <p className="w-full shrink-shrink-none truncate text-center type-subtitle text-color-black-89">
         {label}
       </p>
-      {/* 격자 영역(피그마 page). 쪽 표시 점은 이 영역의 오른쪽 여백 칸 세로 가운데에 놓는다. */}
+      {/* 격자 영역(피그마 page). 쪽 표시 점은 이 영역의 오른쪽 여백 칸 세로 가운데에 놓는다.
+          격자는 안쪽 틀이 자르고, 쪽 표시 점은 틀 밖(오른쪽 여백 칸)이라 잘리지 않는다.
+          자르기는 overflow clip이라 포커스가 옮겨 가도 틀이 스스로 스크롤되지 않는다. */}
       <div className="relative min-h-size-none w-full flex-flex-fill">
-        <ScrollArea className="size-full">
-          <div className={cn('flex w-full flex-wrap', classNames.tiles)}>{children}</div>
-        </ScrollArea>
+        <div className="size-full overflow-clip">
+          <div
+            {...gridProps}
+            className={cn('flex w-full flex-wrap', classNames.tiles, gridProps?.className)}
+          >
+            {children}
+          </div>
+        </div>
         {hasPages && (
           <div
             aria-hidden
