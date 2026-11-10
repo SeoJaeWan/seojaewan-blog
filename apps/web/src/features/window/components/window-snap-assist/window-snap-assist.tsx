@@ -2,7 +2,12 @@ import type { JSX, ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
 
 import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thumbnail';
-import { getThumbnailScale } from '@/shared/utils/window-geometry/window-geometry';
+import {
+  getPreviewCardWidth,
+  getPreviewThumbnailBox,
+  getThumbnailScale,
+  getWindowAspectRatio,
+} from '@/shared/utils/window-geometry/window-geometry';
 import type {
   OpenWindow,
   RenderWindow,
@@ -12,9 +17,6 @@ import type {
 import { getSnapZoneRect, getWindowRect } from '@/shared/utils/window-rules/window-rules';
 
 import { SnapAssist } from './components/snap-assist/snap-assist';
-
-/** Snap Assist 축소 화면 자리(WindowPreview Thumbnail, 208 너비에서 안쪽 여백을 뺀 192×108) */
-const THUMBNAIL_BOX = { width: 192, height: 108 } as const;
 
 type WindowSnapAssistProps = {
   zone: SnapZone;
@@ -131,16 +133,20 @@ export function WindowSnapAssist({
            * @returns 제안 데이터
            */
           (target) => {
+            // 카드 너비는 창 비율을 따르고, 축소 화면 자리는 그 카드 너비에서 안쪽 여백을 뺀 너비다.
             const size = getWindowRect(target, workArea);
+            const aspectRatio = getWindowAspectRatio(size);
+            const box = getPreviewThumbnailBox(getPreviewCardWidth(aspectRatio));
             return {
               id: target.id,
               appIcon: renderWindowIcon(target),
               title: getWindowTitle(target),
+              aspectRatio,
               thumbnail: (
                 <WindowThumbnail
                   width={size.width}
                   height={size.height}
-                  scale={getThumbnailScale(size, THUMBNAIL_BOX)}
+                  scale={getThumbnailScale(size, box)}
                 >
                   {renderWindow(target, {
                     isInactive: false,

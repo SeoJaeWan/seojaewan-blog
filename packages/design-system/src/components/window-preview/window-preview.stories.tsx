@@ -31,7 +31,7 @@ type Story = StoryObj<typeof meta>;
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
-// @codocs [[작업 표시줄 검수:6. 미리보기 카드 폭과 축소 화면]]
+// @codocs [[작업 표시줄:창 미리보기]]
 /** 카드 너비는 축소 화면 높이(108) × 창 비율 + 좌우 여백(8 × 2)이고, 최대 208이다 */
 export const AspectRatio: Story = {
   render: () => (
