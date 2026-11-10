@@ -582,9 +582,14 @@ export const ContextMenu: Story = {
       await waitForPopupGone('menu');
     });
 
+    // 붙여넣을 것이 없으면 붙여넣기가 메뉴에 없다(단추 줄이 없다).
+    // @codocs [[항목 조작:잘라내기와 붙여넣기]]
     await step('빈 곳을 우클릭하면 빈 곳 메뉴를 연다', async () => {
       await userEvent.pointer({ keys: '[MouseRight]', target: getList(canvasElement) });
-      await expect(await findMenuItem(/붙여넣기/)).toBeInTheDocument();
+      await expect(await findMenuItem(/새로 만들기/)).toBeInTheDocument();
+      await expect(
+        within(await findOpenPopup('menu')).queryByRole('menuitem', { name: /붙여넣기/ }),
+      ).not.toBeInTheDocument();
       await user.keyboard('{Escape}');
       await waitForPopupGone('menu');
     });

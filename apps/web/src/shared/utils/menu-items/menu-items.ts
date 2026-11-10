@@ -1,5 +1,7 @@
 import type {
   MenuPopupCommand,
+  MenuPopupCommandBar,
+  MenuPopupCommandButton,
   MenuPopupRadioGroup,
   MenuPopupRadioOption,
 } from '@/shared/components/menu-popup/menu-popup';
@@ -72,6 +74,16 @@ export function openMenuItem(onClick: () => void): MenuPopupCommand {
 }
 
 /**
+ * 바탕화면·탐색기 항목 메뉴의 `열기` 항목을 만든다. 항목을 고른 채 Enter를 누르면 열리므로 오른쪽에 `Enter`를 보인다(Windows 11 파일 메뉴와 같다).
+ * @codocs [[바탕화면 우클릭 메뉴:아이콘]]
+ * @param onClick 골랐을 때 할 일
+ * @returns 메뉴 항목
+ */
+export function openItemMenuItem(onClick: () => void): MenuPopupCommand {
+  return { ...openMenuItem(onClick), shortcut: 'Enter' };
+}
+
+/**
  * `새 창에서 열기` 항목을 만든다. 바탕화면·탐색기 메뉴가 쓴다.
  * @param onClick 골랐을 때 할 일
  * @returns 메뉴 항목
@@ -128,37 +140,46 @@ export function taskbarPinMenuItem(isPinned: boolean, onClick: () => void): Menu
 }
 
 /**
- * `잘라내기` 항목을 만든다. 바탕화면·탐색기 메뉴가 쓴다.
- * @param onClick 골랐을 때 할 일
- * @returns 메뉴 항목
+ * 단추 줄(피그마 MenuCommandBar)을 만든다. 단추가 없으면 단추 줄도 없어(빈 목록) 메뉴 항목에 펼쳐 넣는다.
+ * 바탕화면·탐색기의 항목 메뉴와 빈 곳 메뉴가 쓴다. 놓는 자리(맨 위·맨 아래)는 메뉴가 열린 쪽으로 MenuPopup이 정한다.
+ * @codocs [[바탕화면 우클릭 메뉴:아이콘]]
+ * @param buttons 단추. 왼쪽부터
+ * @returns 단추 줄 하나, 단추가 없으면 빈 목록
  */
-export function cutMenuItem(onClick: () => void): MenuPopupCommand {
+export function menuCommandBar(buttons: readonly MenuPopupCommandButton[]): MenuPopupCommandBar[] {
+  return buttons.length === 0 ? [] : [{ kind: 'command-bar', buttons }];
+}
+
+/**
+ * 단추 줄의 `잘라내기` 단추를 만든다. 바탕화면·탐색기 메뉴가 쓴다.
+ * @param onClick 골랐을 때 할 일
+ * @returns 단추
+ */
+export function cutCommandButton(onClick: () => void): MenuPopupCommandButton {
   return { label: '잘라내기', icon: MENU_ICONS.cut, shortcut: 'Ctrl+X', onClick };
 }
 
 /**
- * `이름 바꾸기` 항목을 만든다. 바탕화면·탐색기 메뉴가 쓴다.
+ * 단추 줄의 `이름 바꾸기` 단추를 만든다. 바탕화면·탐색기 메뉴가 쓴다.
  * @param onClick 골랐을 때 할 일
- * @returns 메뉴 항목
+ * @returns 단추
  */
-export function renameMenuItem(onClick: () => void): MenuPopupCommand {
+export function renameCommandButton(onClick: () => void): MenuPopupCommandButton {
   return { label: '이름 바꾸기', icon: MENU_ICONS.rename, shortcut: 'F2', onClick };
 }
 
 /**
- * `삭제`(휴지통으로 보내기) 항목을 만든다. 휴지통으로 보낼 수 없으면 고를 수 없다. 바탕화면·탐색기 메뉴가 쓴다.
+ * 단추 줄의 `삭제`(휴지통으로 보내기) 단추를 만든다. 단추는 비활성 모양이 없어, 휴지통으로 보낼 수 없으면 단추를 두지 않는다(빈 목록).
+ * 바탕화면·탐색기 메뉴가 쓴다.
  * @param canTrash 휴지통으로 보낼 수 있는지
  * @param onClick 골랐을 때 할 일
- * @returns 메뉴 항목
+ * @returns 단추 하나, 보낼 수 없으면 빈 목록
  */
-export function trashMenuItem(canTrash: boolean, onClick: () => void): MenuPopupCommand {
-  return {
-    label: '삭제',
-    icon: MENU_ICONS.delete,
-    shortcut: 'Delete',
-    isDisabled: !canTrash,
-    onClick,
-  };
+export function trashCommandButtons(
+  canTrash: boolean,
+  onClick: () => void,
+): MenuPopupCommandButton[] {
+  return canTrash ? [{ label: '삭제', icon: MENU_ICONS.delete, shortcut: 'Delete', onClick }] : [];
 }
 
 /**
@@ -171,19 +192,20 @@ export function refreshMenuItem(onClick: () => void): MenuPopupCommand {
 }
 
 /**
- * `붙여넣기` 항목을 만든다. 붙여넣을 수 없으면 고를 수 없다. 바탕화면·탐색기 빈 곳 메뉴가 쓴다.
+ * 빈 곳 메뉴의 단추 줄 `붙여넣기` 단추를 만든다. 붙여넣을 수 없으면 단추를 두지 않아(빈 목록) 단추 줄도 없다.
+ * 바탕화면·탐색기 빈 곳 메뉴가 쓴다.
+ * @codocs [[항목 조작:잘라내기와 붙여넣기]]
  * @param canPaste 붙여넣을 수 있는지
  * @param onClick 골랐을 때 할 일
- * @returns 메뉴 항목
+ * @returns 단추 하나, 붙여넣을 수 없으면 빈 목록
  */
-export function pasteMenuItem(canPaste: boolean, onClick: () => void): MenuPopupCommand {
-  return {
-    label: '붙여넣기',
-    icon: MENU_ICONS.paste,
-    shortcut: 'Ctrl+V',
-    isDisabled: !canPaste,
-    onClick,
-  };
+export function pasteCommandButtons(
+  canPaste: boolean,
+  onClick: () => void,
+): MenuPopupCommandButton[] {
+  return canPaste
+    ? [{ label: '붙여넣기', icon: MENU_ICONS.paste, shortcut: 'Ctrl+V', onClick }]
+    : [];
 }
 
 /**

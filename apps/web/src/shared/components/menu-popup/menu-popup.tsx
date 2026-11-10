@@ -9,7 +9,13 @@ import {
   useState,
 } from 'react';
 
-import { Menu, MenuItem, MenuSeparator } from '@seojaewan/design-system';
+import {
+  Menu,
+  MenuCommandBar,
+  MenuCommandButton,
+  MenuItem,
+  MenuSeparator,
+} from '@seojaewan/design-system';
 
 type MenuItemIcon = ComponentProps<typeof MenuItem>['icon'];
 
@@ -75,6 +81,23 @@ export type MenuPopupZoom = {
 /** 항목 사이 구분선(피그마 MenuSeparator) */
 export type MenuPopupSeparator = { kind: 'separator' };
 
+/** 단추 줄의 명령 단추 하나(피그마 MenuCommandButton). shortcut은 툴팁에 `이름 (단축키)`로 보이는 단축키다. */
+export type MenuPopupCommandButton = {
+  label: string;
+  icon: ComponentProps<typeof MenuCommandButton>['icon'];
+  shortcut?: string;
+  onClick?: () => void;
+};
+
+/**
+ * 자주 쓰는 명령을 모은 단추 줄(피그마 MenuCommandBar). 목록의 어디에 두어도 목록 한 줄로 그리지 않고,
+ * 메뉴가 아래로 열리면 맨 위, 위로 열리면 맨 아래에 구분선과 함께 그린다. 단추가 없으면 그리지 않는다.
+ */
+export type MenuPopupCommandBar = {
+  kind: 'command-bar';
+  buttons: readonly MenuPopupCommandButton[];
+};
+
 /** 메뉴 한 줄 */
 export type MenuPopupEntry =
   | MenuPopupCommand
@@ -82,7 +105,11 @@ export type MenuPopupEntry =
   | MenuPopupCheckbox
   | MenuPopupRadioGroup
   | MenuPopupZoom
-  | MenuPopupSeparator;
+  | MenuPopupSeparator
+  | MenuPopupCommandBar;
+
+/** 메뉴 목록에 한 줄로 그리는 항목(단추 줄을 뺀 메뉴 한 줄) */
+type MenuPopupListEntry = Exclude<MenuPopupEntry, MenuPopupCommandBar>;
 
 export type MenuPopupWidth = 'default' | 'view-options';
 
@@ -98,6 +125,9 @@ type MenuPanelProps = {
   items: readonly MenuPopupEntry[];
   width?: MenuPopupWidth;
 };
+
+/** Base UI가 팝업에 알려 주는, 메뉴가 기준 요소의 어느 쪽에 열렸는지 */
+type MenuPopupSide = BaseMenu.Popup.State['side'];
 
 /** 메뉴를 열 때의 움직임. menu는 드롭다운·우클릭 메뉴, submenu는 하위 메뉴다. */
 export type MenuPopupMotion = 'menu' | 'submenu';
@@ -165,14 +195,82 @@ export function MenuPopup({
     }
   }
 
+  /**
+   * 팝업 요소 안에 메뉴 바탕을 그린다. 단추 줄을 맨 위에 둘지 맨 아래에 둘지 정하려고 Base UI가 알려 주는 열린 쪽(`side`)을 넘긴다.
+   * @param elementProps Base UI가 팝업 요소에 줄 속성
+   * @param state Base UI 팝업 상태
+   * @returns 팝업 요소
+   */
+  function renderPopup(
+    elementProps: ComponentProps<'div'>,
+    state: BaseMenu.Popup.State,
+  ): JSX.Element {
+    return (
+      <div {...elementProps}>
+        <MenuPanel items={items} width={width} side={state.side} />
+      </div>
+    );
+  }
+
   return (
     <BaseMenu.Popup
       {...popupProps}
       className={isEntering ? `${enterClassNames[motion]} outline-none` : 'outline-none'}
       onAnimationEnd={handleAnimationEnd}
-    >
-      <MenuPanel items={items} width={width} />
-    </BaseMenu.Popup>
+      render={renderPopup}
+    />
+  );
+}
+
+/**
+ * 메뉴 항목에서 단추 줄을 꺼내고 나머지 목록을 돌려준다. 단추가 없는 단추 줄은 없는 것으로 본다.
+ * @param items 메뉴 항목
+ * @returns 단추 줄의 단추(없으면 빈 목록)와 목록에 그릴 항목
+ */
+function splitCommandBar(items: readonly MenuPopupEntry[]): {
+  buttons: readonly MenuPopupCommandButton[];
+  listItems: MenuPopupListEntry[];
+} {
+  const buttons: MenuPopupCommandButton[] = [];
+  const listItems: MenuPopupListEntry[] = [];
+  for (const entry of items) {
+    if (entry.kind === 'command-bar') {
+      buttons.push(...entry.buttons);
+    } else {
+      listItems.push(entry);
+    }
+  }
+  return { buttons, listItems };
+}
+
+/**
+ * 단추 줄(피그마 MenuCommandBar)을 그린다. 단추를 누르면 Base UI가 메뉴를 닫는다.
+ * @param props 컴포넌트 속성
+ * @param props.buttons 단추. 왼쪽부터 그린다
+ */
+function CommandBarEntry({ buttons }: { buttons: readonly MenuPopupCommandButton[] }): JSX.Element {
+  return (
+    <MenuCommandBar>
+      {buttons.map(
+        /**
+         * 단추 하나를 그린다.
+         * @param button 단추
+         * @returns 명령 단추
+         */
+        (button) => {
+          const { onClick: handleClick } = button;
+          return (
+            <MenuCommandButton
+              key={button.label}
+              label={button.label}
+              icon={button.icon}
+              shortcut={button.shortcut}
+              onClick={handleClick}
+            />
+          );
+        },
+      )}
+    </MenuCommandBar>
   );
 }
 
@@ -182,12 +280,19 @@ export function MenuPopup({
  * 머물면 그 항목이 하위 메뉴 항목일 때 그 하위 메뉴를 열고(열려 있던 다른 하위 메뉴는 같은 순간 닫는다), 일반 항목이면 열린 하위 메뉴를 닫는다.
  * 그래서 하위 메뉴가 바뀌는 사이에 하위 메뉴가 없는 빈 구간이 없다. 열린 하위 메뉴 안으로 들어가면 타이머를 멈춰, 지나온 항목으로 바뀌지 않는다.
  * 클릭과 키보드(→, Enter)는 기다리지 않고 바로 연다.
+ * 단추 줄이 있으면 메뉴가 아래로 열렸을 때 맨 위, 위로 열렸을 때(`side`가 top) 맨 아래에 두고, 목록과의 사이에 구분선을 둔다.
+ * 단추 줄이 늘 우클릭한 자리 가까이 있게 하기 위해서다(Windows 11 파일 메뉴와 같다). 키보드 차례도 그려진 차례를 따른다.
  * @codocs [[디자인 시스템:팝업]]
+ * @codocs [[바탕화면 우클릭 메뉴:아이콘]]
  * @param props 컴포넌트 속성
  * @param props.width 메뉴 바탕 너비(피그마 메뉴 조립의 Menu 너비). 없으면 Menu 기본 너비다
- * @param props.items 메뉴 항목과 구분선. 위에서부터 그린다
+ * @param props.items 메뉴 항목과 구분선, 단추 줄. 단추 줄을 뺀 항목은 위에서부터 그린다
+ * @param props.side 메뉴가 기준 요소의 어느 쪽에 열렸는지
  */
-function MenuPanel({ width, items }: MenuPanelProps): JSX.Element {
+function MenuPanel({ width, items, side }: MenuPanelProps & { side: MenuPopupSide }): JSX.Element {
+  const { buttons, listItems } = splitCommandBar(items);
+  const hasCommandBar = buttons.length > 0;
+  const isOpenedAbove = side === 'top';
   const [openSubmenuKey, setOpenSubmenuKey] = useState<string | null>(null);
   const timerRef = useRef<number | undefined>(undefined);
   // 타이머가 끝나면 열 하위 메뉴 항목의 key다(일반 항목이면 null). 타이머가 없으면 undefined다.
@@ -297,7 +402,13 @@ function MenuPanel({ width, items }: MenuPanelProps): JSX.Element {
       onPointerLeave={handlePointerLeave}
       onPointerDown={handlePointerDown}
     >
-      {items.map(
+      {hasCommandBar && !isOpenedAbove && (
+        <>
+          <CommandBarEntry buttons={buttons} />
+          <MenuSeparator />
+        </>
+      )}
+      {listItems.map(
         /**
          * 메뉴 한 줄을 그린다.
          * @param entry 메뉴 한 줄
@@ -325,6 +436,12 @@ function MenuPanel({ width, items }: MenuPanelProps): JSX.Element {
           );
         },
       )}
+      {hasCommandBar && isOpenedAbove && (
+        <>
+          <MenuSeparator />
+          <CommandBarEntry buttons={buttons} />
+        </>
+      )}
     </Menu>
   );
 }
@@ -342,7 +459,7 @@ type SubmenuControl = {
  * @param index 순서
  * @returns React key
  */
-function entryKey(entry: MenuPopupEntry, index: number): string {
+function entryKey(entry: MenuPopupListEntry, index: number): string {
   switch (entry.kind) {
     case 'separator':
       return `separator-${String(index)}`;
@@ -365,7 +482,7 @@ function MenuEntry({
   entry,
   submenu,
 }: {
-  entry: MenuPopupEntry;
+  entry: MenuPopupListEntry;
   submenu: SubmenuControl;
 }): JSX.Element {
   switch (entry.kind) {

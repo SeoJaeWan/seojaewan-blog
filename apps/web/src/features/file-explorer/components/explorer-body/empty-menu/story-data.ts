@@ -36,8 +36,14 @@ export const menuExplorerEmptyLive = getEmptyMenuEntries(emptyMenuOptions(false)
 /** 실제 휴지통 빈 곳 메뉴 항목. 하위 메뉴가 열리는 `play` 스토리가 쓴다 */
 export const menuRecycleBinEmptyLive = getEmptyMenuEntries(emptyMenuOptions(true));
 
-/** 피그마 Menu/ExplorerEmpty: 탐색기 빈 곳 우클릭. 하위 메뉴는 닫은 모양이다 */
-export const menuExplorerEmpty: readonly MenuPopupEntry[] = previewMenu(menuExplorerEmptyLive);
+/**
+ * 피그마 Menu/ExplorerEmpty: 탐색기 빈 곳 우클릭. 하위 메뉴는 닫은 모양이다.
+ * @param canPaste 붙여넣을 것이 있는지(피그마 `Paste`). 있으면 단추 줄에 붙여넣기가 있다
+ * @returns 스토리에 그릴 항목
+ */
+export function menuExplorerEmpty(canPaste: boolean): readonly MenuPopupEntry[] {
+  return previewMenu(getEmptyMenuEntries({ ...emptyMenuOptions(false), canPaste }));
+}
 
 /** 피그마 Menu/RecycleBinEmpty: 탐색기 휴지통 빈 곳 우클릭. 하위 메뉴는 닫은 모양이다 */
 export const menuRecycleBinEmpty: readonly MenuPopupEntry[] = previewMenu(menuRecycleBinEmptyLive);

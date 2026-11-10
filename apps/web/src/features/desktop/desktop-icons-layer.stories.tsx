@@ -559,12 +559,10 @@ export const CutAndPaste: Story = {
     });
 
     // @codocs [[바탕화면 우클릭 메뉴:빈 곳]]
-    await step('빈 곳 메뉴의 붙여넣기는 옮기고, 붙여넣을 것이 없으면 비활성이다', async () => {
+    await step('빈 곳 메뉴의 붙여넣기는 옮기고, 붙여넣을 것이 없으면 메뉴에 없다', async () => {
       await openMenu(page().getByRole('listbox'));
-      await expect(page().getByRole('menuitem', { name: /^붙여넣기/ })).toHaveAttribute(
-        'aria-disabled',
-        'true',
-      );
+      await expect(page().getByRole('menu')).toBeInTheDocument();
+      await expect(page().queryByRole('menuitem', { name: /^붙여넣기/ })).not.toBeInTheDocument();
       await closeMenu();
       useItemClipboardStore.getState().cut(['post:a']);
       await openMenu(page().getByRole('listbox'));
@@ -859,37 +857,31 @@ export const ItemMenu: Story = {
 
     await step('우클릭한 항목의 종류와 고정 여부에 맞는 메뉴를 연다', async () => {
       await openMenu(icon('Blog'));
-      await expect(menuItemNames()).toContain('이름 바꾸기F2');
+      await expect(menuItemNames()).toContain('이름 바꾸기');
       await expect(menuItemNames()).toContain('시작 화면에서 고정 해제');
       await closeMenu();
       await openMenu(icon('가'));
-      await expect(menuItemNames()).not.toContain('이름 바꾸기F2');
+      await expect(menuItemNames()).not.toContain('이름 바꾸기');
       await expect(menuItemNames()).toContain('시작 화면에 고정');
       await closeMenu();
     });
 
     await step(
-      '여러 개를 고르면 열기·잘라내기·삭제이고, 휴지통이 있으면 삭제를 못 고른다',
+      '여러 개를 고르면 단추 줄 잘라내기·삭제와 열기이고, 휴지통이 있으면 삭제 단추가 없다',
       async () => {
         await user.click(icon('Blog'));
         await user.keyboard('{Control>}');
         await user.click(icon('GitHub'));
         await user.keyboard('{/Control}');
         await openMenu(icon('GitHub'));
-        await expect(menuItemNames()).toEqual(['열기', '잘라내기Ctrl+X', '삭제Delete']);
-        await expect(page().getByRole('menuitem', { name: /^삭제/ })).not.toHaveAttribute(
-          'aria-disabled',
-          'true',
-        );
+        // 메뉴가 아래로 열려 단추 줄이 맨 위에 있다.
+        await expect(menuItemNames()).toEqual(['잘라내기', '삭제', '열기Enter']);
         await closeMenu();
         await user.keyboard('{Control>}');
         await user.click(icon('휴지통'));
         await user.keyboard('{/Control}');
         await openMenu(icon('GitHub'));
-        await expect(page().getByRole('menuitem', { name: /^삭제/ })).toHaveAttribute(
-          'aria-disabled',
-          'true',
-        );
+        await expect(menuItemNames()).toEqual(['잘라내기', '열기Enter']);
         await closeMenu();
         await user.click(page().getByRole('listbox'));
       },

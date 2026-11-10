@@ -2,7 +2,8 @@ import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import {
   MENU_ICONS,
   MENU_SEPARATOR,
-  pasteMenuItem,
+  menuCommandBar,
+  pasteCommandButtons,
   refreshMenuItem,
 } from '@/shared/utils/menu-items/menu-items';
 import { newSubmenuItem } from '@/shared/utils/new-submenu/new-submenu-entries';
@@ -26,14 +27,16 @@ type DesktopMenuOptions = DesktopViewMenuOptions &
 
 /**
  * 바탕화면 빈 곳 우클릭 메뉴(피그마 Menu/Desktop, 하위 메뉴 Menu/ViewSubmenu·SortSubmenu·NewSubmenu)의 항목을 만든다.
- * 실제 메뉴와 메뉴 조립 스토리가 함께 쓴다.
+ * 붙여넣을 수 있을 때만 단추 줄에 붙여넣기 단추 하나를 두고, 없으면 단추 줄이 없다. 실제 메뉴와 메뉴 조립 스토리가 함께 쓴다.
  * @codocs [[바탕화면 우클릭 메뉴:빈 곳]]
+ * @codocs [[항목 조작:잘라내기와 붙여넣기]]
  * @codocs [[디자인 시스템:조립]]
  * @param options 지금 설정과 동작
  * @returns 메뉴 항목
  */
 export function getDesktopMenuEntries(options: DesktopMenuOptions): MenuPopupEntry[] {
   return [
+    ...menuCommandBar(pasteCommandButtons(options.canPaste, options.onPaste)),
     {
       kind: 'submenu',
       label: '보기',
@@ -48,7 +51,6 @@ export function getDesktopMenuEntries(options: DesktopMenuOptions): MenuPopupEnt
     },
     refreshMenuItem(options.onRefresh),
     MENU_SEPARATOR,
-    pasteMenuItem(options.canPaste, options.onPaste),
     newSubmenuItem(options.onNewFolder),
   ];
 }
