@@ -1,18 +1,28 @@
 {
-  "description": "바탕화면 외부 링크 아이콘을 우클릭하면 여는 메뉴로, 바탕화면 링크 우클릭 화면에 쓴다.",
   "name": "Menu/Link",
-  "nodeId": "518:6207",
-  "propertyDefinitions": {},
+  "nodeId": "3477:17649",
+  "propertyDefinitions": {
+    "Placement": {
+      "default": "Below",
+      "options": [
+        "Below",
+        "Above"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
-    "default": {
+    "placement=above": {
       "node": {
-        "height": 175,
+        "height": 163,
         "width": 250,
         "x": 16,
         "y": 8
       },
-      "nodeId": "518:6207",
-      "properties": {},
+      "nodeId": "3477:17544",
+      "properties": {
+        "Placement": "Above"
+      },
       "report": {
         "components": [
           {
@@ -29,9 +39,9 @@
             ],
             "properties": {
               "Has icon": true,
-              "Has shortcut": false,
+              "Has shortcut": true,
               "Label": "열기",
-              "Shortcut": "Ctrl+O",
+              "Shortcut": "Enter",
               "State": "Rest",
               "Value": "100%",
               "Variant": "Default"
@@ -77,15 +87,134 @@
             }
           },
           {
+            "component": "MenuCommandBar",
+            "paths": [
+              "Menu/Flyout/Content/command bar"
+            ],
+            "properties": {}
+          },
+          {
+            "component": "MenuCommandButton",
+            "paths": [
+              "Menu/Flyout/Content/command bar/Items/MenuCommandButton"
+            ],
+            "properties": {
+              "Label": "잘라내기",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "Separator",
+            "paths": [
+              "Menu/Flyout/Content/command bar/Items/separator/Separator"
+            ],
+            "properties": {
+              "Orientation": "Vertical"
+            }
+          },
+          {
+            "component": "MenuCommandButton",
+            "paths": [
+              "Menu/Flyout/Content/command bar/Items/MenuCommandButton"
+            ],
+            "properties": {
+              "Label": "삭제",
+              "State": "Rest"
+            }
+          }
+        ],
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
+        "name": "Placement=Above",
+        "size": {
+          "h": 163,
+          "w": 250
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        }
+      }
+    },
+    "placement=below": {
+      "node": {
+        "height": 163,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "518:6207",
+      "properties": {
+        "Placement": "Below"
+      },
+      "report": {
+        "components": [
+          {
+            "component": "Menu",
+            "paths": [
+              "Menu"
+            ],
+            "properties": {}
+          },
+          {
+            "component": "MenuCommandBar",
+            "paths": [
+              "Menu/Flyout/Content/command bar"
+            ],
+            "properties": {}
+          },
+          {
+            "component": "MenuCommandButton",
+            "paths": [
+              "Menu/Flyout/Content/command bar/Items/MenuCommandButton"
+            ],
+            "properties": {
+              "Label": "잘라내기",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "Separator",
+            "paths": [
+              "Menu/Flyout/Content/command bar/Items/separator/Separator"
+            ],
+            "properties": {
+              "Orientation": "Vertical"
+            }
+          },
+          {
+            "component": "MenuCommandButton",
+            "paths": [
+              "Menu/Flyout/Content/command bar/Items/MenuCommandButton"
+            ],
+            "properties": {
+              "Label": "삭제",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "Separator",
+            "paths": [
+              "Menu/Flyout/Content/separator/Separator"
+            ],
+            "properties": {
+              "Orientation": "Horizontal"
+            }
+          },
+          {
             "component": "MenuItem",
             "paths": [
-              "Menu/Flyout/Content/item 잘라내기"
+              "Menu/Flyout/Content/item 열기"
             ],
             "properties": {
               "Has icon": true,
               "Has shortcut": true,
-              "Label": "잘라내기",
-              "Shortcut": "Ctrl+X",
+              "Label": "열기",
+              "Shortcut": "Enter",
               "State": "Rest",
               "Value": "100%",
               "Variant": "Default"
@@ -94,13 +223,28 @@
           {
             "component": "MenuItem",
             "paths": [
-              "Menu/Flyout/Content/item 삭제"
+              "Menu/Flyout/Content/item 링크 복사"
             ],
             "properties": {
               "Has icon": true,
-              "Has shortcut": true,
-              "Label": "삭제",
-              "Shortcut": "Delete",
+              "Has shortcut": false,
+              "Label": "링크 복사",
+              "Shortcut": "Ctrl+O",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item 시작 화면에 고정"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "시작 화면에 고정",
+              "Shortcut": "Ctrl+O",
               "State": "Rest",
               "Value": "100%",
               "Variant": "Default"
@@ -113,9 +257,9 @@
         "offToken": []
       },
       "tree": {
-        "name": "Menu/Link",
+        "name": "Placement=Below",
         "size": {
-          "h": 175,
+          "h": 163,
           "w": 250
         },
         "sizing": {

@@ -24,7 +24,7 @@ type SnapMotionFrame = {
  * - 이전 자리는 DOM을 재지 않고 지난번에 그린 계산값을 쓴다. 진행 중인 transform이 재는 값에 섞이지 않게 하기 위해서다.
  * - 작업 영역 크기만 바뀐 경우(배치가 그대로)는 움직이지 않는다.
  * - 클래스는 이 요소의 className prop에 두지 않고 classList로만 다룬다. React가 다시 그릴 때 덮어쓰지 않게 하기 위해서다.
- *   재생하면 `data-window-motion="snap"`을 달아 상태를 드러낸다.
+ *   재생하면 `data-window-motion="snap"`을 달아 상태를 드러내고, 끝나면 클래스만 뗀다.
  * - 열기·최소화 클래스는 바깥 요소가 갖고, 이 훅은 안쪽 요소에만 쓴다. 같은 요소에 두면 animation이 서로 덮는다.
  * - 끌어서 스냅·최대화하면 끄는 동안의 자리는 저장소를 거치지 않아 지난번 계산값에 없다. 놓을 때 돌려준 함수로 끌던 자리를 알려 주면
  *   그 자리에서 이어서 재생한다.
@@ -63,6 +63,21 @@ export function useWindowSnapMotion(
       element.getBoundingClientRect();
       element.classList.add(SNAP_CLASS_NAME);
       element.dataset.windowMotion = 'snap';
+      // 끝나면 클래스를 뗀다. 남은 animation이 이 요소를 배경 흐림의 기준(backdrop root)으로 만들어 창 안 재질의 흐림을 막는다.
+      // 다음 재생이 먼저 시작되어도 같은 이름의 animationend가 오므로, 리스너는 끝나면 스스로 뗀다.
+      const snapElement = element;
+      snapElement.addEventListener('animationend', handleSnapEnd);
+
+      /**
+       * 스냅 애니메이션이 끝나면 모션 클래스를 뗀다.
+       * @param event 끝난 애니메이션
+       */
+      function handleSnapEnd(event: AnimationEvent): void {
+        if (event.target === snapElement && event.animationName === SNAP_CLASS_NAME) {
+          snapElement.classList.remove(SNAP_CLASS_NAME);
+          snapElement.removeEventListener('animationend', handleSnapEnd);
+        }
+      }
     },
     [ref, x, y, width, height, layoutKey, isEnabled],
   );
