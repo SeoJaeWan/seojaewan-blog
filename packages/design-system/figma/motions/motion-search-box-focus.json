@@ -34,6 +34,43 @@
           "easing": null,
           "offset": 0,
           "time": 0,
+          "value": {
+            "x": 1,
+            "y": 1
+          },
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/point-to-point",
+          "offset": 1,
+          "time": 333,
+          "value": {
+            "x": 1.1,
+            "y": 1.1
+          },
+          "valueToken": "motion/scale/lift"
+        }
+      ],
+      "node": "magnifier",
+      "nodeKind": "layer",
+      "operation": "SET",
+      "path": "icon-color/Search Focus / magnifier",
+      "property": "SCALE_XY"
+    },
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 333,
+        "token": "motion/duration/slow"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
           "value": 0,
           "valueToken": null
         },
@@ -48,7 +85,7 @@
       "node": "gradient",
       "nodeKind": "layer",
       "operation": "SET",
-      "path": "icon-color/Search Focus / gradient",
+      "path": "icon-color/Search Focus / magnifier / gradient",
       "property": "OPACITY"
     },
     {
@@ -79,7 +116,7 @@
       "node": "gradient",
       "nodeKind": "layer",
       "operation": "SET",
-      "path": "icon-color/Search Focus / gradient",
+      "path": "icon-color/Search Focus / magnifier / gradient",
       "property": "ROTATION"
     }
   ],
