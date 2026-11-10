@@ -3,7 +3,11 @@
 // 작업 표시줄 앱 메뉴(Menu/TaskbarApp)와 점프 목록(Menu/TaskbarJumpList*)을 그리는 스토리가 함께 쓰는 항목이다. 실제 메뉴 함수에 피그마 조립과 같은 상태를 넣어 만든다.
 import { ignoreMenuAction } from '@/shared/components/menu-popup/story-menu-preview';
 
-import { getAppMenuEntries, getChromeJumpListEntries } from './app-menu-entries';
+import {
+  getAppMenuEntries,
+  getChromeJumpListEntries,
+  getExplorerJumpListEntries,
+} from './app-menu-entries';
 
 /** 피그마 Menu/TaskbarApp: 작업 표시줄에 고정했고 창이 하나 열린 파일 탐색기 버튼 우클릭 */
 export const menuTaskbarApp = getAppMenuEntries({
@@ -32,6 +36,26 @@ export const menuTaskbarJumpListChrome = getAppMenuEntries({
     posts: JUMP_LIST_CHROME_POSTS,
     onOpenPost: ignoreMenuAction,
     onNewWindow: ignoreMenuAction,
+  }),
+  onAction: ignoreMenuAction,
+});
+
+/** 피그마 Menu/TaskbarJumpListExplorer "고정됨"의 폴더(처음 즐겨찾기 Project, Blog, About) */
+const JUMP_LIST_EXPLORER_FOLDERS = [
+  { id: 'project', name: 'Project' },
+  { id: 'blog', name: 'Blog' },
+  { id: 'about', name: 'About' },
+] as const;
+
+/** 피그마 Menu/TaskbarJumpListExplorer: 작업 표시줄에 고정했고 창이 하나 열린 파일 탐색기 버튼 우클릭 */
+export const menuTaskbarJumpListExplorer = getAppMenuEntries({
+  app: 'file-explorer',
+  isPinned: true,
+  windowCount: 1,
+  jumpList: getExplorerJumpListEntries({
+    folders: JUMP_LIST_EXPLORER_FOLDERS,
+    onOpenFolder: ignoreMenuAction,
+    onUnpin: ignoreMenuAction,
   }),
   onAction: ignoreMenuAction,
 });
