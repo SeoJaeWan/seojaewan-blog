@@ -28,7 +28,9 @@ const BY_NAME = { sortBy: 'name', sortDirection: 'asc' } as const;
  */
 function labels(entries: readonly MenuPopupEntry[]): unknown[] {
   return entries.map((entry) =>
-    'label' in entry ? { label: entry.label, icon: entry.icon } : entry.kind,
+    entry.kind === undefined || entry.kind === 'command'
+      ? { label: entry.label, icon: entry.icon }
+      : entry.kind,
   );
 }
 
