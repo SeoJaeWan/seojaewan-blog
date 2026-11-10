@@ -1,5 +1,5 @@
 {
-  "description": "내용을 보여 줄 수 없을 때의 안내로, 페이지를 찾을 수 없음 화면에 쓴다.\n@sample-size width",
+  "description": "내용을 보여 줄 수 없을 때의 안내로, 페이지를 찾을 수 없음 화면에 쓴다.",
   "name": "EmptyState",
   "nodeId": "399:5549",
   "propertyDefinitions": {
@@ -248,6 +248,9 @@
           "primaryAlign": "MIN"
         },
         "name": "EmptyState",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 208,
           "w": 600
