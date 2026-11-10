@@ -3,17 +3,7 @@
     "ms": 0,
     "token": null
   },
-  "directives": {
-    "reduced-motion": [
-      "움직임 없이 바로 바뀐다"
-    ],
-    "repeat": [
-      "1"
-    ],
-    "trigger": [
-      "재부팅 화면이 나타날 때"
-    ]
-  },
+  "directives": {},
   "duration": {
     "ms": 167,
     "token": "motion/duration/fast"
@@ -21,6 +11,8 @@
   "iterations": 1,
   "name": "motion-boot-screen-enter",
   "nodeId": "758:192",
+  "notes": [],
+  "source": "flow",
   "tracks": [
     {
       "delay": {
