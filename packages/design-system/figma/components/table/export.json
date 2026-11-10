@@ -1,5 +1,5 @@
 {
-  "description": "글 본문의 표로, 글 페이지에 쓴다.\n@sample-size width",
+  "description": "글 본문의 표로, 글 페이지에 쓴다.",
   "name": "Table",
   "nodeId": "1380:6863",
   "propertyDefinitions": {
@@ -668,6 +668,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Table",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 112,
           "w": 720

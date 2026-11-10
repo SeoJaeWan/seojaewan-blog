@@ -1,5 +1,5 @@
 {
-  "description": "글 본문의 목록 항목(글머리표 · 번호 · 할 일) 하나로, 글 페이지 본문의 목록에 쓴다.\n@sample-size width\n@runtime 표시는 깊이와 순서로 정한다",
+  "description": "글 본문의 목록 항목(글머리표 · 번호 · 할 일) 하나로, 글 페이지 본문의 목록에 쓴다.",
   "name": "ListBlock",
   "nodeId": "2466:62",
   "propertyDefinitions": {
@@ -171,6 +171,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Bulleted, Checked=False",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 24,
           "w": 720
@@ -320,6 +323,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Numbered, Checked=False",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 24,
           "w": 720
@@ -490,6 +496,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=To do, Checked=False",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 24,
           "w": 720
@@ -671,6 +680,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=To do, Checked=True",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 24,
           "w": 720
