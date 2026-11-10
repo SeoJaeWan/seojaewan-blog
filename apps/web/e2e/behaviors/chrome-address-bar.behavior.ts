@@ -57,7 +57,7 @@ export const behavior = defineBehavior({
       docs: ['[[Chrome:주소창]]', '[[창 동작:브라우저 주소]]'],
       async run({ page, check }) {
         await page.goto('/');
-        await page.getByRole('button', { name: 'Chrome' }).click();
+        await page.getByRole('button', { name: 'Google Chrome' }).click();
         const chrome = page.getByRole('region', { name: '새 탭 - Chrome' });
         await expect(chrome).toBeVisible();
 
@@ -148,7 +148,7 @@ export const behavior = defineBehavior({
         await page.keyboard.press('Delete');
         await expect(post).not.toBeAttached();
 
-        await page.getByRole('button', { name: 'Chrome' }).click();
+        await page.getByRole('button', { name: 'Google Chrome' }).click();
         const newTab = page.getByRole('region', { name: '새 탭 - Chrome' });
         const address = newTab.getByRole('combobox', { name: '주소 및 검색창' });
         await address.fill('seojaewan.com/posts/notion-blog-migration');
@@ -195,7 +195,7 @@ export const behavior = defineBehavior({
       docs: ['[[Chrome:주소창]]', '[[Chrome:구성]]', '[[창 동작:브라우저 주소]]'],
       async run({ page, check }) {
         await page.goto('/');
-        await page.getByRole('button', { name: 'Chrome' }).click();
+        await page.getByRole('button', { name: 'Google Chrome' }).click();
         const chrome = page.getByRole('region', { name: '새 탭 - Chrome' });
         await expect(chrome).toBeVisible();
 
@@ -236,7 +236,7 @@ export const behavior = defineBehavior({
       docs: ['[[Chrome:주소창]]', '[[창 동작:새로고침과 첫 진입]]'],
       async run({ page, check }) {
         await page.goto('/');
-        await page.getByRole('button', { name: 'Chrome' }).click();
+        await page.getByRole('button', { name: 'Google Chrome' }).click();
         const chrome = page.getByRole('region', { name: '새 탭 - Chrome' });
         await expect(chrome).toBeVisible();
 

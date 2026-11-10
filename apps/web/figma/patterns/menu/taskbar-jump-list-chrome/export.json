@@ -1,0 +1,215 @@
+{
+  "description": "작업 표시줄 Chrome 버튼 우클릭 메뉴. \"자주 방문\"(Blog 최신 글 6개, 보여 주기만), \"작업\"(새 창), 구분선, 앱 묶음.",
+  "name": "Menu/TaskbarJumpListChrome",
+  "nodeId": "3477:16076",
+  "propertyDefinitions": {},
+  "variants": {
+    "default": {
+      "node": {
+        "height": 408,
+        "width": 294,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "3477:16076",
+      "properties": {},
+      "report": {
+        "components": [
+          {
+            "component": "Menu",
+            "paths": [
+              "Menu"
+            ],
+            "properties": {}
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item React 19 훅 정리"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "React 19 훅 정리",
+              "Shortcut": "단축키",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item 리액트 서버 컴포넌트"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "리액트 서버 컴포넌트",
+              "Shortcut": "단축키",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item Next.js 캐시"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "Next.js 캐시",
+              "Shortcut": "단축키",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item TypeScript 5.6"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "TypeScript 5.6",
+              "Shortcut": "단축키",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item Vitest 테스트"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "Vitest 테스트",
+              "Shortcut": "단축키",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item Figma 일치 검사"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "Figma 일치 검사",
+              "Shortcut": "단축키",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          },
+          {
+            "component": "Separator",
+            "paths": [
+              "Menu/Flyout/Content/separator/Separator",
+              "Menu/Flyout/Content/separator/Separator"
+            ],
+            "properties": {
+              "Orientation": "Horizontal"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item 새 창"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "새 창",
+              "Shortcut": "단축키",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item Google Chrome"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "Google Chrome",
+              "Shortcut": "Ctrl+O",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item 작업 표시줄에서 제거"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "작업 표시줄에서 제거",
+              "Shortcut": "Ctrl+O",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item 창 닫기"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "창 닫기",
+              "Shortcut": "Ctrl+O",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          }
+        ],
+        "displayOnly": [],
+        "drawn": [
+          {
+            "nodeId": "I3477:16077;517:16135;509:5956;3477:16162",
+            "path": "Menu/Flyout/Content/header 자주 방문/label",
+            "text": "글자"
+          },
+          {
+            "nodeId": "I3477:16077;517:16135;509:5956;3477:16172",
+            "path": "Menu/Flyout/Content/header 작업/label",
+            "text": "글자"
+          }
+        ],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
+        "name": "Menu/TaskbarJumpListChrome",
+        "size": {
+          "h": 408,
+          "w": 294
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        }
+      }
+    }
+  }
+}

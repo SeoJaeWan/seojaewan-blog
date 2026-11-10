@@ -206,3 +206,53 @@ Notion 열 나누기: |
   - #808 TocItem: Hover는 목록 항목(ListItem)과 같이 Rest에 투명 바탕(`bg-color-white-0`)을 두고 `motion-control-state`로 바탕을 바꾼다.
   - #808 TocItem: 긴 제목이 쓰는 곳의 너비를 늘리지 않게 루트에 최소 너비 0(`min-w-size-none`)을 두었다. 격자·자동 배치 안에서 글자 폭이 항목 너비를 밀어내는 것을 막는다.
   - #808 TocItem: 단계별 들여 쓰기는 예전의 빈 칸 요소 대신 피그마처럼 왼쪽 안쪽 여백(`pl-spacing-sm`·`pl-spacing-2xl`·`pl-spacing-4xl`)으로 준다.
+
+피그마 세션: |
+  2026-11-10 검수 후속([[피그마 작업 검수]])의 피그마 작업과 토큰 PR(#900)에서 사람에게 묻지 않고 정한 것이다. 사람이 정한 것(복제본·버전 기록 방식, 아이콘 받기, 플라이아웃 색, 보기 아이콘 출처, 바탕화면 회색 선택 없음, 플러그인 화면으로 내보내기)은 적지 않았다.
+  - 재질 측정: 2026-11-09 시험 기록이 저장소에 없어 그날 세션 기록에서 배경(Start 영상의 하늘·진한 녹색)과 값(플라이아웃 `color/gray/1/85`→`white/50`, 셸 `gray/4/90`→`white/60`)을 확인했다.
+  - 미카 층 색: 탐색기 첫 영상 58초의 제목 줄 결과색(약 215,219,221)과 같은 높이 배경색(약 207,210,211)에서 85% 층 색을 거꾸로 계산해 `color/gray/12/85`(#D8DDDF)를 만들었다. 셸 아크릴 75%는 `color/white/75`를 새로 만들었다.
+  - 포커스 없는 선택: 영상의 바탕 #D9D9D9는 이미 있는 `color/gray/13`(#DADADA, 차이 1)을 쓰고, 테두리 #949494는 `color/gray/39`를 새로 만들었다. 포커스 있는 현재 항목 테두리는 영상의 거의 검정에 맞춰 `color/black/89`다. 탐색 창 칸도 같은 값이다.
+  - 상태 표시줄 켜짐: 영상의 바탕(약 #E6F3FD)은 `color/blue/5`, 테두리(약 #3E6F94)는 `color/blue/55`를 새로 만들었다.
+  - 새 크기 변수: `size/menu/taskbar-width`(294), `size/file-row/height`(28). 재질에서 빠져 견본만 쓰던 `color/white/60`·`gray/9/60`·`gray/4/90`과 행 전용 너비 `size/file-row/*-width` 셋은 지웠다. `color/white/50`은 다른 곳에서 많이 써서 남겼다.
+  - Material Symbols 자산 이름: Fluent 이름 꼴에 맞춰 `ic_material_<이름>_20_outlined`(Outlined·굵기 400·20px)로 했다.
+  - 보기 아이콘: PC 글꼴(Segoe Fluent Icons)에는 맞는 글리프가 작은 아이콘 하나뿐이라, Fluent UI System Icons에서 같은 모양을 골랐다(큰 아이콘 `laptop_20`, 작은 아이콘 `grid_20`, 자세히 `line_horizontal_4_20`). 보통 아이콘(작은 네모+밑줄 2개)은 같은 것이 없어 `laptop_16`을 썼고, 아이콘 자동 정렬은 Fluent `frame_20_regular`에 `flash_20_filled`(파랑, 반 크기)를 겹친 여러 색 자산 `icon-color/Auto Arrange`로 만들었다.
+  - Windows 로고 자산: 프레임을 48에서 40으로 줄이고 로고를 가운데에 두었다. 부팅 화면은 보이는 크기를 지키려고 `size/boot-screen/logo` 120→100, `-mobile` 96→80으로 바꿨다(토큰 PR에서 부팅 화면 스토리 기대값도 100으로 고침).
+  - FileRow: 키보드 포커스 상태(`Focused`)를 없애고 `Current` 축과 `Selected unfocused` 상태를 더했다. 칸은 열 제목 너비 변수와 좌우 `spacing/sm`을 쓰고 행 여백·간격은 0, 행 너비는 내용 맞춤이다. 토큰 PR에서는 지운 너비 토큰 대신 열 제목 너비 토큰으로만 바꿨고, 나머지 구조는 FileRow PR에서 한다.
+  - IconButton: `Checked` 축(켜짐은 Subtle·Rest만)을 더했다. 미리보기 빨강 닫기는 제목 줄 크기(46×32)인 `CaptionButton` 대신 `IconButton` `Variant=Close`로 더했다. 주소창 편집 `×`는 새 변형 없이 Subtle에 dismiss 아이콘을 쓴다.
+  - NavigationItem: 압정은 불리언 `Has pin`, 선택은 FileRow와 같은 `Selected unfocused`·`Current` 방식이다. 탐색기 조립의 탐색 창 선택 칸은 그림에서 포커스가 본문에 있는 장면이라 `Selected unfocused, Current=True`로 바꿨다.
+  - MenuItem: Toggle·Radio 표시 칸 다음에 아이콘 칸(`Has icon`)을 더했다. 지금까지 Toggle·Radio 인스턴스에 남아 있던 `Has icon=true`는 아이콘이 갑자기 생기지 않게 모두 껐다. 점프 목록 항목의 압정 해제 버튼은 MenuItem을 바꾸지 않고 조립에서 그렸다.
+  - Chrome: 활성 탭 오목 모서리는 불리언 도형이 구조 검사에 걸려 Shapes 자산 `browser-tab/Corner left`·`Corner right`로 그렸다. 빈 주소창은 SearchBox처럼 `Filled` 변형과 `Placeholder` 글자 속성으로 그렸다. 돋보기는 검수 3번대로 입력 중 주소창·추천 줄까지 Material로 맞췄고, (i) 아이콘은 목록에 없어 그대로 뒀다. 도구 모음 아래 선은 탭 구분선과 같은 `color/black/22`다.
+  - 작업 표시줄: WindowPreview 원본은 고정 208 폭을 두고, 비율 폭은 조립에서 "내용 맞춤 + 최대 폭 변수"로 그렸다. 점프 목록 머리글은 새로 그렸다(`Hangul/Caption`, `color/black/61`). 피그마의 "작업 표시줄에서 고정 해제" 문구는 작업 표시줄 검수 3번대로 "작업 표시줄에서 제거"로 바꿨다. 넓어진 메뉴가 잘리지 않게 `motion-taskbar-menu-enter` 견본 프레임 폭을 342로 넓혔다(키프레임은 그대로).
+  - 바탕화면: 단추 줄 부품은 `MenuCommandButton`·`MenuCommandBar`(영상 기준 단추 높이 48, 단추 사이 세로 구분선)이고, 메뉴 조립은 `Placement=Below|Above`, 빈 곳 메뉴는 `Paste=False|True` 축으로 그렸다. FileItem의 현재 항목·회색 선택은 탐색기 항목에만 넣었다.
+  - 파일 탐색기: 경로 꺾쇠는 열린 `⌄` 모양과 목록 자리가 피그마에 없어 `BreadcrumbChevron`(Rest·Hover·Open)과 `Explorer/BreadcrumbMenu`를 그렸다. 끌기 툴팁의 🚫는 피그마에서 그림 문자가 그려지지 않아 글자만 두었다. `정렬`·`보기` 꺾쇠를 위해 `DropDownButton`에 `Has icon`·`Icon`을 더했다.
+  - 창 흐림: 창 열기·복원 클래스를 `entered`에서 떼고, 스냅 클래스는 `animationend`에서 뗀다. `data-window-motion` 값은 스토리 테스트가 보므로 그대로 둔다.
+  - 내보내기: 피그마 MCP 진입점(`use-figma-export.js`, 66,526자)이 `use_figma` 코드 길이 제한(5만 자)을 넘어, 이번에는 플러그인 화면으로 내보냈다(사람 결정). 진입점을 나누는 일은 [[남은 작업]]에 올릴 후보다.
+  - 포커스 없는 선택을 고르는 방법은 사람이 정했다(#901, 목록 role 기준). 아래는 컴포넌트 PR에서 정한 것이다.
+  - #872 IconButton: 피그마에 켜짐의 hover·pressed를 그리지 않아 Subtle 규칙을 그대로 따른다(켜짐 선은 hover에도 남는다). `close` 눌림 아이콘은 CaptionButton의 `white-70`이 아니라 흰색이다. 피그마 Close 호버·눌림 아이콘이 처음 내보낼 때 검정으로 나가 피그마를 흰색으로 고쳐 다시 내보냈다.
+  - #877 MenuItem: 확인·라디오의 아이콘 칸은 Default 아이콘 칸과 같은 16px 틀이다. 모바일 단축키 숨김은 메뉴 데이터 쪽 규칙이라 컴포넌트에는 더하지 않았다. 코드 타입 자리를 지키려고 동작 스토리 `CheckIconsAndShortcut`을 더했다.
+  - #879 NavigationItem: `isCurrent`는 `isSelected`와 따로 받는다(선택하지 않은 현재 칸에도 선이 붙는다). 현재 칸 선은 피그마처럼 레이아웃에 들어가는 `border`다. 압정 자리는 피그마의 숨은 `pin icon` 레이어를 보고 라벨 뒤 `gap-spacing-xs`로 두었다. `Figma` 스토리는 Selected일 때만 render 안 ref 콜백으로 칸에 포커스를 준다(div의 `autoFocus`는 동작하지 않음).
+  - #882 FileRow: `Figma` 스토리는 클래스 없는 `role="listbox"` 래퍼와 ref 콜백 포커스로 파랑 변형을 그리고, `Selected unfocused`만 포커스를 주지 않는다. 이름 바꾸기 입력창의 포커스는 빼앗지 않는다. Cut selected·Rename의 선택 바탕도 Selected와 같이 포커스 유무로 고른다. Hover 바탕은 포커스와 상관없이 그대로다. 동작 스토리 `ListFocus`는 색을 숫자로 적지 않고 포커스 전후 계산된 색이 바뀌는지로 확인한다.
+  - #895·#897 메뉴·창 조립: 그림만 담는 PR도 새 자산이 들어오면 `generate:assets` 결과와 changeset이 있어야 CI를 통과해, 둘을 더해 병합했다.
+  - `피그마 작업 검수` 문서는 다른 검수 문서가 섹션 링크로 가리키고 있어, 끝난 섹션을 지우지 않고 "끝남"과 PR 번호로 줄였다. 영역 세션이 모두 끝나면 문서를 지우고 링크를 정리한다.
+
+파일 탐색기 세션: |
+  2026-11-10 검수 후속([[파일 탐색기 검수]])에서 사람에게 묻지 않고 정한 것이다. PR마다 이어서 적는다.
+  - `feat/explorer-favorites-store` 즐겨찾기 목록과 저장: Start 고정(`startPins`)과 같은 방식으로 작업 공간 상태에 `favoritePins`(폴더 id 순서)를 두고, 규칙은 `workspace-rules`의 순수 함수(`pinToFavorites`, `unpinFromFavorites`, `moveFavoritePin`, `getFavoriteFolders`), 조작은 `useWorkspaceStore`의 같은 이름 조작으로 두었다. 따로 훅은 만들지 않았다(Start 고정도 저장소를 읽고 규칙 함수로 그린다).
+  - 저장은 Start 고정과 같은 작업 공간 저장분(`seojaewan-blog:workspace`)에 넣고, 저장 모양이 바뀌어 저장 버전을 3에서 4로 올렸다(버전 주석의 "모양을 바꾸면 올린다" 규칙). 그래서 이전 버전의 저장분은 한 번 초기 구조로 돌아간다.
+  - 순서 바꾸기의 자리는 Start 고정의 `moveStartPin`처럼 휴지통에 있어 보이지 않는 폴더까지 센 `favoritePins`의 자리다.
+  - 다시 들어올 때 없어진 폴더는 목록에서 뺀다(Start 고정의 정리와 같은 `cleanReferences`). 휴지통에 든 폴더는 목록에 남기고 보일 때만 숨긴다.
+  - 끌어 놓은 자리에 고정하는 것(자리 인자)은 끌기 PR에서 더한다. 이번에는 맨 뒤 고정만 두었다.
+
+작업 표시줄 세션: |
+  `fix/taskbar-review` PR에서 [[작업 표시줄 검수]]의 2·3·7번과 10번의 앱 이름을 고치며 규칙으로 정한 것이다.
+  - 앱 우클릭 메뉴(`getAppMenuEntries`)에서 앱 이름 아래 구분선만 뺐다. 점프 목록(9·10번)이 들어오면 목록과 앱 묶음 사이 구분선을 그때 더한다.
+  - 끄는 동안 버튼 모양은 `TaskbarAppItem`의 `isDragging`으로 준다. 실행 표시는 `none`으로, 호버·눌림 바탕과 테두리는 클래스로 꺼서 디자인 시스템 `TaskbarButton`은 바꾸지 않았다. 놓거나 끌기가 취소되면 돌아온다.
+  - "Google Chrome"으로 바꾼 곳은 `taskbar-apps.ts`의 `label`뿐이다. 이 이름은 작업 표시줄 버튼 접근성 이름과 앱 우클릭 메뉴의 앱 이름 줄에만 쓰여, 그 이름을 찾는 스토리·E2E만 따라 고쳤다. Start 목록·타일의 제목(`Chrome`)과 Chrome 창 제목(`새 탭 - Chrome`)은 따로 정의돼 바뀌지 않았다.
+  - E2E 조건 값 `Chrome`(앱 조건의 값 이름)과 창 제목 확인은 그대로 두었다.
+  - [[작업 표시줄:우클릭 메뉴]]의 "작업 표시줄에서 고정 해제" 문구는 이 PR에서 허락받지 않은 문서라 고치지 않았다. 코드는 "작업 표시줄에서 제거"다. 사람이 맞출 곳이다.
+
+Chrome 세션: |
+  2026-11-10 Chrome 검수 후속([[Chrome 검수]])에서 사람에게 묻지 않고 정한 것이다.
+  - #884 BrowserTab: 활성 탭 오목 모서리는 검수 문서의 가상 요소 원형 그라디언트 대신 export.json대로 Shapes 자산(`shapes/browser-tab-corner-left·right`)을 `Asset`으로 탭 밖 아래 양옆에 그렸다. 크기는 견본 크기(8, 변수 없음)라 같은 값의 `size-spacing-sm`으로, 위치는 `right-position-full`·`left-position-full`과 `bottom-spacing-none`으로 두었다. 칠은 탭 바탕과 같은 `text-color-white`다.
+  - #884 BrowserTab: 모서리 조각은 탭 밖으로 나오므로 `pointer-events-none`을 주어 옆 탭의 누르기·호버를 막지 않게 했다.
+  - #884 BrowserTab: 피그마 기본 파비콘이 아직 `file/Document`라 `Figma` 스토리는 그대로 두었다(검수 8번의 Material `description`은 내보낸 그림에 아직 없다).

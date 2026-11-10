@@ -12,9 +12,11 @@ import {
   type DesktopSortKey,
   type ExplorerFolderView,
   type GridCell,
+  moveFavoritePin,
   moveItems,
   moveStartPin,
   moveTaskbarPin,
+  pinToFavorites,
   pinToStart,
   pinToTaskbar,
   type PostSummary,
@@ -29,6 +31,7 @@ import {
   swapStartPin,
   toSavedWorkspace,
   trashItems,
+  unpinFromFavorites,
   unpinFromStart,
   unpinFromTaskbar,
   type WorkspaceCatalog,
@@ -65,6 +68,9 @@ export type WorkspaceActionResult = { ok: true } | { ok: false; reason: Workspac
  * - pinToTaskbar: 작업 표시줄에 앱을 고정한다
  * - unpinFromTaskbar: 작업 표시줄에서 앱 고정을 해제한다
  * - moveTaskbarPin: 작업 표시줄 고정 앱의 순서를 바꾼다
+ * - pinToFavorites: 탐색기 즐겨찾기에 폴더를 고정한다(맨 뒤)
+ * - unpinFromFavorites: 탐색기 즐겨찾기에서 폴더를 뺀다
+ * - moveFavoritePin: 탐색기 즐겨찾기의 순서를 바꾼다(자리는 `favoritePins`의 자리)
  * - setExplorerView: 탐색기 위치(폴더 id, 바탕화면은 null)의 보기와 정렬을 바꾼다
  * - recordRecentItem: 연 항목을 최근 항목에 넣는다
  * - reset: 처음 상태(초기 구조)로 돌린다(다시 시작). 브라우저 저장분은 따로 지운다
@@ -90,6 +96,9 @@ type WorkspaceActions = {
   pinToTaskbar: (app: WindowApp) => void;
   unpinFromTaskbar: (app: WindowApp) => void;
   moveTaskbarPin: (app: WindowApp, index: number) => void;
+  pinToFavorites: (id: string) => void;
+  unpinFromFavorites: (id: string) => void;
+  moveFavoritePin: (id: string, index: number) => void;
   setExplorerView: (folderId: string | null, view: Partial<ExplorerFolderView>) => void;
   recordRecentItem: (id: string) => void;
   reset: () => void;
@@ -103,12 +112,13 @@ export type WorkspaceStore = WorkspaceState & WorkspaceActions;
 let catalog: WorkspaceCatalog = { posts: [], links: externalLinks };
 
 /**
- * 작업 공간(항목 배치, 휴지통, 바탕화면·Start·작업 표시줄·탐색기 설정, 최근 항목)을 담는 저장소.
+ * 작업 공간(항목 배치, 휴지통, 바탕화면·Start·작업 표시줄·탐색기 설정, 탐색기 즐겨찾기, 최근 항목)을 담는 저장소.
  * 규칙은 `workspace-rules.ts`의 순수 함수에 있고 여기서는 그 함수만 부른다.
  * 방문자 브라우저(localStorage)에 `persist`로 저장한다. 서버 HTML과 첫 클라이언트 렌더가 같도록 저장분을 바로 읽지 않고(`skipHydration`),
  * 마운트한 뒤 `hydrateWorkspaceStore`가 읽는다. 저장분은 Zod로 검증해 맞지 않거나 버전이 다르면 초기 구조에서 다시 시작한다.
  * 다시 시작하면 처음 상태로 돌리고 저장분을 지운다.
  * @codocs [[방문자 저장:저장하는 것]]
+ * @codocs [[고정:즐겨찾기 고정]]
  * @codocs [[다시 시작:되돌리는 상태]]
  * @codocs [[기술 스택:상태 관리]]
  */
@@ -286,6 +296,15 @@ function createWorkspaceStore(
     },
     moveTaskbarPin: (app, index) => {
       update((state) => moveTaskbarPin(state, app, index));
+    },
+    pinToFavorites: (id) => {
+      update((state) => pinToFavorites(state, id));
+    },
+    unpinFromFavorites: (id) => {
+      update((state) => unpinFromFavorites(state, id));
+    },
+    moveFavoritePin: (id, index) => {
+      update((state) => moveFavoritePin(state, id, index));
     },
     setExplorerView: (folderId, view) => {
       update((state) => setExplorerView(state, folderId, view));

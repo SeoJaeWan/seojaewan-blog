@@ -6,8 +6,8 @@
   "variants": {
     "default": {
       "node": {
-        "height": 111,
-        "width": 250,
+        "height": 102,
+        "width": 294,
         "x": 16,
         "y": 8
       },
@@ -38,15 +38,6 @@
             }
           },
           {
-            "component": "Separator",
-            "paths": [
-              "Menu/Flyout/Content/separator/Separator"
-            ],
-            "properties": {
-              "Orientation": "Horizontal"
-            }
-          },
-          {
             "component": "MenuItem",
             "paths": [
               "Menu/Flyout/Content/item 작업 표시줄에서 고정 해제"
@@ -54,7 +45,7 @@
             "properties": {
               "Has icon": true,
               "Has shortcut": false,
-              "Label": "작업 표시줄에서 고정 해제",
+              "Label": "작업 표시줄에서 제거",
               "Shortcut": "Ctrl+O",
               "State": "Rest",
               "Value": "100%",
@@ -85,8 +76,8 @@
       "tree": {
         "name": "Menu/TaskbarApp",
         "size": {
-          "h": 111,
-          "w": 250
+          "h": 102,
+          "w": 294
         },
         "sizing": {
           "h": "HUG",
