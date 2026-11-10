@@ -24,516 +24,58 @@
       "properties": {
         "Search": "Box"
       },
-      "tree": {
-        "children": [
+      "report": {
+        "components": [
           {
-            "children": [
-              {
-                "layout": {
-                  "counterAlign": "MIN",
-                  "gap": "spacing/none",
-                  "mode": "HORIZONTAL",
-                  "padding": [
-                    "spacing/none",
-                    "spacing/none",
-                    "spacing/none",
-                    "spacing/none"
-                  ],
-                  "primaryAlign": "MIN"
-                },
-                "name": "left space",
-                "size": {
-                  "h": 48,
-                  "w": 452
-                },
-                "sizing": {
-                  "h": "FILL",
-                  "v": "FILL"
-                },
-                "type": "FRAME"
-              },
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "asset": {
-                          "path": "illustrations/logo-windows"
-                        },
-                        "component": "logo/Windows",
-                        "height": "size/icon/lg",
-                        "name": "app icon",
-                        "size": {
-                          "h": 24,
-                          "w": 24
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "FIXED"
-                        },
-                        "type": "INSTANCE",
-                        "width": "size/icon/lg"
-                      }
-                    ],
-                    "component": "TaskbarButton",
-                    "height": "size/taskbar/item",
-                    "layout": {
-                      "counterAlign": "CENTER",
-                      "gap": 0,
-                      "mode": "HORIZONTAL",
-                      "padding": [
-                        0,
-                        0,
-                        0,
-                        0
-                      ],
-                      "primaryAlign": "CENTER"
-                    },
-                    "name": "Start",
-                    "properties": {
-                      "Indicator": "None",
-                      "State": "Rest"
-                    },
-                    "radius": [
-                      "radius/control",
-                      "radius/control",
-                      "radius/control",
-                      "radius/control"
-                    ],
-                    "size": {
-                      "h": 40,
-                      "w": 40
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FIXED"
-                    },
-                    "type": "INSTANCE",
-                    "width": "size/taskbar/item"
-                  },
-                  {
-                    "children": [
-                      {
-                        "asset": {
-                          "color": "color/black/61",
-                          "path": "icons/ic_fluent_search_16_regular"
-                        },
-                        "component": "ic_fluent_search_16_regular",
-                        "height": "size/icon/sm",
-                        "name": "icon",
-                        "size": {
-                          "h": 16,
-                          "w": 16
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "FIXED"
-                        },
-                        "type": "INSTANCE",
-                        "width": "size/icon/sm"
-                      },
-                      {
-                        "fills": [
-                          "color/black/61"
-                        ],
-                        "name": "label",
-                        "size": {
-                          "h": 20,
-                          "w": 164
-                        },
-                        "sizing": {
-                          "h": "FILL",
-                          "v": "HUG"
-                        },
-                        "text": {
-                          "autoResize": "HEIGHT",
-                          "maxLines": 1,
-                          "maxLinesVariable": null,
-                          "segments": [
-                            {
-                              "characters": "검색",
-                              "fill": "color/black/61",
-                              "textStyle": "Hangul/Body"
-                            }
-                          ],
-                          "truncation": "ENDING"
-                        },
-                        "type": "TEXT"
-                      }
-                    ],
-                    "component": "SearchBox",
-                    "fills": [
-                      "color/white/70"
-                    ],
-                    "height": "size/control/height",
-                    "layout": {
-                      "counterAlign": "CENTER",
-                      "gap": "spacing/sm",
-                      "mode": "HORIZONTAL",
-                      "padding": [
-                        "spacing/sm-nudge",
-                        "spacing/lg",
-                        "spacing/sm-nudge",
-                        "spacing/lg"
-                      ],
-                      "primaryAlign": "MIN"
-                    },
-                    "name": "검색",
-                    "properties": {
-                      "Filled": "False",
-                      "Placeholder": "검색",
-                      "State": "Rest",
-                      "Value": "검색어",
-                      "Variant": "Taskbar"
-                    },
-                    "radius": [
-                      "radius/circular",
-                      "radius/circular",
-                      "radius/circular",
-                      "radius/circular"
-                    ],
-                    "size": {
-                      "h": 32,
-                      "w": 220
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FIXED"
-                    },
-                    "strokeWeight": [
-                      "stroke-width/default",
-                      "stroke-width/default",
-                      "stroke-width/default",
-                      "stroke-width/default"
-                    ],
-                    "strokes": [
-                      "color/black/6"
-                    ],
-                    "strokesIncludedInLayout": false,
-                    "type": "INSTANCE"
-                  },
-                  {
-                    "children": [
-                      {
-                        "asset": {
-                          "path": "images/app-file-explorer"
-                        },
-                        "component": "app/File Explorer",
-                        "fills": [
-                          "IMAGE"
-                        ],
-                        "height": "size/icon/lg",
-                        "name": "app/File Explorer",
-                        "size": {
-                          "h": 24,
-                          "w": 24
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "FIXED"
-                        },
-                        "type": "INSTANCE",
-                        "width": "size/icon/lg"
-                      }
-                    ],
-                    "component": "TaskbarButton",
-                    "height": "size/taskbar/item",
-                    "layout": {
-                      "counterAlign": "CENTER",
-                      "gap": 0,
-                      "mode": "HORIZONTAL",
-                      "padding": [
-                        0,
-                        0,
-                        0,
-                        0
-                      ],
-                      "primaryAlign": "CENTER"
-                    },
-                    "name": "File Explorer",
-                    "properties": {
-                      "Indicator": "None",
-                      "State": "Rest"
-                    },
-                    "radius": [
-                      "radius/control",
-                      "radius/control",
-                      "radius/control",
-                      "radius/control"
-                    ],
-                    "size": {
-                      "h": 40,
-                      "w": 40
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FIXED"
-                    },
-                    "type": "INSTANCE",
-                    "width": "size/taskbar/item"
-                  },
-                  {
-                    "children": [
-                      {
-                        "asset": {
-                          "path": "images/app-chrome"
-                        },
-                        "component": "app/Chrome",
-                        "fills": [
-                          "IMAGE"
-                        ],
-                        "height": "size/icon/lg",
-                        "name": "app icon",
-                        "size": {
-                          "h": 24,
-                          "w": 24
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "FIXED"
-                        },
-                        "type": "INSTANCE",
-                        "width": "size/icon/lg"
-                      }
-                    ],
-                    "component": "TaskbarButton",
-                    "height": "size/taskbar/item",
-                    "layout": {
-                      "counterAlign": "CENTER",
-                      "gap": 0,
-                      "mode": "HORIZONTAL",
-                      "padding": [
-                        0,
-                        0,
-                        0,
-                        0
-                      ],
-                      "primaryAlign": "CENTER"
-                    },
-                    "name": "Chrome",
-                    "properties": {
-                      "Indicator": "None",
-                      "State": "Rest"
-                    },
-                    "radius": [
-                      "radius/control",
-                      "radius/control",
-                      "radius/control",
-                      "radius/control"
-                    ],
-                    "size": {
-                      "h": 40,
-                      "w": 40
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FIXED"
-                    },
-                    "type": "INSTANCE",
-                    "width": "size/taskbar/item"
-                  }
-                ],
-                "height": "size/taskbar/item",
-                "layout": {
-                  "counterAlign": "CENTER",
-                  "gap": "spacing/xs",
-                  "mode": "HORIZONTAL",
-                  "padding": [
-                    0,
-                    0,
-                    0,
-                    0
-                  ],
-                  "primaryAlign": "MIN"
-                },
-                "name": "Center",
-                "size": {
-                  "h": 40,
-                  "w": 352
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "FIXED"
-                },
-                "type": "SLOT"
-              },
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "fills": [
-                          "color/black/89"
-                        ],
-                        "name": "time",
-                        "size": {
-                          "h": 16,
-                          "w": 48
-                        },
-                        "sizing": {
-                          "h": "HUG",
-                          "v": "HUG"
-                        },
-                        "text": {
-                          "autoResize": "WIDTH_AND_HEIGHT",
-                          "maxLines": null,
-                          "maxLinesVariable": null,
-                          "segments": [
-                            {
-                              "characters": "오후",
-                              "fill": "color/black/89",
-                              "textStyle": "Hangul/Caption"
-                            },
-                            {
-                              "characters": " 3:24",
-                              "fill": "color/black/89",
-                              "textStyle": "Caption"
-                            }
-                          ],
-                          "truncation": "DISABLED"
-                        },
-                        "type": "TEXT"
-                      },
-                      {
-                        "fills": [
-                          "color/black/89"
-                        ],
-                        "name": "date",
-                        "size": {
-                          "h": 16,
-                          "w": 63
-                        },
-                        "sizing": {
-                          "h": "HUG",
-                          "v": "HUG"
-                        },
-                        "text": {
-                          "autoResize": "WIDTH_AND_HEIGHT",
-                          "maxLines": null,
-                          "maxLinesVariable": null,
-                          "segments": [
-                            {
-                              "characters": "2026-10-20",
-                              "fill": "color/black/89",
-                              "textStyle": "Caption"
-                            }
-                          ],
-                          "truncation": "DISABLED"
-                        },
-                        "type": "TEXT"
-                      }
-                    ],
-                    "component": "SystemTray",
-                    "height": "size/taskbar/item",
-                    "layout": {
-                      "counterAlign": "MAX",
-                      "gap": 0,
-                      "mode": "VERTICAL",
-                      "padding": [
-                        "spacing/none",
-                        "spacing/md",
-                        "spacing/none",
-                        "spacing/md"
-                      ],
-                      "primaryAlign": "CENTER"
-                    },
-                    "name": "SystemTray",
-                    "properties": {
-                      "Date": "2026-10-20",
-                      "State": "Rest",
-                      "Time": "오후 3:24"
-                    },
-                    "radius": [
-                      "radius/control",
-                      "radius/control",
-                      "radius/control",
-                      "radius/control"
-                    ],
-                    "size": {
-                      "h": 40,
-                      "w": 87
-                    },
-                    "sizing": {
-                      "h": "HUG",
-                      "v": "FIXED"
-                    },
-                    "type": "INSTANCE"
-                  }
-                ],
-                "layout": {
-                  "counterAlign": "CENTER",
-                  "gap": "spacing/none",
-                  "mode": "HORIZONTAL",
-                  "padding": [
-                    "spacing/none",
-                    "spacing/none",
-                    "spacing/none",
-                    "spacing/none"
-                  ],
-                  "primaryAlign": "MAX"
-                },
-                "name": "Right",
-                "size": {
-                  "h": 48,
-                  "w": 452
-                },
-                "sizing": {
-                  "h": "FILL",
-                  "v": "FILL"
-                },
-                "type": "SLOT"
-              }
-            ],
             "component": "Taskbar",
-            "effectStyle": "Material/Acrylic",
-            "fillStyle": "Material/Acrylic Base",
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": "spacing/none",
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/none",
-                "spacing/md",
-                "spacing/none",
-                "spacing/md"
-              ],
-              "primaryAlign": "MIN"
-            },
-            "name": "Taskbar",
-            "properties": {},
-            "size": {
-              "h": 48,
-              "w": 1280
-            },
-            "sizing": {
-              "h": "FILL",
-              "v": "FIXED"
-            },
-            "strokeWeight": [
-              "stroke-width/default",
-              0,
-              0,
-              0
+            "paths": [
+              "Taskbar"
             ],
-            "strokes": [
-              "color/black/6"
+            "properties": {}
+          },
+          {
+            "component": "TaskbarButton",
+            "paths": [
+              "Taskbar/Center/Start",
+              "Taskbar/Center/File Explorer",
+              "Taskbar/Center/Chrome"
             ],
-            "strokesIncludedInLayout": false,
-            "type": "INSTANCE"
+            "properties": {
+              "Indicator": "None",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "SearchBox",
+            "paths": [
+              "Taskbar/Center/검색"
+            ],
+            "properties": {
+              "Filled": "False",
+              "Placeholder": "검색",
+              "State": "Rest",
+              "Value": "검색어",
+              "Variant": "Taskbar"
+            }
+          },
+          {
+            "component": "SystemTray",
+            "paths": [
+              "Taskbar/Right/SystemTray"
+            ],
+            "properties": {
+              "Date": "2026-10-20",
+              "State": "Rest",
+              "Time": "오후 3:24"
+            }
           }
         ],
-        "layout": {
-          "counterAlign": "MIN",
-          "gap": 0,
-          "mode": "VERTICAL",
-          "padding": [
-            0,
-            0,
-            0,
-            0
-          ],
-          "primaryAlign": "MIN"
-        },
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
         "name": "Search=Box",
         "size": {
           "h": 48,
@@ -542,8 +84,7 @@
         "sizing": {
           "h": "FIXED",
           "v": "HUG"
-        },
-        "type": "COMPONENT"
+        }
       }
     },
     "search=button": {
@@ -557,473 +98,46 @@
       "properties": {
         "Search": "Button"
       },
-      "tree": {
-        "children": [
+      "report": {
+        "components": [
           {
-            "children": [
-              {
-                "layout": {
-                  "counterAlign": "MIN",
-                  "gap": "spacing/none",
-                  "mode": "HORIZONTAL",
-                  "padding": [
-                    "spacing/none",
-                    "spacing/none",
-                    "spacing/none",
-                    "spacing/none"
-                  ],
-                  "primaryAlign": "MIN"
-                },
-                "name": "left space",
-                "size": {
-                  "h": 48,
-                  "w": 97
-                },
-                "sizing": {
-                  "h": "FILL",
-                  "v": "FILL"
-                },
-                "type": "FRAME"
-              },
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "asset": {
-                          "path": "illustrations/logo-windows"
-                        },
-                        "component": "logo/Windows",
-                        "height": "size/icon/lg",
-                        "name": "app icon",
-                        "size": {
-                          "h": 24,
-                          "w": 24
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "FIXED"
-                        },
-                        "type": "INSTANCE",
-                        "width": "size/icon/lg"
-                      }
-                    ],
-                    "component": "TaskbarButton",
-                    "height": "size/taskbar/item",
-                    "layout": {
-                      "counterAlign": "CENTER",
-                      "gap": 0,
-                      "mode": "HORIZONTAL",
-                      "padding": [
-                        0,
-                        0,
-                        0,
-                        0
-                      ],
-                      "primaryAlign": "CENTER"
-                    },
-                    "name": "Start",
-                    "properties": {
-                      "Indicator": "None",
-                      "State": "Rest"
-                    },
-                    "radius": [
-                      "radius/control",
-                      "radius/control",
-                      "radius/control",
-                      "radius/control"
-                    ],
-                    "size": {
-                      "h": 40,
-                      "w": 40
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FIXED"
-                    },
-                    "type": "INSTANCE",
-                    "width": "size/taskbar/item"
-                  },
-                  {
-                    "children": [
-                      {
-                        "asset": {
-                          "color": "color/black/89",
-                          "path": "icons/ic_fluent_search_20_regular"
-                        },
-                        "component": "ic_fluent_search_20_regular",
-                        "height": "size/icon/lg",
-                        "name": "app icon",
-                        "size": {
-                          "h": 24,
-                          "w": 24
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "FIXED"
-                        },
-                        "type": "INSTANCE",
-                        "width": "size/icon/lg"
-                      }
-                    ],
-                    "component": "TaskbarButton",
-                    "height": "size/taskbar/item",
-                    "layout": {
-                      "counterAlign": "CENTER",
-                      "gap": 0,
-                      "mode": "HORIZONTAL",
-                      "padding": [
-                        0,
-                        0,
-                        0,
-                        0
-                      ],
-                      "primaryAlign": "CENTER"
-                    },
-                    "name": "검색",
-                    "properties": {
-                      "Indicator": "None",
-                      "State": "Rest"
-                    },
-                    "radius": [
-                      "radius/control",
-                      "radius/control",
-                      "radius/control",
-                      "radius/control"
-                    ],
-                    "size": {
-                      "h": 40,
-                      "w": 40
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FIXED"
-                    },
-                    "type": "INSTANCE",
-                    "width": "size/taskbar/item"
-                  },
-                  {
-                    "children": [
-                      {
-                        "asset": {
-                          "path": "images/app-file-explorer"
-                        },
-                        "component": "app/File Explorer",
-                        "fills": [
-                          "IMAGE"
-                        ],
-                        "height": "size/icon/lg",
-                        "name": "app/File Explorer",
-                        "size": {
-                          "h": 24,
-                          "w": 24
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "FIXED"
-                        },
-                        "type": "INSTANCE",
-                        "width": "size/icon/lg"
-                      }
-                    ],
-                    "component": "TaskbarButton",
-                    "height": "size/taskbar/item",
-                    "layout": {
-                      "counterAlign": "CENTER",
-                      "gap": 0,
-                      "mode": "HORIZONTAL",
-                      "padding": [
-                        0,
-                        0,
-                        0,
-                        0
-                      ],
-                      "primaryAlign": "CENTER"
-                    },
-                    "name": "File Explorer",
-                    "properties": {
-                      "Indicator": "None",
-                      "State": "Rest"
-                    },
-                    "radius": [
-                      "radius/control",
-                      "radius/control",
-                      "radius/control",
-                      "radius/control"
-                    ],
-                    "size": {
-                      "h": 40,
-                      "w": 40
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FIXED"
-                    },
-                    "type": "INSTANCE",
-                    "width": "size/taskbar/item"
-                  },
-                  {
-                    "children": [
-                      {
-                        "asset": {
-                          "path": "images/app-chrome"
-                        },
-                        "component": "app/Chrome",
-                        "fills": [
-                          "IMAGE"
-                        ],
-                        "height": "size/icon/lg",
-                        "name": "app icon",
-                        "size": {
-                          "h": 24,
-                          "w": 24
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "FIXED"
-                        },
-                        "type": "INSTANCE",
-                        "width": "size/icon/lg"
-                      }
-                    ],
-                    "component": "TaskbarButton",
-                    "height": "size/taskbar/item",
-                    "layout": {
-                      "counterAlign": "CENTER",
-                      "gap": 0,
-                      "mode": "HORIZONTAL",
-                      "padding": [
-                        0,
-                        0,
-                        0,
-                        0
-                      ],
-                      "primaryAlign": "CENTER"
-                    },
-                    "name": "Chrome",
-                    "properties": {
-                      "Indicator": "None",
-                      "State": "Rest"
-                    },
-                    "radius": [
-                      "radius/control",
-                      "radius/control",
-                      "radius/control",
-                      "radius/control"
-                    ],
-                    "size": {
-                      "h": 40,
-                      "w": 40
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FIXED"
-                    },
-                    "type": "INSTANCE",
-                    "width": "size/taskbar/item"
-                  }
-                ],
-                "height": "size/taskbar/item",
-                "layout": {
-                  "counterAlign": "CENTER",
-                  "gap": "spacing/xs",
-                  "mode": "HORIZONTAL",
-                  "padding": [
-                    0,
-                    0,
-                    0,
-                    0
-                  ],
-                  "primaryAlign": "MIN"
-                },
-                "name": "Center",
-                "size": {
-                  "h": 40,
-                  "w": 172
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "FIXED"
-                },
-                "type": "SLOT"
-              },
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "fills": [
-                          "color/black/89"
-                        ],
-                        "name": "time",
-                        "size": {
-                          "h": 16,
-                          "w": 48
-                        },
-                        "sizing": {
-                          "h": "HUG",
-                          "v": "HUG"
-                        },
-                        "text": {
-                          "autoResize": "WIDTH_AND_HEIGHT",
-                          "maxLines": null,
-                          "maxLinesVariable": null,
-                          "segments": [
-                            {
-                              "characters": "오후",
-                              "fill": "color/black/89",
-                              "textStyle": "Hangul/Caption"
-                            },
-                            {
-                              "characters": " 3:24",
-                              "fill": "color/black/89",
-                              "textStyle": "Caption"
-                            }
-                          ],
-                          "truncation": "DISABLED"
-                        },
-                        "type": "TEXT"
-                      },
-                      {
-                        "fills": [
-                          "color/black/89"
-                        ],
-                        "name": "date",
-                        "size": {
-                          "h": 16,
-                          "w": 63
-                        },
-                        "sizing": {
-                          "h": "HUG",
-                          "v": "HUG"
-                        },
-                        "text": {
-                          "autoResize": "WIDTH_AND_HEIGHT",
-                          "maxLines": null,
-                          "maxLinesVariable": null,
-                          "segments": [
-                            {
-                              "characters": "2026-10-20",
-                              "fill": "color/black/89",
-                              "textStyle": "Caption"
-                            }
-                          ],
-                          "truncation": "DISABLED"
-                        },
-                        "type": "TEXT"
-                      }
-                    ],
-                    "component": "SystemTray",
-                    "height": "size/taskbar/item",
-                    "layout": {
-                      "counterAlign": "MAX",
-                      "gap": 0,
-                      "mode": "VERTICAL",
-                      "padding": [
-                        "spacing/none",
-                        "spacing/md",
-                        "spacing/none",
-                        "spacing/md"
-                      ],
-                      "primaryAlign": "CENTER"
-                    },
-                    "name": "SystemTray",
-                    "properties": {
-                      "Date": "2026-10-20",
-                      "State": "Rest",
-                      "Time": "오후 3:24"
-                    },
-                    "radius": [
-                      "radius/control",
-                      "radius/control",
-                      "radius/control",
-                      "radius/control"
-                    ],
-                    "size": {
-                      "h": 40,
-                      "w": 87
-                    },
-                    "sizing": {
-                      "h": "HUG",
-                      "v": "FIXED"
-                    },
-                    "type": "INSTANCE"
-                  }
-                ],
-                "layout": {
-                  "counterAlign": "CENTER",
-                  "gap": "spacing/none",
-                  "mode": "HORIZONTAL",
-                  "padding": [
-                    "spacing/none",
-                    "spacing/none",
-                    "spacing/none",
-                    "spacing/none"
-                  ],
-                  "primaryAlign": "MAX"
-                },
-                "name": "Right",
-                "size": {
-                  "h": 48,
-                  "w": 97
-                },
-                "sizing": {
-                  "h": "FILL",
-                  "v": "FILL"
-                },
-                "type": "SLOT"
-              }
-            ],
             "component": "Taskbar",
-            "effectStyle": "Material/Acrylic",
-            "fillStyle": "Material/Acrylic Base",
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": "spacing/none",
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/none",
-                "spacing/md",
-                "spacing/none",
-                "spacing/md"
-              ],
-              "primaryAlign": "MIN"
-            },
-            "name": "Taskbar",
-            "properties": {},
-            "size": {
-              "h": 48,
-              "w": 390
-            },
-            "sizing": {
-              "h": "FILL",
-              "v": "FIXED"
-            },
-            "strokeWeight": [
-              "stroke-width/default",
-              0,
-              0,
-              0
+            "paths": [
+              "Taskbar"
             ],
-            "strokes": [
-              "color/black/6"
+            "properties": {}
+          },
+          {
+            "component": "TaskbarButton",
+            "paths": [
+              "Taskbar/Center/Start",
+              "Taskbar/Center/검색",
+              "Taskbar/Center/File Explorer",
+              "Taskbar/Center/Chrome"
             ],
-            "strokesIncludedInLayout": false,
-            "type": "INSTANCE"
+            "properties": {
+              "Indicator": "None",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "SystemTray",
+            "paths": [
+              "Taskbar/Right/SystemTray"
+            ],
+            "properties": {
+              "Date": "2026-10-20",
+              "State": "Rest",
+              "Time": "오후 3:24"
+            }
           }
         ],
-        "layout": {
-          "counterAlign": "MIN",
-          "gap": 0,
-          "mode": "VERTICAL",
-          "padding": [
-            0,
-            0,
-            0,
-            0
-          ],
-          "primaryAlign": "MIN"
-        },
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
         "name": "Search=Button",
         "size": {
           "h": 48,
@@ -1032,8 +146,7 @@
         "sizing": {
           "h": "FIXED",
           "v": "HUG"
-        },
-        "type": "COMPONENT"
+        }
       }
     }
   }

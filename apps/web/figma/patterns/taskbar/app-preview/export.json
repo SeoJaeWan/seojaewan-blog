@@ -1,5 +1,5 @@
 {
-  "description": "작업 표시줄 앱 버튼과 그 앱의 창 미리보기 목록으로, 작업 표시줄 미리보기 화면에 쓴다.\n@runtime 마우스를 올리면 TaskbarPreviewList가 열린다: Blog - 파일 탐색기, React - 파일 탐색기",
+  "description": "작업 표시줄 앱 버튼과 그 앱의 창 미리보기 목록으로, 작업 표시줄 미리보기 화면에 쓴다.",
   "name": "Taskbar/AppPreview",
   "nodeId": "564:9201",
   "propertyDefinitions": {},
@@ -13,178 +13,25 @@
       },
       "nodeId": "564:9201",
       "properties": {},
-      "tree": {
-        "children": [
+      "report": {
+        "components": [
           {
-            "children": [
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "asset": {
-                          "path": "images/app-file-explorer"
-                        },
-                        "component": "app/File Explorer",
-                        "fills": [
-                          "IMAGE"
-                        ],
-                        "height": "size/icon/lg",
-                        "name": "app/File Explorer",
-                        "size": {
-                          "h": 24,
-                          "w": 24
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "FIXED"
-                        },
-                        "type": "INSTANCE",
-                        "width": "size/icon/lg"
-                      },
-                      {
-                        "absolute": {
-                          "horizontal": "CENTER",
-                          "vertical": "MAX"
-                        },
-                        "fills": [
-                          "color/blue/59"
-                        ],
-                        "height": "stroke-width/indicator",
-                        "name": "indicator",
-                        "radius": [
-                          "radius/circular",
-                          "radius/circular",
-                          "radius/circular",
-                          "radius/circular"
-                        ],
-                        "size": {
-                          "h": 3,
-                          "w": 16
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "FIXED"
-                        },
-                        "type": "RECTANGLE",
-                        "width": "size/taskbar-button/indicator-active"
-                      }
-                    ],
-                    "component": "TaskbarButton",
-                    "fills": [
-                      "color/white/70"
-                    ],
-                    "height": "size/taskbar/item",
-                    "layout": {
-                      "counterAlign": "CENTER",
-                      "gap": 0,
-                      "mode": "HORIZONTAL",
-                      "padding": [
-                        0,
-                        0,
-                        0,
-                        0
-                      ],
-                      "primaryAlign": "CENTER"
-                    },
-                    "name": "File Explorer",
-                    "properties": {
-                      "Indicator": "Active",
-                      "State": "Rest"
-                    },
-                    "radius": [
-                      "radius/control",
-                      "radius/control",
-                      "radius/control",
-                      "radius/control"
-                    ],
-                    "size": {
-                      "h": 40,
-                      "w": 40
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FIXED"
-                    },
-                    "strokeWeight": [
-                      "stroke-width/default",
-                      "stroke-width/default",
-                      "stroke-width/default",
-                      "stroke-width/default"
-                    ],
-                    "strokes": [
-                      "color/black/6"
-                    ],
-                    "strokesIncludedInLayout": true,
-                    "type": "INSTANCE",
-                    "width": "size/taskbar/item"
-                  }
-                ],
-                "layout": {
-                  "counterAlign": "MIN",
-                  "gap": 0,
-                  "mode": "HORIZONTAL",
-                  "padding": [
-                    0,
-                    0,
-                    0,
-                    0
-                  ],
-                  "primaryAlign": "MIN"
-                },
-                "name": "Trigger",
-                "size": {
-                  "h": 40,
-                  "w": 40
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "type": "SLOT"
-              }
+            "component": "TaskbarButton",
+            "paths": [
+              "popover/Trigger/File Explorer"
             ],
-            "component": "Popover",
-            "layout": {
-              "counterAlign": "MIN",
-              "gap": "spacing/xs",
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/none",
-                "spacing/none",
-                "spacing/none",
-                "spacing/none"
-              ],
-              "primaryAlign": "MIN"
-            },
-            "name": "popover",
             "properties": {
-              "Placement": "Top center",
-              "State": "Closed"
-            },
-            "size": {
-              "h": 40,
-              "w": 40
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+              "Indicator": "Active",
+              "State": "Rest"
+            }
           }
         ],
-        "layout": {
-          "counterAlign": "CENTER",
-          "gap": 0,
-          "mode": "VERTICAL",
-          "padding": [
-            0,
-            0,
-            0,
-            0
-          ],
-          "primaryAlign": "MAX"
-        },
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
         "name": "Taskbar/AppPreview",
         "size": {
           "h": 40,
@@ -193,8 +40,7 @@
         "sizing": {
           "h": "FIXED",
           "v": "FIXED"
-        },
-        "type": "COMPONENT"
+        }
       }
     }
   }

@@ -56,7 +56,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Figma: Story = {};
 
-/** 앱 버튼에 마우스를 올리면 TaskbarPreviewList가 열린다. 피그마 설명의 `@runtime` 항목이 열린 목록에 보인다 */
+/** 앱 버튼에 마우스를 올리면 TaskbarPreviewList가 열리고, 그 앱 창들의 제목이 열린 목록에 보인다 */
 export const OpensPreviewList: Story = {
   play: async ({ canvasElement, step }) => {
     const body = within(canvasElement.ownerDocument.body);
