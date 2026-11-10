@@ -44,7 +44,7 @@ import {
 } from './components/chrome-page-area/chrome-page-area';
 import { ChromePostTab } from './components/chrome-post-tab/chrome-post-tab';
 import { ChromeWindow } from './components/chrome-window/chrome-window';
-import { TRASHED_POST_MESSAGE } from './components/message-box-trashed-post/message-box-trashed-post';
+import { trashedPostMessage } from './components/message-box-trashed-post/message-box-trashed-post';
 import type { PostImageBlock } from './components/post-blocks/post-blocks';
 import { useChromePageLayout } from './hooks/use-chrome-page-layout/use-chrome-page-layout';
 import { getChromeMoreMenuEntries } from './more-menu/more-menu-entries';
@@ -135,7 +135,7 @@ export function ChromeWindowLayer({
   preload,
 }: ChromeWindowLayerProps): JSX.Element {
   const items = useWorkspaceItems(preload?.posts);
-  const restoreTrashedPost = useWorkspaceStore((state) => state.restoreTrashedPost);
+  const restoreTrashedItem = useWorkspaceStore((state) => state.restoreTrashedItem);
   const setContent = useWindowStore((state) => state.setContent);
   const zoom = useChromeZoomStore((state) => state.zoom);
   const zoomIn = useChromeZoomStore((state) => state.zoomIn);
@@ -191,7 +191,7 @@ export function ChromeWindowLayer({
     if (trashedPost === null) {
       return;
     }
-    const result = restoreTrashedPost(getPostItemId(trashedPost));
+    const result = restoreTrashedItem(getPostItemId(trashedPost));
     if (result.ok) {
       update(navigateChromeTab(content, { kind: 'post', ...trashedPost }));
     }
@@ -501,7 +501,7 @@ export function ChromeWindowLayer({
         />
       </ChromePageArea>
       <MessageBoxDialog
-        {...TRASHED_POST_MESSAGE}
+        {...trashedPostMessage}
         isOpen={trashedPost !== null}
         onOpenChange={handleTrashedDialogOpenChange}
         onPrimaryClick={handleTrashedPostRestore}

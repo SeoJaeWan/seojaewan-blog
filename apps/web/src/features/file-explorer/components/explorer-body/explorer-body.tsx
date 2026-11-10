@@ -73,6 +73,7 @@ import {
   type SelectionRect,
   selectOnly,
 } from '@/shared/utils/selection-rules/selection-rules';
+import { getTrashedItemMessage } from '@/shared/utils/trashed-item-message/trashed-item-message';
 import type { ExplorerLocation } from '@/shared/utils/window-rules/window-rules';
 import {
   DEFAULT_EXPLORER_VIEW,
@@ -144,7 +145,7 @@ const ICON_VIEWS = { large: 'large', medium: 'medium' } as const;
  * - 명령 모음, 우클릭(모바일은 길게 누르기) 메뉴, 상태 줄(항목 수, 선택 수, 자세히·큰 아이콘 보기).
  * - 휴지통은 늘 자세히 보기(이름·원래 위치·삭제한 날짜)이고 항목을 열 수 없으며 복원만 된다. 휴지통 비우기는 메시지 상자만 보인다.
  * - 폴더 안 검색. 모바일은 주소 줄의 검색 버튼으로 검색 줄을 열고, ← 버튼·Esc·다른 위치로 가기로 검색어를 지우며 닫는다.
- * - 주소창 편집: 경로의 빈 곳을 눌러 경로를 입력하고 Enter로 간다. 찾지 못하면 메시지 상자를 띄운다(`useAddressEdit`).
+ * - 주소창 편집: 경로의 빈 곳을 눌러 경로를 입력하고 Enter로 간다. 경로 끝이 글·외부 링크면 열고, 휴지통 항목이면 복원할지 묻는다. 찾지 못하면 메시지 상자를 띄운다(`useAddressEdit`).
  * 쓸 수 없는 조작(같은 이름 충돌, 자기·하위 폴더로 옮기기)은 명령과 메뉴를 비활성으로 두고, 거부되면 제자리다.
  * @codocs [[파일 탐색기:구성]]
  * @codocs [[파일 탐색기:보기와 정렬]]
@@ -199,7 +200,16 @@ export function ExplorerBody({
   const dragTargetId = useItemDragStore((state) => state.targetId);
 
   const workspace = { items };
-  const addressEdit = useAddressEdit({ workspace, location, device, onNavigate });
+  const addressEdit = useAddressEdit({
+    workspace,
+    location,
+    device,
+    onNavigate,
+    onOpenItem: (id) => {
+      openItem(id);
+    },
+    onRestoreTrashed: (id) => getWorkspace().restoreTrashedItem(id).ok,
+  });
   const savedView = explorerViews[location ?? DESKTOP_LOCATION_KEY] ?? DEFAULT_EXPLORER_VIEW;
   const view: ExplorerFolderView = isRecycleBin ? { ...savedView, view: 'details' } : savedView;
   if (search.location !== location) {
@@ -1174,6 +1184,13 @@ export function ExplorerBody({
         isOpen={addressEdit.notFoundText !== null}
         onOpenChange={addressEdit.handleNotFoundOpenChange}
         onCloseComplete={addressEdit.handleNotFoundCloseComplete}
+      />
+      <MessageBoxDialog
+        {...getTrashedItemMessage(addressEdit.trashedKind ?? 'post')}
+        isOpen={addressEdit.trashedKind !== null}
+        onOpenChange={addressEdit.handleTrashedOpenChange}
+        onPrimaryClick={addressEdit.handleTrashedRestore}
+        onCloseComplete={addressEdit.handleTrashedCloseComplete}
       />
       <MessageBoxDialog
         {...EMPTY_RECYCLE_BIN_MESSAGE}

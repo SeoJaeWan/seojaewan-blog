@@ -379,6 +379,59 @@ export const AddressEdit: Story = {
   },
 };
 
+/** 주소창 경로 끝이 휴지통에 있는 항목이면 복원할지 묻고, 취소하면 편집 상태로, 복원하면 복원한 뒤 연다 */
+export const AddressEditTrashed: Story = {
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    await expect(useWorkspaceStore.getState().trashItems(['folder:React'])).toEqual({ ok: true });
+    const path = ['Blog', 'React'].join(pathSeparator);
+
+    /**
+     * 경로를 입력하고 Enter를 눌러 뜬 메시지 상자를 돌려준다.
+     * @returns 메시지 상자
+     */
+    async function submitTrashedPath(): Promise<HTMLElement> {
+      await user.click(getBreadcrumbBlank(canvasElement));
+      const field = await canvas.findByRole('textbox', { name: '주소' });
+      await user.clear(field);
+      await user.type(field, path);
+      await user.keyboard('{Enter}');
+      return screen.findByRole('alertdialog');
+    }
+
+    // @codocs [[파일 탐색기:주소창 편집]]
+    await step('휴지통에 있는 폴더는 열지 않고 종류에 맞춘 문구로 복원할지 묻는다', async () => {
+      const dialog = await submitTrashedPath();
+      await expect(within(dialog).getByText('휴지통에 있는 폴더')).toBeInTheDocument();
+      await expect(dialog).toHaveTextContent('이 폴더는 휴지통에 있어요. 복원하고 열까요?');
+    });
+
+    // @codocs [[파일 탐색기:주소창 편집]]
+    await step('취소하면 주소창 편집 상태로 돌아간다', async () => {
+      await user.click(
+        within(screen.getByRole('alertdialog')).getByRole('button', { name: '취소' }),
+      );
+      await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument());
+      await expect(canvas.getByRole('textbox', { name: '주소' })).toHaveValue(path);
+      await expect(getTabTitles(canvasElement)).toEqual(['Blog']);
+    });
+
+    // @codocs [[파일 탐색기:주소창 편집]]
+    await step('복원하면 원래 위치로 돌려놓고 그 폴더로 간다', async () => {
+      await user.keyboard('{Enter}');
+      const dialog = await screen.findByRole('alertdialog');
+      await user.click(within(dialog).getByRole('button', { name: '복원' }));
+      await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument());
+      await expect(getTabTitles(canvasElement)).toEqual(['React']);
+      await expect(useWorkspaceStore.getState().items['folder:React']).toMatchObject({
+        parentId: BLOG_FOLDER_ID,
+        trash: null,
+      });
+    });
+  },
+};
+
 /** 탭을 열고, 고르고, 닫고, 끌어 순서를 바꾼다 */
 export const Tabs: Story = {
   args: { location: 'folder:React' },

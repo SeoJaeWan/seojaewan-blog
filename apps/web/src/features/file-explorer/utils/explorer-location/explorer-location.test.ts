@@ -2,13 +2,17 @@ import { describe, expect, it } from 'vitest';
 
 import {
   BLOG_FOLDER_ID,
+  createFolder,
   createInitialWorkspace,
+  getLinkItemId,
+  getPostItemId,
   RECYCLE_BIN_ID,
+  renameFolder,
   trashItems,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
 import {
-  findExplorerLocationByAddress,
+  findExplorerAddressTarget,
   formatDeletedDate,
   getExplorerAddressText,
   getExplorerLocationName,
@@ -21,8 +25,26 @@ const workspace = createInitialWorkspace({
   posts: [
     { collection: 'blog', slug: 'a', title: '가', folderPath: ['React'], date: '2026-10-20' },
   ],
-  links: [],
+  links: [
+    {
+      id: 'github',
+      name: 'GitHub',
+      url: 'https://github.com/',
+      icon: 'illustrations/file-link.svg',
+      initialParentId: null,
+      isPinnedToStart: false,
+    },
+  ],
 });
+
+/**
+ * 주소창 해석 결과 가운데 갈 위치를 만든다.
+ * @param folderId 위치(폴더 id, 휴지통 id, 바탕화면은 null)
+ * @returns 위치 결과
+ */
+function location(folderId: string | null): { kind: 'location'; location: string | null } {
+  return { kind: 'location', location: folderId };
+}
 
 // @codocs [[파일 탐색기:탭]]
 describe('파일 탐색기:탭', () => {
@@ -92,35 +114,99 @@ describe('파일 탐색기:주소창 편집', () => {
   });
 
   it('입력한 경로의 이름을 따라 폴더를 찾고, 대소문자는 구분하지 않는다', () => {
-    expect(findExplorerLocationByAddress(workspace, joinPath('바탕 화면', 'Blog', 'React'))).toBe(
-      'folder:React',
+    expect(findExplorerAddressTarget(workspace, joinPath('바탕 화면', 'Blog', 'React'))).toEqual(
+      location('folder:React'),
     );
-    expect(findExplorerLocationByAddress(workspace, joinPath('blog', 'react'))).toBe(
-      'folder:React',
+    expect(findExplorerAddressTarget(workspace, joinPath('blog', 'react'))).toEqual(
+      location('folder:React'),
     );
-    expect(findExplorerLocationByAddress(workspace, joinPath(' 바탕 화면 ', ' BLOG ', ''))).toBe(
-      BLOG_FOLDER_ID,
+    expect(findExplorerAddressTarget(workspace, joinPath(' 바탕 화면 ', ' BLOG ', ''))).toEqual(
+      location(BLOG_FOLDER_ID),
     );
-    expect(findExplorerLocationByAddress(workspace, '바탕 화면')).toBeNull();
+    expect(findExplorerAddressTarget(workspace, '바탕 화면')).toEqual(location(null));
   });
 
   it('휴지통도 받는다', () => {
-    expect(findExplorerLocationByAddress(workspace, '휴지통')).toBe(RECYCLE_BIN_ID);
+    expect(findExplorerAddressTarget(workspace, '휴지통')).toEqual(location(RECYCLE_BIN_ID));
+  });
+
+  it('경로 끝이 글이나 외부 링크면 그 항목이다', () => {
+    expect(findExplorerAddressTarget(workspace, joinPath('Blog', 'React', '가'))).toEqual({
+      kind: 'item',
+      id: getPostItemId({ collection: 'blog', slug: 'a' }),
+    });
+    expect(findExplorerAddressTarget(workspace, joinPath('바탕 화면', 'github'))).toEqual({
+      kind: 'item',
+      id: getLinkItemId('github'),
+    });
   });
 
   it('찾지 못하면 undefined다', () => {
     expect(
-      findExplorerLocationByAddress(workspace, joinPath('바탕 화면', '없는 폴더')),
+      findExplorerAddressTarget(workspace, joinPath('바탕 화면', '없는 폴더')),
     ).toBeUndefined();
-    expect(findExplorerLocationByAddress(workspace, joinPath('Blog', '가'))).toBeUndefined();
-    expect(findExplorerLocationByAddress(workspace, '')).toBeUndefined();
+    expect(findExplorerAddressTarget(workspace, joinPath('Blog', '가'))).toBeUndefined();
+    expect(
+      findExplorerAddressTarget(workspace, joinPath('Blog', 'React', '가', 'React')),
+    ).toBeUndefined();
+    expect(findExplorerAddressTarget(workspace, '')).toBeUndefined();
   });
 
-  it('휴지통 안의 폴더는 찾지 않는다', () => {
-    const result = trashItems(workspace, ['folder:React'], '2026-10-28T09:00:00.000Z');
+  it('휴지통에 보낸 항목은 원래 경로로도, 휴지통 아래 경로로도 찾아 휴지통 항목으로 돌려준다', () => {
+    const result = trashItems(
+      workspace,
+      ['folder:React', getLinkItemId('github')],
+      '2026-10-28T09:00:00.000Z',
+    );
     if (!result.ok) {
       throw new Error(result.reason);
     }
-    expect(findExplorerLocationByAddress(result.state, joinPath('Blog', 'React'))).toBeUndefined();
+    const trashedFolder = { kind: 'trashed', id: 'folder:React', itemKind: 'folder' };
+    const trashedPost = {
+      kind: 'trashed',
+      id: getPostItemId({ collection: 'blog', slug: 'a' }),
+      itemKind: 'post',
+    };
+    expect(findExplorerAddressTarget(result.state, joinPath('Blog', 'React'))).toEqual(
+      trashedFolder,
+    );
+    expect(findExplorerAddressTarget(result.state, joinPath('휴지통', 'react'))).toEqual(
+      trashedFolder,
+    );
+    expect(findExplorerAddressTarget(result.state, joinPath('Blog', 'React', '가'))).toEqual(
+      trashedPost,
+    );
+    expect(findExplorerAddressTarget(result.state, joinPath('휴지통', 'React', '가'))).toEqual(
+      trashedPost,
+    );
+    expect(findExplorerAddressTarget(result.state, 'github')).toEqual({
+      kind: 'trashed',
+      id: getLinkItemId('github'),
+      itemKind: 'link',
+    });
+    expect(
+      findExplorerAddressTarget(result.state, joinPath('휴지통', '없는 항목')),
+    ).toBeUndefined();
+  });
+
+  it('같은 원래 경로에 휴지통 밖의 항목과 휴지통 항목이 함께 있으면 휴지통 밖의 항목을 고른다', () => {
+    const trashed = trashItems(workspace, ['folder:React'], '2026-10-28T09:00:00.000Z');
+    if (!trashed.ok) {
+      throw new Error(trashed.reason);
+    }
+    const created = createFolder(trashed.state, BLOG_FOLDER_ID, {
+      id: 'folder:new',
+      createdAt: '2026-10-29T09:00:00.000Z',
+    });
+    if (!created.ok) {
+      throw new Error(created.reason);
+    }
+    const renamed = renameFolder(created.state, 'folder:new', 'React');
+    if (!renamed.ok) {
+      throw new Error(renamed.reason);
+    }
+    expect(findExplorerAddressTarget(renamed.state, joinPath('Blog', 'React'))).toEqual(
+      location('folder:new'),
+    );
   });
 });

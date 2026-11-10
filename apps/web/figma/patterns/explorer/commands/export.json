@@ -33,562 +33,74 @@
         "Device": "Desktop",
         "Location": "Folder"
       },
-      "tree": {
-        "children": [
+      "report": {
+        "components": [
           {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_add_20_regular"
-                },
-                "component": "ic_fluent_add_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              },
-              {
-                "fills": [
-                  "color/black/89"
-                ],
-                "name": "label",
-                "size": {
-                  "h": 20,
-                  "w": 65
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "text": {
-                  "autoResize": "WIDTH_AND_HEIGHT",
-                  "maxLines": null,
-                  "maxLinesVariable": null,
-                  "segments": [
-                    {
-                      "characters": "새로 만들기",
-                      "fill": "color/black/89",
-                      "textStyle": "Hangul/Body"
-                    }
-                  ],
-                  "truncation": "DISABLED"
-                },
-                "type": "TEXT"
-              }
-            ],
             "component": "Button",
-            "fills": [
-              "color/white/0"
+            "paths": [
+              "새로 만들기"
             ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": "spacing/sm",
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm-nudge",
-                "spacing/md",
-                "spacing/sm-nudge",
-                "spacing/md"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "새로 만들기",
             "properties": {
               "Has icon": true,
               "Label": "새로 만들기",
               "State": "Rest",
               "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 113
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+            }
           },
           {
             "component": "Separator",
-            "fills": [
-              "color/black/8"
+            "paths": [
+              "separator after new",
+              "separator after delete"
             ],
-            "name": "separator after new",
             "properties": {
               "Orientation": "Vertical"
-            },
-            "size": {
-              "h": 24,
-              "w": 1
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FIXED"
-            },
-            "type": "INSTANCE"
+            }
           },
           {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_cut_20_regular"
-                },
-                "component": "ic_fluent_cut_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              }
-            ],
             "component": "IconButton",
-            "fills": [
-              "color/white/0"
+            "paths": [
+              "cut",
+              "paste",
+              "rename",
+              "delete"
             ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "cut",
             "properties": {
               "State": "Rest",
               "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+            }
           },
           {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_clipboard_paste_20_regular"
-                },
-                "component": "ic_fluent_clipboard_paste_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              }
-            ],
-            "component": "IconButton",
-            "fills": [
-              "color/white/0"
-            ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "paste",
-            "properties": {
-              "State": "Rest",
-              "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
-          },
-          {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_rename_20_regular"
-                },
-                "component": "ic_fluent_rename_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              }
-            ],
-            "component": "IconButton",
-            "fills": [
-              "color/white/0"
-            ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "rename",
-            "properties": {
-              "State": "Rest",
-              "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
-          },
-          {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_delete_20_regular"
-                },
-                "component": "ic_fluent_delete_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              }
-            ],
-            "component": "IconButton",
-            "fills": [
-              "color/white/0"
-            ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "delete",
-            "properties": {
-              "State": "Rest",
-              "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
-          },
-          {
-            "component": "Separator",
-            "fills": [
-              "color/black/8"
-            ],
-            "name": "separator after delete",
-            "properties": {
-              "Orientation": "Vertical"
-            },
-            "size": {
-              "h": 24,
-              "w": 1
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FIXED"
-            },
-            "type": "INSTANCE"
-          },
-          {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_arrow_sort_20_regular"
-                },
-                "component": "ic_fluent_arrow_sort_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              },
-              {
-                "fills": [
-                  "color/black/89"
-                ],
-                "name": "label",
-                "size": {
-                  "h": 20,
-                  "w": 25
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "text": {
-                  "autoResize": "WIDTH_AND_HEIGHT",
-                  "maxLines": null,
-                  "maxLinesVariable": null,
-                  "segments": [
-                    {
-                      "characters": "정렬",
-                      "fill": "color/black/89",
-                      "textStyle": "Hangul/Body"
-                    }
-                  ],
-                  "truncation": "DISABLED"
-                },
-                "type": "TEXT"
-              }
-            ],
             "component": "Button",
-            "fills": [
-              "color/white/0"
+            "paths": [
+              "정렬"
             ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": "spacing/sm",
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm-nudge",
-                "spacing/md",
-                "spacing/sm-nudge",
-                "spacing/md"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "정렬",
             "properties": {
               "Has icon": true,
               "Label": "정렬",
               "State": "Rest",
               "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 73
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+            }
           },
           {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_grid_20_regular"
-                },
-                "component": "ic_fluent_grid_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              },
-              {
-                "fills": [
-                  "color/black/89"
-                ],
-                "name": "label",
-                "size": {
-                  "h": 20,
-                  "w": 25
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "text": {
-                  "autoResize": "WIDTH_AND_HEIGHT",
-                  "maxLines": null,
-                  "maxLinesVariable": null,
-                  "segments": [
-                    {
-                      "characters": "보기",
-                      "fill": "color/black/89",
-                      "textStyle": "Hangul/Body"
-                    }
-                  ],
-                  "truncation": "DISABLED"
-                },
-                "type": "TEXT"
-              }
-            ],
             "component": "Button",
-            "fills": [
-              "color/white/0"
+            "paths": [
+              "보기"
             ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": "spacing/sm",
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm-nudge",
-                "spacing/md",
-                "spacing/sm-nudge",
-                "spacing/md"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "보기",
             "properties": {
               "Has icon": true,
               "Label": "보기",
               "State": "Rest",
               "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 73
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+            }
           }
         ],
-        "layout": {
-          "counterAlign": "CENTER",
-          "gap": "spacing/xs",
-          "mode": "HORIZONTAL",
-          "padding": [
-            0,
-            0,
-            0,
-            0
-          ],
-          "primaryAlign": "MIN"
-        },
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
         "name": "Location=Folder, Device=Desktop",
         "size": {
           "h": 32,
@@ -597,8 +109,7 @@
         "sizing": {
           "h": "HUG",
           "v": "HUG"
-        },
-        "type": "COMPONENT"
+        }
       }
     },
     "location=folder,device=mobile": {
@@ -613,453 +124,40 @@
         "Device": "Mobile",
         "Location": "Folder"
       },
-      "tree": {
-        "children": [
+      "report": {
+        "components": [
           {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_folder_add_20_regular"
-                },
-                "component": "ic_fluent_folder_add_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              }
-            ],
             "component": "IconButton",
-            "fills": [
-              "color/white/0"
+            "paths": [
+              "new folder",
+              "cut",
+              "paste",
+              "rename",
+              "delete",
+              "sort",
+              "view"
             ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "new folder",
             "properties": {
               "State": "Rest",
               "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
-          },
-          {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_cut_20_regular"
-                },
-                "component": "ic_fluent_cut_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              }
-            ],
-            "component": "IconButton",
-            "fills": [
-              "color/white/0"
-            ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "cut",
-            "properties": {
-              "State": "Rest",
-              "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
-          },
-          {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_clipboard_paste_20_regular"
-                },
-                "component": "ic_fluent_clipboard_paste_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              }
-            ],
-            "component": "IconButton",
-            "fills": [
-              "color/white/0"
-            ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "paste",
-            "properties": {
-              "State": "Rest",
-              "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
-          },
-          {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_rename_20_regular"
-                },
-                "component": "ic_fluent_rename_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              }
-            ],
-            "component": "IconButton",
-            "fills": [
-              "color/white/0"
-            ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "rename",
-            "properties": {
-              "State": "Rest",
-              "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
-          },
-          {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_delete_20_regular"
-                },
-                "component": "ic_fluent_delete_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              }
-            ],
-            "component": "IconButton",
-            "fills": [
-              "color/white/0"
-            ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "delete",
-            "properties": {
-              "State": "Rest",
-              "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+            }
           },
           {
             "component": "Separator",
-            "fills": [
-              "color/black/8"
+            "paths": [
+              "separator"
             ],
-            "name": "separator",
             "properties": {
               "Orientation": "Vertical"
-            },
-            "size": {
-              "h": 24,
-              "w": 1
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FIXED"
-            },
-            "type": "INSTANCE"
-          },
-          {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_arrow_sort_20_regular"
-                },
-                "component": "ic_fluent_arrow_sort_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              }
-            ],
-            "component": "IconButton",
-            "fills": [
-              "color/white/0"
-            ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "sort",
-            "properties": {
-              "State": "Rest",
-              "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
-          },
-          {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_grid_20_regular"
-                },
-                "component": "ic_fluent_grid_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              }
-            ],
-            "component": "IconButton",
-            "fills": [
-              "color/white/0"
-            ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "view",
-            "properties": {
-              "State": "Rest",
-              "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+            }
           }
         ],
-        "layout": {
-          "counterAlign": "CENTER",
-          "gap": "spacing/xs",
-          "mode": "HORIZONTAL",
-          "padding": [
-            0,
-            0,
-            0,
-            0
-          ],
-          "primaryAlign": "MIN"
-        },
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
         "name": "Location=Folder, Device=Mobile",
         "size": {
           "h": 32,
@@ -1068,8 +166,7 @@
         "sizing": {
           "h": "HUG",
           "v": "HUG"
-        },
-        "type": "COMPONENT"
+        }
       }
     },
     "location=recycle-bin,device=desktop": {
@@ -1084,396 +181,72 @@
         "Device": "Desktop",
         "Location": "Recycle bin"
       },
-      "tree": {
-        "children": [
+      "report": {
+        "components": [
           {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_arrow_counterclockwise_20_regular"
-                },
-                "component": "ic_fluent_arrow_counterclockwise_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              },
-              {
-                "fills": [
-                  "color/black/89"
-                ],
-                "name": "label",
-                "size": {
-                  "h": 20,
-                  "w": 25
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "text": {
-                  "autoResize": "WIDTH_AND_HEIGHT",
-                  "maxLines": null,
-                  "maxLinesVariable": null,
-                  "segments": [
-                    {
-                      "characters": "복원",
-                      "fill": "color/black/89",
-                      "textStyle": "Hangul/Body"
-                    }
-                  ],
-                  "truncation": "DISABLED"
-                },
-                "type": "TEXT"
-              }
-            ],
             "component": "Button",
-            "fills": [
-              "color/white/0"
+            "paths": [
+              "복원"
             ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": "spacing/sm",
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm-nudge",
-                "spacing/md",
-                "spacing/sm-nudge",
-                "spacing/md"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "복원",
             "properties": {
               "Has icon": true,
               "Label": "복원",
               "State": "Rest",
               "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 73
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+            }
           },
           {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_delete_20_regular"
-                },
-                "component": "ic_fluent_delete_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              },
-              {
-                "fills": [
-                  "color/black/89"
-                ],
-                "name": "label",
-                "size": {
-                  "h": 20,
-                  "w": 77
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "text": {
-                  "autoResize": "WIDTH_AND_HEIGHT",
-                  "maxLines": null,
-                  "maxLinesVariable": null,
-                  "segments": [
-                    {
-                      "characters": "휴지통 비우기",
-                      "fill": "color/black/89",
-                      "textStyle": "Hangul/Body"
-                    }
-                  ],
-                  "truncation": "DISABLED"
-                },
-                "type": "TEXT"
-              }
-            ],
             "component": "Button",
-            "fills": [
-              "color/white/0"
+            "paths": [
+              "휴지통 비우기"
             ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": "spacing/sm",
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm-nudge",
-                "spacing/md",
-                "spacing/sm-nudge",
-                "spacing/md"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "휴지통 비우기",
             "properties": {
               "Has icon": true,
               "Label": "휴지통 비우기",
               "State": "Rest",
               "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 125
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+            }
           },
           {
             "component": "Separator",
-            "fills": [
-              "color/black/8"
+            "paths": [
+              "separator"
             ],
-            "name": "separator",
             "properties": {
               "Orientation": "Vertical"
-            },
-            "size": {
-              "h": 24,
-              "w": 1
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FIXED"
-            },
-            "type": "INSTANCE"
+            }
           },
           {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_arrow_sort_20_regular"
-                },
-                "component": "ic_fluent_arrow_sort_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              },
-              {
-                "fills": [
-                  "color/black/89"
-                ],
-                "name": "label",
-                "size": {
-                  "h": 20,
-                  "w": 25
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "text": {
-                  "autoResize": "WIDTH_AND_HEIGHT",
-                  "maxLines": null,
-                  "maxLinesVariable": null,
-                  "segments": [
-                    {
-                      "characters": "정렬",
-                      "fill": "color/black/89",
-                      "textStyle": "Hangul/Body"
-                    }
-                  ],
-                  "truncation": "DISABLED"
-                },
-                "type": "TEXT"
-              }
-            ],
             "component": "Button",
-            "fills": [
-              "color/white/0"
+            "paths": [
+              "정렬"
             ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": "spacing/sm",
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm-nudge",
-                "spacing/md",
-                "spacing/sm-nudge",
-                "spacing/md"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "정렬",
             "properties": {
               "Has icon": true,
               "Label": "정렬",
               "State": "Rest",
               "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 73
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+            }
           },
           {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_grid_20_regular"
-                },
-                "component": "ic_fluent_grid_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              },
-              {
-                "fills": [
-                  "color/black/89"
-                ],
-                "name": "label",
-                "size": {
-                  "h": 20,
-                  "w": 25
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "text": {
-                  "autoResize": "WIDTH_AND_HEIGHT",
-                  "maxLines": null,
-                  "maxLinesVariable": null,
-                  "segments": [
-                    {
-                      "characters": "보기",
-                      "fill": "color/black/89",
-                      "textStyle": "Hangul/Body"
-                    }
-                  ],
-                  "truncation": "DISABLED"
-                },
-                "type": "TEXT"
-              }
-            ],
             "component": "Button",
-            "fills": [
-              "color/white/0"
+            "paths": [
+              "보기"
             ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": "spacing/sm",
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm-nudge",
-                "spacing/md",
-                "spacing/sm-nudge",
-                "spacing/md"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "보기",
             "properties": {
               "Has icon": true,
               "Label": "보기",
               "State": "Rest",
               "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 73
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+            }
           }
         ],
-        "layout": {
-          "counterAlign": "CENTER",
-          "gap": "spacing/xs",
-          "mode": "HORIZONTAL",
-          "padding": [
-            0,
-            0,
-            0,
-            0
-          ],
-          "primaryAlign": "MIN"
-        },
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
         "name": "Location=Recycle bin, Device=Desktop",
         "size": {
           "h": 32,
@@ -1482,8 +255,7 @@
         "sizing": {
           "h": "HUG",
           "v": "HUG"
-        },
-        "type": "COMPONENT"
+        }
       }
     },
     "location=recycle-bin,device=mobile": {
@@ -1498,276 +270,37 @@
         "Device": "Mobile",
         "Location": "Recycle bin"
       },
-      "tree": {
-        "children": [
+      "report": {
+        "components": [
           {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_arrow_counterclockwise_20_regular"
-                },
-                "component": "ic_fluent_arrow_counterclockwise_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              }
-            ],
             "component": "IconButton",
-            "fills": [
-              "color/white/0"
+            "paths": [
+              "restore",
+              "empty recycle bin",
+              "sort",
+              "view"
             ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "restore",
             "properties": {
               "State": "Rest",
               "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
-          },
-          {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_delete_20_regular"
-                },
-                "component": "ic_fluent_delete_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              }
-            ],
-            "component": "IconButton",
-            "fills": [
-              "color/white/0"
-            ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "empty recycle bin",
-            "properties": {
-              "State": "Rest",
-              "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+            }
           },
           {
             "component": "Separator",
-            "fills": [
-              "color/black/8"
+            "paths": [
+              "separator"
             ],
-            "name": "separator",
             "properties": {
               "Orientation": "Vertical"
-            },
-            "size": {
-              "h": 24,
-              "w": 1
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FIXED"
-            },
-            "type": "INSTANCE"
-          },
-          {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_arrow_sort_20_regular"
-                },
-                "component": "ic_fluent_arrow_sort_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              }
-            ],
-            "component": "IconButton",
-            "fills": [
-              "color/white/0"
-            ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "sort",
-            "properties": {
-              "State": "Rest",
-              "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
-          },
-          {
-            "children": [
-              {
-                "asset": {
-                  "color": "color/black/89",
-                  "path": "icons/ic_fluent_grid_20_regular"
-                },
-                "component": "ic_fluent_grid_20_regular",
-                "height": "size/icon/sm",
-                "name": "icon",
-                "size": {
-                  "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              }
-            ],
-            "component": "IconButton",
-            "fills": [
-              "color/white/0"
-            ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm",
-                "spacing/sm"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "view",
-            "properties": {
-              "State": "Rest",
-              "Variant": "Subtle"
-            },
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+            }
           }
         ],
-        "layout": {
-          "counterAlign": "CENTER",
-          "gap": "spacing/xs",
-          "mode": "HORIZONTAL",
-          "padding": [
-            0,
-            0,
-            0,
-            0
-          ],
-          "primaryAlign": "MIN"
-        },
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
         "name": "Location=Recycle bin, Device=Mobile",
         "size": {
           "h": 32,
@@ -1776,8 +309,7 @@
         "sizing": {
           "h": "HUG",
           "v": "HUG"
-        },
-        "type": "COMPONENT"
+        }
       }
     }
   }

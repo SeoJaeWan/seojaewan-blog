@@ -910,17 +910,19 @@ export function restoreItems(state: WorkspaceState, ids: readonly string[]): Wor
 }
 
 /**
- * 휴지통에 있는 글 하나를 주소로 열 때 복원한다. 휴지통에 바로 든 글은 `restoreItems`의 복원 규칙을 따르고,
- * 휴지통에 든 폴더 안의 글은 원래 상위 폴더가 휴지통에 있으므로 그 글만 바탕화면으로 꺼낸다. 폴더는 휴지통에 그대로 둔다.
+ * 휴지통에 있는 항목(글, 폴더, 외부 링크) 하나를 주소로 열 때 복원한다. 휴지통에 바로 든 항목은 `restoreItems`의 복원 규칙을 따르고,
+ * 휴지통에 든 폴더 안의 항목은 원래 상위 폴더가 휴지통에 있으므로 그 항목만 바탕화면으로 꺼낸다. 감싼 폴더는 휴지통에 그대로 둔다.
+ * 꺼낸 폴더는 바탕화면에 같은 이름의 폴더가 있으면 `이름 (2)`처럼 가장 작은 빈 번호를 붙인다. 폴더 안 항목은 그 폴더를 따라 나온다.
  * @codocs [[Chrome:휴지통에 있는 글]]
+ * @codocs [[파일 탐색기:주소창 편집]]
  * @codocs [[휴지통:복원]]
  * @param state 작업 공간 상태
- * @param id 글 id
- * @returns 새 상태. 글이 아니거나 휴지통에 없으면 거부한다
+ * @param id 항목 id
+ * @returns 새 상태. 휴지통 자체이거나 휴지통에 없으면 거부한다
  */
-export function restoreTrashedPost(state: WorkspaceState, id: string): WorkspaceResult {
+export function restoreTrashedItem(state: WorkspaceState, id: string): WorkspaceResult {
   const item = state.items[id];
-  if (item?.kind !== 'post') {
+  if (item === undefined || item.kind === 'recycle-bin') {
     return { ok: false, reason: 'not-found' };
   }
   if (item.trash !== null) {
@@ -929,9 +931,13 @@ export function restoreTrashedPost(state: WorkspaceState, id: string): Workspace
   if (!isItemInTrash(state, id)) {
     return { ok: false, reason: 'not-in-trash' };
   }
+  const name =
+    item.kind === 'folder'
+      ? getFreeFolderName(item.name, getSiblingFolderNames(state, null, item.id))
+      : item.name;
   return {
     ok: true,
-    state: { ...state, items: { ...state.items, [id]: { ...item, parentId: null } } },
+    state: { ...state, items: { ...state.items, [id]: { ...item, name, parentId: null } } },
   };
 }
 

@@ -21,7 +21,7 @@ import {
   recordRecentItem,
   renameFolder,
   restoreItems,
-  restoreTrashedPost,
+  restoreTrashedItem,
   type SavedWorkspaceShape,
   setDesktopIconPositions,
   setExplorerView,
@@ -50,7 +50,7 @@ export type WorkspaceActionResult = { ok: true } | { ok: false; reason: Workspac
  * - moveItems: 항목들을 위치(폴더 id, 바탕화면은 null, 휴지통 id)로 옮긴다
  * - trashItems: 항목들을 휴지통으로 보낸다
  * - restoreItems: 휴지통의 항목들을 원래 위치로 복원한다
- * - restoreTrashedPost: 휴지통에 있는 글 하나를 주소로 열 때 복원한다(휴지통에 든 폴더 안의 글이면 그 글만 바탕화면으로)
+ * - restoreTrashedItem: 휴지통에 있는 항목(글, 폴더, 외부 링크) 하나를 주소로 열 때 복원한다(휴지통에 든 폴더 안의 항목이면 그 항목만 바탕화면으로)
  * - createFolder: 위치에 새 폴더를 만든다. 만든 폴더의 id를 돌려준다
  * - renameFolder: 폴더 이름을 바꾼다
  * - setDesktopIconSize: 바탕화면 아이콘 크기를 바꾼다
@@ -73,7 +73,7 @@ type WorkspaceActions = {
   moveItems: (ids: readonly string[], targetId: string | null) => WorkspaceActionResult;
   trashItems: (ids: readonly string[]) => WorkspaceActionResult;
   restoreItems: (ids: readonly string[]) => WorkspaceActionResult;
-  restoreTrashedPost: (id: string) => WorkspaceActionResult;
+  restoreTrashedItem: (id: string) => WorkspaceActionResult;
   createFolder: (
     parentId: string | null,
   ) => { ok: true; id: string } | { ok: false; reason: WorkspaceRejectReason };
@@ -239,7 +239,7 @@ function createWorkspaceStore(
     moveItems: (ids, targetId) => apply(moveItems(get(), ids, targetId, new Date().toISOString())),
     trashItems: (ids) => apply(trashItems(get(), ids, new Date().toISOString())),
     restoreItems: (ids) => apply(restoreItems(get(), ids)),
-    restoreTrashedPost: (id) => apply(restoreTrashedPost(get(), id)),
+    restoreTrashedItem: (id) => apply(restoreTrashedItem(get(), id)),
     createFolder: (parentId) => {
       const id = crypto.randomUUID();
       const result = apply(
