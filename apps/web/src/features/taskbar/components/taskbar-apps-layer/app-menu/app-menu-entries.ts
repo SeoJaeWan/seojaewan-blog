@@ -1,10 +1,6 @@
 import { taskbarApps } from '@/features/taskbar/data/taskbar-apps/taskbar-apps';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
-import {
-  MENU_ICONS,
-  MENU_SEPARATOR,
-  taskbarPinMenuItem,
-} from '@/shared/utils/menu-items/menu-items';
+import { MENU_ICONS, taskbarPinMenuItem } from '@/shared/utils/menu-items/menu-items';
 import type { WindowApp } from '@/shared/utils/window-rules/window-rules';
 
 /** 앱 버튼 우클릭 메뉴에서 고를 수 있는 일 */
@@ -19,7 +15,7 @@ type TaskbarAppMenuOptions = {
 };
 
 /**
- * 앱 버튼 우클릭 메뉴(피그마 `Menu/TaskbarApp`)의 항목을 만든다. 앱 이름(누르면 새 창), 구분선, 작업 표시줄에 고정 또는 고정 해제,
+ * 앱 버튼 우클릭 메뉴(피그마 `Menu/TaskbarApp`)의 항목을 만든다. 앱 이름(누르면 새 창), 작업 표시줄에 고정 또는 제거,
  * 창 닫기(창이 여러 개면 모든 창 닫기, 창이 없으면 항목을 숨긴다) 차례다. 실제 메뉴와 메뉴 조립 스토리가 함께 쓴다.
  * @codocs [[작업 표시줄:우클릭 메뉴]]
  * @codocs [[디자인 시스템:조립]]
@@ -36,7 +32,6 @@ export function getAppMenuEntries(options: TaskbarAppMenuOptions): MenuPopupEntr
         onAction('open-new');
       },
     },
-    MENU_SEPARATOR,
     taskbarPinMenuItem(isPinned, () => {
       onAction(isPinned ? 'unpin' : 'pin');
     }),

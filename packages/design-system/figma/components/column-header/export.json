@@ -47,7 +47,7 @@
             "name": "label",
             "size": {
               "h": 16,
-              "w": 155
+              "w": 171
             },
             "sizing": {
               "h": "FILL",
@@ -79,6 +79,10 @@
             "type": "TEXT"
           },
           {
+            "absolute": {
+              "horizontal": "CENTER",
+              "vertical": "MIN"
+            },
             "asset": {
               "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_down_16_regular"
@@ -164,7 +168,7 @@
             "name": "label",
             "size": {
               "h": 16,
-              "w": 155
+              "w": 171
             },
             "sizing": {
               "h": "FILL",
@@ -196,6 +200,10 @@
             "type": "TEXT"
           },
           {
+            "absolute": {
+              "horizontal": "CENTER",
+              "vertical": "MIN"
+            },
             "asset": {
               "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_down_16_regular"
@@ -296,7 +304,7 @@
             "name": "label",
             "size": {
               "h": 16,
-              "w": 155
+              "w": 171
             },
             "sizing": {
               "h": "FILL",
@@ -328,6 +336,10 @@
             "type": "TEXT"
           },
           {
+            "absolute": {
+              "horizontal": "CENTER",
+              "vertical": "MIN"
+            },
             "asset": {
               "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_down_16_regular"
@@ -409,7 +421,7 @@
             "name": "label",
             "size": {
               "h": 16,
-              "w": 155
+              "w": 171
             },
             "sizing": {
               "h": "FILL",
@@ -441,6 +453,10 @@
             "type": "TEXT"
           },
           {
+            "absolute": {
+              "horizontal": "CENTER",
+              "vertical": "MIN"
+            },
             "asset": {
               "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_down_16_regular"

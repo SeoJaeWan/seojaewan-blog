@@ -1,0 +1,213 @@
+{
+  "description": "경로 마디 사이 꺾쇠 버튼. 누르면 왼쪽 마디 폴더의 하위 폴더 목록(MenuPopup)을 열고, 열린 동안 State=Open(⌄).",
+  "name": "BreadcrumbChevron",
+  "nodeId": "3477:15533",
+  "propertyDefinitions": {
+    "State": {
+      "default": "Rest",
+      "options": [
+        "Rest",
+        "Hover",
+        "Open"
+      ],
+      "type": "VARIANT"
+    }
+  },
+  "variants": {
+    "state=hover": {
+      "node": {
+        "height": 24,
+        "width": 24,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:15527",
+      "properties": {
+        "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "color/black/61",
+              "path": "icons/ic_fluent_chevron_right_16_regular"
+            },
+            "component": "ic_fluent_chevron_right_16_regular",
+            "height": "size/icon/sm",
+            "name": "chevron",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "color/black/4"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 24,
+          "w": 24
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "state=open": {
+      "node": {
+        "height": 24,
+        "width": 24,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:15530",
+      "properties": {
+        "State": "Open"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "color/black/61",
+              "path": "icons/ic_fluent_chevron_down_16_regular"
+            },
+            "component": "ic_fluent_chevron_down_16_regular",
+            "height": "size/icon/sm",
+            "name": "chevron",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "color/black/2"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "State=Open",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 24,
+          "w": 24
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "state=rest": {
+      "node": {
+        "height": 24,
+        "width": 24,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:15524",
+      "properties": {
+        "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "color/black/61",
+              "path": "icons/ic_fluent_chevron_right_16_regular"
+            },
+            "component": "ic_fluent_chevron_right_16_regular",
+            "height": "size/icon/sm",
+            "name": "chevron",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 24,
+          "w": 24
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    }
+  }
+}

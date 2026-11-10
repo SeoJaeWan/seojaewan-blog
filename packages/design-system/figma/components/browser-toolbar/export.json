@@ -20,9 +20,9 @@
               {
                 "asset": {
                   "color": "color/gray/70",
-                  "path": "icons/ic_fluent_arrow_left_20_regular"
+                  "path": "icons/ic_material_arrow_back_20_outlined"
                 },
-                "component": "ic_fluent_arrow_left_20_regular",
+                "component": "ic_material_arrow_back_20_outlined",
                 "height": "size/icon/sm",
                 "name": "icon",
                 "size": {
@@ -55,14 +55,15 @@
             },
             "name": "back",
             "properties": {
+              "Checked": "False",
               "State": "Rest",
               "Variant": "Chrome"
             },
             "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
+              "radius/circular",
+              "radius/circular",
+              "radius/circular",
+              "radius/circular"
             ],
             "size": {
               "h": 32,
@@ -79,9 +80,9 @@
               {
                 "asset": {
                   "color": "color/gray/70",
-                  "path": "icons/ic_fluent_arrow_right_20_regular"
+                  "path": "icons/ic_material_arrow_forward_20_outlined"
                 },
-                "component": "ic_fluent_arrow_right_20_regular",
+                "component": "ic_material_arrow_forward_20_outlined",
                 "height": "size/icon/sm",
                 "name": "icon",
                 "size": {
@@ -114,14 +115,15 @@
             },
             "name": "forward",
             "properties": {
+              "Checked": "False",
               "State": "Rest",
               "Variant": "Chrome"
             },
             "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
+              "radius/circular",
+              "radius/circular",
+              "radius/circular",
+              "radius/circular"
             ],
             "size": {
               "h": 32,
@@ -138,9 +140,9 @@
               {
                 "asset": {
                   "color": "color/gray/70",
-                  "path": "icons/ic_fluent_arrow_clockwise_20_regular"
+                  "path": "icons/ic_material_refresh_20_outlined"
                 },
-                "component": "ic_fluent_arrow_clockwise_20_regular",
+                "component": "ic_material_refresh_20_outlined",
                 "height": "size/icon/sm",
                 "name": "icon",
                 "size": {
@@ -173,14 +175,15 @@
             },
             "name": "refresh",
             "properties": {
+              "Checked": "False",
               "State": "Rest",
               "Variant": "Chrome"
             },
             "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
+              "radius/circular",
+              "radius/circular",
+              "radius/circular",
+              "radius/circular"
             ],
             "size": {
               "h": 32,
@@ -297,6 +300,8 @@
             },
             "name": "address bar",
             "properties": {
+              "Filled": "True",
+              "Placeholder": "글 검색 또는 URL 입력",
               "Query": "검색어",
               "State": "Rest",
               "URL": "웹 주소"
@@ -322,9 +327,9 @@
               {
                 "asset": {
                   "color": "color/gray/70",
-                  "path": "icons/ic_fluent_more_vertical_20_regular"
+                  "path": "icons/ic_material_more_vert_20_outlined"
                 },
-                "component": "ic_fluent_more_vertical_20_regular",
+                "component": "ic_material_more_vert_20_outlined",
                 "height": "size/icon/sm",
                 "name": "icon",
                 "size": {
@@ -357,14 +362,15 @@
             },
             "name": "menu (⋮)",
             "properties": {
+              "Checked": "False",
               "State": "Rest",
               "Variant": "Chrome"
             },
             "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
+              "radius/circular",
+              "radius/circular",
+              "radius/circular",
+              "radius/circular"
             ],
             "size": {
               "h": 32,
@@ -405,6 +411,16 @@
           "h": "FIXED",
           "v": "FIXED"
         },
+        "strokeWeight": [
+          0,
+          0,
+          "stroke-width/default",
+          0
+        ],
+        "strokes": [
+          "color/black/22"
+        ],
+        "strokesIncludedInLayout": true,
         "type": "COMPONENT"
       }
     }
