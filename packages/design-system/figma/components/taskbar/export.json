@@ -1,5 +1,5 @@
 {
-  "description": "화면 아래 작업 표시줄의 재질 바탕으로, Taskbar/Default 조립에 쓴다.\n@sample-size width",
+  "description": "화면 아래 작업 표시줄의 재질 바탕으로, Taskbar/Default 조립에 쓴다.",
   "name": "Taskbar",
   "nodeId": "26:281",
   "propertyDefinitions": {
@@ -495,6 +495,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Taskbar",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 48,
           "w": 1280

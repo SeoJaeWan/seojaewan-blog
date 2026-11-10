@@ -1,5 +1,5 @@
 {
-  "description": "글 이미지를 누르면 Chrome 페이지 영역을 덮어 크게 보여 주는 보기로, Chrome 창 조립의 페이지 위에 쓴다.\n@runtime 영역 안에 맞추되 원본보다 키우지 않는다",
+  "description": "글 이미지를 누르면 Chrome 페이지 영역을 덮어 크게 보여 주는 보기로, Chrome 창 조립의 페이지 위에 쓴다.",
   "name": "Chrome/ImageViewer",
   "nodeId": "1382:6525",
   "propertyDefinitions": {
@@ -24,199 +24,43 @@
       "properties": {
         "Layout": "Narrow"
       },
-      "tree": {
-        "children": [
+      "report": {
+        "components": [
           {
-            "children": [
-              {
-                "children": [
-                  {
-                    "asset": {
-                      "color": "color/black/89",
-                      "path": "icons/ic_fluent_dismiss_20_regular"
-                    },
-                    "component": "ic_fluent_dismiss_20_regular",
-                    "height": "size/icon/sm",
-                    "name": "icon",
-                    "size": {
-                      "h": 16,
-                      "w": 16
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FIXED"
-                    },
-                    "type": "INSTANCE",
-                    "width": "size/icon/sm"
-                  }
-                ],
-                "component": "IconButton",
-                "fills": [
-                  "color/white/70"
-                ],
-                "layout": {
-                  "counterAlign": "CENTER",
-                  "gap": 0,
-                  "mode": "HORIZONTAL",
-                  "padding": [
-                    "spacing/sm",
-                    "spacing/sm",
-                    "spacing/sm",
-                    "spacing/sm"
-                  ],
-                  "primaryAlign": "CENTER"
-                },
-                "name": "close button",
-                "properties": {
-                  "State": "Rest",
-                  "Variant": "Standard"
-                },
-                "radius": [
-                  "radius/control",
-                  "radius/control",
-                  "radius/control",
-                  "radius/control"
-                ],
-                "size": {
-                  "h": 32,
-                  "w": 32
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "strokeStyle": "Elevation/Control Border",
-                "strokeWeight": [
-                  "stroke-width/default",
-                  "stroke-width/default",
-                  "stroke-width/default",
-                  "stroke-width/default"
-                ],
-                "strokesIncludedInLayout": false,
-                "type": "INSTANCE"
-              }
+            "component": "IconButton",
+            "paths": [
+              "toolbar/close button"
             ],
-            "layout": {
-              "counterAlign": "MIN",
-              "gap": "spacing/none",
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/none",
-                "spacing/none",
-                "spacing/none",
-                "spacing/none"
-              ],
-              "primaryAlign": "MAX"
-            },
-            "name": "toolbar",
-            "size": {
-              "h": 32,
-              "w": 356
-            },
-            "sizing": {
-              "h": "FILL",
-              "v": "HUG"
-            },
-            "type": "FRAME"
+            "properties": {
+              "State": "Rest",
+              "Variant": "Standard"
+            }
           },
           {
-            "children": [
-              {
-                "aspectRatio": {
-                  "value": 1.6,
-                  "variable": null
-                },
-                "asset": {
-                  "path": "images/wallpaper-bloom"
-                },
-                "component": "wallpaper/Bloom",
-                "fills": [
-                  "IMAGE"
-                ],
-                "name": "image",
-                "size": {
-                  "h": 222.5,
-                  "w": 356
-                },
-                "sizing": {
-                  "h": "FILL",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE"
-              },
-              {
-                "fills": [
-                  "color/white"
-                ],
-                "name": "caption",
-                "size": {
-                  "h": 20,
-                  "w": 356
-                },
-                "sizing": {
-                  "h": "FILL",
-                  "v": "HUG"
-                },
-                "text": {
-                  "autoResize": "HEIGHT",
-                  "maxLines": null,
-                  "maxLinesVariable": null,
-                  "segments": [
-                    {
-                      "characters": "Bloom ",
-                      "fill": "color/white",
-                      "textStyle": "Body"
-                    },
-                    {
-                      "characters": "배경화면",
-                      "fill": "color/white",
-                      "textStyle": "Hangul/Body"
-                    }
-                  ],
-                  "truncation": "DISABLED"
-                },
-                "type": "TEXT"
-              }
+            "component": "wallpaper/Bloom",
+            "paths": [
+              "stage/image"
             ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": "spacing/md",
-              "mode": "VERTICAL",
-              "padding": [
-                "spacing/none",
-                "spacing/none",
-                "spacing/none",
-                "spacing/none"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "stage",
-            "size": {
-              "h": 640,
-              "w": 356
-            },
-            "sizing": {
-              "h": "FILL",
-              "v": "FILL"
-            },
-            "type": "FRAME"
+            "properties": {}
           }
         ],
-        "fills": [
-          "color/black/80"
+        "displayOnly": [],
+        "drawn": [
+          {
+            "nodeId": "1382:6516",
+            "path": "",
+            "text": "칠"
+          },
+          {
+            "nodeId": "1382:6524",
+            "path": "stage/caption",
+            "text": "글자"
+          }
         ],
-        "layout": {
-          "counterAlign": "MIN",
-          "gap": "spacing/lg",
-          "mode": "VERTICAL",
-          "padding": [
-            "spacing/lg",
-            "spacing/lg",
-            "spacing/lg",
-            "spacing/lg"
-          ],
-          "primaryAlign": "MIN"
-        },
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
         "name": "Layout=Narrow",
         "size": {
           "h": 720,
@@ -225,8 +69,7 @@
         "sizing": {
           "h": "FIXED",
           "v": "FIXED"
-        },
-        "type": "COMPONENT"
+        }
       }
     },
     "layout=wide": {
@@ -240,195 +83,43 @@
       "properties": {
         "Layout": "Wide"
       },
-      "tree": {
-        "children": [
+      "report": {
+        "components": [
           {
-            "children": [
-              {
-                "children": [
-                  {
-                    "asset": {
-                      "color": "color/black/89",
-                      "path": "icons/ic_fluent_dismiss_20_regular"
-                    },
-                    "component": "ic_fluent_dismiss_20_regular",
-                    "height": "size/icon/sm",
-                    "name": "icon",
-                    "size": {
-                      "h": 16,
-                      "w": 16
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FIXED"
-                    },
-                    "type": "INSTANCE",
-                    "width": "size/icon/sm"
-                  }
-                ],
-                "component": "IconButton",
-                "fills": [
-                  "color/white/70"
-                ],
-                "layout": {
-                  "counterAlign": "CENTER",
-                  "gap": 0,
-                  "mode": "HORIZONTAL",
-                  "padding": [
-                    "spacing/sm",
-                    "spacing/sm",
-                    "spacing/sm",
-                    "spacing/sm"
-                  ],
-                  "primaryAlign": "CENTER"
-                },
-                "name": "close button",
-                "properties": {
-                  "State": "Rest",
-                  "Variant": "Standard"
-                },
-                "radius": [
-                  "radius/control",
-                  "radius/control",
-                  "radius/control",
-                  "radius/control"
-                ],
-                "size": {
-                  "h": 32,
-                  "w": 32
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "strokeStyle": "Elevation/Control Border",
-                "strokeWeight": [
-                  "stroke-width/default",
-                  "stroke-width/default",
-                  "stroke-width/default",
-                  "stroke-width/default"
-                ],
-                "strokesIncludedInLayout": false,
-                "type": "INSTANCE"
-              }
+            "component": "IconButton",
+            "paths": [
+              "toolbar/close button"
             ],
-            "layout": {
-              "counterAlign": "MIN",
-              "gap": "spacing/none",
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/none",
-                "spacing/none",
-                "spacing/none",
-                "spacing/none"
-              ],
-              "primaryAlign": "MAX"
-            },
-            "name": "toolbar",
-            "size": {
-              "h": 32,
-              "w": 1246
-            },
-            "sizing": {
-              "h": "FILL",
-              "v": "HUG"
-            },
-            "type": "FRAME"
+            "properties": {
+              "State": "Rest",
+              "Variant": "Standard"
+            }
           },
           {
-            "children": [
-              {
-                "asset": {
-                  "path": "images/wallpaper-bloom"
-                },
-                "component": "wallpaper/Bloom",
-                "fills": [
-                  "IMAGE"
-                ],
-                "name": "image",
-                "size": {
-                  "h": 500,
-                  "w": 800
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE"
-              },
-              {
-                "fills": [
-                  "color/white"
-                ],
-                "name": "caption",
-                "size": {
-                  "h": 20,
-                  "w": 1182
-                },
-                "sizing": {
-                  "h": "FILL",
-                  "v": "HUG"
-                },
-                "text": {
-                  "autoResize": "HEIGHT",
-                  "maxLines": null,
-                  "maxLinesVariable": null,
-                  "segments": [
-                    {
-                      "characters": "Bloom ",
-                      "fill": "color/white",
-                      "textStyle": "Body"
-                    },
-                    {
-                      "characters": "배경화면",
-                      "fill": "color/white",
-                      "textStyle": "Hangul/Body"
-                    }
-                  ],
-                  "truncation": "DISABLED"
-                },
-                "type": "TEXT"
-              }
+            "component": "wallpaper/Bloom",
+            "paths": [
+              "stage/image"
             ],
-            "layout": {
-              "counterAlign": "CENTER",
-              "gap": "spacing/md",
-              "mode": "VERTICAL",
-              "padding": [
-                "spacing/none",
-                "spacing/3xl",
-                "spacing/none",
-                "spacing/3xl"
-              ],
-              "primaryAlign": "CENTER"
-            },
-            "name": "stage",
-            "size": {
-              "h": 632,
-              "w": 1246
-            },
-            "sizing": {
-              "h": "FILL",
-              "v": "FILL"
-            },
-            "type": "FRAME"
+            "properties": {}
           }
         ],
-        "fills": [
-          "color/black/80"
+        "displayOnly": [],
+        "drawn": [
+          {
+            "nodeId": "1382:6506",
+            "path": "",
+            "text": "칠"
+          },
+          {
+            "nodeId": "1382:6515",
+            "path": "stage/caption",
+            "text": "글자"
+          }
         ],
-        "layout": {
-          "counterAlign": "MIN",
-          "gap": "spacing/lg",
-          "mode": "VERTICAL",
-          "padding": [
-            "spacing/lg",
-            "spacing/lg",
-            "spacing/lg",
-            "spacing/lg"
-          ],
-          "primaryAlign": "MIN"
-        },
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
         "name": "Layout=Wide",
         "size": {
           "h": 712,
@@ -437,8 +128,7 @@
         "sizing": {
           "h": "FIXED",
           "v": "FIXED"
-        },
-        "type": "COMPONENT"
+        }
       }
     }
   }

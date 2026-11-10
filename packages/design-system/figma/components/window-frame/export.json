@@ -1,5 +1,5 @@
 {
-  "description": "모든 앱 창의 바탕 틀로, 탐색기·Chrome 창 조립과 창 미리보기 축소 화면에 쓴다.\n@sample-size width height",
+  "description": "모든 앱 창의 바탕 틀로, 탐색기·Chrome 창 조립과 창 미리보기 축소 화면에 쓴다.",
   "name": "WindowFrame",
   "nodeId": "18:338",
   "propertyDefinitions": {
@@ -248,7 +248,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -262,11 +261,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Default",
-                  "State": "Active",
-                  "Title bar": "Custom"
-                },
                 "size": {
                   "h": 40,
                   "w": 138
@@ -275,7 +269,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/tall-title-bar-height",
@@ -349,6 +343,10 @@
           "radius/overlay",
           "radius/overlay",
           "radius/overlay"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -575,7 +573,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -589,11 +586,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Default",
-                  "State": "Active",
-                  "Title bar": "Custom"
-                },
                 "size": {
                   "h": 40,
                   "w": 138
@@ -602,7 +594,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/tall-title-bar-height",
@@ -630,6 +622,9 @@
             "type": "FRAME"
           },
           {
+            "fills": [
+              "color/gray/2"
+            ],
             "layout": {
               "counterAlign": "CENTER",
               "gap": 0,
@@ -674,6 +669,10 @@
           "radius/overlay",
           "radius/overlay",
           "radius/overlay"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -900,7 +899,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -914,11 +912,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Maximized",
-                  "State": "Active",
-                  "Title bar": "Custom"
-                },
                 "size": {
                   "h": 40,
                   "w": 138
@@ -927,7 +920,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/tall-title-bar-height",
@@ -1000,6 +993,10 @@
           "radius/none",
           "radius/none",
           "radius/none"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -1216,7 +1213,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -1230,11 +1226,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Maximized",
-                  "State": "Active",
-                  "Title bar": "Custom"
-                },
                 "size": {
                   "h": 40,
                   "w": 138
@@ -1243,7 +1234,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/tall-title-bar-height",
@@ -1271,6 +1262,9 @@
             "type": "FRAME"
           },
           {
+            "fills": [
+              "color/gray/2"
+            ],
             "layout": {
               "counterAlign": "CENTER",
               "gap": 0,
@@ -1315,6 +1309,10 @@
           "radius/none",
           "radius/none",
           "radius/none"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -1531,7 +1529,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -1545,11 +1542,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Snapped",
-                  "State": "Active",
-                  "Title bar": "Custom"
-                },
                 "size": {
                   "h": 40,
                   "w": 138
@@ -1558,7 +1550,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/tall-title-bar-height",
@@ -1631,6 +1623,10 @@
           "radius/none",
           "radius/none",
           "radius/none"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -1847,7 +1843,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -1861,11 +1856,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Snapped",
-                  "State": "Active",
-                  "Title bar": "Custom"
-                },
                 "size": {
                   "h": 40,
                   "w": 138
@@ -1874,7 +1864,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/tall-title-bar-height",
@@ -1902,6 +1892,9 @@
             "type": "FRAME"
           },
           {
+            "fills": [
+              "color/gray/2"
+            ],
             "layout": {
               "counterAlign": "CENTER",
               "gap": 0,
@@ -1946,6 +1939,10 @@
           "radius/none",
           "radius/none",
           "radius/none"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -2162,7 +2159,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -2176,11 +2172,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Default",
-                  "State": "Inactive",
-                  "Title bar": "Custom"
-                },
                 "size": {
                   "h": 40,
                   "w": 138
@@ -2189,7 +2180,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/tall-title-bar-height",
@@ -2263,6 +2254,10 @@
           "radius/overlay",
           "radius/overlay",
           "radius/overlay"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -2489,7 +2484,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -2503,11 +2497,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Default",
-                  "State": "Inactive",
-                  "Title bar": "Custom"
-                },
                 "size": {
                   "h": 40,
                   "w": 138
@@ -2516,7 +2505,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/tall-title-bar-height",
@@ -2544,6 +2533,9 @@
             "type": "FRAME"
           },
           {
+            "fills": [
+              "color/gray/2"
+            ],
             "layout": {
               "counterAlign": "CENTER",
               "gap": 0,
@@ -2588,6 +2580,10 @@
           "radius/overlay",
           "radius/overlay",
           "radius/overlay"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -2814,7 +2810,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -2828,11 +2823,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Maximized",
-                  "State": "Inactive",
-                  "Title bar": "Custom"
-                },
                 "size": {
                   "h": 40,
                   "w": 138
@@ -2841,7 +2831,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/tall-title-bar-height",
@@ -2914,6 +2904,10 @@
           "radius/none",
           "radius/none",
           "radius/none"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -3130,7 +3124,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -3144,11 +3137,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Maximized",
-                  "State": "Inactive",
-                  "Title bar": "Custom"
-                },
                 "size": {
                   "h": 40,
                   "w": 138
@@ -3157,7 +3145,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/tall-title-bar-height",
@@ -3185,6 +3173,9 @@
             "type": "FRAME"
           },
           {
+            "fills": [
+              "color/gray/2"
+            ],
             "layout": {
               "counterAlign": "CENTER",
               "gap": 0,
@@ -3229,6 +3220,10 @@
           "radius/none",
           "radius/none",
           "radius/none"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -3445,7 +3440,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -3459,11 +3453,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Snapped",
-                  "State": "Inactive",
-                  "Title bar": "Custom"
-                },
                 "size": {
                   "h": 40,
                   "w": 138
@@ -3472,7 +3461,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/tall-title-bar-height",
@@ -3545,6 +3534,10 @@
           "radius/none",
           "radius/none",
           "radius/none"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -3761,7 +3754,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -3775,11 +3767,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Snapped",
-                  "State": "Inactive",
-                  "Title bar": "Custom"
-                },
                 "size": {
                   "h": 40,
                   "w": 138
@@ -3788,7 +3775,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/tall-title-bar-height",
@@ -3816,6 +3803,9 @@
             "type": "FRAME"
           },
           {
+            "fills": [
+              "color/gray/2"
+            ],
             "layout": {
               "counterAlign": "CENTER",
               "gap": 0,
@@ -3860,6 +3850,10 @@
           "radius/none",
           "radius/none",
           "radius/none"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -4143,7 +4137,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -4157,11 +4150,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Default",
-                  "State": "Active",
-                  "Title bar": "Default"
-                },
                 "size": {
                   "h": 32,
                   "w": 138
@@ -4170,7 +4158,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/title-bar-height",
@@ -4244,6 +4232,10 @@
           "radius/overlay",
           "radius/overlay",
           "radius/overlay"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -4537,7 +4529,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -4551,11 +4542,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Default",
-                  "State": "Active",
-                  "Title bar": "Default"
-                },
                 "size": {
                   "h": 32,
                   "w": 138
@@ -4564,7 +4550,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/title-bar-height",
@@ -4592,6 +4578,9 @@
             "type": "FRAME"
           },
           {
+            "fills": [
+              "color/gray/2"
+            ],
             "layout": {
               "counterAlign": "CENTER",
               "gap": 0,
@@ -4636,6 +4625,10 @@
           "radius/overlay",
           "radius/overlay",
           "radius/overlay"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -4929,7 +4922,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -4943,11 +4935,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Maximized",
-                  "State": "Active",
-                  "Title bar": "Default"
-                },
                 "size": {
                   "h": 32,
                   "w": 138
@@ -4956,7 +4943,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/title-bar-height",
@@ -5029,6 +5016,10 @@
           "radius/none",
           "radius/none",
           "radius/none"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -5312,7 +5303,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -5326,11 +5316,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Maximized",
-                  "State": "Active",
-                  "Title bar": "Default"
-                },
                 "size": {
                   "h": 32,
                   "w": 138
@@ -5339,7 +5324,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/title-bar-height",
@@ -5367,6 +5352,9 @@
             "type": "FRAME"
           },
           {
+            "fills": [
+              "color/gray/2"
+            ],
             "layout": {
               "counterAlign": "CENTER",
               "gap": 0,
@@ -5411,6 +5399,10 @@
           "radius/none",
           "radius/none",
           "radius/none"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -5694,7 +5686,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -5708,11 +5699,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Snapped",
-                  "State": "Active",
-                  "Title bar": "Default"
-                },
                 "size": {
                   "h": 32,
                   "w": 138
@@ -5721,7 +5707,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/title-bar-height",
@@ -5794,6 +5780,10 @@
           "radius/none",
           "radius/none",
           "radius/none"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -6077,7 +6067,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -6091,11 +6080,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Snapped",
-                  "State": "Active",
-                  "Title bar": "Default"
-                },
                 "size": {
                   "h": 32,
                   "w": 138
@@ -6104,7 +6088,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/title-bar-height",
@@ -6132,6 +6116,9 @@
             "type": "FRAME"
           },
           {
+            "fills": [
+              "color/gray/2"
+            ],
             "layout": {
               "counterAlign": "CENTER",
               "gap": 0,
@@ -6176,6 +6163,10 @@
           "radius/none",
           "radius/none",
           "radius/none"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -6459,7 +6450,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -6473,11 +6463,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Default",
-                  "State": "Inactive",
-                  "Title bar": "Default"
-                },
                 "size": {
                   "h": 32,
                   "w": 138
@@ -6486,7 +6471,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/title-bar-height",
@@ -6560,6 +6545,10 @@
           "radius/overlay",
           "radius/overlay",
           "radius/overlay"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -6853,7 +6842,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -6867,11 +6855,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Default",
-                  "State": "Inactive",
-                  "Title bar": "Default"
-                },
                 "size": {
                   "h": 32,
                   "w": 138
@@ -6880,7 +6863,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/title-bar-height",
@@ -6908,6 +6891,9 @@
             "type": "FRAME"
           },
           {
+            "fills": [
+              "color/gray/2"
+            ],
             "layout": {
               "counterAlign": "CENTER",
               "gap": 0,
@@ -6952,6 +6938,10 @@
           "radius/overlay",
           "radius/overlay",
           "radius/overlay"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -7245,7 +7235,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -7259,11 +7248,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Maximized",
-                  "State": "Inactive",
-                  "Title bar": "Default"
-                },
                 "size": {
                   "h": 32,
                   "w": 138
@@ -7272,7 +7256,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/title-bar-height",
@@ -7345,6 +7329,10 @@
           "radius/none",
           "radius/none",
           "radius/none"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -7628,7 +7616,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -7642,11 +7629,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Maximized",
-                  "State": "Inactive",
-                  "Title bar": "Default"
-                },
                 "size": {
                   "h": 32,
                   "w": 138
@@ -7655,7 +7637,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/title-bar-height",
@@ -7683,6 +7665,9 @@
             "type": "FRAME"
           },
           {
+            "fills": [
+              "color/gray/2"
+            ],
             "layout": {
               "counterAlign": "CENTER",
               "gap": 0,
@@ -7727,6 +7712,10 @@
           "radius/none",
           "radius/none",
           "radius/none"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -8010,7 +7999,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -8024,11 +8012,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Snapped",
-                  "State": "Inactive",
-                  "Title bar": "Default"
-                },
                 "size": {
                   "h": 32,
                   "w": 138
@@ -8037,7 +8020,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/title-bar-height",
@@ -8110,6 +8093,10 @@
           "radius/none",
           "radius/none",
           "radius/none"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
@@ -8393,7 +8380,6 @@
                     "width": "size/caption-button/width"
                   }
                 ],
-                "component": "CaptionButtonGroup",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -8407,11 +8393,6 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "caption buttons",
-                "properties": {
-                  "Placement": "Snapped",
-                  "State": "Inactive",
-                  "Title bar": "Default"
-                },
                 "size": {
                   "h": 32,
                   "w": 138
@@ -8420,7 +8401,7 @@
                   "h": "HUG",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "FRAME"
               }
             ],
             "height": "size/window/title-bar-height",
@@ -8448,6 +8429,9 @@
             "type": "FRAME"
           },
           {
+            "fills": [
+              "color/gray/2"
+            ],
             "layout": {
               "counterAlign": "CENTER",
               "gap": 0,
@@ -8492,6 +8476,10 @@
           "radius/none",
           "radius/none",
           "radius/none"
+        ],
+        "sampleSize": [
+          "width",
+          "height"
         ],
         "size": {
           "h": 500,
