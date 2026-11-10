@@ -22,7 +22,7 @@ export function StartMenuFooter({
     <div
       {...divProps}
       className={cn(
-        'flex items-center overflow-clip border-t-stroke-width-default border-color-black-6 bg-color-black-4 px-spacing-5xl py-spacing-lg',
+        'flex items-center overflow-clip border-t-stroke-width-default border-color-black-6 px-spacing-5xl py-spacing-lg',
         className,
       )}
     >
