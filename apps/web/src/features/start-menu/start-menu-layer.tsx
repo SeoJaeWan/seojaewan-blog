@@ -1,7 +1,15 @@
 'use client';
 
 import { Dialog } from '@base-ui/react/dialog';
-import { type CSSProperties, type JSX, type ReactNode, useEffect, useRef, useState } from 'react';
+import {
+  type CSSProperties,
+  type JSX,
+  type ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { ImageAsset } from '@seojaewan/design-system';
 
@@ -10,7 +18,12 @@ import { toDeviceVariant, useDevice } from '@/shared/hooks/use-device/use-device
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
 import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
-import { getPanelMaxHeight, type PanelKind } from '@/shared/utils/panel-rules/panel-rules';
+import {
+  getPanelMaxHeight,
+  getPanelMaxWidth,
+  getSearchPanelLeft,
+  type PanelKind,
+} from '@/shared/utils/panel-rules/panel-rules';
 
 import { SearchBody } from './components/search-body/search-body';
 import { SearchPanel } from './components/search-panel/search-panel';
@@ -26,6 +39,9 @@ import type { StartAllView, StartItem } from './utils/start-items/start-items';
 
 // 바깥 누르기·포커스 이동으로 보지 않는 요소. 작업 표시줄의 Start 버튼과 검색칸(`TaskbarDefault`가 단다)은 스스로 패널을 열고 닫는다.
 const PANEL_TRIGGER_SELECTOR = '[data-panel-trigger]';
+
+// 데스크톱 검색 패널을 맞출 작업 표시줄 검색 상자(`TaskbarDefault`가 단다). 달린 요소는 contents라 첫 자식이 상자다.
+const SEARCH_PANEL_ANCHOR_SELECTOR = '[data-search-panel-anchor]';
 
 // 패널 안에서 연 메뉴(전원 메뉴, 보기 메뉴, 항목 메뉴)는 문서 끝에 포털된다.
 const PORTALED_MENU_SELECTOR = '[role="menu"]';
@@ -326,14 +342,16 @@ type PanelDialogProps = {
 };
 
 /**
- * 패널 하나를 작업 표시줄 위(데스크톱은 가운데, 모바일은 화면 폭)에 Base UI 비모달 Dialog로 그리고, 열고 닫을 때 올라오고 내려가는 움직임을 붙인다.
+ * 패널 하나를 작업 표시줄 위(데스크톱 Start는 가운데, 데스크톱 검색은 작업 표시줄 검색 상자 왼쪽 끝, 모바일은 화면 폭)에 Base UI 비모달 Dialog로 그리고, 열고 닫을 때 올라오고 내려가는 움직임을 붙인다.
  * 움직임이 끝날 때까지 화면에 남기는 일은 Base UI가 맡는다. 패널은 작업 표시줄 뒤로 숨어야 하므로 문서 끝이 아니라 이 층 안에 포털한다.
  * 열면 Start는 위쪽 검색칸에 포커스를 둔다(첫 Tab 항목). 데스크톱 검색 패널은 입력칸이 작업 표시줄에 있어 포커스를 옮기지 않는다.
  * 움직이는 요소는 패널과 그 아래 틈(데스크톱 12)을 함께 감싸, 자기 높이만큼 내려가면 작업 표시줄 뒤로 모두 숨는다.
  * 틈은 누를 수 없고(아래 바탕화면으로 넘어간다) 패널 바탕만 누를 수 있다.
  * 화면이 낮아 작업 영역이 패널보다 작으면, 패널 높이를 작업 영역에서 틈을 뺀 값으로 줄여 위쪽이 잘리지 않게 한다(본문은 스크롤한다).
- * 위쪽과 아래쪽을 더한 높이보다는 줄이지 않는다.
+ * 위쪽과 아래쪽을 더한 높이보다는 줄이지 않는다. 화면이 좁으면 너비도 화면 너비에서 좌우 여백을 뺀 값으로 줄인다.
+ * 데스크톱 검색 패널은 왼쪽 끝을 작업 표시줄 검색 상자의 왼쪽 끝에 맞추고, 화면 밖으로 나가면 안쪽으로 민다. 열 때와 화면 크기가 바뀔 때 다시 잰다.
  * @codocs [[Start 메뉴:구성]]
+ * @codocs [[검색:개요]]
  * @codocs [[디자인 기반:모션]]
  * @codocs [[Start 메뉴:모바일]]
  * @codocs [[접근성:역할]]
@@ -357,6 +375,41 @@ function PanelDialog({
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const workArea = useWorkArea();
   const isMobile = device === 'mobile';
+  // 패널 요소. Base UI가 열린 뒤에 그리므로 그려졌는지를 상태로도 받아, 그려진 때 자리를 잰다.
+  const popupRef = useRef<HTMLDivElement | null>(null);
+  const [isPopupMounted, setIsPopupMounted] = useState(false);
+  const isAnchoredToSearchBox = panel === 'search' && !isMobile;
+
+  useLayoutEffect(
+    /** 데스크톱 검색 패널의 왼쪽 끝을 작업 표시줄 검색 상자에 맞춘다. 그리기 전에 재서 가운데에서 옮겨 가는 모습이 보이지 않는다. */
+    () => {
+      const popup = popupRef.current;
+      if (popup !== null && !isAnchoredToSearchBox) {
+        // 열린 채 모바일로 바뀌면 화면 폭을 채우므로 맞춘 자리를 지운다.
+        popup.style.marginLeft = '';
+      }
+      if (!isOpen || !isAnchoredToSearchBox || popup === null || container === null) {
+        return;
+      }
+      const anchor = document.querySelector(SEARCH_PANEL_ANCHOR_SELECTOR)?.firstElementChild;
+      const layerRect = container.getBoundingClientRect();
+      const anchorLeft =
+        anchor === null || anchor === undefined
+          ? (layerRect.width - popup.offsetWidth) / 2
+          : anchor.getBoundingClientRect().left - layerRect.left;
+      popup.style.marginLeft = `${String(getSearchPanelLeft(anchorLeft, popup.offsetWidth, layerRect.width))}px`;
+    },
+    [isOpen, isAnchoredToSearchBox, isPopupMounted, container, workArea],
+  );
+
+  /**
+   * 패널 요소를 받는다. 그려지거나 사라지면 자리를 다시 잰다.
+   * @param element 패널 요소. 사라지면 null
+   */
+  function handlePopupRef(element: HTMLDivElement | null): void {
+    popupRef.current = element;
+    setIsPopupMounted(element !== null);
+  }
 
   /**
    * 패널을 닫으려 할 때 Start 버튼·검색칸을 누르거나 그리로 포커스가 옮긴 것이면 거른다. 그 버튼이 스스로 패널을 열고 닫는다.
@@ -382,16 +435,22 @@ function PanelDialog({
 
   // 작업 영역은 화면 크기에 따라 실행 중에 정해지는 값이라 토큰 클래스가 아닌 인라인 스타일로 준다.
   const panelStyle: CSSProperties | undefined =
-    workArea === null ? undefined : { maxHeight: getPanelMaxHeight(workArea.height, device) };
+    workArea === null
+      ? undefined
+      : {
+          maxHeight: getPanelMaxHeight(workArea.height, device),
+          maxWidth: isMobile ? undefined : getPanelMaxWidth(workArea.width),
+        };
   const panelClassName = isMobile ? 'pointer-events-auto w-full' : 'pointer-events-auto';
   return (
     <div
       ref={setContainer}
-      className="absolute inset-x-spacing-none bottom-spacing-none flex justify-center"
+      className={`absolute inset-x-spacing-none bottom-spacing-none flex ${isAnchoredToSearchBox ? 'justify-start' : 'justify-center'}`}
     >
       <Dialog.Root open={isOpen} modal={false} onOpenChange={handleOpenChange}>
         <Dialog.Portal container={container} className="contents">
           <Dialog.Popup
+            ref={handlePopupRef}
             aria-label={label}
             initialFocus={panel === 'search' && !isMobile ? false : undefined}
             className={(state) =>
