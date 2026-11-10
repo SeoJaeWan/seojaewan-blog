@@ -1,5 +1,5 @@
 {
-  "description": "항목 수와 선택 상태를 보여 주는 줄로, 파일 탐색기 본문 맨 아래에 쓴다.\n@sample-size width",
+  "description": "항목 수와 선택 상태를 보여 주는 줄로, 파일 탐색기 본문 맨 아래에 쓴다.",
   "name": "ExplorerStatusBar",
   "nodeId": "439:5874",
   "propertyDefinitions": {
@@ -274,6 +274,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Device=Desktop",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 36,
           "w": 798
@@ -416,6 +419,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Device=Mobile",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 20,
           "w": 388

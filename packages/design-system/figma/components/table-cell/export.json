@@ -1,5 +1,5 @@
 {
-  "description": "글 본문 표의 칸 하나로, 표 안에 쓴다.\n@sample-size width",
+  "description": "글 본문 표의 칸 하나로, 표 안에 쓴다.",
   "name": "TableCell",
   "nodeId": "1380:6858",
   "propertyDefinitions": {
@@ -86,6 +86,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Body",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 37,
           "w": 240
@@ -175,6 +178,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Variant=Header",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 37,
           "w": 240

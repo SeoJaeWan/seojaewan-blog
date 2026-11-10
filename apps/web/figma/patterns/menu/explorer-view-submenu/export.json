@@ -13,542 +13,67 @@
       },
       "nodeId": "518:6702",
       "properties": {},
-      "tree": {
-        "children": [
+      "report": {
+        "components": [
           {
-            "children": [
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "children": [
-                          {
-                            "children": [
-                              {
-                                "height": "size/icon/sm",
-                                "layout": {
-                                  "counterAlign": "CENTER",
-                                  "gap": "spacing/none",
-                                  "mode": "HORIZONTAL",
-                                  "padding": [
-                                    "spacing/none",
-                                    "spacing/none",
-                                    "spacing/none",
-                                    "spacing/none"
-                                  ],
-                                  "primaryAlign": "CENTER"
-                                },
-                                "name": "leading",
-                                "size": {
-                                  "h": 16,
-                                  "w": 16
-                                },
-                                "sizing": {
-                                  "h": "FIXED",
-                                  "v": "FIXED"
-                                },
-                                "type": "FRAME",
-                                "width": "size/icon/sm"
-                              },
-                              {
-                                "fills": [
-                                  "color/black/89"
-                                ],
-                                "name": "label",
-                                "size": {
-                                  "h": 20,
-                                  "w": 188
-                                },
-                                "sizing": {
-                                  "h": "FILL",
-                                  "v": "HUG"
-                                },
-                                "text": {
-                                  "autoResize": "HEIGHT",
-                                  "maxLines": 1,
-                                  "maxLinesVariable": null,
-                                  "segments": [
-                                    {
-                                      "characters": "큰",
-                                      "fill": "color/black/89",
-                                      "textStyle": "Hangul/Body"
-                                    },
-                                    {
-                                      "characters": " ",
-                                      "fill": "color/black/89",
-                                      "textStyle": "Body"
-                                    },
-                                    {
-                                      "characters": "아이콘",
-                                      "fill": "color/black/89",
-                                      "textStyle": "Hangul/Body"
-                                    }
-                                  ],
-                                  "truncation": "ENDING"
-                                },
-                                "type": "TEXT"
-                              }
-                            ],
-                            "fills": [
-                              "color/white/0"
-                            ],
-                            "layout": {
-                              "counterAlign": "CENTER",
-                              "gap": "spacing/md",
-                              "mode": "HORIZONTAL",
-                              "padding": [
-                                "spacing/xs",
-                                "spacing/md",
-                                "spacing/xs",
-                                "spacing/md"
-                              ],
-                              "primaryAlign": "MIN"
-                            },
-                            "name": "base",
-                            "radius": [
-                              "radius/control",
-                              "radius/control",
-                              "radius/control",
-                              "radius/control"
-                            ],
-                            "size": {
-                              "h": 28,
-                              "w": 240
-                            },
-                            "sizing": {
-                              "h": "FILL",
-                              "v": "FILL"
-                            },
-                            "type": "FRAME"
-                          }
-                        ],
-                        "component": "MenuItem",
-                        "layout": {
-                          "counterAlign": "CENTER",
-                          "gap": "spacing/none",
-                          "mode": "HORIZONTAL",
-                          "padding": [
-                            "spacing/2xs",
-                            "spacing/xs",
-                            "spacing/2xs",
-                            "spacing/xs"
-                          ],
-                          "primaryAlign": "MIN"
-                        },
-                        "name": "radio 큰 아이콘",
-                        "properties": {
-                          "Has icon": false,
-                          "Has shortcut": false,
-                          "Label": "큰 아이콘",
-                          "Shortcut": "Ctrl+O",
-                          "State": "Rest",
-                          "Value": "100%",
-                          "Variant": "Radio off"
-                        },
-                        "size": {
-                          "h": 32,
-                          "w": 248
-                        },
-                        "sizing": {
-                          "h": "FILL",
-                          "v": "HUG"
-                        },
-                        "type": "INSTANCE"
-                      },
-                      {
-                        "children": [
-                          {
-                            "children": [
-                              {
-                                "children": [
-                                  {
-                                    "fills": [
-                                      "color/black/89"
-                                    ],
-                                    "height": "size/menu-item/bullet",
-                                    "name": "bullet",
-                                    "size": {
-                                      "h": 6,
-                                      "w": 6
-                                    },
-                                    "sizing": {
-                                      "h": "FIXED",
-                                      "v": "FIXED"
-                                    },
-                                    "type": "ELLIPSE",
-                                    "width": "size/menu-item/bullet"
-                                  }
-                                ],
-                                "height": "size/icon/sm",
-                                "layout": {
-                                  "counterAlign": "CENTER",
-                                  "gap": "spacing/none",
-                                  "mode": "HORIZONTAL",
-                                  "padding": [
-                                    "spacing/none",
-                                    "spacing/none",
-                                    "spacing/none",
-                                    "spacing/none"
-                                  ],
-                                  "primaryAlign": "CENTER"
-                                },
-                                "name": "leading",
-                                "size": {
-                                  "h": 16,
-                                  "w": 16
-                                },
-                                "sizing": {
-                                  "h": "FIXED",
-                                  "v": "FIXED"
-                                },
-                                "type": "FRAME",
-                                "width": "size/icon/sm"
-                              },
-                              {
-                                "fills": [
-                                  "color/black/89"
-                                ],
-                                "name": "label",
-                                "size": {
-                                  "h": 20,
-                                  "w": 188
-                                },
-                                "sizing": {
-                                  "h": "FILL",
-                                  "v": "HUG"
-                                },
-                                "text": {
-                                  "autoResize": "HEIGHT",
-                                  "maxLines": 1,
-                                  "maxLinesVariable": null,
-                                  "segments": [
-                                    {
-                                      "characters": "보통",
-                                      "fill": "color/black/89",
-                                      "textStyle": "Hangul/Body"
-                                    },
-                                    {
-                                      "characters": " ",
-                                      "fill": "color/black/89",
-                                      "textStyle": "Body"
-                                    },
-                                    {
-                                      "characters": "아이콘",
-                                      "fill": "color/black/89",
-                                      "textStyle": "Hangul/Body"
-                                    }
-                                  ],
-                                  "truncation": "ENDING"
-                                },
-                                "type": "TEXT"
-                              }
-                            ],
-                            "fills": [
-                              "color/white/0"
-                            ],
-                            "layout": {
-                              "counterAlign": "CENTER",
-                              "gap": "spacing/md",
-                              "mode": "HORIZONTAL",
-                              "padding": [
-                                "spacing/xs",
-                                "spacing/md",
-                                "spacing/xs",
-                                "spacing/md"
-                              ],
-                              "primaryAlign": "MIN"
-                            },
-                            "name": "base",
-                            "radius": [
-                              "radius/control",
-                              "radius/control",
-                              "radius/control",
-                              "radius/control"
-                            ],
-                            "size": {
-                              "h": 28,
-                              "w": 240
-                            },
-                            "sizing": {
-                              "h": "FILL",
-                              "v": "FILL"
-                            },
-                            "type": "FRAME"
-                          }
-                        ],
-                        "component": "MenuItem",
-                        "layout": {
-                          "counterAlign": "CENTER",
-                          "gap": "spacing/none",
-                          "mode": "HORIZONTAL",
-                          "padding": [
-                            "spacing/2xs",
-                            "spacing/xs",
-                            "spacing/2xs",
-                            "spacing/xs"
-                          ],
-                          "primaryAlign": "MIN"
-                        },
-                        "name": "radio 보통 아이콘",
-                        "properties": {
-                          "Has icon": true,
-                          "Has shortcut": false,
-                          "Label": "보통 아이콘",
-                          "Shortcut": "Ctrl+O",
-                          "State": "Rest",
-                          "Value": "100%",
-                          "Variant": "Radio on"
-                        },
-                        "size": {
-                          "h": 32,
-                          "w": 248
-                        },
-                        "sizing": {
-                          "h": "FILL",
-                          "v": "HUG"
-                        },
-                        "type": "INSTANCE"
-                      },
-                      {
-                        "children": [
-                          {
-                            "children": [
-                              {
-                                "height": "size/icon/sm",
-                                "layout": {
-                                  "counterAlign": "CENTER",
-                                  "gap": "spacing/none",
-                                  "mode": "HORIZONTAL",
-                                  "padding": [
-                                    "spacing/none",
-                                    "spacing/none",
-                                    "spacing/none",
-                                    "spacing/none"
-                                  ],
-                                  "primaryAlign": "CENTER"
-                                },
-                                "name": "leading",
-                                "size": {
-                                  "h": 16,
-                                  "w": 16
-                                },
-                                "sizing": {
-                                  "h": "FIXED",
-                                  "v": "FIXED"
-                                },
-                                "type": "FRAME",
-                                "width": "size/icon/sm"
-                              },
-                              {
-                                "fills": [
-                                  "color/black/89"
-                                ],
-                                "name": "label",
-                                "size": {
-                                  "h": 20,
-                                  "w": 188
-                                },
-                                "sizing": {
-                                  "h": "FILL",
-                                  "v": "HUG"
-                                },
-                                "text": {
-                                  "autoResize": "HEIGHT",
-                                  "maxLines": 1,
-                                  "maxLinesVariable": null,
-                                  "segments": [
-                                    {
-                                      "characters": "자세히",
-                                      "fill": "color/black/89",
-                                      "textStyle": "Hangul/Body"
-                                    }
-                                  ],
-                                  "truncation": "ENDING"
-                                },
-                                "type": "TEXT"
-                              }
-                            ],
-                            "fills": [
-                              "color/white/0"
-                            ],
-                            "layout": {
-                              "counterAlign": "CENTER",
-                              "gap": "spacing/md",
-                              "mode": "HORIZONTAL",
-                              "padding": [
-                                "spacing/xs",
-                                "spacing/md",
-                                "spacing/xs",
-                                "spacing/md"
-                              ],
-                              "primaryAlign": "MIN"
-                            },
-                            "name": "base",
-                            "radius": [
-                              "radius/control",
-                              "radius/control",
-                              "radius/control",
-                              "radius/control"
-                            ],
-                            "size": {
-                              "h": 28,
-                              "w": 240
-                            },
-                            "sizing": {
-                              "h": "FILL",
-                              "v": "FILL"
-                            },
-                            "type": "FRAME"
-                          }
-                        ],
-                        "component": "MenuItem",
-                        "layout": {
-                          "counterAlign": "CENTER",
-                          "gap": "spacing/none",
-                          "mode": "HORIZONTAL",
-                          "padding": [
-                            "spacing/2xs",
-                            "spacing/xs",
-                            "spacing/2xs",
-                            "spacing/xs"
-                          ],
-                          "primaryAlign": "MIN"
-                        },
-                        "name": "radio 자세히",
-                        "properties": {
-                          "Has icon": false,
-                          "Has shortcut": false,
-                          "Label": "자세히",
-                          "Shortcut": "Ctrl+O",
-                          "State": "Rest",
-                          "Value": "100%",
-                          "Variant": "Radio off"
-                        },
-                        "size": {
-                          "h": 32,
-                          "w": 248
-                        },
-                        "sizing": {
-                          "h": "FILL",
-                          "v": "HUG"
-                        },
-                        "type": "INSTANCE"
-                      }
-                    ],
-                    "layout": {
-                      "counterAlign": "MIN",
-                      "gap": "spacing/none",
-                      "mode": "VERTICAL",
-                      "padding": [
-                        "spacing/none",
-                        "spacing/none",
-                        "spacing/none",
-                        "spacing/none"
-                      ],
-                      "primaryAlign": "CENTER"
-                    },
-                    "name": "Content",
-                    "radius": [
-                      "radius/control",
-                      "radius/control",
-                      "radius/control",
-                      "radius/control"
-                    ],
-                    "size": {
-                      "h": 96,
-                      "w": 248
-                    },
-                    "sizing": {
-                      "h": "FILL",
-                      "v": "HUG"
-                    },
-                    "type": "SLOT"
-                  }
-                ],
-                "component": "Flyout",
-                "effectStyle": "Surface/Flyout (Acrylic)",
-                "fillStyle": "Material/Acrylic Default",
-                "layout": {
-                  "counterAlign": "MIN",
-                  "gap": "spacing/none",
-                  "mode": "VERTICAL",
-                  "padding": [
-                    "spacing/2xs",
-                    "spacing/none",
-                    "spacing/2xs",
-                    "spacing/none"
-                  ],
-                  "primaryAlign": "MIN"
-                },
-                "name": "Flyout",
-                "properties": {
-                  "Material": "Acrylic"
-                },
-                "radius": [
-                  "radius/overlay",
-                  "radius/overlay",
-                  "radius/overlay",
-                  "radius/overlay"
-                ],
-                "size": {
-                  "h": 102,
-                  "w": 250
-                },
-                "sizing": {
-                  "h": "FILL",
-                  "v": "HUG"
-                },
-                "strokeWeight": [
-                  "stroke-width/default",
-                  "stroke-width/default",
-                  "stroke-width/default",
-                  "stroke-width/default"
-                ],
-                "strokes": [
-                  "color/black/6"
-                ],
-                "strokesIncludedInLayout": true,
-                "type": "INSTANCE"
-              }
-            ],
             "component": "Menu",
-            "layout": {
-              "counterAlign": "MIN",
-              "gap": "spacing/none",
-              "mode": "VERTICAL",
-              "padding": [
-                "spacing/none",
-                "spacing/none",
-                "spacing/none",
-                "spacing/none"
-              ],
-              "primaryAlign": "MIN"
-            },
-            "name": "Menu",
-            "size": {
-              "h": 102,
-              "w": 250
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+            "paths": [
+              "Menu"
+            ],
+            "properties": {}
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/radio 큰 아이콘"
+            ],
+            "properties": {
+              "Has icon": false,
+              "Has shortcut": false,
+              "Label": "큰 아이콘",
+              "Shortcut": "Ctrl+O",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Radio off"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/radio 보통 아이콘"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "보통 아이콘",
+              "Shortcut": "Ctrl+O",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Radio on"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/radio 자세히"
+            ],
+            "properties": {
+              "Has icon": false,
+              "Has shortcut": false,
+              "Label": "자세히",
+              "Shortcut": "Ctrl+O",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Radio off"
+            }
           }
         ],
-        "layout": {
-          "counterAlign": "MIN",
-          "gap": "spacing/none",
-          "mode": "VERTICAL",
-          "padding": [
-            "spacing/none",
-            "spacing/none",
-            "spacing/none",
-            "spacing/none"
-          ],
-          "primaryAlign": "MIN"
-        },
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
         "name": "Menu/ExplorerViewSubmenu",
         "size": {
           "h": 102,
@@ -557,8 +82,7 @@
         "sizing": {
           "h": "HUG",
           "v": "HUG"
-        },
-        "type": "COMPONENT"
+        }
       }
     }
   }

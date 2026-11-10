@@ -23,39 +23,123 @@
         "1"
       ],
       "type": "VARIANT"
+    },
+    "State": {
+      "default": "Rest",
+      "options": [
+        "Rest",
+        "Hover"
+      ],
+      "type": "VARIANT"
     }
   },
   "variants": {
-    "active=false,level=1": {
+    "active=false,level=1,state=hover": {
       "node": {
         "height": 20,
-        "width": 64,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3391:6852",
+      "properties": {
+        "Active": "False",
+        "Level": "1",
+        "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "color/black/61"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 204
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "목차",
+                  "fill": "color/black/61",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": " ",
+                  "fill": "color/black/61",
+                  "textStyle": "Body"
+                },
+                {
+                  "characters": "항목",
+                  "fill": "color/black/61",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/black/4"
+        ],
+        "height": "size/toc-item/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/sm",
+            "spacing/none",
+            "spacing/sm"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Active=False, Level=1, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "sampleSize": [
+          "width"
+        ],
+        "size": {
+          "h": 20,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "active=false,level=1,state=rest": {
+      "node": {
+        "height": 20,
+        "width": 220,
         "x": 0,
         "y": 0
       },
       "nodeId": "398:5459",
       "properties": {
         "Active": "False",
-        "Level": "1"
+        "Level": "1",
+        "State": "Rest"
       },
       "tree": {
         "children": [
-          {
-            "fills": [
-              "color/black/8"
-            ],
-            "name": "indicator",
-            "size": {
-              "h": 20,
-              "w": 3
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FILL"
-            },
-            "type": "RECTANGLE",
-            "width": "stroke-width/indicator"
-          },
           {
             "fills": [
               "color/black/61"
@@ -63,15 +147,15 @@
             "name": "label",
             "size": {
               "h": 20,
-              "w": 53
+              "w": 204
             },
             "sizing": {
-              "h": "HUG",
+              "h": "FILL",
               "v": "HUG"
             },
             "text": {
-              "autoResize": "WIDTH_AND_HEIGHT",
-              "maxLines": null,
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
               "maxLinesVariable": null,
               "segments": [
                 {
@@ -90,79 +174,151 @@
                   "textStyle": "Hangul/Body"
                 }
               ],
-              "truncation": "DISABLED"
+              "truncation": "ENDING"
             },
             "type": "TEXT"
           }
         ],
         "height": "size/toc-item/height",
         "layout": {
-          "counterAlign": "MIN",
-          "gap": "spacing/sm",
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
-            0,
-            0,
-            0,
-            0
+            "spacing/none",
+            "spacing/sm",
+            "spacing/none",
+            "spacing/sm"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Active=False, Level=1",
+        "name": "Active=False, Level=1, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 20,
-          "w": 64
+          "w": 220
         },
         "sizing": {
-          "h": "HUG",
+          "h": "FIXED",
           "v": "FIXED"
         },
         "type": "COMPONENT"
       }
     },
-    "active=false,level=2": {
+    "active=false,level=2,state=hover": {
       "node": {
         "height": 20,
-        "width": 80,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3391:6856",
+      "properties": {
+        "Active": "False",
+        "Level": "2",
+        "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "color/black/61"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 188
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "목차",
+                  "fill": "color/black/61",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": " ",
+                  "fill": "color/black/61",
+                  "textStyle": "Body"
+                },
+                {
+                  "characters": "항목",
+                  "fill": "color/black/61",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/black/4"
+        ],
+        "height": "size/toc-item/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/sm",
+            "spacing/none",
+            "spacing/2xl"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Active=False, Level=2, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "sampleSize": [
+          "width"
+        ],
+        "size": {
+          "h": 20,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "active=false,level=2,state=rest": {
+      "node": {
+        "height": 20,
+        "width": 220,
         "x": 0,
         "y": 0
       },
       "nodeId": "3339:13968",
       "properties": {
         "Active": "False",
-        "Level": "2"
+        "Level": "2",
+        "State": "Rest"
       },
       "tree": {
         "children": [
-          {
-            "fills": [
-              "color/black/8"
-            ],
-            "name": "indicator",
-            "size": {
-              "h": 20,
-              "w": 3
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FILL"
-            },
-            "type": "RECTANGLE",
-            "width": "stroke-width/indicator"
-          },
-          {
-            "name": "indent",
-            "size": {
-              "h": 20,
-              "w": 8
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FILL"
-            },
-            "type": "FRAME",
-            "width": "spacing/sm"
-          },
           {
             "fills": [
               "color/black/61"
@@ -170,15 +326,15 @@
             "name": "label",
             "size": {
               "h": 20,
-              "w": 53
+              "w": 188
             },
             "sizing": {
-              "h": "HUG",
+              "h": "FILL",
               "v": "HUG"
             },
             "text": {
-              "autoResize": "WIDTH_AND_HEIGHT",
-              "maxLines": null,
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
               "maxLinesVariable": null,
               "segments": [
                 {
@@ -197,79 +353,151 @@
                   "textStyle": "Hangul/Body"
                 }
               ],
-              "truncation": "DISABLED"
+              "truncation": "ENDING"
             },
             "type": "TEXT"
           }
         ],
         "height": "size/toc-item/height",
         "layout": {
-          "counterAlign": "MIN",
-          "gap": "spacing/sm",
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
-            0,
-            0,
-            0,
-            0
+            "spacing/none",
+            "spacing/sm",
+            "spacing/none",
+            "spacing/2xl"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Active=False, Level=2",
+        "name": "Active=False, Level=2, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 20,
-          "w": 80
+          "w": 220
         },
         "sizing": {
-          "h": "HUG",
+          "h": "FIXED",
           "v": "FIXED"
         },
         "type": "COMPONENT"
       }
     },
-    "active=false,level=3": {
+    "active=false,level=3,state=hover": {
       "node": {
         "height": 20,
-        "width": 96,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3391:6860",
+      "properties": {
+        "Active": "False",
+        "Level": "3",
+        "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "color/black/61"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 172
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "목차",
+                  "fill": "color/black/61",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": " ",
+                  "fill": "color/black/61",
+                  "textStyle": "Body"
+                },
+                {
+                  "characters": "항목",
+                  "fill": "color/black/61",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/black/4"
+        ],
+        "height": "size/toc-item/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/sm",
+            "spacing/none",
+            "spacing/4xl"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Active=False, Level=3, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "sampleSize": [
+          "width"
+        ],
+        "size": {
+          "h": 20,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "active=false,level=3,state=rest": {
+      "node": {
+        "height": 20,
+        "width": 220,
         "x": 0,
         "y": 0
       },
       "nodeId": "3339:13976",
       "properties": {
         "Active": "False",
-        "Level": "3"
+        "Level": "3",
+        "State": "Rest"
       },
       "tree": {
         "children": [
-          {
-            "fills": [
-              "color/black/8"
-            ],
-            "name": "indicator",
-            "size": {
-              "h": 20,
-              "w": 3
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FILL"
-            },
-            "type": "RECTANGLE",
-            "width": "stroke-width/indicator"
-          },
-          {
-            "name": "indent",
-            "size": {
-              "h": 20,
-              "w": 24
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FILL"
-            },
-            "type": "FRAME",
-            "width": "spacing/2xl"
-          },
           {
             "fills": [
               "color/black/61"
@@ -277,15 +505,15 @@
             "name": "label",
             "size": {
               "h": 20,
-              "w": 53
+              "w": 172
             },
             "sizing": {
-              "h": "HUG",
+              "h": "FILL",
               "v": "HUG"
             },
             "text": {
-              "autoResize": "WIDTH_AND_HEIGHT",
-              "maxLines": null,
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
               "maxLinesVariable": null,
               "segments": [
                 {
@@ -304,66 +532,151 @@
                   "textStyle": "Hangul/Body"
                 }
               ],
-              "truncation": "DISABLED"
+              "truncation": "ENDING"
             },
             "type": "TEXT"
           }
         ],
         "height": "size/toc-item/height",
         "layout": {
-          "counterAlign": "MIN",
-          "gap": "spacing/sm",
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
-            0,
-            0,
-            0,
-            0
+            "spacing/none",
+            "spacing/sm",
+            "spacing/none",
+            "spacing/4xl"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Active=False, Level=3",
+        "name": "Active=False, Level=3, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 20,
-          "w": 96
+          "w": 220
         },
         "sizing": {
-          "h": "HUG",
+          "h": "FIXED",
           "v": "FIXED"
         },
         "type": "COMPONENT"
       }
     },
-    "active=true,level=1": {
+    "active=true,level=1,state=hover": {
       "node": {
         "height": 20,
-        "width": 64,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3391:6850",
+      "properties": {
+        "Active": "True",
+        "Level": "1",
+        "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "color/blue/72"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 204
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "목차",
+                  "fill": "color/blue/72",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": " ",
+                  "fill": "color/blue/72",
+                  "textStyle": "Body"
+                },
+                {
+                  "characters": "항목",
+                  "fill": "color/blue/72",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/black/4"
+        ],
+        "height": "size/toc-item/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/sm",
+            "spacing/none",
+            "spacing/sm"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Active=True, Level=1, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "sampleSize": [
+          "width"
+        ],
+        "size": {
+          "h": 20,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "active=true,level=1,state=rest": {
+      "node": {
+        "height": 20,
+        "width": 220,
         "x": 0,
         "y": 0
       },
       "nodeId": "398:5455",
       "properties": {
         "Active": "True",
-        "Level": "1"
+        "Level": "1",
+        "State": "Rest"
       },
       "tree": {
         "children": [
-          {
-            "fills": [
-              "color/blue/59"
-            ],
-            "name": "indicator",
-            "size": {
-              "h": 20,
-              "w": 3
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FILL"
-            },
-            "type": "RECTANGLE",
-            "width": "stroke-width/indicator"
-          },
           {
             "fills": [
               "color/blue/72"
@@ -371,15 +684,15 @@
             "name": "label",
             "size": {
               "h": 20,
-              "w": 53
+              "w": 204
             },
             "sizing": {
-              "h": "HUG",
+              "h": "FILL",
               "v": "HUG"
             },
             "text": {
-              "autoResize": "WIDTH_AND_HEIGHT",
-              "maxLines": null,
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
               "maxLinesVariable": null,
               "segments": [
                 {
@@ -398,79 +711,151 @@
                   "textStyle": "Hangul/Body"
                 }
               ],
-              "truncation": "DISABLED"
+              "truncation": "ENDING"
             },
             "type": "TEXT"
           }
         ],
         "height": "size/toc-item/height",
         "layout": {
-          "counterAlign": "MIN",
-          "gap": "spacing/sm",
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
-            0,
-            0,
-            0,
-            0
+            "spacing/none",
+            "spacing/sm",
+            "spacing/none",
+            "spacing/sm"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Active=True, Level=1",
+        "name": "Active=True, Level=1, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 20,
-          "w": 64
+          "w": 220
         },
         "sizing": {
-          "h": "HUG",
+          "h": "FIXED",
           "v": "FIXED"
         },
         "type": "COMPONENT"
       }
     },
-    "active=true,level=2": {
+    "active=true,level=2,state=hover": {
       "node": {
         "height": 20,
-        "width": 80,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3391:6854",
+      "properties": {
+        "Active": "True",
+        "Level": "2",
+        "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "color/blue/72"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 188
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "목차",
+                  "fill": "color/blue/72",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": " ",
+                  "fill": "color/blue/72",
+                  "textStyle": "Body"
+                },
+                {
+                  "characters": "항목",
+                  "fill": "color/blue/72",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/black/4"
+        ],
+        "height": "size/toc-item/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/sm",
+            "spacing/none",
+            "spacing/2xl"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Active=True, Level=2, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "sampleSize": [
+          "width"
+        ],
+        "size": {
+          "h": 20,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "active=true,level=2,state=rest": {
+      "node": {
+        "height": 20,
+        "width": 220,
         "x": 0,
         "y": 0
       },
       "nodeId": "3339:13964",
       "properties": {
         "Active": "True",
-        "Level": "2"
+        "Level": "2",
+        "State": "Rest"
       },
       "tree": {
         "children": [
-          {
-            "fills": [
-              "color/blue/59"
-            ],
-            "name": "indicator",
-            "size": {
-              "h": 20,
-              "w": 3
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FILL"
-            },
-            "type": "RECTANGLE",
-            "width": "stroke-width/indicator"
-          },
-          {
-            "name": "indent",
-            "size": {
-              "h": 20,
-              "w": 8
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FILL"
-            },
-            "type": "FRAME",
-            "width": "spacing/sm"
-          },
           {
             "fills": [
               "color/blue/72"
@@ -478,15 +863,15 @@
             "name": "label",
             "size": {
               "h": 20,
-              "w": 53
+              "w": 188
             },
             "sizing": {
-              "h": "HUG",
+              "h": "FILL",
               "v": "HUG"
             },
             "text": {
-              "autoResize": "WIDTH_AND_HEIGHT",
-              "maxLines": null,
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
               "maxLinesVariable": null,
               "segments": [
                 {
@@ -505,79 +890,151 @@
                   "textStyle": "Hangul/Body"
                 }
               ],
-              "truncation": "DISABLED"
+              "truncation": "ENDING"
             },
             "type": "TEXT"
           }
         ],
         "height": "size/toc-item/height",
         "layout": {
-          "counterAlign": "MIN",
-          "gap": "spacing/sm",
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
-            0,
-            0,
-            0,
-            0
+            "spacing/none",
+            "spacing/sm",
+            "spacing/none",
+            "spacing/2xl"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Active=True, Level=2",
+        "name": "Active=True, Level=2, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 20,
-          "w": 80
+          "w": 220
         },
         "sizing": {
-          "h": "HUG",
+          "h": "FIXED",
           "v": "FIXED"
         },
         "type": "COMPONENT"
       }
     },
-    "active=true,level=3": {
+    "active=true,level=3,state=hover": {
       "node": {
         "height": 20,
-        "width": 96,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3391:6858",
+      "properties": {
+        "Active": "True",
+        "Level": "3",
+        "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "color/blue/72"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 172
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "목차",
+                  "fill": "color/blue/72",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": " ",
+                  "fill": "color/blue/72",
+                  "textStyle": "Body"
+                },
+                {
+                  "characters": "항목",
+                  "fill": "color/blue/72",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/black/4"
+        ],
+        "height": "size/toc-item/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/sm",
+            "spacing/none",
+            "spacing/4xl"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Active=True, Level=3, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "sampleSize": [
+          "width"
+        ],
+        "size": {
+          "h": 20,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "active=true,level=3,state=rest": {
+      "node": {
+        "height": 20,
+        "width": 220,
         "x": 0,
         "y": 0
       },
       "nodeId": "3339:13972",
       "properties": {
         "Active": "True",
-        "Level": "3"
+        "Level": "3",
+        "State": "Rest"
       },
       "tree": {
         "children": [
-          {
-            "fills": [
-              "color/blue/59"
-            ],
-            "name": "indicator",
-            "size": {
-              "h": 20,
-              "w": 3
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FILL"
-            },
-            "type": "RECTANGLE",
-            "width": "stroke-width/indicator"
-          },
-          {
-            "name": "indent",
-            "size": {
-              "h": 20,
-              "w": 24
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FILL"
-            },
-            "type": "FRAME",
-            "width": "spacing/2xl"
-          },
           {
             "fills": [
               "color/blue/72"
@@ -585,15 +1042,15 @@
             "name": "label",
             "size": {
               "h": 20,
-              "w": 53
+              "w": 172
             },
             "sizing": {
-              "h": "HUG",
+              "h": "FILL",
               "v": "HUG"
             },
             "text": {
-              "autoResize": "WIDTH_AND_HEIGHT",
-              "maxLines": null,
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
               "maxLinesVariable": null,
               "segments": [
                 {
@@ -612,31 +1069,40 @@
                   "textStyle": "Hangul/Body"
                 }
               ],
-              "truncation": "DISABLED"
+              "truncation": "ENDING"
             },
             "type": "TEXT"
           }
         ],
         "height": "size/toc-item/height",
         "layout": {
-          "counterAlign": "MIN",
-          "gap": "spacing/sm",
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
-            0,
-            0,
-            0,
-            0
+            "spacing/none",
+            "spacing/sm",
+            "spacing/none",
+            "spacing/4xl"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Active=True, Level=3",
+        "name": "Active=True, Level=3, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 20,
-          "w": 96
+          "w": 220
         },
         "sizing": {
-          "h": "HUG",
+          "h": "FIXED",
           "v": "FIXED"
         },
         "type": "COMPONENT"
