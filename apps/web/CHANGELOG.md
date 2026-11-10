@@ -1,5 +1,110 @@
 # @seojaewan/web
 
+## 0.2.1
+
+### Patch Changes
+
+- b6cd351: Chrome 창 층 동작 스토리가 피그마 Window/Chrome 조립 크기로 창을 감싸도록 바꿈
+- 3e5bb4d: Chrome 새 탭·검색 결과 페이지의 아래 여백과 찾을 수 없음 화면의 위아래 여백을 피그마 `Chrome/Page` 값에 맞춘다.
+- 51e0a4b: 탐색기 주소창에 입력한 경로 끝이 글이나 외부 링크면 그 항목을 열고, 휴지통에 있는 항목(글·폴더·외부 링크)이면 복원할지 묻는 메시지 상자를 띄운 뒤 복원하고 연다
+- 935168e: 드롭다운·우클릭 메뉴가 열리는 쪽으로 미끄러져 나오는 움직임(motion-menu-enter)을 더하고, 동작 줄이기에서 hover·pressed 색 전환도 바로 바뀌게 함
+- af2783a: Start 고정됨 이동에서 나머지 칸이 미끄러지지 않고 교차 페이드하는 움직임(motion-start-pinned-move-swap)을 더하고, 세 단계를 메뉴가 사라진 순간 함께 시작함
+- 4155724: 피그마 Desktop/Scene 조립 내보내기를 갱신함(레이어 트리 대신 조립 보고를 담고 작업 표시줄 아크릴 재질을 반영, 구성·배치 변화 없음)
+- 9d75c80: 피그마 Menu 조립 내보내기를 갱신함(레이어 트리 대신 조립 보고를 담음, 항목·크기 변화 없음)
+- 8facf35: 피그마 MessageBox 조립 내보내기를 갱신함(레이어 트리 대신 조립 보고를 담음, 글자·크기 변화 없음)
+- d32994e: 데스크톱 검색 패널을 작업 표시줄 검색 상자 왼쪽 끝에 맞춰 열고(화면 밖이면 안쪽으로 밂), Start·검색 패널 너비를 좁은 화면에서 줄임
+- e49e069: Start 본문 위 여백을 피그마 Start 조립에 맞추고, 본문 덧칠·검색 띠 구분선을 그리며, 범주 펼침 팝업을 Start 가운데 고정 크기로 열고 휠로 한 쪽씩 넘김
+- 8c7b685: 피그마 Taskbar 조립 내보내기를 갱신함(레이어 트리 대신 조립 보고를 담음, 재질 토큰 변경으로 바탕 그림만 바뀜). 작업 표시줄 앱 버튼 우클릭 메뉴와 창 미리보기를 작업 표시줄 위 끝에서 12px(`spacing/md`) 띄워 엶
+- 53c4be4: 피그마 Window 조립 내보내기를 갱신함(레이어 트리 대신 조립 보고를 담음, 그림은 컴포넌트 변화만 반영)
+- 22c3166: StartCategoryFolder를 피그마 갱신에 맞춤(Device 변형별 고정 크기·여백, 가운데 정렬한 Subtitle 제목, 팝업이 정하는 항목 칸 너비, Has pages 쪽 표시 점)
+- 15cd1b5: 목차(Toc) 항목 영역을 디자인 시스템 ScrollArea로 감싸고, 지금 읽는 위치로 목차를 부드럽게 스크롤함
+- b9affbd: 메뉴·작업 표시줄 메뉴·미리보기 열기의 자르는 틀이 움직이는 동안만 자르게 하고, 틀의 크기와 자리는 바꾸지 않는다.
+- e24b0a1: Start 범주 펼침 팝업이 마우스 휠과 클릭을 받도록 고침
+- Updated dependencies [3019daf]
+- Updated dependencies [f725431]
+- Updated dependencies [5a85de8]
+- Updated dependencies [da4e9c1]
+- Updated dependencies [aaad1f7]
+- Updated dependencies [ebeac9e]
+- Updated dependencies [602c4b9]
+- Updated dependencies [f48f800]
+- Updated dependencies [9a9ff62]
+- Updated dependencies [e81038e]
+- Updated dependencies [ab5035a]
+- Updated dependencies [f104052]
+- Updated dependencies [10a8a60]
+- Updated dependencies [56c2eec]
+- Updated dependencies [2df73d6]
+- Updated dependencies [29c7783]
+- Updated dependencies [921d4f7]
+- Updated dependencies [468b65a]
+- Updated dependencies [66b8752]
+- Updated dependencies [aa8332e]
+- Updated dependencies [15a82d3]
+- Updated dependencies [260e6b5]
+- Updated dependencies [46b110a]
+- Updated dependencies [58ad18e]
+- Updated dependencies [70e9c6f]
+- Updated dependencies [a302345]
+- Updated dependencies [bb420f8]
+- Updated dependencies [935168e]
+- Updated dependencies [99ab840]
+- Updated dependencies [5657d31]
+- Updated dependencies [a24db97]
+- Updated dependencies [acdfee0]
+- Updated dependencies [fe9014e]
+- Updated dependencies [e3f81e2]
+- Updated dependencies [552e409]
+- Updated dependencies [aa49086]
+- Updated dependencies [1d0f0d2]
+- Updated dependencies [0576085]
+- Updated dependencies [e65ad3f]
+- Updated dependencies [007bbae]
+- Updated dependencies [d3929d2]
+- Updated dependencies [4fe2e15]
+- Updated dependencies [67d6205]
+- Updated dependencies [af2783a]
+- Updated dependencies [f1004b4]
+- Updated dependencies [5d0e4c8]
+- Updated dependencies [f84174d]
+- Updated dependencies [9dc8a66]
+- Updated dependencies [72538b9]
+- Updated dependencies [e17fec4]
+- Updated dependencies [d1f18c7]
+- Updated dependencies [9a3fba7]
+- Updated dependencies [300a643]
+- Updated dependencies [2511479]
+- Updated dependencies [f966fdf]
+- Updated dependencies [f3fa8e2]
+- Updated dependencies [70859b0]
+- Updated dependencies [338bf1b]
+- Updated dependencies [0fa8ad2]
+- Updated dependencies [d0aaf69]
+- Updated dependencies [22c3166]
+- Updated dependencies [b6bd04b]
+- Updated dependencies [d8ab11e]
+- Updated dependencies [71cdf0e]
+- Updated dependencies [990528c]
+- Updated dependencies [15cd1b5]
+- Updated dependencies [c172b40]
+- Updated dependencies [29c9d36]
+- Updated dependencies [dd720be]
+- Updated dependencies [03562de]
+- Updated dependencies [b9affbd]
+- Updated dependencies [2a56829]
+- Updated dependencies [10a18bc]
+- Updated dependencies [e75312f]
+- Updated dependencies [0d29ba3]
+- Updated dependencies [cb48b17]
+- Updated dependencies [3649870]
+- Updated dependencies [a3633d3]
+- Updated dependencies [ca1da95]
+- Updated dependencies [953776d]
+- Updated dependencies [a0b35ca]
+- Updated dependencies [a3675f6]
+- Updated dependencies [c6e5fb4]
+  - @seojaewan/design-system@0.2.0
+
 ## 0.2.0
 
 ### Minor Changes
