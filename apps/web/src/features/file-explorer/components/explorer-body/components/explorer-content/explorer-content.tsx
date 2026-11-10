@@ -52,6 +52,9 @@ type ExplorerContentProps = Pick<
   | 'onSearchClose'
   | 'isBreadcrumbEditing'
   | 'breadcrumbEditFieldProps'
+  | 'onBreadcrumbClear'
+  | 'isBreadcrumbSeparatorOpen'
+  | 'renderBreadcrumbSeparator'
 > &
   Pick<
     StatusBarProps,
@@ -82,6 +85,9 @@ type ExplorerContentProps = Pick<
  * @param props.path 주소 줄 Breadcrumb의 Items 자리. 경로 칸(BreadcrumbItem)을 넣는다
  * @param props.isBreadcrumbEditing 피그마 Address=Editing. 주소 줄 Breadcrumb이 경로 칸 대신 경로 글자 입력칸을 그린다
  * @param props.breadcrumbEditFieldProps 주소 줄 Breadcrumb 편집 입력칸에 넘길 값·동작·접근성 속성. `isBreadcrumbEditing`일 때만 쓴다
+ * @param props.onBreadcrumbClear 주소 줄 편집 입력칸의 지우기 버튼(×)을 눌렀을 때. 입력값을 비운다
+ * @param props.isBreadcrumbSeparatorOpen 주소 줄 맨 앞 꺾쇠가 연 목록이 열려 있는지. 열린 동안 아래 꺾쇠(⌄)다
+ * @param props.renderBreadcrumbSeparator 주소 줄 맨 앞 꺾쇠를 목록 버튼으로 감싸 그린다
  * @param props.commands 명령 막대의 Commands 자리. `ExplorerCommands`를 넣는다
  * @param props.navigation 본문 바탕(LayerSurface) 안 탐색 창(NavigationPane)의 Items 자리. 폴더 트리의 NavigationItem을 넣는다. desktop만 보인다
  * @param props.children 본문 바탕(LayerSurface) 안 `items` 영역의 내용. 현재 폴더의 항목(FileItem, 또는 DetailsHeader와 FileRow)을 넣는다. 피그마는 슬롯 안에 슬롯 속성을 둘 수 없어 이 영역을 `Window/Explorer`가 LayerSurface 슬롯을 통해 직접 채운다
@@ -117,6 +123,9 @@ export function ExplorerContent({
   path,
   isBreadcrumbEditing,
   breadcrumbEditFieldProps,
+  onBreadcrumbClear: handleBreadcrumbClear,
+  isBreadcrumbSeparatorOpen,
+  renderBreadcrumbSeparator,
   commands,
   navigation,
   children,
@@ -163,6 +172,9 @@ export function ExplorerContent({
         locationIcon={locationIcon}
         isBreadcrumbEditing={isBreadcrumbEditing}
         breadcrumbEditFieldProps={breadcrumbEditFieldProps}
+        onBreadcrumbClear={handleBreadcrumbClear}
+        isBreadcrumbSeparatorOpen={isBreadcrumbSeparatorOpen}
+        renderBreadcrumbSeparator={renderBreadcrumbSeparator}
         searchPlaceholder={searchPlaceholder}
         searchValue={searchValue}
         onBack={handleBack}
