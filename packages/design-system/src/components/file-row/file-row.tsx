@@ -98,7 +98,7 @@ export function FileRow({
         className,
       )}
     >
-      <div className="flex h-size-file-row-name-height w-size-file-row-name-width shrink-shrink-none items-center gap-spacing-sm overflow-clip">
+      <div className="flex h-size-file-row-name-height w-size-details-header-name-width shrink-shrink-none items-center gap-spacing-sm overflow-clip">
         <span
           className={cn(
             'flex size-size-icon-sm shrink-shrink-none items-center justify-center [&>*]:size-full [&>*]:object-contain',
@@ -122,23 +122,23 @@ export function FileRow({
       </div>
       {view === 'recycle-bin' ? (
         <>
-          <span className="w-size-file-row-wide-cell-width shrink-shrink-none truncate type-caption text-color-black-61">
+          <span className="w-size-details-header-wide-width shrink-shrink-none truncate type-caption text-color-black-61">
             {originalLocation}
           </span>
-          <span className="w-size-file-row-narrow-cell-width shrink-shrink-none truncate type-caption text-color-black-61">
+          <span className="w-size-details-header-narrow-width shrink-shrink-none truncate type-caption text-color-black-61">
             {deletedDate}
           </span>
         </>
       ) : (
         <>
-          <span className="w-size-file-row-wide-cell-width shrink-shrink-none truncate type-caption text-color-black-61">
+          <span className="w-size-details-header-wide-width shrink-shrink-none truncate type-caption text-color-black-61">
             {date}
           </span>
-          <span className="w-size-file-row-narrow-cell-width shrink-shrink-none truncate type-caption text-color-black-61">
+          <span className="w-size-details-header-narrow-width shrink-shrink-none truncate type-caption text-color-black-61">
             {type}
           </span>
           {hasLocation && (
-            <span className="w-size-file-row-wide-cell-width shrink-shrink-none truncate type-caption text-color-black-61">
+            <span className="w-size-details-header-wide-width shrink-shrink-none truncate type-caption text-color-black-61">
               {location}
             </span>
           )}
