@@ -1,5 +1,5 @@
 import { Menu as BaseMenu } from '@base-ui/react/menu';
-import type { ComponentProps, JSX } from 'react';
+import { type AnimationEvent, type ComponentProps, type JSX, useState } from 'react';
 
 import { Menu, MenuItem, MenuSeparator } from '@seojaewan/design-system';
 
@@ -87,26 +87,67 @@ type MenuPanelProps = {
   width?: MenuPopupWidth;
 };
 
+/** 메뉴를 열 때의 움직임. menu는 드롭다운·우클릭 메뉴, submenu는 하위 메뉴다. */
+export type MenuPopupMotion = 'menu' | 'submenu';
+
+// 메뉴를 열 때의 움직임이다([[피그마 연동:모션 클래스]]). 드롭다운·우클릭 메뉴는 열리는 쪽으로 미끄러져 나오고,
+// 하위 메뉴는 측정하지 않아 지금처럼 페이드로 나타난다.
+const enterClassNames = {
+  menu: 'motion-menu-enter',
+  submenu: 'motion-flyout-enter',
+} as const satisfies Record<MenuPopupMotion, string>;
+const DEFAULT_MOTION: MenuPopupMotion = 'menu';
+
 // 피그마 Popover의 트리거(하위 메뉴 항목)와 팝업(하위 메뉴) 사이 간격(spacing/4)이다.
 const SUBMENU_OFFSET = 4;
 
-type MenuPopupProps = MenuPanelProps &
-  Omit<ComponentProps<typeof BaseMenu.Popup>, 'children' | 'className' | 'render'>;
+type MenuPopupProps = MenuPanelProps & {
+  motion?: MenuPopupMotion;
+} & Omit<ComponentProps<typeof BaseMenu.Popup>, 'children' | 'className' | 'render'>;
 
 /**
  * 메뉴 조립(피그마 `Menu/*`)을 그린다. 우클릭 메뉴, Chrome ⋮ 메뉴, 전원 메뉴처럼 구조가 같은 메뉴를 항목 데이터만 바꿔 그린다.
  * Base UI Menu의 팝업(`Menu.Popup`)이라 키보드 조작과 접근성은 Base UI가 맡고, 쓰는 곳이 `Menu.Root`·`Menu.Positioner`로
  * 열고 닫기와 위치를 정한다. 나머지 속성은 팝업 요소에 준다.
- * 열 때 `motion-flyout-enter`로 페이드해 나타난다. 사라지는 움직임은 없어 Base UI가 기다리지 않고 바로 닫는다.
+ * 열 때 `motion-menu-enter`로 열리는 쪽으로 미끄러져 나온다(페이드 없음). 팝업이 자르는 틀이고 안의 메뉴 바탕이 움직이며,
+ * 열리는 쪽은 Base UI가 팝업에 다는 `data-side`로 정해진다. 틀이 시작 가장자리의 그림자를 자르지 않도록 움직임이 끝나면 클래스를 뗀다.
+ * 하위 메뉴는 측정하지 않아 지금처럼 `motion-flyout-enter`로 페이드해 나타난다. 사라지는 움직임은 없어 Base UI가 기다리지 않고 바로 닫는다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[피그마 연동:모션 클래스]]
  * @param props 컴포넌트 속성
  * @param props.items 메뉴 항목과 구분선. 위에서부터 그린다
  * @param props.width 메뉴 바탕 너비(피그마 메뉴 조립의 Menu 너비). 없으면 Menu 기본 너비다
+ * @param props.motion 열 때의 움직임. 없으면 드롭다운·우클릭 메뉴의 움직임이다
  */
-export function MenuPopup({ items, width, ...popupProps }: MenuPopupProps): JSX.Element {
+export function MenuPopup({
+  items,
+  width,
+  motion = DEFAULT_MOTION,
+  ...popupProps
+}: MenuPopupProps): JSX.Element {
+  const [isEntering, setIsEntering] = useState(true);
+
+  /**
+   * 열기 움직임이 끝나면 모션 클래스(메뉴는 자르는 틀)를 뗀다. 포털한 하위 메뉴의 이벤트도 React 트리로 올라오므로
+   * 이 팝업이나 바로 안의 메뉴 바탕에서 끝난 움직임만 본다.
+   * @param event 애니메이션 끝 이벤트
+   */
+  function handleAnimationEnd(event: AnimationEvent<HTMLDivElement>): void {
+    const { target, currentTarget } = event;
+    if (
+      target === currentTarget ||
+      (target instanceof Element && target.parentElement === currentTarget)
+    ) {
+      setIsEntering(false);
+    }
+  }
+
   return (
-    <BaseMenu.Popup {...popupProps} className="motion-flyout-enter outline-none">
+    <BaseMenu.Popup
+      {...popupProps}
+      className={isEntering ? `${enterClassNames[motion]} outline-none` : 'outline-none'}
+      onAnimationEnd={handleAnimationEnd}
+    >
       <MenuPanel items={items} width={width} />
     </BaseMenu.Popup>
   );
@@ -251,7 +292,7 @@ function SubmenuEntry({ entry }: { entry: MenuPopupSubmenu }): JSX.Element {
         />
         <BaseMenu.Portal>
           <BaseMenu.Positioner side="inline-end" align="start" sideOffset={SUBMENU_OFFSET}>
-            <MenuPopup items={entry.entries} />
+            <MenuPopup items={entry.entries} motion="submenu" />
           </BaseMenu.Positioner>
         </BaseMenu.Portal>
       </BaseMenu.SubmenuRoot>

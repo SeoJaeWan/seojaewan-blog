@@ -1,5 +1,5 @@
 {
-  "description": "글 본문의 펼치고 접는 블록으로, 글 페이지에 쓴다.\n@sample-size width",
+  "description": "글 본문의 펼치고 접는 블록으로, 글 페이지에 쓴다.",
   "name": "Toggle",
   "nodeId": "1380:6849",
   "propertyDefinitions": {
@@ -148,6 +148,9 @@
           "primaryAlign": "MIN"
         },
         "name": "State=Collapsed",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 24,
           "w": 720
@@ -380,6 +383,9 @@
           "primaryAlign": "MIN"
         },
         "name": "State=Expanded",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 52,
           "w": 720
