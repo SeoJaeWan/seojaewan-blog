@@ -1,5 +1,5 @@
 {
-  "description": "범주의 모든 항목을 아이콘과 이름 격자로 펼쳐 보이는 팝업으로, Start 범주 카드를 누르면 카드 자리 위에 연다.",
+  "description": "범주의 모든 항목을 아이콘과 이름 격자로 펼쳐 보이는 팝업으로, Start 범주 카드를 누르면 Start 패널의 가로·세로 정가운데에 연다.",
   "name": "StartCategoryFolder",
   "nodeId": "3392:5512",
   "propertyDefinitions": {
