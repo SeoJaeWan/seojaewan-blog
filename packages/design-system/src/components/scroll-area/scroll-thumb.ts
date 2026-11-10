@@ -25,3 +25,25 @@ export function scrollThumb(
   const offset = TRACK_INSET + ((track - length) * scrollTop) / scrollRange;
   return { offset, length };
 }
+
+/**
+ * 막대를 끈 거리만큼 옮긴 스크롤 위치를 구한다. 막대가 움직이는 길이 끝에서 끝까지가 스크롤 처음에서 끝까지다.
+ * @codocs [[디자인 기반:겹쳐 놓기]]
+ * @param viewport 스크롤하는 요소. 끌기 시작할 때의 스크롤 위치를 scrollTop으로 준다
+ * @param scrollbarLength 스크롤바 길이
+ * @param dragDistance 끌기 시작한 곳에서 포인터가 움직인 세로 거리(px). 아래가 양수다
+ * @returns 옮길 스크롤 위치. 처음과 끝 사이로 자른다
+ */
+export function draggedScrollTop(
+  viewport: Pick<HTMLElement, 'clientHeight' | 'scrollHeight' | 'scrollTop'>,
+  scrollbarLength: number,
+  dragDistance: number,
+): number {
+  const thumb = scrollThumb(viewport, scrollbarLength);
+  const { clientHeight, scrollHeight, scrollTop } = viewport;
+  const scrollRange = scrollHeight - clientHeight;
+  const thumbTravel = thumb ? Math.max(scrollbarLength - TRACK_INSET * 2, 0) - thumb.length : 0;
+  if (scrollRange <= 0 || thumbTravel <= 0) return scrollTop;
+  const next = scrollTop + (dragDistance * scrollRange) / thumbTravel;
+  return Math.min(Math.max(next, 0), scrollRange);
+}
