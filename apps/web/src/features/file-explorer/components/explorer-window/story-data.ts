@@ -86,6 +86,6 @@ export const WINDOW_RECYCLE_BIN_ITEMS = [
 
 /** 피그마 Window/Explorer 상태 줄 글자 */
 export const WINDOW_STATUS_TEXT = {
-  itemCount: { blog: '항목 5개', react: '항목 4개', 'recycle-bin': '항목 3개' },
+  itemCount: { blog: '5개 항목', react: '4개 항목', 'recycle-bin': '3개 항목' },
   selection: '1개 항목 선택함',
 } as const;

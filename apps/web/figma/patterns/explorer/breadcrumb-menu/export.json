@@ -1,0 +1,121 @@
+{
+  "description": "경로 꺾쇠 목록. 마디 뒤 꺾쇠(BreadcrumbChevron)를 누르면 State=Open(⌄)이 되고, 그 왼쪽 마디 폴더의 하위 폴더를 기억한 정렬로 MenuPopup에 보인다. 목록은 꺾쇠 왼쪽 끝에 맞춰 주소창 바로 아래에 연다.",
+  "name": "Explorer/BreadcrumbMenu",
+  "nodeId": "3477:20800",
+  "propertyDefinitions": {},
+  "variants": {
+    "default": {
+      "node": {
+        "height": 150,
+        "width": 798,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:20800",
+      "properties": {},
+      "report": {
+        "components": [
+          {
+            "component": "ExplorerAddressRow",
+            "paths": [
+              "address row"
+            ],
+            "properties": {
+              "Device": "Desktop",
+              "Search": "Closed"
+            }
+          },
+          {
+            "component": "BreadcrumbItem",
+            "paths": [
+              "address row/breadcrumb/Items/crumb/바탕 화면"
+            ],
+            "properties": {
+              "Has separator": true,
+              "Label": "바탕 화면",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "BreadcrumbItem",
+            "paths": [
+              "address row/breadcrumb/Items/crumb/Blog"
+            ],
+            "properties": {
+              "Has separator": true,
+              "Label": "Blog",
+              "State": "Rest"
+            }
+          },
+          {
+            "component": "Menu",
+            "paths": [
+              "subfolder menu"
+            ],
+            "properties": {}
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "subfolder menu/Flyout/Content/item React"
+            ],
+            "properties": {
+              "Has icon": false,
+              "Has shortcut": false,
+              "Label": "React",
+              "Shortcut": "단축키",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "subfolder menu/Flyout/Content/item Next.js"
+            ],
+            "properties": {
+              "Has icon": false,
+              "Has shortcut": false,
+              "Label": "Next.js",
+              "Shortcut": "단축키",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "subfolder menu/Flyout/Content/item TypeScript"
+            ],
+            "properties": {
+              "Has icon": false,
+              "Has shortcut": false,
+              "Label": "TypeScript",
+              "Shortcut": "단축키",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          }
+        ],
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
+        "name": "Explorer/BreadcrumbMenu",
+        "size": {
+          "h": 150,
+          "w": 798
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        }
+      }
+    }
+  }
+}

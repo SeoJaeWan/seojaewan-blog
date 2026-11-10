@@ -3,13 +3,16 @@
 
 import type { ExplorerWorkspace } from '@/features/file-explorer/utils/explorer-location/explorer-location';
 import type {
+  ExplorerHistoryEntry,
   ExplorerLocation,
+  ExplorerSelection,
   ExplorerTabState,
   ExplorerWindowContent,
 } from '@/shared/utils/window-rules/window-rules';
 import {
   DESKTOP_LOCATION_KEY,
   DESKTOP_NAME,
+  type FolderItem,
   type FolderTreeNode,
   getFolderPath,
   getFolderTree,
@@ -18,7 +21,7 @@ import {
   RECYCLE_BIN_NAME,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
-/** 탐색 창 트리 칸 하나. key는 트리 칸 열쇠이며 바탕화면은 `desktop`, 폴더는 폴더 id, 휴지통은 휴지통 id다. location은 누르면 갈 위치다. level은 깊이(0~3)이며 3보다 깊은 폴더는 3으로 그린다(NavigationItem Level이 3까지다). expand는 꺾쇠이며 하위 폴더가 없으면 none이다. */
+/** 탐색 창 칸 하나. key는 칸 열쇠이며 바탕화면은 `desktop`, 폴더는 폴더 id, 휴지통은 휴지통 id, 즐겨찾기 칸은 `favorite:` + 폴더 id다. location은 누르면 갈 위치다. level은 깊이(0~3)이며 3보다 깊은 폴더는 3으로 그린다(NavigationItem Level이 3까지다). expand는 꺾쇠이며 하위 폴더가 없으면 none이다. */
 export type NavigationRow = {
   key: string;
   location: ExplorerLocation;
@@ -26,7 +29,6 @@ export type NavigationRow = {
   level: 0 | 1 | 2 | 3;
   expand: 'none' | 'collapsed' | 'expanded';
   isSelected: boolean;
-  icon: 'desktop' | 'folder' | 'recycle-bin';
 };
 
 // NavigationItem Level의 가장 깊은 값이다.
@@ -39,7 +41,7 @@ const MAX_TREE_LEVEL = 3;
  */
 export function getActiveTab(content: ExplorerWindowContent): ExplorerTabState {
   const tab = content.tabs[content.activeTabIndex] ?? content.tabs[0];
-  return tab ?? { id: 'tab-1', history: [null], historyIndex: 0 };
+  return tab ?? { id: 'tab-1', history: [{ location: null }], historyIndex: 0 };
 }
 
 /**
@@ -48,7 +50,17 @@ export function getActiveTab(content: ExplorerWindowContent): ExplorerTabState {
  * @returns 위치
  */
 export function getTabLocation(tab: ExplorerTabState): ExplorerLocation {
-  return tab.history[tab.historyIndex] ?? null;
+  return tab.history[tab.historyIndex]?.location ?? null;
+}
+
+/**
+ * 탭의 지금 기록 칸에 적힌 항목 선택. 뒤로·앞으로로 돌아왔거나 위로 간 칸이면 있다.
+ * @codocs [[파일 탐색기:탭]]
+ * @param tab 탭
+ * @returns 되살릴 선택. 없으면 undefined
+ */
+export function getTabSelection(tab: ExplorerTabState): ExplorerSelection | undefined {
+  return tab.history[tab.historyIndex]?.selection;
 }
 
 /**
@@ -62,30 +74,72 @@ export function getCurrentLocation(content: ExplorerWindowContent): ExplorerLoca
 
 /**
  * 고른 탭에서 위치로 간다(폴더 더블클릭, 위치 칸, 탐색 창, 위로). 앞으로 기록은 지우고 새 위치를 기록 끝에 더한다.
+ * 떠나는 칸에는 지금 선택을 적어 뒤로 돌아오면 되살린다. 새 칸은 선택 없이 보인다(위로는 `goUp`이 첫 선택을 넣는다).
  * 지금 위치와 같으면 기록을 늘리지 않는다. 간 위치와 그 조상은 탐색 창에서 펼친다.
  * @codocs [[파일 탐색기:조작]]
  * @codocs [[파일 탐색기:탭]]
  * @param content 탐색기 창 내용
  * @param workspace 작업 공간
  * @param location 갈 위치
+ * @param leavingSelection 떠나는 칸의 지금 선택
+ * @param arrivingSelection 새 칸의 첫 선택
  * @returns 새 창 내용
  */
 export function navigateTo(
   content: ExplorerWindowContent,
   workspace: ExplorerWorkspace,
   location: ExplorerLocation,
+  leavingSelection?: ExplorerSelection,
+  arrivingSelection?: ExplorerSelection,
 ): ExplorerWindowContent {
   const target = resolveLocation(workspace, location);
   const tab = getActiveTab(content);
   if (getTabLocation(tab) === target) {
     return content;
   }
-  const history = [...tab.history.slice(0, tab.historyIndex + 1), target];
+  const kept = withSelection(tab, leavingSelection).history.slice(0, tab.historyIndex + 1);
+  const history = [...kept, toHistoryEntry(target, arrivingSelection)];
   return revealLocation(
     replaceActiveTab(content, { ...tab, history, historyIndex: history.length - 1 }),
     workspace,
     target,
   );
+}
+
+/**
+ * 탭의 지금 기록 칸에 항목 선택을 적는다. 그 칸으로 돌아오면 되살린다.
+ * @codocs [[파일 탐색기:탭]]
+ * @param tab 탭
+ * @param selection 적을 선택. 없으면 그대로다
+ * @returns 새 탭
+ */
+export function withSelection(
+  tab: ExplorerTabState,
+  selection: ExplorerSelection | undefined,
+): ExplorerTabState {
+  if (selection === undefined || tab.history[tab.historyIndex] === undefined) {
+    return tab;
+  }
+  const history = tab.history.map((entry, index) =>
+    index === tab.historyIndex ? toHistoryEntry(entry.location, selection) : entry,
+  );
+  return { ...tab, history };
+}
+
+/**
+ * 고른 탭의 지금 기록 칸에 항목 선택을 적는다. 탭을 바꾸기 전에 적어 두면 그 탭으로 돌아왔을 때 되살린다.
+ * @codocs [[파일 탐색기:탭]]
+ * @param content 탐색기 창 내용
+ * @param selection 적을 선택
+ * @returns 새 창 내용
+ */
+export function saveActiveSelection(
+  content: ExplorerWindowContent,
+  selection: ExplorerSelection | undefined,
+): ExplorerWindowContent {
+  const tab = getActiveTab(content);
+  const next = withSelection(tab, selection);
+  return next === tab ? content : replaceActiveTab(content, next);
 }
 
 /**
@@ -110,31 +164,36 @@ export function canGoForward(content: ExplorerWindowContent): boolean {
 }
 
 /**
- * 고른 탭의 기록에서 한 칸 뒤로 간다. 기록 속 위치가 그새 휴지통에 들어갔으면 그 상위 폴더로 간다.
+ * 고른 탭의 기록에서 한 칸 뒤로 간다. 떠나는 칸에는 지금 선택을 적고, 간 칸은 그 칸을 떠날 때의 선택을 되살린다.
+ * 기록 속 위치가 그새 휴지통에 들어갔으면 그 상위 폴더로 간다.
  * @codocs [[파일 탐색기:탭]]
  * @param content 탐색기 창 내용
  * @param workspace 작업 공간
+ * @param leavingSelection 떠나는 칸의 지금 선택
  * @returns 새 창 내용. 뒤로 갈 기록이 없으면 그대로다
  */
 export function goBack(
   content: ExplorerWindowContent,
   workspace: ExplorerWorkspace,
+  leavingSelection?: ExplorerSelection,
 ): ExplorerWindowContent {
-  return canGoBack(content) ? moveInHistory(content, workspace, -1) : content;
+  return canGoBack(content) ? moveInHistory(content, workspace, -1, leavingSelection) : content;
 }
 
 /**
- * 고른 탭의 기록에서 한 칸 앞으로 간다.
+ * 고른 탭의 기록에서 한 칸 앞으로 간다. 떠나는 칸에는 지금 선택을 적고, 간 칸은 그 칸을 떠날 때의 선택을 되살린다.
  * @codocs [[파일 탐색기:탭]]
  * @param content 탐색기 창 내용
  * @param workspace 작업 공간
+ * @param leavingSelection 떠나는 칸의 지금 선택
  * @returns 새 창 내용. 앞으로 갈 기록이 없으면 그대로다
  */
 export function goForward(
   content: ExplorerWindowContent,
   workspace: ExplorerWorkspace,
+  leavingSelection?: ExplorerSelection,
 ): ExplorerWindowContent {
-  return canGoForward(content) ? moveInHistory(content, workspace, 1) : content;
+  return canGoForward(content) ? moveInHistory(content, workspace, 1, leavingSelection) : content;
 }
 
 /**
@@ -159,18 +218,27 @@ export function getParentLocation(
 }
 
 /**
- * 고른 탭에서 상위 위치로 간다(위로). 바탕화면에서는 그대로다.
+ * 고른 탭에서 상위 위치로 간다(위로). 새 칸은 방금 있던 폴더를 고르고 현재 항목으로 둔 채 보인다. 바탕화면에서는 그대로다.
  * @codocs [[파일 탐색기:탭]]
  * @param content 탐색기 창 내용
  * @param workspace 작업 공간
+ * @param leavingSelection 떠나는 칸의 지금 선택
  * @returns 새 창 내용
  */
 export function goUp(
   content: ExplorerWindowContent,
   workspace: ExplorerWorkspace,
+  leavingSelection?: ExplorerSelection,
 ): ExplorerWindowContent {
-  const parent = getParentLocation(workspace, getCurrentLocation(content));
-  return parent === undefined ? content : navigateTo(content, workspace, parent);
+  const location = getCurrentLocation(content);
+  const parent = getParentLocation(workspace, location);
+  if (parent === undefined || location === null) {
+    return content;
+  }
+  return navigateTo(content, workspace, parent, leavingSelection, {
+    ids: [location],
+    focusId: location,
+  });
 }
 
 /**
@@ -269,7 +337,7 @@ export function openNewTab(
   const location = resolveLocation(workspace, target);
   const tab: ExplorerTabState = {
     id: `tab-${String(serial)}`,
-    history: [location],
+    history: [{ location }],
     historyIndex: 0,
   };
   const tabs = [...content.tabs, tab];
@@ -390,7 +458,6 @@ export function getNavigationRows(
       level: 0,
       expand: getExpand(content, workspace, DESKTOP_LOCATION_KEY, tree.length > 0),
       isSelected: location === null,
-      icon: 'desktop',
     },
   ];
   if (rows[0]?.expand === 'expanded') {
@@ -403,9 +470,59 @@ export function getNavigationRows(
     level: 0,
     expand: 'none',
     isSelected: location === RECYCLE_BIN_ID,
-    icon: 'recycle-bin',
   });
   return rows;
+}
+
+/** 즐겨찾기 칸 열쇠의 머리. 같은 폴더가 트리에도 있어 열쇠를 나눈다 */
+export const FAVORITE_ROW_KEY_PREFIX = 'favorite:';
+
+/**
+ * 탐색 창 맨 위의 즐겨찾기 칸을 고정한 순서로 돌려준다. 즐겨찾기 칸을 눌러 간 폴더면 그 칸이 선택된 칸이다.
+ * @codocs [[파일 탐색기:탐색 창]]
+ * @param folders 보이는 즐겨찾기 폴더(고정한 순서)
+ * @param location 지금 위치
+ * @param pickedFavoriteId 즐겨찾기 칸을 눌러 간 폴더. 다른 방법으로 왔으면 null이다
+ * @returns 즐겨찾기 칸
+ */
+export function getFavoriteRows(
+  folders: readonly FolderItem[],
+  location: ExplorerLocation,
+  pickedFavoriteId: string | null,
+): NavigationRow[] {
+  return folders.map(
+    /**
+     * 즐겨찾기 폴더 하나를 칸으로 바꾼다.
+     * @param folder 즐겨찾기 폴더
+     * @returns 즐겨찾기 칸
+     */
+    (folder) => ({
+      key: `${FAVORITE_ROW_KEY_PREFIX}${folder.id}`,
+      location: folder.id,
+      label: folder.name,
+      level: 0,
+      expand: 'none',
+      isSelected: location === folder.id && pickedFavoriteId === folder.id,
+    }),
+  );
+}
+
+/**
+ * 즐겨찾기 칸을 눌러 간 폴더면 트리의 같은 폴더 칸은 고르지 않는다(선택된 칸은 하나다).
+ * @codocs [[파일 탐색기:탐색 창]]
+ * @param rows 트리 칸
+ * @param favoriteRows 즐겨찾기 칸
+ * @returns 탐색 창 칸 전체(즐겨찾기 칸, 트리 칸 차례)
+ */
+export function mergeNavigationRows(
+  rows: readonly NavigationRow[],
+  favoriteRows: readonly NavigationRow[],
+): NavigationRow[] {
+  const isFavoriteSelected = favoriteRows.some((row) => row.isSelected);
+  return [
+    ...favoriteRows,
+    ...(isFavoriteSelected ? rows.map((row) => ({ ...row, isSelected: false })) : rows),
+  ];
 }
 
 /**
@@ -499,7 +616,6 @@ function appendFolderRows(
       level: toTreeLevel(depth),
       expand,
       isSelected: location === node.folder.id,
-      icon: 'folder',
     });
     if (expand === 'expanded') {
       appendFolderRows(
@@ -596,14 +712,16 @@ function replaceActiveTab(
  * @param content 탐색기 창 내용
  * @param workspace 작업 공간
  * @param step 움직일 칸(-1 뒤로, 1 앞으로)
+ * @param leavingSelection 떠나는 칸의 지금 선택
  * @returns 새 창 내용
  */
 function moveInHistory(
   content: ExplorerWindowContent,
   workspace: ExplorerWorkspace,
   step: number,
+  leavingSelection: ExplorerSelection | undefined,
 ): ExplorerWindowContent {
-  const tab = getActiveTab(content);
+  const tab = withSelection(getActiveTab(content), leavingSelection);
   const moved = resolveTab({ ...tab, historyIndex: tab.historyIndex + step }, workspace);
   return revealLocation(replaceActiveTab(content, moved), workspace, getTabLocation(moved));
 }
@@ -622,15 +740,29 @@ function resolveTab(tab: ExplorerTabState, workspace: ExplorerWorkspace): Explor
   }
   const history = [...tab.history];
   let index = tab.historyIndex;
-  history[index] = resolved;
-  if (history[index + 1] === resolved) {
+  // 바로잡은 위치는 다른 폴더라 그 칸에 적힌 선택은 버린다.
+  history[index] = { location: resolved };
+  if (history[index + 1]?.location === resolved) {
     history.splice(index + 1, 1);
   }
-  if (index > 0 && history[index - 1] === resolved) {
+  if (index > 0 && history[index - 1]?.location === resolved) {
     history.splice(index, 1);
     index -= 1;
   }
   return { ...tab, history, historyIndex: index };
+}
+
+/**
+ * 기록 칸을 만든다. 선택이 없으면 선택 속성을 두지 않는다.
+ * @param location 위치
+ * @param selection 선택
+ * @returns 기록 칸
+ */
+function toHistoryEntry(
+  location: ExplorerLocation,
+  selection: ExplorerSelection | undefined,
+): ExplorerHistoryEntry {
+  return selection === undefined ? { location } : { location, selection };
 }
 
 /**

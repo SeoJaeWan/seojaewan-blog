@@ -24,7 +24,7 @@
     "location=folder,device=desktop": {
       "node": {
         "height": 32,
-        "width": 421,
+        "width": 469,
         "x": 0,
         "y": 0
       },
@@ -66,32 +66,31 @@
               "delete"
             ],
             "properties": {
+              "Checked": "False",
               "State": "Rest",
               "Variant": "Subtle"
             }
           },
           {
-            "component": "Button",
+            "component": "DropDownButton",
             "paths": [
               "정렬"
             ],
             "properties": {
               "Has icon": true,
               "Label": "정렬",
-              "State": "Rest",
-              "Variant": "Subtle"
+              "State": "Rest"
             }
           },
           {
-            "component": "Button",
+            "component": "DropDownButton",
             "paths": [
               "보기"
             ],
             "properties": {
               "Has icon": true,
               "Label": "보기",
-              "State": "Rest",
-              "Variant": "Subtle"
+              "State": "Rest"
             }
           }
         ],
@@ -104,7 +103,7 @@
         "name": "Location=Folder, Device=Desktop",
         "size": {
           "h": 32,
-          "w": 421
+          "w": 469
         },
         "sizing": {
           "h": "HUG",
@@ -138,6 +137,7 @@
               "view"
             ],
             "properties": {
+              "Checked": "False",
               "State": "Rest",
               "Variant": "Subtle"
             }
@@ -172,7 +172,7 @@
     "location=recycle-bin,device=desktop": {
       "node": {
         "height": 32,
-        "width": 361,
+        "width": 409,
         "x": 0,
         "y": 0
       },
@@ -217,27 +217,25 @@
             }
           },
           {
-            "component": "Button",
+            "component": "DropDownButton",
             "paths": [
               "정렬"
             ],
             "properties": {
               "Has icon": true,
               "Label": "정렬",
-              "State": "Rest",
-              "Variant": "Subtle"
+              "State": "Rest"
             }
           },
           {
-            "component": "Button",
+            "component": "DropDownButton",
             "paths": [
               "보기"
             ],
             "properties": {
               "Has icon": true,
               "Label": "보기",
-              "State": "Rest",
-              "Variant": "Subtle"
+              "State": "Rest"
             }
           }
         ],
@@ -250,7 +248,7 @@
         "name": "Location=Recycle bin, Device=Desktop",
         "size": {
           "h": 32,
-          "w": 361
+          "w": 409
         },
         "sizing": {
           "h": "HUG",
@@ -281,6 +279,7 @@
               "view"
             ],
             "properties": {
+              "Checked": "False",
               "State": "Rest",
               "Variant": "Subtle"
             }
