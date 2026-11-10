@@ -6,6 +6,7 @@ export * from './components/best-match-card/best-match-card';
 export * from './components/bookmark/bookmark';
 export * from './components/boot-screen/boot-screen';
 export * from './components/breadcrumb/breadcrumb';
+export * from './components/breadcrumb-chevron/breadcrumb-chevron';
 export * from './components/breadcrumb-item/breadcrumb-item';
 export * from './components/browser-tab/browser-tab';
 export * from './components/browser-tab-strip/browser-tab-strip';
