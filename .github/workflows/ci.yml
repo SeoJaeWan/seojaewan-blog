@@ -1,4 +1,5 @@
 # @codocs [[Git 작업 규칙:CI]]
+# @codocs [[배포 환경:CI]] GitHub 호스티드 러너(`ubuntu-latest`)에서 돈다. job마다 깨끗한 머신이라 pnpm은 기본 위치에 설치한다.
 # `Branch name` 작업은 PR 브랜치 이름을 검사한다([[Git 작업 규칙:브랜치]]). 늘 시작해 `main` push에서도 `main`을 검사한다.
 name: CI
 
@@ -25,18 +26,16 @@ jobs:
   branch-name:
     # ruleset의 필수 검사 이름과 같아야 한다
     name: Branch name
-    runs-on: [self-hosted, linux]
+    runs-on: ubuntu-latest
     env:
       # PR이면 PR 브랜치, `main` push면 `main`. 값을 스크립트 안에 풀어 쓰지 않고 환경 변수로 넘긴다.
       BRANCH: ${{ github.head_ref || github.ref_name }}
     steps:
       - uses: actions/checkout@v7.0.1
 
-      # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
       - uses: pnpm/action-setup@v6.1.1
-        with:
-          dest: ${{ runner.temp }}/setup-pnpm
 
+      # 루트 의존성만 설치하므로 pnpm 캐시를 쓰지 않는다. 이 job이 일부만 담은 저장소를 같은 키로 먼저 저장하지 않게 하기 위해서다
       - uses: actions/setup-node@v7.1.0
         with:
           node-version-file: .nvmrc
@@ -48,21 +47,19 @@ jobs:
 
   verify:
     name: Lint, typecheck, test, build
-    runs-on: [self-hosted, linux]
+    runs-on: ubuntu-latest
     steps:
       # changeset 검사가 `main`과 갈라진 지점을 찾아야 해서 전체 기록을 받는다
       - uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
-      # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
       - uses: pnpm/action-setup@v6.1.1
-        with:
-          dest: ${{ runner.temp }}/setup-pnpm
 
       - uses: actions/setup-node@v7.1.0
         with:
           node-version-file: .nvmrc
+          cache: pnpm
 
       - run: pnpm install --frozen-lockfile
 
@@ -88,7 +85,7 @@ jobs:
 
       # 스토리 테스트(`storybook-*` project)가 Chromium에서 돈다
       - name: Install Playwright browsers
-        run: pnpm --filter @seojaewan/web exec playwright install chromium
+        run: pnpm --filter @seojaewan/web exec playwright install --with-deps chromium
 
       - name: Unit and storybook tests
         run: pnpm test
@@ -107,27 +104,21 @@ jobs:
 
   e2e:
     name: E2E
-    runs-on: [self-hosted, linux]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
 
-      # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
       - uses: pnpm/action-setup@v6.1.1
-        with:
-          dest: ${{ runner.temp }}/setup-pnpm
 
       - uses: actions/setup-node@v7.1.0
         with:
           node-version-file: .nvmrc
+          cache: pnpm
 
       - run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: pnpm --filter @seojaewan/web exec playwright install chromium
-
-      # 한 머신에서 job이 동시에 돌아 runner마다 다른 포트로 앱을 띄운다(scripts/runner-port.mjs)
-      - name: Pick E2E port
-        run: echo "E2E_PORT=$(node scripts/runner-port.mjs 4100)" >> "$GITHUB_ENV"
+        run: pnpm --filter @seojaewan/web exec playwright install --with-deps chromium
 
       - name: E2E tests
         run: pnpm test:e2e
