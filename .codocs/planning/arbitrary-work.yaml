@@ -234,3 +234,9 @@ Notion 열 나누기: |
   - #882 FileRow: `Figma` 스토리는 클래스 없는 `role="listbox"` 래퍼와 ref 콜백 포커스로 파랑 변형을 그리고, `Selected unfocused`만 포커스를 주지 않는다. 이름 바꾸기 입력창의 포커스는 빼앗지 않는다. Cut selected·Rename의 선택 바탕도 Selected와 같이 포커스 유무로 고른다. Hover 바탕은 포커스와 상관없이 그대로다. 동작 스토리 `ListFocus`는 색을 숫자로 적지 않고 포커스 전후 계산된 색이 바뀌는지로 확인한다.
   - #895·#897 메뉴·창 조립: 그림만 담는 PR도 새 자산이 들어오면 `generate:assets` 결과와 changeset이 있어야 CI를 통과해, 둘을 더해 병합했다.
   - `피그마 작업 검수` 문서는 다른 검수 문서가 섹션 링크로 가리키고 있어, 끝난 섹션을 지우지 않고 "끝남"과 PR 번호로 줄였다. 영역 세션이 모두 끝나면 문서를 지우고 링크를 정리한다.
+
+Chrome 세션: |
+  2026-11-10 Chrome 검수 후속([[Chrome 검수]])에서 사람에게 묻지 않고 정한 것이다.
+  - #884 BrowserTab: 활성 탭 오목 모서리는 검수 문서의 가상 요소 원형 그라디언트 대신 export.json대로 Shapes 자산(`shapes/browser-tab-corner-left·right`)을 `Asset`으로 탭 밖 아래 양옆에 그렸다. 크기는 견본 크기(8, 변수 없음)라 같은 값의 `size-spacing-sm`으로, 위치는 `right-position-full`·`left-position-full`과 `bottom-spacing-none`으로 두었다. 칠은 탭 바탕과 같은 `text-color-white`다.
+  - #884 BrowserTab: 모서리 조각은 탭 밖으로 나오므로 `pointer-events-none`을 주어 옆 탭의 누르기·호버를 막지 않게 했다.
+  - #884 BrowserTab: 피그마 기본 파비콘이 아직 `file/Document`라 `Figma` 스토리는 그대로 두었다(검수 8번의 Material `description`은 내보낸 그림에 아직 없다).
