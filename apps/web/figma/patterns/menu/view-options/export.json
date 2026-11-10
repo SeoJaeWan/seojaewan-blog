@@ -43,7 +43,7 @@
               "Menu/Flyout/Content/item 그리드"
             ],
             "properties": {
-              "Has icon": true,
+              "Has icon": false,
               "Has shortcut": false,
               "Label": "그리드",
               "Shortcut": "Ctrl+O",
