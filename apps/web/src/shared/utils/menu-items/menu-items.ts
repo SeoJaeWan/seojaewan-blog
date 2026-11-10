@@ -133,7 +133,7 @@ export function startPinMenuItem(isPinned: boolean, onClick: () => void): MenuPo
  */
 export function taskbarPinMenuItem(isPinned: boolean, onClick: () => void): MenuPopupCommand {
   return {
-    label: isPinned ? '작업 표시줄에서 고정 해제' : '작업 표시줄에 고정',
+    label: isPinned ? '작업 표시줄에서 제거' : '작업 표시줄에 고정',
     icon: isPinned ? MENU_ICONS.pinOff : MENU_ICONS.pin,
     onClick,
   };

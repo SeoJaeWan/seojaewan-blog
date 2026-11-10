@@ -33,27 +33,6 @@
       "tree": {
         "children": [
           {
-            "asset": {
-              "path": "images/file-folder"
-            },
-            "component": "file/Folder",
-            "fills": [
-              "IMAGE"
-            ],
-            "height": "size/icon/sm",
-            "name": "location icon",
-            "size": {
-              "h": 16,
-              "w": 16
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FIXED"
-            },
-            "type": "INSTANCE",
-            "width": "size/icon/sm"
-          },
-          {
             "children": [
               {
                 "fills": [
@@ -61,8 +40,8 @@
                 ],
                 "name": "path",
                 "size": {
-                  "h": 16,
-                  "w": 133
+                  "h": 20,
+                  "w": 155
                 },
                 "sizing": {
                   "h": "HUG",
@@ -76,22 +55,22 @@
                     {
                       "characters": "바탕",
                       "fill": "color/black/89",
-                      "textStyle": "Hangul/Caption"
+                      "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
                       "fill": "color/black/89",
-                      "textStyle": "Caption"
+                      "textStyle": "Body"
                     },
                     {
                       "characters": "화면",
                       "fill": "color/black/89",
-                      "textStyle": "Hangul/Caption"
+                      "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": "\\Blog\\JavaScript",
                       "fill": "color/black/89",
-                      "textStyle": "Caption"
+                      "textStyle": "Body"
                     }
                   ],
                   "truncation": "DISABLED"
@@ -116,14 +95,87 @@
             },
             "name": "selection",
             "size": {
-              "h": 16,
-              "w": 133
+              "h": 20,
+              "w": 155
             },
             "sizing": {
               "h": "HUG",
               "v": "HUG"
             },
             "type": "FRAME"
+          },
+          {
+            "height": "stroke-width/default",
+            "name": "spacer",
+            "size": {
+              "h": 1,
+              "w": 271
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "type": "FRAME"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/89",
+                  "path": "icons/ic_fluent_dismiss_20_regular"
+                },
+                "component": "ic_fluent_dismiss_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "IconButton",
+            "fills": [
+              "color/white/0"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "clear",
+            "properties": {
+              "Checked": "False",
+              "State": "Rest",
+              "Variant": "Subtle"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
           },
           {
             "absolute": {
@@ -156,7 +208,7 @@
           "mode": "HORIZONTAL",
           "padding": [
             "spacing/none",
-            "spacing/sm",
+            "spacing/xs",
             "spacing/none",
             "spacing/sm"
           ],
@@ -228,20 +280,58 @@
             "width": "size/icon/sm"
           },
           {
-            "asset": {
-              "color": "color/black/61",
-              "path": "icons/ic_fluent_chevron_right_16_regular"
-            },
-            "component": "ic_fluent_chevron_right_16_regular",
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/61",
+                  "path": "icons/ic_fluent_chevron_right_16_regular"
+                },
+                "component": "ic_fluent_chevron_right_16_regular",
+                "height": "size/icon/sm",
+                "name": "chevron",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "BreadcrumbChevron",
             "height": "size/icon/sm",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/xs",
+                "spacing/xs",
+                "spacing/xs",
+                "spacing/xs"
+              ],
+              "primaryAlign": "CENTER"
+            },
             "name": "separator",
+            "properties": {
+              "State": "Rest"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
             "size": {
-              "h": 16,
-              "w": 16
+              "h": 24,
+              "w": 24
             },
             "sizing": {
-              "h": "FIXED",
-              "v": "FIXED"
+              "h": "HUG",
+              "v": "HUG"
             },
             "type": "INSTANCE",
             "width": "size/icon/sm"
@@ -258,8 +348,8 @@
                         ],
                         "name": "label",
                         "size": {
-                          "h": 16,
-                          "w": 45
+                          "h": 20,
+                          "w": 53
                         },
                         "sizing": {
                           "h": "HUG",
@@ -273,17 +363,17 @@
                             {
                               "characters": "바탕",
                               "fill": "color/black/89",
-                              "textStyle": "Hangul/Caption"
+                              "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
                               "fill": "color/black/89",
-                              "textStyle": "Caption"
+                              "textStyle": "Body"
                             },
                             {
                               "characters": "화면",
                               "fill": "color/black/89",
-                              "textStyle": "Hangul/Caption"
+                              "textStyle": "Hangul/Body"
                             }
                           ],
                           "truncation": "ENDING"
@@ -312,8 +402,8 @@
                       "radius/control"
                     ],
                     "size": {
-                      "h": 24,
-                      "w": 57
+                      "h": 28,
+                      "w": 65
                     },
                     "sizing": {
                       "h": "HUG",
@@ -322,20 +412,58 @@
                     "type": "FRAME"
                   },
                   {
-                    "asset": {
-                      "color": "color/black/61",
-                      "path": "icons/ic_fluent_chevron_right_16_regular"
-                    },
-                    "component": "ic_fluent_chevron_right_16_regular",
+                    "children": [
+                      {
+                        "asset": {
+                          "color": "color/black/61",
+                          "path": "icons/ic_fluent_chevron_right_16_regular"
+                        },
+                        "component": "ic_fluent_chevron_right_16_regular",
+                        "height": "size/icon/sm",
+                        "name": "chevron",
+                        "size": {
+                          "h": 16,
+                          "w": 16
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "INSTANCE",
+                        "width": "size/icon/sm"
+                      }
+                    ],
+                    "component": "BreadcrumbChevron",
                     "height": "size/icon/sm",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/xs",
+                        "spacing/xs",
+                        "spacing/xs",
+                        "spacing/xs"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
                     "name": "separator",
+                    "properties": {
+                      "State": "Rest"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
                     "size": {
-                      "h": 16,
-                      "w": 16
+                      "h": 24,
+                      "w": 24
                     },
                     "sizing": {
-                      "h": "FIXED",
-                      "v": "FIXED"
+                      "h": "HUG",
+                      "v": "HUG"
                     },
                     "type": "INSTANCE",
                     "width": "size/icon/sm"
@@ -361,8 +489,8 @@
                   "State": "Rest"
                 },
                 "size": {
-                  "h": 24,
-                  "w": 73
+                  "h": 28,
+                  "w": 89
                 },
                 "sizing": {
                   "h": "HUG",
@@ -380,8 +508,8 @@
                         ],
                         "name": "label",
                         "size": {
-                          "h": 16,
-                          "w": 25
+                          "h": 20,
+                          "w": 29
                         },
                         "sizing": {
                           "h": "HUG",
@@ -395,7 +523,7 @@
                             {
                               "characters": "Blog",
                               "fill": "color/black/89",
-                              "textStyle": "Caption"
+                              "textStyle": "Body"
                             }
                           ],
                           "truncation": "ENDING"
@@ -424,8 +552,8 @@
                       "radius/control"
                     ],
                     "size": {
-                      "h": 24,
-                      "w": 37
+                      "h": 28,
+                      "w": 41
                     },
                     "sizing": {
                       "h": "HUG",
@@ -454,8 +582,8 @@
                   "State": "Rest"
                 },
                 "size": {
-                  "h": 24,
-                  "w": 37
+                  "h": 28,
+                  "w": 41
                 },
                 "sizing": {
                   "h": "HUG",
@@ -478,8 +606,8 @@
             },
             "name": "Items",
             "size": {
-              "h": 24,
-              "w": 114
+              "h": 28,
+              "w": 134
             },
             "sizing": {
               "h": "HUG",

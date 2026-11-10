@@ -2,10 +2,12 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { resetRegisteredStores } from '@/shared/stores/store-reset/store-reset';
 import {
+  ABOUT_FOLDER_ID,
   BLOG_FOLDER_ID,
   createInitialWorkspace,
   getDesktopItems,
   isItemInTrash,
+  PROJECT_FOLDER_ID,
   toSavedWorkspace,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 import {
@@ -80,6 +82,23 @@ describe('방문자 저장', () => {
       version: WORKSPACE_STORAGE_VERSION,
       state: { items: { 'post:a': { parentId: null } } },
     });
+  });
+
+  // @codocs [[고정:즐겨찾기 고정]]
+  it('즐겨찾기의 고정·해제·순서를 localStorage에 저장하고 다시 들어오면 되살린다', () => {
+    hydrateWorkspaceStore(POSTS);
+    const store = useWorkspaceStore.getState();
+    store.pinToFavorites('folder:React');
+    store.unpinFromFavorites(BLOG_FOLDER_ID);
+    store.moveFavoritePin('folder:React', 0);
+    const expected = ['folder:React', PROJECT_FOLDER_ID, ABOUT_FOLDER_ID];
+    const raw = localStorage.getItem(WORKSPACE_STORAGE_KEY) ?? 'null';
+    const stored: unknown = JSON.parse(raw);
+    expect(stored).toMatchObject({ state: { favoritePins: expected } });
+    useWorkspaceStore.getState().reset();
+    localStorage.setItem(WORKSPACE_STORAGE_KEY, raw);
+    hydrateWorkspaceStore(POSTS);
+    expect(useWorkspaceStore.getState().favoritePins).toEqual(expected);
   });
 
   it('휴지통은 메모리에만 두어, 다시 들어오면 휴지통의 항목은 원래 자리로 돌아오고 휴지통은 빈다', () => {

@@ -234,3 +234,30 @@ Notion 열 나누기: |
   - #882 FileRow: `Figma` 스토리는 클래스 없는 `role="listbox"` 래퍼와 ref 콜백 포커스로 파랑 변형을 그리고, `Selected unfocused`만 포커스를 주지 않는다. 이름 바꾸기 입력창의 포커스는 빼앗지 않는다. Cut selected·Rename의 선택 바탕도 Selected와 같이 포커스 유무로 고른다. Hover 바탕은 포커스와 상관없이 그대로다. 동작 스토리 `ListFocus`는 색을 숫자로 적지 않고 포커스 전후 계산된 색이 바뀌는지로 확인한다.
   - #895·#897 메뉴·창 조립: 그림만 담는 PR도 새 자산이 들어오면 `generate:assets` 결과와 changeset이 있어야 CI를 통과해, 둘을 더해 병합했다.
   - `피그마 작업 검수` 문서는 다른 검수 문서가 섹션 링크로 가리키고 있어, 끝난 섹션을 지우지 않고 "끝남"과 PR 번호로 줄였다. 영역 세션이 모두 끝나면 문서를 지우고 링크를 정리한다.
+
+파일 탐색기 세션: |
+  2026-11-10 검수 후속([[파일 탐색기 검수]])에서 사람에게 묻지 않고 정한 것이다. PR마다 이어서 적는다.
+  - `feat/explorer-favorites-store` 즐겨찾기 목록과 저장: Start 고정(`startPins`)과 같은 방식으로 작업 공간 상태에 `favoritePins`(폴더 id 순서)를 두고, 규칙은 `workspace-rules`의 순수 함수(`pinToFavorites`, `unpinFromFavorites`, `moveFavoritePin`, `getFavoriteFolders`), 조작은 `useWorkspaceStore`의 같은 이름 조작으로 두었다. 따로 훅은 만들지 않았다(Start 고정도 저장소를 읽고 규칙 함수로 그린다).
+  - 저장은 Start 고정과 같은 작업 공간 저장분(`seojaewan-blog:workspace`)에 넣고, 저장 모양이 바뀌어 저장 버전을 3에서 4로 올렸다(버전 주석의 "모양을 바꾸면 올린다" 규칙). 그래서 이전 버전의 저장분은 한 번 초기 구조로 돌아간다.
+  - 순서 바꾸기의 자리는 Start 고정의 `moveStartPin`처럼 휴지통에 있어 보이지 않는 폴더까지 센 `favoritePins`의 자리다.
+  - 다시 들어올 때 없어진 폴더는 목록에서 뺀다(Start 고정의 정리와 같은 `cleanReferences`). 휴지통에 든 폴더는 목록에 남기고 보일 때만 숨긴다.
+  - 끌어 놓은 자리에 고정하는 것(자리 인자)은 끌기 PR에서 더한다. 이번에는 맨 뒤 고정만 두었다.
+
+작업 표시줄 세션: |
+  `fix/taskbar-review` PR에서 [[작업 표시줄 검수]]의 2·3·7번과 10번의 앱 이름을 고치며 규칙으로 정한 것이다.
+  - 앱 우클릭 메뉴(`getAppMenuEntries`)에서 앱 이름 아래 구분선만 뺐다. 점프 목록(9·10번)이 들어오면 목록과 앱 묶음 사이 구분선을 그때 더한다.
+  - 끄는 동안 버튼 모양은 `TaskbarAppItem`의 `isDragging`으로 준다. 실행 표시는 `none`으로, 호버·눌림 바탕과 테두리는 클래스로 꺼서 디자인 시스템 `TaskbarButton`은 바꾸지 않았다. 놓거나 끌기가 취소되면 돌아온다.
+  - "Google Chrome"으로 바꾼 곳은 `taskbar-apps.ts`의 `label`뿐이다. 이 이름은 작업 표시줄 버튼 접근성 이름과 앱 우클릭 메뉴의 앱 이름 줄에만 쓰여, 그 이름을 찾는 스토리·E2E만 따라 고쳤다. Start 목록·타일의 제목(`Chrome`)과 Chrome 창 제목(`새 탭 - Chrome`)은 따로 정의돼 바뀌지 않았다.
+  - E2E 조건 값 `Chrome`(앱 조건의 값 이름)과 창 제목 확인은 그대로 두었다.
+  - [[작업 표시줄:우클릭 메뉴]]의 "작업 표시줄에서 고정 해제" 문구는 이 PR에서 허락받지 않은 문서라 고치지 않았다. 코드는 "작업 표시줄에서 제거"다. 사람이 맞출 곳이다.
+
+Chrome 세션: |
+  2026-11-10 Chrome 검수 후속([[Chrome 검수]])에서 사람에게 묻지 않고 정한 것이다.
+  - #884 BrowserTab: 활성 탭 오목 모서리는 검수 문서의 가상 요소 원형 그라디언트 대신 export.json대로 Shapes 자산(`shapes/browser-tab-corner-left·right`)을 `Asset`으로 탭 밖 아래 양옆에 그렸다. 크기는 견본 크기(8, 변수 없음)라 같은 값의 `size-spacing-sm`으로, 위치는 `right-position-full`·`left-position-full`과 `bottom-spacing-none`으로 두었다. 칠은 탭 바탕과 같은 `text-color-white`다.
+  - #884 BrowserTab: 모서리 조각은 탭 밖으로 나오므로 `pointer-events-none`을 주어 옆 탭의 누르기·호버를 막지 않게 했다.
+  - #884 BrowserTab: 피그마 기본 파비콘이 아직 `file/Document`라 `Figma` 스토리는 그대로 두었다(검수 8번의 Material `description`은 내보낸 그림에 아직 없다).
+  - #885 AddressBar: 피그마 `Filled`는 SearchBox처럼 prop을 두지 않고 입력값으로 정한다. 앞 아이콘은 CSS `:placeholder-shown`(`group-has-placeholder-shown:`)으로 사이트 정보(i)와 돋보기를 바꿔, 제어·비제어 입력 모두 상태 없이 따라간다.
+  - #885 AddressBar: `placeholder` 기본값은 url·query처럼 피그마 TEXT 속성 기본값("글 검색 또는 URL 입력")을 그대로 쓴다. `Figma` 스토리는 `isFilled`가 거짓이면 url·query를 비운다.
+  - #885 AddressBar: 빈 주소창 동작 스토리 `Empty`는 아이콘을 viewBox(Material 20, Fluent 24)로 구분해 비었을 때 돋보기, 입력하면 사이트 정보 아이콘인지 확인한다.
+  - #892 BrowserTabStrip: 탭 검색(⌄) 버튼은 모양과 자리만 그리고, 앱이 메뉴를 붙일 수 있게 BrowserToolbar의 `renderMenuButton`과 같은 방식으로 `renderTabSearchButton`(버튼 요소를 받아 감싸는 함수)과 `onTabSearch`를 열었다. 접근성 이름은 `tabSearchLabel`(기본 "탭 검색")이고, + 버튼 이름도 같은 꼴로 `newTabLabel`(기본 "새 탭")을 열었다. ⌄ 감싸기는 + 감싸기와 같은 `shrink-shrink-none items-start overflow-clip pb-spacing-2xs`다.
+  - #893 BrowserToolbar: 아래 1px 안쪽 선은 이 저장소의 한 면 선 방식(`border-b-stroke-width-default border-color-black-22`, LayerSurface의 `border-t-*`와 같다)으로 그렸다. 박스 크기를 border-box로 두므로 높이 46은 그대로이고 선은 안쪽에 들어간다. 데스크톱·모바일 Chrome 창이 같은 `toolbar`를 쓰므로 둘 다에 들어간다.

@@ -120,7 +120,7 @@ export const Default: Story = {
 
     // @codocs [[작업 표시줄:앱 버튼]]
     await step('열린 창이 없을 때 앱 버튼을 누르면 그 앱 창을 연다', async () => {
-      await userEvent.click(body.getByRole('button', { name: 'Chrome' }));
+      await userEvent.click(body.getByRole('button', { name: 'Google Chrome' }));
       await expect(getOpenApps()).toEqual(['chrome']);
     });
 
@@ -149,7 +149,7 @@ export const WithWindows: Story = {
 
     // @codocs [[작업 표시줄:창 미리보기]]
     await step('창이 여러 개일 때 누르면 쓰는 곳이 넘긴 제목으로 미리보기를 띄운다', async () => {
-      const button = body.getByRole('button', { name: 'Chrome' });
+      const button = body.getByRole('button', { name: 'Google Chrome' });
       await userEvent.click(button);
       await expect(await body.findAllByRole('button', { name: PREVIEW_CARD_NAME })).toHaveLength(2);
       await expect(button).toHaveAttribute('aria-expanded', 'true');
@@ -157,24 +157,24 @@ export const WithWindows: Story = {
 
     // @codocs [[작업 표시줄:우클릭 메뉴]]
     await step('앱 버튼을 우클릭하면 메뉴를 열고 창 미리보기를 닫는다', async () => {
-      await openAppMenu(canvasElement, 'Chrome');
+      await openAppMenu(canvasElement, 'Google Chrome');
       await expect(body.queryByRole('button', { name: PREVIEW_CARD_NAME })).not.toBeInTheDocument();
       await expect(getMenuItemNames(canvasElement)).toEqual([
-        'Chrome',
-        '작업 표시줄에서 고정 해제',
+        'Google Chrome',
+        '작업 표시줄에서 제거',
         '모든 창 닫기',
       ]);
     });
 
     // @codocs [[작업 표시줄:우클릭 메뉴]]
     await step('앱 이름을 고르면 새 창을 연다', async () => {
-      await clickMenuItem(canvasElement, 'Chrome');
+      await clickMenuItem(canvasElement, 'Google Chrome');
       await expect(getOpenApps()).toEqual(['chrome', 'chrome', 'file-explorer', 'chrome']);
     });
 
     // @codocs [[작업 표시줄:우클릭 메뉴]]
     await step('모든 창 닫기로 그 앱의 창을 모두 닫는다', async () => {
-      await openAppMenu(canvasElement, 'Chrome');
+      await openAppMenu(canvasElement, 'Google Chrome');
       await clickMenuItem(canvasElement, '모든 창 닫기');
       await expect(getOpenApps()).toEqual(['file-explorer']);
     });
@@ -184,7 +184,7 @@ export const WithWindows: Story = {
       await openAppMenu(canvasElement, '파일 탐색기');
       await expect(getMenuItemNames(canvasElement)).toEqual([
         '파일 탐색기',
-        '작업 표시줄에서 고정 해제',
+        '작업 표시줄에서 제거',
         '창 닫기',
       ]);
       await clickMenuItem(canvasElement, '창 닫기');
@@ -200,7 +200,7 @@ export const HoverPreview: Story = {
   },
   play: async ({ canvasElement, step }) => {
     const body = within(canvasElement.ownerDocument.body);
-    const button = body.getByRole('button', { name: 'Chrome' });
+    const button = body.getByRole('button', { name: 'Google Chrome' });
     const clock = installStoryClock([HOVER_PREVIEW_OPEN_DELAY, HOVER_PREVIEW_CLOSE_DELAY]);
     try {
       // @codocs [[작업 표시줄:창 미리보기]]
@@ -278,7 +278,7 @@ export const HoverPreviewMultiple: Story = {
   },
   play: async ({ canvasElement, step }) => {
     const body = within(canvasElement.ownerDocument.body);
-    const button = body.getByRole('button', { name: 'Chrome' });
+    const button = body.getByRole('button', { name: 'Google Chrome' });
     const clock = installStoryClock([HOVER_PREVIEW_OPEN_DELAY, HOVER_PREVIEW_CLOSE_DELAY]);
     try {
       // @codocs [[작업 표시줄:창 미리보기]]
@@ -315,7 +315,7 @@ export const Keyboard: Story = {
   },
   play: async ({ canvasElement, step }) => {
     const body = within(canvasElement.ownerDocument.body);
-    const chrome = body.getByRole('button', { name: 'Chrome' });
+    const chrome = body.getByRole('button', { name: 'Google Chrome' });
     const explorer = body.getByRole('button', { name: '파일 탐색기' });
 
     // @codocs [[접근성:Tab]]
@@ -381,7 +381,7 @@ export const HoverLastWindowClosed: Story = {
       await step(
         '마지막 창을 미리보기에서 닫은 뒤 그 앱 창을 다시 열어도 미리보기가 저절로 열리지 않는다',
         async () => {
-          const button = body.getByRole('button', { name: 'Chrome' });
+          const button = body.getByRole('button', { name: 'Google Chrome' });
           await fireEvent.pointerOver(button, { pointerType: 'mouse' });
           clock.tick(HOVER_PREVIEW_OPEN_DELAY);
           await waitFor(() => expect(button).toHaveAttribute('aria-expanded', 'true'));
@@ -391,11 +391,11 @@ export const HoverLastWindowClosed: Story = {
           await expect(closeButton).not.toBeNull();
           await fireEvent.click(closeButton as Element);
           await waitFor(() =>
-            expect(body.queryByRole('button', { name: 'Chrome' })).not.toBeInTheDocument(),
+            expect(body.queryByRole('button', { name: 'Google Chrome' })).not.toBeInTheDocument(),
           );
           const workArea = { width: window.innerWidth, height: window.innerHeight };
           useWindowStore.getState().open('chrome', workArea);
-          const reopened = await body.findByRole('button', { name: 'Chrome' });
+          const reopened = await body.findByRole('button', { name: 'Google Chrome' });
           await expect(reopened).toHaveAttribute('aria-expanded', 'false');
           await expect(
             body.queryByRole('button', { name: PREVIEW_CARD_NAME }),
@@ -419,7 +419,7 @@ export const PinAndUnpin: Story = {
       await openAppMenu(canvasElement, '파일 탐색기');
       await expect(getMenuItemNames(canvasElement)).toEqual([
         '파일 탐색기',
-        '작업 표시줄에서 고정 해제',
+        '작업 표시줄에서 제거',
       ]);
       await userEvent.keyboard('{Escape}');
     });
@@ -429,10 +429,10 @@ export const PinAndUnpin: Story = {
     await step(
       '고정 해제를 고르면 고정 목록에서 빼고, 고정하지 않은 실행 중인 앱은 뒤에 붙는다',
       async () => {
-        await openAppMenu(canvasElement, 'Chrome');
-        await clickMenuItem(canvasElement, '작업 표시줄에서 고정 해제');
+        await openAppMenu(canvasElement, 'Google Chrome');
+        await clickMenuItem(canvasElement, '작업 표시줄에서 제거');
         await expect(useWorkspaceStore.getState().taskbarPins).toEqual(['file-explorer']);
-        await expect(getButtonNames(canvasElement)).toEqual(['파일 탐색기', 'Chrome']);
+        await expect(getButtonNames(canvasElement)).toEqual(['파일 탐색기', 'Google Chrome']);
       },
     );
 
@@ -440,9 +440,9 @@ export const PinAndUnpin: Story = {
     await step(
       '고정하지 않은 앱은 작업 표시줄에 고정을 고르면 고정 목록 맨 뒤에 붙인다',
       async () => {
-        await openAppMenu(canvasElement, 'Chrome');
+        await openAppMenu(canvasElement, 'Google Chrome');
         await expect(getMenuItemNames(canvasElement)).toEqual([
-          'Chrome',
+          'Google Chrome',
           '작업 표시줄에 고정',
           '창 닫기',
         ]);
@@ -453,10 +453,10 @@ export const PinAndUnpin: Story = {
 
     // @codocs [[작업 표시줄:고정과 순서]]
     await step('고정을 해제한 앱은 창을 모두 닫으면 버튼이 사라진다', async () => {
-      await openAppMenu(canvasElement, 'Chrome');
-      await clickMenuItem(canvasElement, '작업 표시줄에서 고정 해제');
-      await expect(getButtonNames(canvasElement)).toEqual(['파일 탐색기', 'Chrome']);
-      await openAppMenu(canvasElement, 'Chrome');
+      await openAppMenu(canvasElement, 'Google Chrome');
+      await clickMenuItem(canvasElement, '작업 표시줄에서 제거');
+      await expect(getButtonNames(canvasElement)).toEqual(['파일 탐색기', 'Google Chrome']);
+      await openAppMenu(canvasElement, 'Google Chrome');
       await clickMenuItem(canvasElement, '창 닫기');
       await waitFor(() => expect(getButtonNames(canvasElement)).toEqual(['파일 탐색기']));
     });
@@ -480,18 +480,22 @@ export const DragOrder: Story = {
 
     // @codocs [[작업 표시줄:고정과 순서]]
     await step('고정한 앱을 고정 순서대로 그린다', async () => {
-      await expect(getButtonNames(canvasElement)).toEqual(['파일 탐색기', 'Chrome']);
+      await expect(getButtonNames(canvasElement)).toEqual(['파일 탐색기', 'Google Chrome']);
       useWorkspaceStore.getState().moveTaskbarPin('chrome', 0);
-      await waitFor(() => expect(getButtonNames(canvasElement)).toEqual(['Chrome', '파일 탐색기']));
+      await waitFor(() =>
+        expect(getButtonNames(canvasElement)).toEqual(['Google Chrome', '파일 탐색기']),
+      );
       useWorkspaceStore.getState().moveTaskbarPin('chrome', 1);
-      await waitFor(() => expect(getButtonNames(canvasElement)).toEqual(['파일 탐색기', 'Chrome']));
+      await waitFor(() =>
+        expect(getButtonNames(canvasElement)).toEqual(['파일 탐색기', 'Google Chrome']),
+      );
     });
 
     // @codocs [[작업 표시줄:고정과 순서]]
     await step(
       '고정한 버튼을 다른 고정 버튼 자리로 끌어 놓으면 순서가 바뀌고, 끌기 뒤에 따라오는 클릭은 버튼 동작을 하지 않는다',
       async () => {
-        const chrome = body.getByRole('button', { name: 'Chrome' });
+        const chrome = body.getByRole('button', { name: 'Google Chrome' });
         const explorer = body.getByRole('button', { name: '파일 탐색기' });
         await dragStoryPointer(chrome, [getCenter(chrome), getCenter(explorer)]);
         await fireEvent.click(chrome);
@@ -504,7 +508,7 @@ export const DragOrder: Story = {
     await step(
       '끄는 버튼은 커지고, 밀려나는 버튼은 미끄러지고, 놓으면 끌던 버튼이 새 자리로 들어간다',
       async () => {
-        const chrome = body.getByRole('button', { name: 'Chrome' });
+        const chrome = body.getByRole('button', { name: 'Google Chrome' });
         const explorer = body.getByRole('button', { name: '파일 탐색기' });
         // 앞 단계의 놓기·미끄러짐이 끝나 버튼이 제자리에 선 뒤에 잰다.
         await waitFor(() => expect(chrome).not.toHaveAttribute('data-reorder-motion'));
@@ -524,10 +528,36 @@ export const DragOrder: Story = {
 
     // @codocs [[작업 표시줄:고정과 순서]]
     await step('끌지 않고 누르면 버튼 동작을 한다', async () => {
-      const chrome = body.getByRole('button', { name: 'Chrome' });
+      const chrome = body.getByRole('button', { name: 'Google Chrome' });
       await dragStoryPointer(chrome, [getCenter(chrome)]);
       await fireEvent.click(chrome);
       await expect(useWindowStore.getState().order).toHaveLength(1);
+    });
+  },
+};
+
+/** 창이 열린 고정 앱 버튼을 끄는 동안 그 앱의 실행 표시가 사라지고, 놓으면 돌아온다 */
+export const DragHidesIndicator: Story = {
+  beforeEach: () => {
+    openStoryWindows(['chrome']);
+  },
+  play: async ({ canvasElement, step }) => {
+    const body = within(canvasElement.ownerDocument.body);
+
+    // @codocs [[작업 표시줄:고정과 순서]]
+    // @codocs [[항목 조작:순서 바꾸기 끌기]]
+    await step('끄는 동안 그 앱의 실행 표시가 사라지고 놓으면 돌아온다', async () => {
+      const chrome = body.getByRole('button', { name: 'Google Chrome' });
+      const explorer = body.getByRole('button', { name: '파일 탐색기' });
+      const start = chrome.getBoundingClientRect();
+      const end = explorer.getBoundingClientRect();
+      const from = { x: start.x + start.width / 2, y: start.y + start.height / 2 };
+      const to = { x: end.x + end.width / 2, y: end.y + end.height / 2 };
+      await expect(chrome).toHaveAttribute('data-indicator', 'active');
+      await pressStoryPointer(chrome, [from, to]);
+      await expect(chrome).toHaveAttribute('data-indicator', 'none');
+      await fireEvent.pointerUp(chrome, storyPointerInit(to));
+      await waitFor(() => expect(chrome).toHaveAttribute('data-indicator', 'active'));
     });
   },
 };
@@ -546,7 +576,7 @@ export const Mobile: Story = {
     await step(
       '미리보기 목록을 화면 폭에서 좌우 12px 여백을 뺀 폭에 맞추고 카드를 같은 너비로 줄인다',
       async () => {
-        await userEvent.click(body.getByRole('button', { name: 'Chrome' }));
+        await userEvent.click(body.getByRole('button', { name: 'Google Chrome' }));
         const cards = await body.findAllByRole('button', { name: PREVIEW_CARD_NAME });
         await expect(cards).toHaveLength(3);
         // 실제 브라우저라 여는 애니메이션의 scale이 getBoundingClientRect에 들어가므로 배치 크기를 본다.

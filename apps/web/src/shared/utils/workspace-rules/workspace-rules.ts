@@ -258,13 +258,14 @@ export type ExplorerFolderView = {
   sortDirection: SortDirection;
 };
 
-/** 작업 공간 상태. 방문자 브라우저에 저장하는 범위 전체다. items는 id로 찾고 넣은 차례를 지킨다. startPins는 Start 고정됨의 항목 id 순서이며 앱은 `APP_ITEM_IDS`의 id다. explorerViews는 폴더 id(바탕화면은 `DESKTOP_LOCATION_KEY`)로 찾는다. recentItemIds는 앞이 가장 최근이다. */
+/** 작업 공간 상태. 방문자 브라우저에 저장하는 범위 전체다. items는 id로 찾고 넣은 차례를 지킨다. startPins는 Start 고정됨의 항목 id 순서이며 앱은 `APP_ITEM_IDS`의 id다. favoritePins는 탐색기 즐겨찾기(작업 표시줄 탐색기 점프 목록의 고정됨)의 폴더 id 순서다. explorerViews는 폴더 id(바탕화면은 `DESKTOP_LOCATION_KEY`)로 찾는다. recentItemIds는 앞이 가장 최근이다. */
 export type WorkspaceState = {
   items: Readonly<Record<string, WorkspaceItem>>;
   desktop: DesktopSettings;
   startPins: readonly string[];
   startAllView: StartAllViewSetting;
   taskbarPins: readonly WindowApp[];
+  favoritePins: readonly string[];
   explorerViews: Readonly<Record<string, ExplorerFolderView>>;
   recentItemIds: readonly string[];
 };
@@ -381,8 +382,10 @@ function getVisibleLinks(catalog: WorkspaceCatalog): readonly ExternalLinkConfig
  * 저장된 상태가 없을 때의 초기 구조를 만든다. 바탕화면에 휴지통과 묶음 폴더(`Blog`, `Project`, `About`)를 두고, 글의 `폴더` 경로대로
  * 자기 묶음 폴더 아래에 폴더를 만들어 글을 넣는다(경로가 비면 묶음 폴더). 외부 링크는 설정의 초기 위치에 둔다.
  * Start 고정됨은 File Explorer, Chrome, `Blog` 폴더, 처음부터 고정하도록 정한 외부 링크다. Start 모두 목록의 처음 보기는 범주다.
+ * 탐색기 즐겨찾기는 `Project`, `Blog`, `About` 폴더 순서다.
  * @codocs [[작업 공간 맞추기:초기 구조]]
  * @codocs [[고정:시작 화면 고정]]
+ * @codocs [[고정:즐겨찾기 고정]]
  * @codocs [[Start 메뉴:모두]]
  * @codocs [[고정:작업 표시줄 고정]]
  * @param catalog 글 색인과 외부 링크 설정
@@ -420,6 +423,7 @@ export function createInitialWorkspace(catalog: WorkspaceCatalog): WorkspaceStat
     ],
     startAllView: 'category',
     taskbarPins: INITIAL_TASKBAR_PINS,
+    favoritePins: [PROJECT_FOLDER_ID, BLOG_FOLDER_ID, ABOUT_FOLDER_ID],
     explorerViews: {},
     recentItemIds: [],
   };
@@ -503,6 +507,7 @@ export function reconcileWorkspace(
     startPins: saved.startPins,
     startAllView: saved.startAllView,
     taskbarPins: saved.taskbarPins,
+    favoritePins: saved.favoritePins,
     explorerViews: saved.explorerViews,
     recentItemIds: saved.recentItemIds,
   });
@@ -1253,6 +1258,62 @@ export function getVisibleStartPins(state: WorkspaceState): string[] {
 }
 
 /**
+ * 탐색기 즐겨찾기에 폴더를 고정한다. 맨 뒤에 붙이고, 폴더가 아니거나(글, 외부 링크, 휴지통, 없는 항목) 이미 있으면 그대로다.
+ * @codocs [[고정:즐겨찾기 고정]]
+ * @param state 작업 공간 상태
+ * @param id 폴더 id
+ * @returns 새 상태
+ */
+export function pinToFavorites(state: WorkspaceState, id: string): WorkspaceState {
+  if (state.items[id]?.kind !== 'folder' || state.favoritePins.includes(id)) {
+    return state;
+  }
+  return { ...state, favoritePins: [...state.favoritePins, id] };
+}
+
+/**
+ * 탐색기 즐겨찾기에서 폴더를 뺀다.
+ * @codocs [[고정:즐겨찾기 고정]]
+ * @param state 작업 공간 상태
+ * @param id 폴더 id
+ * @returns 새 상태
+ */
+export function unpinFromFavorites(state: WorkspaceState, id: string): WorkspaceState {
+  return { ...state, favoritePins: state.favoritePins.filter((pinId) => pinId !== id) };
+}
+
+/**
+ * 탐색기 즐겨찾기의 순서를 바꾼다. 자리는 휴지통에 있어 보이지 않는 폴더까지 센 `favoritePins`의 자리이며 목록 안으로 맞춘다.
+ * 없는 폴더면 그대로다.
+ * @codocs [[고정:즐겨찾기 고정]]
+ * @param state 작업 공간 상태
+ * @param id 폴더 id
+ * @param index 옮길 자리
+ * @returns 새 상태
+ */
+export function moveFavoritePin(state: WorkspaceState, id: string, index: number): WorkspaceState {
+  return state.favoritePins.includes(id)
+    ? { ...state, favoritePins: moveInList(state.favoritePins, id, index) }
+    : state;
+}
+
+/**
+ * 탐색기 즐겨찾기에 보이는 폴더를 고정한 순서로 돌려준다. 폴더는 id로 찾아 지금 이름이다.
+ * 휴지통에 들어간 폴더(휴지통에 든 폴더 안의 폴더 포함)는 숨기고, 복원하면 다시 보인다.
+ * @codocs [[고정:즐겨찾기 고정]]
+ * @param state 작업 공간 상태
+ * @returns 보이는 즐겨찾기 폴더
+ */
+export function getFavoriteFolders(
+  state: Pick<WorkspaceState, 'items' | 'favoritePins'>,
+): FolderItem[] {
+  return state.favoritePins.flatMap((id) => {
+    const item = state.items[id];
+    return item?.kind === 'folder' && !isItemInTrash(state, id) ? [item] : [];
+  });
+}
+
+/**
  * 작업 표시줄에 앱을 고정한다. 맨 뒤에 붙이고 이미 있으면 그대로다.
  * @codocs [[고정:작업 표시줄 고정]]
  * @param state 작업 공간 상태
@@ -1606,6 +1667,7 @@ function cleanReferences(state: WorkspaceState): WorkspaceState {
     startPins: state.startPins.filter(
       (id) => getAppFromItemId(id) !== null || (id in items && id !== RECYCLE_BIN_ID),
     ),
+    favoritePins: state.favoritePins.filter((id) => items[id]?.kind === 'folder'),
     recentItemIds: state.recentItemIds.filter((id) => id in items && id !== RECYCLE_BIN_ID),
     explorerViews,
   };

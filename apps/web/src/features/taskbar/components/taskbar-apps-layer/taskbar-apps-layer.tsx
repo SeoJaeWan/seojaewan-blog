@@ -59,6 +59,7 @@ export type TaskbarAppsLayerProps = {
  *   메뉴가 열리면 미리보기는 닫는다.
  * - 데스크톱에서 고정한 앱 버튼을 끌어 다른 고정 앱 버튼 자리에 놓으면 순서가 바뀐다. 끌기 뒤에 따라오는 클릭은 버튼 동작을 하지 않는다. 모바일은 끌기가 없다.
  *   끄는 버튼은 커진 채 포인터를 가로로 따라오고, 밀려나는 버튼은 새 자리로 미끄러지고, 놓으면 새 자리로 들어간다(`useReorderMotion`).
+ *   끄는 동안 그 버튼은 호버·눌림 바탕을 끄고 실행 표시를 숨긴다. 놓으면 돌아온다.
  * - 모바일은 미리보기 목록을 화면 폭(좌우 12px 여백)에 맞춰 작업 표시줄 위 가운데에 띄우고, 카드가 많으면 카드를 같은 너비로 줄인다.
  * - 미리보기 목록은 실제 창을 `WindowThumbnail`로 줄여 보여 주고, 고르면 그 창을 맨 앞으로, 닫기를 누르면 그 창을 닫는다.
  *   바깥을 누르거나 Esc를 누르면 닫힌다. 축소 화면 안의 창 내용과 제목은 앱을 아는 쓰는 곳이 `renderWindow`·`getWindowTitle`로 넘긴다.
@@ -92,6 +93,8 @@ export function TaskbarAppsLayer({
   const device = useDevice();
   const workArea = useWorkArea();
   const [preview, setPreview] = useState<OpenedPreview | null>(null);
+  // 끌어 순서를 바꾸는 중인 버튼의 앱. 그 버튼은 호버·눌림 바탕과 실행 표시를 끈다.
+  const [draggingApp, setDraggingApp] = useState<WindowApp | null>(null);
   // 우클릭 메뉴가 열린 버튼의 앱. 메뉴는 한 번에 하나만 열린다.
   const [menuApp, setMenuApp] = useState<WindowApp | null>(null);
   const previewApp = preview?.app ?? null;
@@ -289,6 +292,7 @@ export function TaskbarAppsLayer({
     startPointerDrag(event, {
       onStart: (start, point) => {
         isDraggingRef.current = true;
+        setDraggingApp(app);
         isDraggedRef.current = true;
         hover.cancel();
         setPreview(null);
@@ -308,10 +312,12 @@ export function TaskbarAppsLayer({
       },
       onDrop: () => {
         isDraggingRef.current = false;
+        setDraggingApp(null);
         reorderMotion.endDrag();
       },
       onCancel: () => {
         isDraggingRef.current = false;
+        setDraggingApp(null);
         reorderMotion.endDrag();
       },
     });
@@ -457,6 +463,7 @@ export function TaskbarAppsLayer({
         onMenuOpenChange={handleButtonMenuOpenChange}
         onPointerEnter={handlePointerEnter}
         onPointerLeave={hover.handlePointerLeave}
+        isDragging={draggingApp === app}
         isCentered={isMobile}
         isMenuAtPointer={isMobile}
         previews={

@@ -46,14 +46,14 @@ export function SearchBox({
         variant === 'pill' &&
           'inner-border-color-black-6 h-size-search-box-pill-height rounded-radius-circular px-spacing-lg py-spacing-xs motion-search-box-focus-state',
         variant === 'taskbar' &&
-          'inner-border-color-black-6 h-size-control-height rounded-radius-circular px-spacing-lg py-spacing-sm-nudge motion-search-box-focus-state',
+          'inner-border-color-black-6 h-size-control-height rounded-radius-circular py-spacing-sm-nudge pr-spacing-lg pl-spacing-md motion-search-box-focus-state',
         variant === 'web' &&
           'inner-border-color-black-6 h-size-search-box-tall-height rounded-radius-circular px-spacing-lg py-spacing-sm motion-control-state',
         isWindowsSearch && !isDisabled && 'active:bg-color-white',
         className,
       )}
     >
-      {isWindowsSearch && <SearchIcons isDisabled={isDisabled} />}
+      {isWindowsSearch && <SearchIcons isDisabled={isDisabled} isTaskbar={variant === 'taskbar'} />}
       {variant === 'web' && (
         <Asset
           name="icons/ic_fluent_search_16_regular.svg"
@@ -103,22 +103,37 @@ export function SearchBox({
  * @codocs [[검색:입력칸]]
  * @param props 돋보기 속성
  * @param props.isDisabled disabled 여부
+ * @param props.isTaskbar 작업 표시줄 변형 여부. 쉴 때 채운 돋보기(ic_fluent_search_16_filled)를 거의 검정(black/89)으로 그린다
  * @returns 겹친 두 돋보기
  */
-function SearchIcons({ isDisabled }: { isDisabled: boolean }): JSX.Element {
+function SearchIcons({
+  isDisabled,
+  isTaskbar,
+}: {
+  isDisabled: boolean;
+  isTaskbar: boolean;
+}): JSX.Element {
   const shouldUseSolidIcon = useSolidSearchIcon();
+  const restColor = isTaskbar ? 'text-color-black-89' : 'text-color-black-61';
   return (
     <span className="grid size-size-icon-sm shrink-shrink-none place-items-center">
       <span className="grid size-size-icon-sm">
         <Asset
-          name="icons/ic_fluent_search_16_regular.svg"
+          name={
+            isTaskbar
+              ? 'icons/ic_fluent_search_16_filled.svg'
+              : 'icons/ic_fluent_search_16_regular.svg'
+          }
           className={cn(
             'col-start-grid-start row-start-grid-start size-size-icon-sm',
             isDisabled
               ? 'text-color-black-36'
               : shouldUseSolidIcon
-                ? 'text-color-black-61 group-focus-within:motion-search-box-focus-rest group-focus-within:text-color-blue-59 group-hover:motion-search-box-focus-rest group-hover:text-color-blue-59'
-                : 'text-color-black-61 group-focus-within:hidden group-hover:hidden',
+                ? cn(
+                    restColor,
+                    'group-focus-within:motion-search-box-focus-rest group-focus-within:text-color-blue-59 group-hover:motion-search-box-focus-rest group-hover:text-color-blue-59',
+                  )
+                : cn(restColor, 'group-focus-within:hidden group-hover:hidden'),
           )}
         />
         {!isDisabled && !shouldUseSolidIcon && (
