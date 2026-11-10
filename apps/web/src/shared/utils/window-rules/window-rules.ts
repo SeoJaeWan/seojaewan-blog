@@ -50,10 +50,22 @@ export type WindowRestorePoint = {
 /** 탐색기가 보는 위치. 폴더 id, 휴지통 id, 바탕화면은 null이다 */
 export type ExplorerLocation = string | null;
 
-/** 탐색기 탭 하나. 뒤로·앞으로 기록은 탭마다 따로 있다. id는 창 안에서만 겹치지 않는다. history는 처음 연 위치부터 차례대로 지나온 위치이고 historyIndex는 그 기록에서 지금 보는 위치의 차례다. */
+/** 탐색기 기록 칸의 항목 선택. ids는 고른 항목, focusId는 현재 항목(키보드 포커스가 머무는 항목)이다 */
+export type ExplorerSelection = {
+  ids: readonly string[];
+  focusId: string | null;
+};
+
+/** 탐색기 탭 기록 칸 하나. location은 그 칸의 위치이고, selection은 그 칸으로 돌아오면 되살릴 항목 선택이다. 없으면 선택 없이 보인다 */
+export type ExplorerHistoryEntry = {
+  location: ExplorerLocation;
+  selection?: ExplorerSelection;
+};
+
+/** 탐색기 탭 하나. 뒤로·앞으로 기록은 탭마다 따로 있다. id는 창 안에서만 겹치지 않는다. history는 처음 연 위치부터 차례대로 지나온 기록 칸이고 historyIndex는 그 기록에서 지금 보는 칸의 차례다. */
 export type ExplorerTabState = {
   id: string;
-  history: readonly ExplorerLocation[];
+  history: readonly ExplorerHistoryEntry[];
   historyIndex: number;
 };
 
@@ -194,7 +206,7 @@ export function getDefaultWindowContent(app: WindowApp): WindowContent {
 export function createExplorerContent(location: ExplorerLocation): ExplorerWindowContent {
   return {
     app: 'file-explorer',
-    tabs: [{ id: 'tab-1', history: [location], historyIndex: 0 }],
+    tabs: [{ id: 'tab-1', history: [{ location }], historyIndex: 0 }],
     activeTabIndex: 0,
     lastTabSerial: 1,
     treeExpansion: {},

@@ -8,16 +8,25 @@ import {
   pressStoryPointer,
   storyPointerInit,
 } from '@/features/window/story-pointer';
+import { getWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { openStoryWindows, resetStoryStores } from '@/shared/stores/store-reset/story-stores';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
-import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
+import {
+  hydrateWorkspaceStore,
+  useWorkspaceStore,
+} from '@/shared/stores/workspace-store/workspace-store';
 import { getStoryWindowTitle, renderStoryWindow } from '@/shared/utils/window-rules/story-window';
+import {
+  CHROME_LATEST_POST_COUNT,
+  getLatestPosts,
+} from '@/shared/utils/workspace-rules/workspace-rules';
 
 import {
   HOVER_PREVIEW_CLOSE_DELAY,
   HOVER_PREVIEW_OPEN_DELAY,
 } from './hooks/use-hover-preview/use-hover-preview';
 import { installStoryClock } from './story-clock';
+import { taskbarStoryPosts } from './story-data';
 import { TaskbarAppsLayer } from './taskbar-apps-layer';
 
 // @codocs [[저장소 구성:앱 폴더 구조]]
@@ -75,7 +84,7 @@ function getExplorerLocations(): (string | null | undefined)[] {
       return undefined;
     }
     const tab = content.tabs[content.activeTabIndex];
-    return tab?.history[tab.historyIndex];
+    return tab?.history[tab.historyIndex]?.location;
   });
 }
 
@@ -155,11 +164,26 @@ export const WithWindows: Story = {
       await expect(button).toHaveAttribute('aria-expanded', 'true');
     });
 
+    // @codocs [[작업 표시줄:창 미리보기]]
+    await step('카드 폭은 창 비율을 따르고 축소 화면이 카드의 자리를 채운다', async () => {
+      for (const card of body.getAllByRole('button', { name: PREVIEW_CARD_NAME })) {
+        const thumbnail = card.querySelector('[inert]');
+        const cardRect = card.getBoundingClientRect();
+        const thumbnailRect = thumbnail?.getBoundingClientRect();
+        // 카드 안쪽 여백(spacing/sm)을 양쪽에서 뺀 너비를 채운다. 최대 폭(208)보다 좁은 카드는 높이(108)도 채운다.
+        await expect(thumbnailRect?.width).toBeCloseTo(cardRect.width - 16, 0);
+        await expect(cardRect.width).toBeLessThanOrEqual(208);
+        if (cardRect.width < 207.5) {
+          await expect(thumbnailRect?.height).toBeCloseTo(108, 0);
+        }
+      }
+    });
+
     // @codocs [[작업 표시줄:우클릭 메뉴]]
     await step('앱 버튼을 우클릭하면 메뉴를 열고 창 미리보기를 닫는다', async () => {
       await openAppMenu(canvasElement, 'Google Chrome');
       await expect(body.queryByRole('button', { name: PREVIEW_CARD_NAME })).not.toBeInTheDocument();
-      await expect(getMenuItemNames(canvasElement)).toEqual([
+      await expect(getMenuItemNames(canvasElement).slice(-3)).toEqual([
         'Google Chrome',
         '작업 표시줄에서 제거',
         '모든 창 닫기',
@@ -189,6 +213,99 @@ export const WithWindows: Story = {
       ]);
       await clickMenuItem(canvasElement, '창 닫기');
       await expect(getOpenApps()).toEqual([]);
+    });
+  },
+};
+
+/**
+ * Chrome 창이 하나다. Chrome 버튼 우클릭 메뉴 위에 점프 목록("자주 방문" 최신 글, "작업" 새 창)이 붙는다.
+ * 글을 고르면 그 Chrome 창의 새 탭으로 열고, 새 창을 고르면 Chrome 창을 하나 더 연다.
+ */
+export const ChromeJumpList: Story = {
+  beforeEach: async () => {
+    hydrateWorkspaceStore(taskbarStoryPosts);
+    await waitFor(() => expect(useWorkspaceStore.getState().items['post:p1']).toBeDefined());
+    openStoryWindows(['chrome']);
+  },
+  play: async ({ canvasElement, step }) => {
+    const body = within(canvasElement.ownerDocument.body);
+    const latest = getLatestPosts(useWorkspaceStore.getState(), CHROME_LATEST_POST_COUNT);
+
+    // @codocs [[작업 표시줄:우클릭 메뉴]]
+    await step('최신 글은 Project 항목을 빼고 Blog 글 6개다', async () => {
+      await expect(latest.map((post) => post.slug)).toEqual(['p7', 'p6', 'p5', 'p4', 'p3', 'p2']);
+    });
+
+    // @codocs [[작업 표시줄:우클릭 메뉴]]
+    await step(
+      '"자주 방문"에 새 탭 페이지와 같은 최신 글을, "작업"에 새 창을 두고 앱 묶음이 뒤따른다',
+      async () => {
+        await openAppMenu(canvasElement, 'Google Chrome');
+        const visited = body.getByRole('group', { name: '자주 방문' });
+        await expect(
+          within(visited)
+            .getAllByRole('menuitem')
+            .map((item) => item.textContent),
+        ).toEqual(latest.map((post) => post.name));
+        const tasks = body.getByRole('group', { name: '작업' });
+        await expect(
+          within(tasks)
+            .getAllByRole('menuitem')
+            .map((item) => item.textContent),
+        ).toEqual(['새 창']);
+        await expect(getMenuItemNames(canvasElement).slice(-3)).toEqual([
+          'Google Chrome',
+          '작업 표시줄에서 제거',
+          '창 닫기',
+        ]);
+        await expect(body.getAllByRole('separator')).toHaveLength(1);
+      },
+    );
+
+    // @codocs [[작업 표시줄:우클릭 메뉴]]
+    await step('글을 고르면 Chrome 맨 앞 창의 새 탭으로 그 글을 연다', async () => {
+      const first = latest[0];
+      if (first === undefined) {
+        throw new Error('최신 글이 없다');
+      }
+      await clickMenuItem(canvasElement, first.name);
+      const { windows, order } = useWindowStore.getState();
+      const content = windows[order[0] ?? '']?.content;
+      await expect(order).toHaveLength(1);
+      await expect(content?.app === 'chrome' ? content.tabs.length : 0).toBe(2);
+      const tab = content?.app === 'chrome' ? content.tabs[content.activeTabIndex] : undefined;
+      await expect(tab?.history[tab.historyIndex]).toEqual({
+        kind: 'post',
+        collection: first.collection,
+        slug: first.slug,
+      });
+    });
+
+    // @codocs [[작업 표시줄:우클릭 메뉴]]
+    await step('새 창을 고르면 Chrome 창을 하나 더 연다', async () => {
+      await openAppMenu(canvasElement, 'Google Chrome');
+      await clickMenuItem(canvasElement, '새 창');
+      await expect(getOpenApps()).toEqual(['chrome', 'chrome']);
+    });
+
+    // @codocs [[작업 표시줄:우클릭 메뉴]]
+    await step('휴지통에 넣은 글은 빠지고 다음 글이 채운다', async () => {
+      const first = latest[0];
+      if (first === undefined) {
+        throw new Error('최신 글이 없다');
+      }
+      useWorkspaceStore.getState().trashItems([first.id]);
+      const next = getLatestPosts(useWorkspaceStore.getState(), CHROME_LATEST_POST_COUNT);
+      await openAppMenu(canvasElement, 'Google Chrome');
+      const visited = body.getByRole('group', { name: '자주 방문' });
+      const names = within(visited)
+        .getAllByRole('menuitem')
+        .map((item) => item.textContent);
+      await expect(names).toEqual(next.map((post) => post.name));
+      await expect(names).not.toContain(first.name);
+      // 닫는 중에 접근성 검사가 돌면 포커스 가드가 걸리므로 메뉴가 닫히길 기다린다.
+      await userEvent.keyboard('{Escape}');
+      await waitFor(() => expect(body.queryByRole('menu')).not.toBeInTheDocument());
     });
   },
 };
@@ -441,7 +558,7 @@ export const PinAndUnpin: Story = {
       '고정하지 않은 앱은 작업 표시줄에 고정을 고르면 고정 목록 맨 뒤에 붙인다',
       async () => {
         await openAppMenu(canvasElement, 'Google Chrome');
-        await expect(getMenuItemNames(canvasElement)).toEqual([
+        await expect(getMenuItemNames(canvasElement).slice(-3)).toEqual([
           'Google Chrome',
           '작업 표시줄에 고정',
           '창 닫기',
@@ -567,29 +684,43 @@ export const Mobile: Story = {
   args: { renderWindow: () => null },
   globals: { viewport: { value: 'mobile1', isRotated: false } },
   beforeEach: () => {
-    openStoryWindows(['chrome', 'chrome', 'chrome']);
+    openStoryWindows(['chrome', 'chrome', 'chrome', 'chrome']);
   },
   play: async ({ canvasElement, step }) => {
     const body = within(canvasElement.ownerDocument.body);
 
     // @codocs [[작업 표시줄:모바일]]
     await step(
-      '미리보기 목록을 화면 폭에서 좌우 12px 여백을 뺀 폭에 맞추고 카드를 같은 너비로 줄인다',
+      '카드를 창 비율 폭으로 놓아 넘치면 목록을 화면 폭에서 좌우 12px 여백을 뺀 폭에 맞추고 카드를 같은 너비로 줄인다',
       async () => {
         await userEvent.click(body.getByRole('button', { name: 'Google Chrome' }));
         const cards = await body.findAllByRole('button', { name: PREVIEW_CARD_NAME });
-        await expect(cards).toHaveLength(3);
+        await expect(cards).toHaveLength(4);
         // 실제 브라우저라 여는 애니메이션의 scale이 getBoundingClientRect에 들어가므로 배치 크기를 본다.
         const listWidth = window.innerWidth - 12 * 2;
-        // 카드는 틈 없이 붙고 목록 판은 테두리 합 2px만 갖는다 (예: 390폭이면 (366 - 2) / 3 = 121)
-        const cardWidth = Math.floor((listWidth - 2) / 3);
+        // 카드는 틈 없이 붙고 목록 판은 테두리 합 2px만 갖는다 (예: 320폭이면 (296 - 2) / 4 = 73)
+        const cardWidth = Math.floor((listWidth - 2) / 4);
         await expect(cards[0]?.parentElement?.offsetWidth).toBe(listWidth);
-        await expect(cards.map((card) => card.offsetWidth)).toEqual([
-          cardWidth,
-          cardWidth,
-          cardWidth,
-        ]);
+        await expect(cards.map((card) => card.offsetWidth)).toEqual(Array(4).fill(cardWidth));
       },
     );
+
+    // @codocs [[작업 표시줄:모바일]]
+    // @codocs [[작업 표시줄:창 미리보기]]
+    await step('화면 폭 안에 들어가면 카드마다 창(작업 영역) 비율 폭이다', async () => {
+      const { order } = useWindowStore.getState();
+      useWindowStore.getState().close(order[0] ?? '');
+      await waitFor(async () =>
+        expect(await body.findAllByRole('button', { name: PREVIEW_CARD_NAME })).toHaveLength(3),
+      );
+      const cards = body.getAllByRole('button', { name: PREVIEW_CARD_NAME });
+      const workArea = getWorkArea(window.innerWidth, window.innerHeight);
+      // 축소 화면 높이 108 × 작업 영역 비율 + 좌우 여백 16 (예: 320×520이면 82.5)
+      const cardWidth = 108 * (workArea.width / workArea.height) + 16;
+      for (const card of cards) {
+        // 배치 크기(offsetWidth)는 정수로 반올림되므로 1px 안에서 본다.
+        await expect(Math.abs(card.offsetWidth - cardWidth)).toBeLessThanOrEqual(1);
+      }
+    });
   },
 };

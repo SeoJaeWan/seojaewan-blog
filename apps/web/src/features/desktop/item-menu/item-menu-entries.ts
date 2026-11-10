@@ -3,6 +3,7 @@ import {
   copyLinkMenuItem,
   cutCommandButton,
   emptyRecycleBinMenuItem,
+  favoritePinMenuItem,
   MENU_SEPARATOR,
   menuCommandBar,
   openInNewWindowMenuItem,
@@ -18,12 +19,14 @@ import type { WorkspaceItemKind } from '@/shared/utils/workspace-rules/workspace
 type ItemMenuOptions = {
   kind: WorkspaceItemKind | null;
   isPinned: boolean;
+  isFavorite: boolean;
   canTrash: boolean;
   isRecycleBinEmpty: boolean;
   onOpen: () => void;
   onOpenInNewWindow: () => void;
   onCopyLink: () => void;
   onTogglePin: () => void;
+  onToggleFavorite: () => void;
   onCut: () => void;
   onRename: () => void;
   onTrash: () => void;
@@ -54,6 +57,7 @@ export function getItemMenuEntries(options: ItemMenuOptions): MenuPopupEntry[] {
         ...menuCommandBar([cut, renameCommandButton(options.onRename), ...trash]),
         open,
         openInNewWindow,
+        favoritePinMenuItem(options.isFavorite, options.onToggleFavorite),
         pin,
       ];
     case 'post':

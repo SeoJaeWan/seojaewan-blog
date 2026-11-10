@@ -1,7 +1,7 @@
 import { Toolbar } from '@base-ui/react/toolbar';
 import { type ComponentProps, type JSX, type MouseEventHandler, useState } from 'react';
 
-import { Button, cn, IconButton, Separator } from '@seojaewan/design-system';
+import { Button, cn, DropDownButton, IconButton, Separator } from '@seojaewan/design-system';
 
 import { MenuButton } from '@/shared/components/menu-button/menu-button';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
@@ -34,7 +34,7 @@ type ExplorerCommandsProps = CommandHandlers & {
   className?: string;
 };
 
-/** 명령 버튼 하나. handler는 누를 때 부르는 동작 prop 이름이다. label은 desktop 버튼 글자이자 접근성 이름이다. isLabeledOnDesktop이면 desktop에서 글자 있는 Button으로, 아니면 IconButton으로 그린다. */
+/** 명령 버튼 하나. handler는 누를 때 부르는 동작 prop 이름이다. label은 desktop 버튼 글자이자 접근성 이름이다. isLabeledOnDesktop이면 desktop에서 글자 있는 Button(메뉴를 여는 정렬·보기는 꺾쇠 있는 DropDownButton)으로, 아니면 IconButton으로 그린다. */
 type Command = {
   handler: ExplorerCommandName;
   label: string;
@@ -51,7 +51,8 @@ const commandsByLocation = {
     {
       handler: 'onNew',
       label: '새로 만들기',
-      icon: 'icons/ic_fluent_add_20_regular.svg',
+      // 실제 Windows처럼 원 안 +다. 만들 것이 폴더뿐이라 꺾쇠와 메뉴는 두지 않는다.
+      icon: 'icons/ic_fluent_add_circle_20_regular.svg',
       isLabeledOnDesktop: true,
     },
     // 모바일은 새로 만들기 뒤 구분선이 없다(피그마 `Location=Folder, Device=Mobile`).
@@ -128,10 +129,11 @@ const MOBILE_NEW_ICON: IconName = 'icons/ic_fluent_folder_add_20_regular.svg';
 
 /**
  * 탐색기 명령 막대(ExplorerCommandBar)의 Commands 자리에 넣는 명령 버튼 묶음(피그마 조립 `Explorer/Commands`)을 그린다.
- * 쓸 수 없는 명령은 비활성으로 그린다. 정렬·보기는 메뉴 항목을 주면 버튼 아래에 그 메뉴를 연다.
+ * 쓸 수 없는 명령은 비활성으로 그린다. 정렬·보기는 메뉴 항목을 주면 버튼 아래에 그 메뉴를 열고, desktop에서는 꺾쇠 있는 DropDownButton이다.
  * 버튼 줄은 Base UI Toolbar라 Tab 한 번에 닿고 안에서 ←/→·Home/End로 옮긴다. 비활성 버튼은 건너뛴다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[파일 탐색기:구성]]
+ * @codocs [[파일 탐색기:조작]]
  * @codocs [[접근성:Tab]]
  * @codocs [[접근성:역할]]
  * @param props 컴포넌트 속성
@@ -183,9 +185,20 @@ export function ExplorerCommands({
           }
           const handleClick = handlers[command.handler];
           const isDisabled = disabledCommands.includes(command.handler);
-          // 피그마 인스턴스가 Button의 최소 너비(size/120)를 지웠다.
-          const button =
-            isDesktop && command.isLabeledOnDesktop ? (
+          const menuName =
+            command.handler === 'onSort' || command.handler === 'onView' ? command.handler : null;
+          let button;
+          if (!isDesktop || !command.isLabeledOnDesktop) {
+            button = (
+              <IconButton
+                variant="subtle"
+                label={command.label}
+                icon={!isDesktop && command.handler === 'onNew' ? MOBILE_NEW_ICON : command.icon}
+              />
+            );
+          } else if (menuName === null) {
+            // 피그마 인스턴스가 Button의 최소 너비(size/120)를 지웠다.
+            button = (
               <Button
                 variant="subtle"
                 label={command.label}
@@ -193,13 +206,10 @@ export function ExplorerCommands({
                 icon={command.icon}
                 className="min-w-size-none"
               />
-            ) : (
-              <IconButton
-                variant="subtle"
-                label={command.label}
-                icon={!isDesktop && command.handler === 'onNew' ? MOBILE_NEW_ICON : command.icon}
-              />
             );
+          } else {
+            button = <DropDownButton label={command.label} hasIcon icon={command.icon} />;
+          }
           const toolbarButton = (
             <Toolbar.Button
               key={command.handler}
@@ -209,8 +219,6 @@ export function ExplorerCommands({
               onClick={handleClick}
             />
           );
-          const menuName =
-            command.handler === 'onSort' || command.handler === 'onView' ? command.handler : null;
           const menu = menuName === null ? undefined : menus[menuName];
           if (menuName === null || menu === undefined) {
             return toolbarButton;

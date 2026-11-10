@@ -11,7 +11,7 @@ _codocs:
 세션 사이 약속: |
   공통 약속은 [[피그마 작업 검수:세션 사이 약속]]을 따른다. 이 문서에만 해당하는 것은 다음이다.
   - 맡은 컴포넌트 PR: `FileItem`(`feat/figma-file-item`), `RenameField`(`feat/figma-rename-field`, 피그마가 바뀔 때만), 메뉴 단추 줄 부품(`MenuCommandButton` `feat/figma-menu-command-button`, `MenuCommandBar` `feat/figma-menu-command-bar`), `Menu`(`feat/figma-menu`). 조립 PR은 `feat/figma-patterns-desktop`이다.
-  - 같은 파일을 고치는 다른 세션: 항목 메뉴(`getItemMenuEntries`)에는 파일 탐색기 세션이 "즐겨찾기에 고정" 줄을 더한다([[파일 탐색기 검수:14. 즐겨찾기]]). 단추 줄로 바꾼 뒤의 목록에서 "새 창에서 열기"와 "시작 화면에 고정" 사이에 둔다. 나중에 병합하는 쪽이 `main`을 받아 맞춘다.
+  - 같은 파일을 고치는 다른 세션: 항목 메뉴(`getItemMenuEntries`)에 파일 탐색기 세션이 더한 "즐겨찾기에 고정" 줄([[파일 탐색기 검수:14. 즐겨찾기]])은 이 브랜치가 `main`을 병합하며 단추 줄로 바꾼 뒤의 목록에서 "새 창에서 열기"와 "시작 화면에 고정" 사이에 맞췄다.
 비교 방법: |
   - 실제 화면: 사람이 녹화한 영상 세 개. 바탕화면 조작(아이콘 우클릭, 빈 곳 메뉴와 보기·새로 만들기 하위 메뉴, 이름 바꾸기, 끌기), 파일 탐색기 보기 메뉴, 잘라낸 뒤의 붙여넣기 메뉴다. 영상에서 프레임을 뽑아 1:1로 확대해 봤다.
   - 구현: 개발 서버(1920×1080)에서 영상과 같은 조작을 Playwright로 재현해 캡처했다.

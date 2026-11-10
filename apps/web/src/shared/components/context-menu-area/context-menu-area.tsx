@@ -11,7 +11,7 @@ export type ContextMenuAreaPlacement = {
   offset: number | (() => number);
 };
 
-type ContextMenuAreaProps = Pick<ComponentProps<typeof MenuPopup>, 'items'> & {
+type ContextMenuAreaProps = Pick<ComponentProps<typeof MenuPopup>, 'items' | 'width'> & {
   area: ReactElement;
   placement?: ContextMenuAreaPlacement;
   isOpen: boolean;
@@ -39,6 +39,7 @@ type ContextMenuAreaProps = Pick<ComponentProps<typeof MenuPopup>, 'items'> & {
  * @param props.onOpenChange 메뉴를 열거나 닫으려 할 때 부른다(우클릭, 길게 누르기, Esc, 바깥 클릭, 항목 고르기). 쓰는 곳이 `isOpen`을 바꾼다. 열 때는 우클릭·길게 누른 자리의 요소(`target`)를 함께 넘겨, 쓰는 곳이 어떤 메뉴를 보일지 정하게 한다
  * @param props.onCloseComplete 메뉴가 닫힌 뒤 부른다. 메뉴 항목이 다른 곳에 포커스를 줄 일(이름 바꾸기 입력창)은 여기서 시작한다. 그 뒤 포커스가 갈 곳이 없으면 메뉴를 열 때 포커스가 있던 요소로 돌아간다
  * @param props.items 메뉴 항목과 구분선. 위에서부터 그린다
+ * @param props.width 메뉴 바탕 너비(피그마 메뉴 조립의 Menu 너비). 없으면 Menu 기본 너비다
  */
 export function ContextMenuArea({
   area,
@@ -47,6 +48,7 @@ export function ContextMenuArea({
   onOpenChange,
   onCloseComplete,
   items,
+  width,
 }: ContextMenuAreaProps): JSX.Element {
   const [returnFocusElement, setReturnFocusElement] = useState<HTMLElement | null>(null);
   const [areaElement, setAreaElement] = useState<HTMLElement | null>(null);
@@ -97,7 +99,7 @@ export function ContextMenuArea({
           align={placement?.align}
           sideOffset={placement?.offset}
         >
-          <MenuPopup items={items} finalFocus={false} />
+          <MenuPopup items={items} width={width} finalFocus={false} />
         </ContextMenu.Positioner>
       </ContextMenu.Portal>
     </ContextMenu.Root>

@@ -7,12 +7,14 @@ import { getItemMenuEntries } from './item-menu-entries';
 const ITEM_OPTIONS = {
   kind: 'folder',
   isPinned: true,
+  isFavorite: false,
   canTrash: true,
   isRecycleBinEmpty: false,
   onOpen: vi.fn(),
   onOpenInNewWindow: vi.fn(),
   onCopyLink: vi.fn(),
   onTogglePin: vi.fn(),
+  onToggleFavorite: vi.fn(),
   onCut: vi.fn(),
   onRename: vi.fn(),
   onTrash: vi.fn(),
@@ -45,11 +47,12 @@ function findEntry(entries: readonly MenuPopupEntry[], label: string): MenuPopup
 
 // @codocs [[바탕화면 우클릭 메뉴:아이콘]]
 describe('바탕화면 우클릭 메뉴:아이콘', () => {
-  it('폴더 메뉴는 단추 줄 잘라내기·이름 바꾸기·삭제와 목록 열기·새 창에서 열기·고정이고, 고정된 항목은 고정 해제를 보인다', () => {
+  it('폴더 메뉴는 단추 줄 잘라내기·이름 바꾸기·삭제와 목록 열기·새 창에서 열기·즐겨찾기·고정이고, 고정된 항목은 고정 해제를 보인다', () => {
     expect(labels(getItemMenuEntries(ITEM_OPTIONS))).toEqual([
       '[잘라내기|이름 바꾸기|삭제]',
       '열기',
       '새 창에서 열기',
+      '즐겨찾기에 고정',
       '시작 화면에서 고정 해제',
     ]);
   });

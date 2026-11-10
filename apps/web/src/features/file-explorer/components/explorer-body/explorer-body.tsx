@@ -68,13 +68,14 @@ import {
   getIdAfterRemoval,
   getNeighborInGrid,
   isRectIntersecting,
+  type Selection,
   type SelectionCell,
   type SelectionDirection,
   type SelectionRect,
   selectOnly,
 } from '@/shared/utils/selection-rules/selection-rules';
 import { getTrashedItemMessage } from '@/shared/utils/trashed-item-message/trashed-item-message';
-import type { ExplorerLocation } from '@/shared/utils/window-rules/window-rules';
+import type { ExplorerLocation, ExplorerSelection } from '@/shared/utils/window-rules/window-rules';
 import {
   DEFAULT_EXPLORER_VIEW,
   DESKTOP_LOCATION_KEY,
@@ -119,6 +120,9 @@ type ExplorerBodyProps = Pick<
 > & {
   device: DeviceVariant;
   location: ExplorerLocation;
+  selectionKey: string;
+  restoredSelection?: ExplorerSelection;
+  onSelectionChange?: (selection: ExplorerSelection) => void;
   onNavigate: (location: ExplorerLocation) => void;
   onOpenInNewTab: (location: ExplorerLocation) => void;
 };
@@ -143,6 +147,7 @@ const ICON_VIEWS = { large: 'large', medium: 'medium' } as const;
  * 탐색기 본문(`ExplorerContent`)을 작업 공간 저장소에 잇는다. 보고 있는 위치의 항목을 폴더마다 기억한 보기(큰 아이콘·보통 아이콘·자세히)와
  * 정렬(폴더를 앞에 두고 이름·수정한 날짜·유형, 방향)로 그리고, 항목 조작을 붙인다.
  * - 선택: 클릭, Ctrl·Shift + 클릭(표시 순서 범위), 빈 곳에서 끄는 사각형, 방향키, Ctrl + A. 모바일은 하나만 고른다.
+ *   위치를 옮기면 그 기록 칸에 적힌 선택(뒤로·앞으로·위로)으로 선택과 현재 항목을 채운다.
  * - 열기: 더블클릭(모바일은 탭)·Enter. 폴더 하나는 같은 탭에서 가고, 글·외부 링크는 열기 규칙대로 연다. 여러 개를 고르면 모두 연다(폴더는 새 창).
  * - 새 폴더(만든 뒤 이름 바꾸기), F2 이름 바꾸기, Delete 휴지통으로, Ctrl + X 잘라내기, Ctrl + V 붙여넣기(옮기기만).
  * - 명령 모음, 우클릭(모바일은 길게 누르기) 메뉴, 상태 줄(항목 수, 선택 수, 자세히·큰 아이콘 보기).
@@ -162,6 +167,9 @@ const ICON_VIEWS = { large: 'large', medium: 'medium' } as const;
  * @param props 컴포넌트 속성
  * @param props.device 화면 방식
  * @param props.location 보고 있는 위치(폴더 id, 휴지통 id, 바탕화면은 null)
+ * @param props.selectionKey 보고 있는 기록 칸의 열쇠. 바뀌면(위치를 옮기면) 선택을 `restoredSelection`으로 채운다
+ * @param props.restoredSelection 보고 있는 기록 칸에 적힌 선택(뒤로·앞으로로 돌아온 칸, 위로 간 칸). 없으면 선택 없이 보인다
+ * @param props.onSelectionChange 선택이 바뀔 때마다 지금 선택을 알린다. 위치를 떠날 때 기록 칸에 적는 데 쓴다
  * @param props.onNavigate 같은 탭에서 폴더로 간다
  * @param props.onOpenInNewTab 폴더를 새 탭에서 연다
  * @param props.onKeyDown 본문에서 키를 눌렀을 때(Backspace, Alt + ← / → 같은 이동 단축키). 본문 어디를 눌러도 키를 받도록 본문이 포커스를 받는다
@@ -169,6 +177,9 @@ const ICON_VIEWS = { large: 'large', medium: 'medium' } as const;
 export function ExplorerBody({
   device,
   location,
+  selectionKey,
+  restoredSelection,
+  onSelectionChange,
   onNavigate,
   onOpenInNewTab,
   onKeyDown: handleNavigationKeyDown,
@@ -179,6 +190,7 @@ export function ExplorerBody({
   const items = useWorkspaceStore((state) => state.items);
   const explorerViews = useWorkspaceStore((state) => state.explorerViews);
   const startPins = useWorkspaceStore((state) => state.startPins);
+  const favoritePins = useWorkspaceStore((state) => state.favoritePins);
   const cutIds = useItemClipboardStore((state) => state.cutIds);
   const openItem = useOpenItem();
   const areaRef = useRef<HTMLDivElement>(null);
@@ -258,7 +270,17 @@ export function ExplorerBody({
     // 지금 보는 위치(이 창의 본문)는 놓을 곳이 아닐 뿐 막힌 곳이 아니라 `not-allowed` 커서를 보이지 않는다.
     isNeutralTarget: (targetId: string) => toDropLocation(targetId) === location,
   });
+  // 위치를 옮기면(기록 칸이 바뀌면) 그 칸에 적힌 선택으로 채운다. 그린 중에 맞춰 옛 위치의 선택이 한 번도 보이지 않게 한다.
+  const [appliedSelectionKey, setAppliedSelectionKey] = useState<string | null>(null);
+  if (appliedSelectionKey !== selectionKey) {
+    setAppliedSelectionKey(selectionKey);
+    selection.setSelection(toSelection(restoredSelection));
+  }
   const selectedIds = selection.selection.ids;
+  // 목록의 현재 항목이다. Tab으로 목록에 들어오면 이 항목에 포커스가 가고, 포커스가 목록을 떠나도 1px 선이 남는다.
+  // 고른 적이 없으면 첫 항목이다.
+  // @codocs [[파일 탐색기:조작]]
+  const currentId = selection.selection.focusId ?? orderedIds[0];
   const [onlySelectedId] = selectedIds;
   const onlySelected =
     selectedIds.length === 1 && onlySelectedId !== undefined ? items[onlySelectedId] : undefined;
@@ -268,6 +290,16 @@ export function ExplorerBody({
     trashItems(getWorkspace(), selectedIds, new Date().toISOString()).ok;
   // 휴지통이 비었는지. 검색 결과가 아니라 휴지통에 실제로 든 항목으로 본다.
   const isRecycleBinEmpty = isRecycleBin && getChildItems(workspace, RECYCLE_BIN_ID).length === 0;
+
+  useEffect(
+    /**
+     * 지금 선택을 알린다. 위치를 떠날 때 층이 그 기록 칸에 적는다.
+     * @codocs [[파일 탐색기:탭]]
+     */
+    () => {
+      onSelectionChange?.({ ids: selectedIds, focusId: selection.selection.focusId });
+    },
+  );
 
   useEffect(
     /**
@@ -748,11 +780,6 @@ export function ExplorerBody({
     }
   }
 
-  // 목록의 현재 항목이다. Tab으로 목록에 들어오면 이 항목에 포커스가 가고, 포커스가 목록을 떠나도 1px 선이 남는다.
-  // 고른 적이 없으면 첫 항목이다.
-  // @codocs [[파일 탐색기:조작]]
-  const tabbableId = selection.selection.focusId ?? orderedIds[0];
-
   /**
    * 항목(FileItem·FileRow)마다 선택·열기·키보드 포커스 속성을 만든다.
    * @param item 항목
@@ -763,7 +790,7 @@ export function ExplorerBody({
     return {
       role: 'option',
       'aria-selected': selectedIds.includes(id),
-      tabIndex: id === tabbableId ? 0 : -1,
+      tabIndex: id === currentId ? 0 : -1,
       [ITEM_ATTRIBUTE]: id,
       [DROP_TARGET_ATTRIBUTE]: canBeDropTarget(item) ? id : undefined,
       [DROP_TARGET_NAME_ATTRIBUTE]: canBeDropTarget(item) ? item.name : undefined,
@@ -832,6 +859,7 @@ export function ExplorerBody({
       isInRecycleBin: isRecycleBin,
       isMobile,
       isPinned: firstId !== undefined && startPins.includes(firstId),
+      isFavorite: firstId !== undefined && favoritePins.includes(firstId),
       canTrash: trashItems(getWorkspace(), ids, new Date().toISOString()).ok,
       onOpen: () => {
         openItems(ids);
@@ -852,6 +880,11 @@ export function ExplorerBody({
       onTogglePin: () => {
         if (firstId !== undefined) {
           togglePin(firstId);
+        }
+      },
+      onToggleFavorite: () => {
+        if (firstId !== undefined) {
+          getWorkspace().toggleFavoritePin(firstId);
         }
       },
       onCut: () => {
@@ -936,7 +969,7 @@ export function ExplorerBody({
       isSelected: isSelected || item.id === dragTargetId,
       isCut: cutSet.has(item.id),
       // 현재 항목은 포커스와 상관없이 1px 선을 그린다. 선과 선택 바탕의 색은 목록(listbox)의 포커스로 FileItem·FileRow가 고른다.
-      isCurrent: item.id === tabbableId,
+      isCurrent: item.id === currentId,
       // 끄는 항목이 놓일 폴더를 스토리 테스트가 상태로 확인하도록 속성으로 알린다. 잘라냄은 FileItem이 `data-cut`으로 알린다.
       'data-drop-active': item.id === dragTargetId ? 'true' : undefined,
       isRenaming,
@@ -1164,7 +1197,8 @@ export function ExplorerBody({
             {...commandHandlers}
           />
         }
-        itemCount={`항목 ${String(children.length)}개`}
+        itemCount={`${String(children.length)}개 항목`}
+        view={isDetails ? 'details' : view.view}
         selection={`${String(selectedIds.length)}개 항목 선택함`}
         hasSelection={selectedIds.length > 0}
         onDetailsView={() => {
@@ -1228,6 +1262,23 @@ export function ExplorerBody({
       <MessageBoxDialog {...rename.messageBoxProps} />
     </>
   );
+}
+
+/**
+ * 기록 칸에 적힌 선택을 항목 선택으로 바꾼다. 범위 선택(Shift)의 시작은 현재 항목(없으면 첫 항목)이다.
+ * @codocs [[파일 탐색기:탭]]
+ * @param saved 기록 칸에 적힌 선택. 없으면 아무것도 고르지 않는다
+ * @returns 항목 선택
+ */
+function toSelection(saved: ExplorerSelection | undefined): Selection {
+  if (saved === undefined) {
+    return emptySelection;
+  }
+  return {
+    ids: saved.ids,
+    anchorId: saved.focusId ?? saved.ids[0] ?? null,
+    focusId: saved.focusId,
+  };
 }
 
 /**

@@ -113,6 +113,7 @@ export function DesktopIconsLayer(): JSX.Element {
   const items = useWorkspaceStore((state) => state.items);
   const settings = useWorkspaceStore((state) => state.desktop);
   const startPins = useWorkspaceStore((state) => state.startPins);
+  const favoritePins = useWorkspaceStore((state) => state.favoritePins);
   const cutIds = useItemClipboardStore((state) => state.cutIds);
   const containerRef = useRef<HTMLDivElement>(null);
   const dragAnchorRef = useRef<string | null>(null);
@@ -633,6 +634,7 @@ export function DesktopIconsLayer(): JSX.Element {
     return getItemMenuEntries({
       kind: ids.length === 1 ? (first?.kind ?? null) : null,
       isPinned: firstId !== undefined && startPins.includes(firstId),
+      isFavorite: firstId !== undefined && favoritePins.includes(firstId),
       canTrash: trashItems(getWorkspace(), ids, new Date().toISOString()).ok,
       isRecycleBinEmpty: !isRecycleBinFull({ items }),
       onOpen: () => {
@@ -654,6 +656,11 @@ export function DesktopIconsLayer(): JSX.Element {
           getWorkspace().unpinFromStart(firstId);
         } else {
           getWorkspace().pinToStart(firstId);
+        }
+      },
+      onToggleFavorite: () => {
+        if (firstId !== undefined) {
+          getWorkspace().toggleFavoritePin(firstId);
         }
       },
       onCut: () => {

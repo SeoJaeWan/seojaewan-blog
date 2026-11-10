@@ -1071,7 +1071,14 @@ export function getDescendantIds(state: Pick<WorkspaceState, 'items'>, folderId:
 }
 
 /**
- * 휴지통에 없는 Blog 글을 최신순(작성일이 같으면 이름순)으로 돌려준다. Chrome 새 탭 페이지와 검색 추천에 쓴다.
+ * Chrome 새 탭 페이지와 작업 표시줄 Chrome 점프 목록("자주 방문")에 보이는 최신 글 개수(피그마 Chrome/Page `Page=New tab`).
+ * @codocs [[Chrome:새 탭 페이지]]
+ * @codocs [[작업 표시줄:우클릭 메뉴]]
+ */
+export const CHROME_LATEST_POST_COUNT = 6;
+
+/**
+ * 휴지통에 없는 Blog 글을 최신순(작성일이 같으면 이름순)으로 돌려준다. Chrome 새 탭 페이지, 작업 표시줄 Chrome 점프 목록, 검색 추천에 쓴다.
  * Project·About 항목은 넣지 않는다.
  * @codocs [[검색:입력 전 화면]]
  * @codocs [[Chrome:새 탭 페이지]]
@@ -1283,6 +1290,20 @@ export function unpinFromFavorites(state: WorkspaceState, id: string): Workspace
 }
 
 /**
+ * 폴더가 탐색기 즐겨찾기에 있으면 빼고, 없으면 맨 뒤에 고정한다(폴더 우클릭 메뉴의 즐겨찾기에 고정 / 즐겨찾기에서 제거).
+ * @codocs [[고정:즐겨찾기 고정]]
+ * @codocs [[파일 탐색기:우클릭 메뉴]]
+ * @param state 작업 공간 상태
+ * @param id 폴더 id
+ * @returns 새 상태
+ */
+export function toggleFavoritePin(state: WorkspaceState, id: string): WorkspaceState {
+  return state.favoritePins.includes(id)
+    ? unpinFromFavorites(state, id)
+    : pinToFavorites(state, id);
+}
+
+/**
  * 탐색기 즐겨찾기의 순서를 바꾼다. 자리는 휴지통에 있어 보이지 않는 폴더까지 센 `favoritePins`의 자리이며 목록 안으로 맞춘다.
  * 없는 폴더면 그대로다.
  * @codocs [[고정:즐겨찾기 고정]]
@@ -1295,6 +1316,52 @@ export function moveFavoritePin(state: WorkspaceState, id: string, index: number
   return state.favoritePins.includes(id)
     ? { ...state, favoritePins: moveInList(state.favoritePins, id, index) }
     : state;
+}
+
+/**
+ * 항목들을 탐색기 즐겨찾기에 놓을 수 있는지. 모두 폴더여야 한다(글·외부 링크가 섞이면 놓을 수 없다).
+ * @codocs [[고정:즐겨찾기 고정]]
+ * @codocs [[파일 탐색기:탐색 창]]
+ * @param state 작업 공간 상태
+ * @param ids 항목 id
+ * @returns 놓을 수 있으면 true
+ */
+export function canPlaceFavoritePins(
+  state: Pick<WorkspaceState, 'items'>,
+  ids: readonly string[],
+): boolean {
+  return ids.length > 0 && ids.every((id) => state.items[id]?.kind === 'folder');
+}
+
+/**
+ * 폴더들을 탐색기 즐겨찾기의 한 자리에 놓는다(탐색 창으로 끌어 놓기). 이미 있는 폴더는 그 자리로 순서를 바꾸고, 없는 폴더는 그 자리에 고정한다.
+ * 자리는 보이는 즐겨찾기(휴지통에 든 폴더를 뺀 목록)의 차례이며, 그 차례의 폴더 바로 앞에 놓는다(목록 길이면 맨 뒤).
+ * 폴더가 아닌 항목이 섞였으면 그대로다.
+ * @codocs [[고정:즐겨찾기 고정]]
+ * @codocs [[파일 탐색기:탐색 창]]
+ * @param state 작업 공간 상태
+ * @param ids 놓을 폴더 id(이 차례로 놓는다)
+ * @param slot 보이는 즐겨찾기에서 놓을 자리
+ * @returns 새 상태
+ */
+export function placeFavoritePins(
+  state: WorkspaceState,
+  ids: readonly string[],
+  slot: number,
+): WorkspaceState {
+  if (!canPlaceFavoritePins(state, ids)) {
+    return state;
+  }
+  const placed = [...new Set(ids)];
+  const visible = getFavoriteFolders(state).map((folder) => folder.id);
+  // 놓을 자리 뒤의 첫 폴더(놓는 폴더 자신은 빼고) 바로 앞에 넣는다.
+  const anchor = visible.slice(Math.max(slot, 0)).find((id) => !placed.includes(id));
+  const rest = state.favoritePins.filter((id) => !placed.includes(id));
+  const index = anchor === undefined ? rest.length : rest.indexOf(anchor);
+  return {
+    ...state,
+    favoritePins: [...rest.slice(0, index), ...placed, ...rest.slice(index)],
+  };
 }
 
 /**

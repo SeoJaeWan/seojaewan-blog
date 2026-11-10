@@ -36,6 +36,7 @@ export function PreviewListStory({ count }: PreviewListStoryProps): JSX.Element 
         (item) => ({
           id: item.id,
           title: item.title,
+          aspectRatio: PREVIEW_THUMBNAIL.aspectRatio,
           thumbnail: (
             <WindowThumbnail
               width={PREVIEW_THUMBNAIL.width}

@@ -4,6 +4,7 @@ import {
   ABOUT_FOLDER_ID,
   APP_ITEM_IDS,
   BLOG_FOLDER_ID,
+  canPlaceFavoritePins,
   createFolder,
   createInitialWorkspace,
   filterFolderNameInput,
@@ -30,6 +31,7 @@ import {
   pinToStart,
   pinToTaskbar,
   type PlacedItem,
+  placeFavoritePins,
   PROJECT_FOLDER_ID,
   reconcileWorkspace,
   recordRecentItem,
@@ -41,6 +43,7 @@ import {
   setDesktopIconPositions,
   setExplorerView,
   swapStartPin,
+  toggleFavoritePin,
   toSavedWorkspace,
   trashItems,
   unpinFromFavorites,
@@ -283,6 +286,51 @@ describe('고정:즐겨찾기 고정', () => {
     expect(trashed.favoritePins).toContain('folder:React/Hooks');
     const restored = expectOk(restoreItems(trashed, ['folder:React', ABOUT_FOLDER_ID]));
     expect(favoriteNames(restored)).toEqual(['Project', 'Blog', 'About', 'Hooks']);
+  });
+
+  it('우클릭 메뉴는 있으면 빼고 없으면 맨 뒤에 고정한다', () => {
+    expect(toggleFavoritePin(initial, BLOG_FOLDER_ID).favoritePins).toEqual([
+      PROJECT_FOLDER_ID,
+      ABOUT_FOLDER_ID,
+    ]);
+    expect(toggleFavoritePin(initial, 'folder:React').favoritePins.at(-1)).toBe('folder:React');
+  });
+
+  // @codocs [[파일 탐색기:탐색 창]]
+  it('끌어 놓은 자리에 고정하고, 이미 있는 폴더는 그 자리로 순서를 바꾼다', () => {
+    expect(placeFavoritePins(initial, ['folder:React'], 1).favoritePins).toEqual([
+      PROJECT_FOLDER_ID,
+      'folder:React',
+      BLOG_FOLDER_ID,
+      ABOUT_FOLDER_ID,
+    ]);
+    expect(placeFavoritePins(initial, [PROJECT_FOLDER_ID], 3).favoritePins).toEqual([
+      BLOG_FOLDER_ID,
+      ABOUT_FOLDER_ID,
+      PROJECT_FOLDER_ID,
+    ]);
+    expect(placeFavoritePins(initial, [ABOUT_FOLDER_ID], 0).favoritePins).toEqual([
+      ABOUT_FOLDER_ID,
+      PROJECT_FOLDER_ID,
+      BLOG_FOLDER_ID,
+    ]);
+  });
+
+  it('자리는 보이는 즐겨찾기의 차례라 휴지통에 든 폴더는 세지 않는다', () => {
+    const trashed = expectOk(trashItems(initial, [BLOG_FOLDER_ID], NOW));
+    // 보이는 목록은 Project, About이고 그 사이(1)는 About 바로 앞이다.
+    expect(placeFavoritePins(trashed, ['folder:React'], 1).favoritePins).toEqual([
+      PROJECT_FOLDER_ID,
+      BLOG_FOLDER_ID,
+      'folder:React',
+      ABOUT_FOLDER_ID,
+    ]);
+  });
+
+  it('글이나 외부 링크가 섞이면 놓을 수 없다', () => {
+    expect(canPlaceFavoritePins(initial, ['folder:React', 'post:react-19-hooks'])).toBe(false);
+    expect(placeFavoritePins(initial, ['link:github'], 0)).toBe(initial);
+    expect(canPlaceFavoritePins(initial, ['folder:React'])).toBe(true);
   });
 
   // @codocs [[방문자 저장:저장하는 것]]

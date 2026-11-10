@@ -51,6 +51,7 @@ export const CommandBarPlacement: Story = {
         '삭제',
         '열기Enter',
         '새 창에서 열기',
+        '즐겨찾기에 고정',
         '시작 화면에 고정',
       ]);
     });
@@ -72,6 +73,7 @@ export const CommandBarPlacementAbove: Story = {
       await expect(menuItemTexts()).toEqual([
         '열기Enter',
         '새 창에서 열기',
+        '즐겨찾기에 고정',
         '시작 화면에 고정',
         '잘라내기',
         '이름 바꾸기',

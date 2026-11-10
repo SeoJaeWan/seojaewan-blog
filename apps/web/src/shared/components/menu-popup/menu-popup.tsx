@@ -98,6 +98,16 @@ export type MenuPopupCommandBar = {
   buttons: readonly MenuPopupCommandButton[];
 };
 
+/**
+ * 머리글이 붙은 항목 묶음(작업 표시줄 점프 목록의 "자주 방문"·"작업" 칸). 피그마 메뉴 조립이 Content 안에 직접 그린 머리글(`header <이름>`)
+ * 아래에 항목을 둔다. 보조 기술에는 머리글이 이름인 메뉴 묶음으로 알린다.
+ */
+export type MenuPopupGroup = {
+  kind: 'group';
+  label: string;
+  entries: readonly MenuPopupEntry[];
+};
+
 /** 메뉴 한 줄 */
 export type MenuPopupEntry =
   | MenuPopupCommand
@@ -106,18 +116,21 @@ export type MenuPopupEntry =
   | MenuPopupRadioGroup
   | MenuPopupZoom
   | MenuPopupSeparator
-  | MenuPopupCommandBar;
+  | MenuPopupCommandBar
+  | MenuPopupGroup;
 
 /** 메뉴 목록에 한 줄로 그리는 항목(단추 줄을 뺀 메뉴 한 줄) */
 type MenuPopupListEntry = Exclude<MenuPopupEntry, MenuPopupCommandBar>;
 
-export type MenuPopupWidth = 'default' | 'view-options';
+export type MenuPopupWidth = 'default' | 'view-options' | 'taskbar';
 
 // 메뉴 바탕(Menu) 너비다. 피그마 메뉴 조립이 Menu 인스턴스에 연결한 너비 변수로, 기본은 Menu 자신의 너비(size/menu/width)이고
-// `Menu/ViewOptions`만 size/menu/view-options-width다. 항목(MenuItem)은 늘 바탕 너비를 채운다.
+// `Menu/ViewOptions`만 size/menu/view-options-width, 작업 표시줄 앱 메뉴·점프 목록(`Menu/TaskbarApp`, `Menu/TaskbarJumpList*`)은
+// size/menu/taskbar-width다. 항목(MenuItem)은 늘 바탕 너비를 채운다.
 const menuWidthClassNames = {
   default: undefined,
   'view-options': 'w-size-menu-view-options-width',
+  taskbar: 'w-size-menu-taskbar-width',
 } as const satisfies Record<MenuPopupWidth, string | undefined>;
 const DEFAULT_MENU_WIDTH: MenuPopupWidth = 'default';
 
@@ -395,6 +408,25 @@ function MenuPanel({ width, items, side }: MenuPanelProps & { side: MenuPopupSid
     }
   }
 
+  /**
+   * 하위 메뉴 항목 하나의 열림 상태를 만든다. 묶음 안의 하위 메뉴 항목도 같은 메뉴의 하위 메뉴라 여기서 함께 정한다.
+   * @param key 하위 메뉴 항목의 key
+   * @returns 열림 상태
+   */
+  function getSubmenuControl(key: string): SubmenuControl {
+    return {
+      key,
+      isOpen: openSubmenuKey === key,
+      onOpenChange: (isOpen: boolean) => {
+        if (isOpen) {
+          showSubmenu(key);
+        } else if (openSubmenuKey === key) {
+          showSubmenu(null);
+        }
+      },
+    };
+  }
+
   return (
     <Menu
       className={menuWidthClassNames[width ?? DEFAULT_MENU_WIDTH]}
@@ -417,23 +449,7 @@ function MenuPanel({ width, items, side }: MenuPanelProps & { side: MenuPopupSid
          */
         (entry, index) => {
           const key = entryKey(entry, index);
-          return (
-            <MenuEntry
-              key={key}
-              entry={entry}
-              submenu={{
-                key,
-                isOpen: openSubmenuKey === key,
-                onOpenChange: (isOpen: boolean) => {
-                  if (isOpen) {
-                    showSubmenu(key);
-                  } else if (openSubmenuKey === key) {
-                    showSubmenu(null);
-                  }
-                },
-              }}
-            />
-          );
+          return <MenuEntry key={key} id={key} entry={entry} getSubmenu={getSubmenuControl} />;
         },
       )}
       {hasCommandBar && isOpenedAbove && (
@@ -444,6 +460,15 @@ function MenuPanel({ width, items, side }: MenuPanelProps & { side: MenuPopupSid
       )}
     </Menu>
   );
+}
+
+/**
+ * 메뉴 한 줄이 목록에 한 줄로 그리는 항목인지(단추 줄이 아닌지) 본다.
+ * @param entry 메뉴 한 줄
+ * @returns 목록에 그리는 항목이면 true
+ */
+function isListEntry(entry: MenuPopupEntry): entry is MenuPopupListEntry {
+  return entry.kind !== 'command-bar';
 }
 
 /** 하위 메뉴 항목이 받는 열림 상태. MenuPanel이 이 메뉴의 하위 메뉴를 하나만 열도록 정한다. */
@@ -467,6 +492,8 @@ function entryKey(entry: MenuPopupListEntry, index: number): string {
       return 'zoom';
     case 'radio-group':
       return `radio-group-${entry.options[0]?.value ?? String(index)}`;
+    case 'group':
+      return `group-${entry.label}`;
     default:
       return entry.label;
   }
@@ -475,22 +502,47 @@ function entryKey(entry: MenuPopupListEntry, index: number): string {
 /**
  * 메뉴 한 줄을 종류에 맞는 MenuItem이나 구분선으로 그린다.
  * @param props 컴포넌트 속성
+ * @param props.id 이 메뉴 안에서 이 줄을 가리키는 key. 묶음 안의 줄은 묶음의 key를 앞에 붙인다
  * @param props.entry 메뉴 한 줄
- * @param props.submenu 하위 메뉴 항목일 때의 열림 상태
+ * @param props.getSubmenu 하위 메뉴 항목의 열림 상태를 key로 얻는다
  */
 function MenuEntry({
+  id,
   entry,
-  submenu,
+  getSubmenu,
 }: {
+  id: string;
   entry: MenuPopupListEntry;
-  submenu: SubmenuControl;
+  getSubmenu: (key: string) => SubmenuControl;
 }): JSX.Element {
   switch (entry.kind) {
     case 'separator':
       // 메뉴 안쪽 너비를 채우는 구분선(피그마 MenuSeparator)이다. 너비는 메뉴 바탕(Flyout)이 채운다.
       return <MenuSeparator />;
     case 'submenu':
-      return <SubmenuEntry entry={entry} control={submenu} />;
+      return <SubmenuEntry entry={entry} control={getSubmenu(id)} />;
+    case 'group':
+      return (
+        // 피그마 `header <이름>` 프레임: 높이 32(글자 16 + 위아래 spacing/sm), 왼쪽 spacing/lg, Caption 글자 color/black/61이다.
+        // 묶음은 항목을 바로 담아 메뉴 바탕의 세로 배치를 그대로 잇는다(`contents`).
+        <BaseMenu.Group className="contents">
+          <BaseMenu.GroupLabel className="self-stretch truncate px-spacing-lg py-spacing-sm type-caption text-color-black-61 select-none">
+            {entry.label}
+          </BaseMenu.GroupLabel>
+          {entry.entries.filter(isListEntry).map(
+            /**
+             * 묶음 안의 한 줄을 그린다. 단추 줄은 묶음 안에 두지 않는다.
+             * @param child 메뉴 한 줄
+             * @param index 순서
+             * @returns 메뉴 요소
+             */
+            (child, index) => {
+              const key = `${id}/${entryKey(child, index)}`;
+              return <MenuEntry key={key} id={key} entry={child} getSubmenu={getSubmenu} />;
+            },
+          )}
+        </BaseMenu.Group>
+      );
     case 'zoom': {
       const { onZoomOut: handleZoomOut, onZoomIn: handleZoomIn } = entry;
       return (
