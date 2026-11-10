@@ -170,7 +170,7 @@ function SeparatorMenuExample() {
   return (
     <Breadcrumb
       locationIcon={<img src={folderIcon} alt="" />}
-      separatorLabel="최상위 위치"
+      separatorLabel="최상위 항목"
       isSeparatorOpen={isOpen}
       renderSeparator={(separator) => (
         <Menu.Root open={isOpen} modal={false} onOpenChange={handleOpenChange}>
@@ -197,7 +197,7 @@ export const SeparatorMenu: Story = {
   // Base UI 포커스 가드는 aria-hidden이면서 tabindex=0인 span이라 aria-hidden-focus에 걸린다. 외부 라이브러리 구조라 이 규칙만 끈다.
   parameters: { a11y: { config: { rules: [{ id: 'aria-hidden-focus', enabled: false }] } } },
   play: async ({ canvas, step }) => {
-    const chevron = canvas.getByRole('button', { name: '최상위 위치' });
+    const chevron = canvas.getByRole('button', { name: '최상위 항목' });
 
     await step('맨 앞 꺾쇠를 누르면 메뉴가 열리고 열림 모양이 된다', async () => {
       await expect(chevron).toHaveAttribute('data-open', 'false');
