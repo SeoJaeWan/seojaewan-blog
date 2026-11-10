@@ -34,9 +34,10 @@ Windows 화면 요소: |
   | `Rest` | 기본 | args |
   | `Hover` | 마우스를 올림 | 실제 마우스 |
   | `Pressed` | 누르는 중 | 실제 마우스 |
-  | `Focused` | 키보드 포커스 | 실제 키보드 |
+  | `Focused` | 키보드 포커스(탐색기 항목은 아래 예외) | 실제 키보드 |
   | `Disabled` | 쓸 수 없음 | args |
   | `Selected` | 선택됨 | args |
+  | `Selected unfocused` | 선택됐지만 항목을 담은 목록에 포커스가 없음 | args |
   | `Rename` | 이름을 바꾸는 중 | args |
   | `Cut` | 잘라냄 | args |
   | `Cut selected` | 잘라낸 채 선택됨 | args |
@@ -48,7 +49,8 @@ Windows 화면 요소: |
   | `Closed` | 팝업이 닫혀 트리거만 보임 | args |
   | `Open` | 팝업이나 하위 메뉴가 열려 있음 | args |
 
-  - `FileItem`·`FileRow`의 포커스(`Focused`)는 `:focus-visible`로 그리고 포커스를 주는 prop을 두지 않는다. 키보드로 포커스가 옮겨 갈 때만 보이고 마우스로 누를 때는 보이지 않으며, 선택과 상관없이 그린다.
+  - 바탕화면 `FileItem`의 포커스(`Focused`)는 `:focus-visible`로 그리고 포커스를 주는 prop을 두지 않는다. 키보드로 포커스가 옮겨 갈 때만 보이고 마우스로 누를 때는 보이지 않으며, 선택과 상관없이 그린다.
+  - 예외: 탐색기 항목(`FileItem`의 `Surface=Explorer`, `FileRow`)의 포커스 선은 키보드 포커스가 아니라 "그 목록의 현재 항목"을 뜻한다. 피그마는 `Current` 변형, 코드는 `isCurrent` prop(args로 재현)으로 1px 안쪽 선을 그리고, 마우스로 눌러도 포커스가 목록을 떠나도 남는다. 선과 선택 바탕의 색은 prop이 아니라 항목을 담은 목록(`role="listbox"`)에 포커스가 있는지로 고른다. 없으면 회색이다(`Selected unfocused`). 현재 항목과 회색이 되는 때는 [[파일 탐색기:조작]]에 있다.
   - `Closed`·`Open`은 코드 전용 `Popover`의 열림 상태다([[컴포넌트 목록:코드 전용 컴포넌트]]). 피그마 조립에는 열린 팝업을 그릴 수 있다([[디자인 시스템:팝업]]). 트리거 컴포넌트(IconButton, Button, DropDownButton, TaskbarButton, 하위 메뉴가 있는 MenuItem)는 `Open` 변형을 갖지 않는다.
   - 팝업이 열려 있어도 트리거는 `Rest` 모양 그대로다. Windows(WinUI)도 팝업이 뜨면 바깥 클릭을 받는 막이 마우스를 가져가 트리거가 평소 모양으로 돌아간다. 코드에서는 열림 상태(`aria-expanded`)로만 구분한다.
   - 예외: 작업 표시줄 앱 버튼은 창 미리보기(`Taskbar/AppPreview`)가 떠 있는 동안 `Hover` 모양이다. 창 미리보기는 마우스를 올려 여는 팝업이라 그동안 마우스가 버튼 위에 있기 때문이다. 우클릭 메뉴(`Taskbar/AppMenu`)가 열렸을 때는 다른 트리거처럼 `Rest` 모양이다.
