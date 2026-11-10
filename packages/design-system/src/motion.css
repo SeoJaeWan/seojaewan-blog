@@ -865,6 +865,29 @@
 }
 
 /*
+ * Start 범주 팝업 쪽 넘김(조립 흐름 motion-start-category-folder-page). 격자(tile grid)가 한 쪽(3줄, 252px)만큼 위로 미끄러지고
+ * 다음 쪽이 아래에서 올라온다(페이드·크기 변화 없음). 제목과 쪽 표시 점은 제자리이고 격자만 위쪽 경계(page clip)에서 잘린다.
+ * 클래스는 격자 요소에 붙이고, 격자를 감싼 틀이 넘치는 부분을 자른다. 한 쪽만큼의 움직임이라 쪽을 되돌리거나 더 넘기는 일은 앱이 한다.
+ * 이 클래스를 팝업에 붙이는 쪽 넘김 기능(휠)은 따로 만든다. 실행 중 값은 없다.
+ */
+@keyframes motion-start-category-folder-page {
+  0% {
+    translate: 0 0;
+  }
+
+  100% {
+    translate: 0 -252px;
+  }
+}
+
+@utility motion-start-category-folder-page {
+  animation-name: motion-start-category-folder-page;
+  animation-duration: var(--motion-duration-slow);
+  animation-timing-function: var(--motion-easing-direct-entrance);
+  animation-fill-mode: both;
+}
+
+/*
  * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다. 멈추면 정보가 사라지는 움직임만 남긴다([[디자인 기반:동작 줄이기]]).
  * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환, 순서 바꾸기 끌기는 여기서 움직임 없이 바로 바꾼다.
  * hover·pressed·focus 색 전환도 서서히 바뀌지 않고 바로 바뀐다.
@@ -892,6 +915,7 @@
   .motion-start-pinned-move-exit,
   .motion-start-pinned-move-swap,
   .motion-start-pinned-move-enter,
+  .motion-start-category-folder-page,
   .motion-image-skeleton,
   .motion-image-enter,
   .motion-menu-enter > *,
