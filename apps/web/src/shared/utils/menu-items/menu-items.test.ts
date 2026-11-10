@@ -25,9 +25,9 @@ describe('파일 탐색기:구성', () => {
 
 // @codocs [[작업 표시줄:우클릭 메뉴]]
 describe('작업 표시줄:우클릭 메뉴', () => {
-  it('작업 표시줄에 고정한 앱은 작업 표시줄에서 고정 해제를 보인다', () => {
+  it('작업 표시줄에 고정한 앱은 작업 표시줄에서 제거를 보인다', () => {
     expect(taskbarPinMenuItem(false, vi.fn()).label).toBe('작업 표시줄에 고정');
-    expect(taskbarPinMenuItem(true, vi.fn()).label).toBe('작업 표시줄에서 고정 해제');
+    expect(taskbarPinMenuItem(true, vi.fn()).label).toBe('작업 표시줄에서 제거');
   });
 });
 

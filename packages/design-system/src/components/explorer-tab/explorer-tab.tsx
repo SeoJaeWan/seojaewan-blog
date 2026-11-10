@@ -53,7 +53,7 @@ export function ExplorerTab({
       className={cn(
         'group relative flex h-size-control-height w-size-explorer-tab-width items-center gap-spacing-sm rounded-t-radius-overlay py-spacing-sm pr-spacing-sm pl-spacing-md select-none',
         'motion-control-state',
-        isSelected ? 'bg-color-white-70' : 'bg-color-white-0 hover:bg-color-black-4',
+        isSelected ? 'bg-color-gray-4' : 'bg-color-white-0 hover:bg-color-black-4',
         className,
       )}
     >

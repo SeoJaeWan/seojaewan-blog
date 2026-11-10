@@ -65,7 +65,7 @@ export const DesktopAndTaskbar: Story = {
 
     // @codocs [[작업 표시줄:앱 버튼]]
     await step('창이 1개이고 맨 앞이면 최소화하고, 다시 누르면 복원한다', async () => {
-      const button = body.getByRole('button', { name: 'Chrome' });
+      const button = body.getByRole('button', { name: 'Google Chrome' });
       await userEvent.click(button);
       await expect(await body.findByRole('region', { name: '새 탭 - Chrome' })).toBeInTheDocument();
 
@@ -322,7 +322,7 @@ export const Search: Story = {
       await userEvent.click(body.getByRole('searchbox', { name: '검색' }));
       await body.findByRole('dialog', { name: '검색' });
 
-      body.getByRole('button', { name: 'Chrome' }).focus();
+      body.getByRole('button', { name: 'Google Chrome' }).focus();
 
       await expectSearchClosed();
     });
@@ -352,17 +352,21 @@ export const Restart: Story = {
       await step(
         '다시 시작하는 동안 바탕화면 하위 트리는 조작할 수 없고(inert), 끝나면 다시 조작할 수 있다',
         async () => {
-          await expect(body.getByRole('button', { name: 'Chrome' }).closest('[inert]')).toBeNull();
+          await expect(
+            body.getByRole('button', { name: 'Google Chrome' }).closest('[inert]'),
+          ).toBeNull();
 
           await chooseRestartInStory(documentBody);
           await waitFor(() => expect(useRestartStore.getState().phase).toBe('showing'));
           await expect(
-            body.getByRole('button', { name: 'Chrome' }).closest('[inert]'),
+            body.getByRole('button', { name: 'Google Chrome' }).closest('[inert]'),
           ).not.toBeNull();
 
           clock.tick(readCssTimeVariable('--motion-delay-boot-screen'));
           await waitFor(() => expect(useRestartStore.getState().phase).toBe('idle'));
-          await expect(body.getByRole('button', { name: 'Chrome' }).closest('[inert]')).toBeNull();
+          await expect(
+            body.getByRole('button', { name: 'Google Chrome' }).closest('[inert]'),
+          ).toBeNull();
         },
       );
 
