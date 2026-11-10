@@ -256,3 +256,4 @@ Chrome 세션: |
   - #884 BrowserTab: 활성 탭 오목 모서리는 검수 문서의 가상 요소 원형 그라디언트 대신 export.json대로 Shapes 자산(`shapes/browser-tab-corner-left·right`)을 `Asset`으로 탭 밖 아래 양옆에 그렸다. 크기는 견본 크기(8, 변수 없음)라 같은 값의 `size-spacing-sm`으로, 위치는 `right-position-full`·`left-position-full`과 `bottom-spacing-none`으로 두었다. 칠은 탭 바탕과 같은 `text-color-white`다.
   - #884 BrowserTab: 모서리 조각은 탭 밖으로 나오므로 `pointer-events-none`을 주어 옆 탭의 누르기·호버를 막지 않게 했다.
   - #884 BrowserTab: 피그마 기본 파비콘이 아직 `file/Document`라 `Figma` 스토리는 그대로 두었다(검수 8번의 Material `description`은 내보낸 그림에 아직 없다).
+  - #892 BrowserTabStrip: 탭 검색(⌄) 버튼은 모양과 자리만 그리고, 앱이 메뉴를 붙일 수 있게 BrowserToolbar의 `renderMenuButton`과 같은 방식으로 `renderTabSearchButton`(버튼 요소를 받아 감싸는 함수)과 `onTabSearch`를 열었다. 접근성 이름은 `tabSearchLabel`(기본 "탭 검색")이고, + 버튼 이름도 같은 꼴로 `newTabLabel`(기본 "새 탭")을 열었다. ⌄ 감싸기는 + 감싸기와 같은 `shrink-shrink-none items-start overflow-clip pb-spacing-2xs`다.
