@@ -1,0 +1,440 @@
+{
+  "description": "메뉴의 단추 줄로, 잘라내기·삭제처럼 자주 쓰는 명령 단추(MenuCommandButton)를 가로로 놓는다. 메뉴가 아래로 열리면 맨 위, 위로 열리면 맨 아래에 둔다.",
+  "name": "MenuCommandBar",
+  "nodeId": "3477:15998",
+  "propertyDefinitions": {
+    "Items": {
+      "type": "SLOT"
+    }
+  },
+  "variants": {
+    "default": {
+      "node": {
+        "height": 52,
+        "width": 250,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:15998",
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "fills": [
+                      "color/black/89"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 21
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "명령",
+                          "fill": "color/black/89",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "MenuCommandButton",
+                "fills": [
+                  "color/white/0"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/xs",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm-nudge",
+                    "spacing/xs",
+                    "spacing/sm-nudge",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "MenuCommandButton",
+                "properties": {
+                  "Label": "명령",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "sampleSize": [
+                  "height"
+                ],
+                "size": {
+                  "h": 48,
+                  "w": 80
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "component": "Separator",
+                    "fills": [
+                      "color/black/8"
+                    ],
+                    "name": "Separator",
+                    "properties": {
+                      "Orientation": "Vertical"
+                    },
+                    "size": {
+                      "h": 36,
+                      "w": 1
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FILL"
+                    },
+                    "type": "INSTANCE",
+                    "width": "stroke-width/default"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/none",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm-nudge",
+                    "spacing/none",
+                    "spacing/sm-nudge",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "separator",
+                "size": {
+                  "h": 48,
+                  "w": 1
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "FILL"
+                },
+                "type": "FRAME"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "fills": [
+                      "color/black/89"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 21
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "명령",
+                          "fill": "color/black/89",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "MenuCommandButton",
+                "fills": [
+                  "color/white/0"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/xs",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm-nudge",
+                    "spacing/xs",
+                    "spacing/sm-nudge",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "MenuCommandButton",
+                "properties": {
+                  "Label": "명령",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "sampleSize": [
+                  "height"
+                ],
+                "size": {
+                  "h": 48,
+                  "w": 80
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "component": "Separator",
+                    "fills": [
+                      "color/black/8"
+                    ],
+                    "name": "Separator",
+                    "properties": {
+                      "Orientation": "Vertical"
+                    },
+                    "size": {
+                      "h": 36,
+                      "w": 1
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FILL"
+                    },
+                    "type": "INSTANCE",
+                    "width": "stroke-width/default"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/none",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm-nudge",
+                    "spacing/none",
+                    "spacing/sm-nudge",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "separator",
+                "size": {
+                  "h": 48,
+                  "w": 1
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "FILL"
+                },
+                "type": "FRAME"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "fills": [
+                      "color/black/89"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 21
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "명령",
+                          "fill": "color/black/89",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "MenuCommandButton",
+                "fills": [
+                  "color/white/0"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/xs",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm-nudge",
+                    "spacing/xs",
+                    "spacing/sm-nudge",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "MenuCommandButton",
+                "properties": {
+                  "Label": "명령",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "sampleSize": [
+                  "height"
+                ],
+                "size": {
+                  "h": 48,
+                  "w": 80
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Items",
+            "size": {
+              "h": 48,
+              "w": 242
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "MenuCommandBar",
+        "sampleSize": [
+          "width",
+          "height"
+        ],
+        "size": {
+          "h": 52,
+          "w": 250
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT"
+      }
+    }
+  }
+}
