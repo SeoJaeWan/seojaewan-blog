@@ -162,8 +162,9 @@
                 },
                 "name": "close",
                 "properties": {
+                  "Checked": "False",
                   "State": "Rest",
-                  "Variant": "Subtle"
+                  "Variant": "Close"
                 },
                 "radius": [
                   "radius/control",
@@ -233,9 +234,6 @@
                 "type": "SLOT"
               }
             ],
-            "fills": [
-              "color/gray/4"
-            ],
             "height": "size/window-preview/thumbnail-height",
             "layout": {
               "counterAlign": "CENTER",
@@ -250,12 +248,6 @@
               "primaryAlign": "CENTER"
             },
             "name": "thumbnail frame",
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
             "size": {
               "h": 108,
               "w": 192
@@ -264,21 +256,11 @@
               "h": "FILL",
               "v": "FIXED"
             },
-            "strokeWeight": [
-              "stroke-width/default",
-              "stroke-width/default",
-              "stroke-width/default",
-              "stroke-width/default"
-            ],
-            "strokes": [
-              "color/black/6"
-            ],
-            "strokesIncludedInLayout": false,
             "type": "FRAME"
           }
         ],
         "fills": [
-          "color/black/4"
+          "color/white/70"
         ],
         "layout": {
           "counterAlign": "MIN",
@@ -469,9 +451,6 @@
                 "type": "SLOT"
               }
             ],
-            "fills": [
-              "color/gray/4"
-            ],
             "height": "size/window-preview/thumbnail-height",
             "layout": {
               "counterAlign": "CENTER",
@@ -486,12 +465,6 @@
               "primaryAlign": "CENTER"
             },
             "name": "thumbnail frame",
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
             "size": {
               "h": 108,
               "w": 192
@@ -500,16 +473,6 @@
               "h": "FILL",
               "v": "FIXED"
             },
-            "strokeWeight": [
-              "stroke-width/default",
-              "stroke-width/default",
-              "stroke-width/default",
-              "stroke-width/default"
-            ],
-            "strokes": [
-              "color/black/6"
-            ],
-            "strokesIncludedInLayout": false,
             "type": "FRAME"
           }
         ],
