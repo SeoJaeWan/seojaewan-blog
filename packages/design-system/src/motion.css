@@ -865,6 +865,33 @@
 }
 
 /*
+ * Start 범주 팝업 열기(조립 흐름 motion-start-category-folder-open). StartCategoryFolder 전체가 한 장처럼 배율 0 → 1로 커지며
+ * 누른 범주 카드 자리에서 Start 정가운데로 온다(페이드 없음). 두 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다.
+ * 출발 위치(팝업 가운데에서 누른 카드의 아이콘·이름 가운데 점까지의 거리)는 실행 중 값이라 앱이
+ * --motion-category-folder-offset-x·-y로 넘긴다. 닫기(motion-start-category-folder-close)도 같은 변수를 도착 위치로 쓴다.
+ * 끝 모습(배율 1, 제자리)은 닫기의 시작 모습과 같다. 시작 모습을 재생 전에도 유지하도록 fill-mode는 both다.
+ * 뒤의 Start는 어두워지거나 흐려지지 않는다. 앱이 팝업을 열 때(data-starting-style 자리) 붙인다.
+ */
+@keyframes motion-start-category-folder-open {
+  0% {
+    scale: 0;
+    translate: var(--motion-category-folder-offset-x) var(--motion-category-folder-offset-y);
+  }
+
+  100% {
+    scale: 1;
+    translate: 0 0;
+  }
+}
+
+@utility motion-start-category-folder-open {
+  animation-name: motion-start-category-folder-open;
+  animation-duration: var(--motion-duration-slow);
+  animation-timing-function: var(--motion-easing-direct-entrance);
+  animation-fill-mode: both;
+}
+
+/*
  * Start 범주 팝업 닫기(조립 흐름 motion-start-category-folder-close). StartCategoryFolder 전체가 한 장처럼
  * 배율 1 → 0으로 줄며 자기 카드 자리로 돌아간다(열기 motion-start-category-folder-open의 반대). 끝까지 불투명하고 끝나면 앱이 숨긴다.
  * 두 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다. 도착 위치(팝업 가운데에서 연 카드의 아이콘·이름 가운데 점까지의 거리)는
@@ -920,6 +947,7 @@
   .motion-start-pinned-move-swap,
   .motion-start-pinned-move-enter,
   .motion-start-category-folder-close,
+  .motion-start-category-folder-open,
   .motion-image-skeleton,
   .motion-image-enter,
   .motion-menu-enter > *,
