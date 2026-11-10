@@ -8,8 +8,8 @@
       "node": {
         "height": 36,
         "width": 640,
-        "x": 16,
-        "y": 8
+        "x": 0,
+        "y": 0
       },
       "nodeId": "543:14685",
       "properties": {},
@@ -21,6 +21,8 @@
               "popover/Trigger/address bar"
             ],
             "properties": {
+              "Filled": "True",
+              "Placeholder": "글 검색 또는 URL 입력",
               "Query": "리액",
               "State": "Suggesting",
               "URL": "seojaewan.com/posts/react-19-hooks"
