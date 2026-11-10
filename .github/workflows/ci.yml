@@ -90,8 +90,11 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm --filter @seojaewan/web exec playwright install chromium
 
+      # 미니 PC 한 대(16코어)에서 runner 3개가 함께 돈다. 작업자 수를 정하지 않으면 job마다 코어 수만큼 띄워
+      # 서로 밀리고 시간 초과가 난다(2026-11-10 측정: 3개 동시 실행에서 기본값은 시간 초과, 5는 통과). 16 ÷ 3으로 5다.
+      # runner 수나 코어 수가 바뀌면 함께 바꾼다.
       - name: Unit and storybook tests
-        run: pnpm test
+        run: pnpm test --maxWorkers=5
 
       # @codocs [[콘텐츠 원천:읽는 곳]]
       # 이 빌드는 fixture가 아니라 저장소에 커밋한 글 JSON(운영 글)으로 한다. 글 동기화 PR이 깨진 글을 병합하지 못하게 하려는 것이다.
