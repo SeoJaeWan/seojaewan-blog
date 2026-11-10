@@ -1,4 +1,5 @@
 # @codocs [[피그마 연동:CI]]
+# @codocs [[배포 환경:CI]] GitHub 호스티드 러너(`ubuntu-latest`)에서 돈다. job마다 깨끗한 머신이라 pnpm은 기본 위치에 설치한다.
 # 모션 검사([[피그마 연동:모션]]). 바뀐 모션 클래스의 `Motion/<이름>` 스토리를 정적 빌드한 디자인 시스템
 # Storybook에서 열고 getAnimations()로 시간·이징·지연·반복 횟수를 읽어 figma/motions/<이름>.json의 토큰 짝과 비교하고
 # (시간 검사), getKeyframes()의 키프레임 값을 json 키프레임 값과 비교한다(키프레임 값 검사).
@@ -29,7 +30,7 @@ jobs:
   motion-check:
     # ruleset의 필수 검사 이름과 같아야 한다
     name: Motion check
-    runs-on: [self-hosted, linux]
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       # 결과 표 댓글을 남기고 고친다
@@ -74,23 +75,21 @@ jobs:
             echo "motion-args=$(jq -r '[.motions[] | "--motion " + .] | join(" ")' <<< "$range")"
           } >> "$GITHUB_OUTPUT"
 
-      # 한 머신의 runner들이 기본 설치 위치(~/setup-pnpm)를 함께 쓰지 않게 job마다 따로 설치한다
       - uses: pnpm/action-setup@v6.1.1
         if: steps.range.outputs.has-range == 'true'
-        with:
-          dest: ${{ runner.temp }}/setup-pnpm
 
       - uses: actions/setup-node@v7.1.0
         if: steps.range.outputs.has-range == 'true'
         with:
           node-version-file: .nvmrc
+          cache: pnpm
 
       - if: steps.range.outputs.has-range == 'true'
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
         if: steps.range.outputs.has-range == 'true'
-        run: pnpm --filter @seojaewan/figma-parity exec playwright install chromium
+        run: pnpm --filter @seojaewan/figma-parity exec playwright install --with-deps chromium
 
       # 디자인 시스템 Storybook을 정적으로 빌드하고 범위 안 견본의 모션 스토리를 검사한다.
       # 결과는 tools/figma-parity/parity-results/motion/<이름>.json에 남는다
