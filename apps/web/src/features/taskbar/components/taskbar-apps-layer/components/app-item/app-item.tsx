@@ -27,6 +27,10 @@ function getMenuOffset(): number {
   return getTaskbarPopupOffset('button');
 }
 
+// 끄는 동안(isDragging) 버튼은 호버·눌림 바탕과 테두리를 끈다. 포인터가 버튼 위에 있어 :hover가 풀리지 않기 때문이다.
+const DRAGGING_CLASS_NAME =
+  'hover:border-transparent hover:bg-color-white-0 active:border-transparent active:bg-color-white-0';
+
 // 우클릭 메뉴(Menu/TaskbarApp)는 피그마 Popover `Top-Center`처럼 버튼 위 가운데에 붙고, 작업 표시줄 위 끝에서 spacing/md 떨어진다.
 const MENU_PLACEMENT = { side: 'top', align: 'center', offset: getMenuOffset } as const;
 
@@ -44,6 +48,7 @@ type TaskbarAppItemProps = {
   isMenuAtPointer?: boolean;
   onButtonPointerDown?: PointerEventHandler<HTMLButtonElement>;
   isCentered?: boolean;
+  isDragging?: boolean;
 };
 
 /**
@@ -57,6 +62,7 @@ type TaskbarAppItemProps = {
  * @codocs [[작업 표시줄:창 미리보기]]
  * @codocs [[컴포넌트 목록:상태]]
  * @codocs [[작업 표시줄:우클릭 메뉴]]
+ * @codocs [[작업 표시줄:고정과 순서]]
  * @param props 컴포넌트 속성
  * @param props.app 버튼이 가리키는 앱
  * @param props.indicator 앱 버튼 아래 표시(피그마 TaskbarButton Indicator)
@@ -65,6 +71,7 @@ type TaskbarAppItemProps = {
  * @param props.isCentered 목록을 버튼이 아닌 작업 표시줄 위 가운데에 띄울지. 모바일에서 화면 폭에 맞춘 목록을 가운데 놓을 때 쓴다
  * @param props.onButtonClick 앱 버튼을 눌렀을 때 부른다. 목록을 열고 닫는 일은 쓰는 곳이 한다
  * @param props.onButtonPointerDown 앱 버튼 위에서 포인터를 눌렀을 때 부른다. 쓰는 곳이 끌어 순서 바꾸기를 시작한다
+ * @param props.isDragging 끌어 순서를 바꾸는 중인지. true면 버튼의 호버·눌림 바탕을 끄고 실행 표시를 숨긴다. 놓으면 돌아온다
  * @param props.onMenuOpenChange 우클릭 메뉴를 열거나 닫으려 할 때 부른다(우클릭, 길게 누르기, Esc, 바깥 클릭, 항목 고르기)
  * @param props.onPointerEnter 버튼이나 미리보기에 포인터가 들어왔을 때 부른다. 마우스를 올려 미리보기를 여는 시간은 쓰는 곳이 잰다
  * @param props.onPointerLeave 버튼과 미리보기 밖으로 포인터가 나갔을 때 부른다
@@ -78,6 +85,7 @@ export function TaskbarAppItem({
   isOpen = false,
   previews,
   isCentered = false,
+  isDragging = false,
   onButtonClick: handleButtonClick,
   onButtonPointerDown: handleButtonPointerDown,
   onMenuOpenChange: handleMenuOpenChangeProp,
@@ -101,9 +109,9 @@ export function TaskbarAppItem({
   const button = (
     <TaskbarAppButton
       app={app}
-      indicator={indicator}
+      indicator={isDragging ? 'none' : indicator}
       data-preview-open={isOpen ? '' : undefined}
-      className={OPEN_TRIGGER_CLASS_NAME}
+      className={isDragging ? DRAGGING_CLASS_NAME : OPEN_TRIGGER_CLASS_NAME}
       aria-expanded={isToggle ? isOpen : undefined}
       onClick={handleButtonClick}
       onPointerDown={handleButtonPointerDown}

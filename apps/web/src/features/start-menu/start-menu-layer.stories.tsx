@@ -485,7 +485,7 @@ export const AllList: Story = {
         await closeContextMenu();
         await expect(
           await openContextMenu(within(all()).getByRole('button', { name: 'Chrome' })),
-        ).toEqual(['열기', '시작 화면에서 고정 해제', '작업 표시줄에서 고정 해제']);
+        ).toEqual(['열기', '시작 화면에서 고정 해제', '작업 표시줄에서 제거']);
         await closeContextMenu();
       },
     );
@@ -536,7 +536,7 @@ export const AllList: Story = {
     // @codocs [[Start 메뉴:모두]]
     await step('앱 줄 우클릭 메뉴로 작업 표시줄 고정을 해제하고 다시 고정한다', async () => {
       await openContextMenu(within(all()).getByRole('button', { name: 'Chrome' }));
-      await userEvent.click(screen.getByRole('menuitem', { name: '작업 표시줄에서 고정 해제' }));
+      await userEvent.click(screen.getByRole('menuitem', { name: '작업 표시줄에서 제거' }));
       await expect(useWorkspaceStore.getState().taskbarPins).toEqual(['file-explorer']);
       await openContextMenu(within(all()).getByRole('button', { name: 'Chrome' }));
       await userEvent.click(screen.getByRole('menuitem', { name: '작업 표시줄에 고정' }));

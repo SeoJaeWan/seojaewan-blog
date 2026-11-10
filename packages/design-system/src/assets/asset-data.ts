@@ -226,6 +226,12 @@ export const svgAssets = {
       { tag: 'path', attributes: { d: 'M11.5 2C11.78 2 12 2.22 12 2.5C12 2.78 11.78 3 11.5 3H10.5V17H11.5C11.78 17 12 17.22 12 17.5C12 17.78 11.78 18 11.5 18H8.5C8.22 18 8 17.78 8 17.5C8 17.22 8.22 17 8.5 17H9.5V3H8.5C8.22 3 8 2.78 8 2.5C8 2.22 8.22 2 8.5 2H11.5ZM8.5 5H5C3.9 5 3 5.9 3 7V13C3 14.1 3.9 15 5 15H8.5V16H5C3.34 16 2 14.66 2 13V7C2 5.34 3.34 4 5 4H8.5V5ZM15 4C16.66 4 18 5.34 18 7V13C18 14.66 16.66 16 15 16H11.5V15H15C16.1 15 17 14.1 17 13V7C17 5.9 16.1 5 15 5H11.5V4H15Z', fill: 'currentColor' } },
     ],
   },
+  'icons/ic_fluent_search_16_filled.svg': {
+    viewBox: '0 0 16 16',
+    elements: [
+      { tag: 'path', attributes: { d: 'M10.8226 11.8833C9.89957 12.5841 8.74835 13 7.5 13C4.46243 13 2 10.5376 2 7.5C2 4.46243 4.46243 2 7.5 2C10.5376 2 13 4.46243 13 7.5C13 8.74835 12.5841 9.89957 11.8833 10.8226L14.7803 13.7197C15.0732 14.0126 15.0732 14.4874 14.7803 14.7803C14.4874 15.0732 14.0126 15.0732 13.7197 14.7803L10.8226 11.8833ZM11.5 7.5C11.5 5.29086 9.70914 3.5 7.5 3.5C5.29086 3.5 3.5 5.29086 3.5 7.5C3.5 9.70914 5.29086 11.5 7.5 11.5C9.70914 11.5 11.5 9.70914 11.5 7.5Z', fill: 'currentColor' } },
+    ],
+  },
   'icons/ic_fluent_search_16_regular.svg': {
     viewBox: '0 0 16 16',
     elements: [
@@ -346,10 +352,10 @@ export const svgAssets = {
     ],
   },
   'illustrations/logo-windows.svg': {
-    viewBox: '0 0 48 48',
+    viewBox: '0 0 40 40',
     elements: [
-      { tag: 'path', attributes: { d: 'M22.3333 42.3333H5.66667C4.74619 42.3333 4 41.587 4 40.6667V24H22.3333V42.3333ZM42.3333 40.6667C42.3333 41.587 41.587 42.3333 40.6667 42.3333H24V24H42.3333V40.6667ZM22.3333 22.3333H4V5.66667C4 4.74619 4.74619 4 5.66667 4H22.3333V22.3333ZM40.6667 4C41.587 4 42.3333 4.74619 42.3333 5.66667V22.3333H24V4H40.6667Z', fill: 'url(#s1)' } },
-      { tag: 'defs', attributes: {  }, children: [{ tag: 'linearGradient', attributes: { id: 's1', x1: '9.80863', y1: '4', x2: '34.7834', y2: '42.3333', gradientUnits: 'userSpaceOnUse' }, children: [{ tag: 'stop', attributes: { stopColor: '#4DD2FF' } }, { tag: 'stop', attributes: { offset: '0.75', stopColor: '#0078D4' } }] }] },
+      { tag: 'g', attributes: { clipPath: 'url(#s2)' }, children: [{ tag: 'path', attributes: { d: 'M19.1667 39.1663H2.49999C1.57952 39.1663 0.833328 38.42 0.833328 37.4997V20.833H19.1667V39.1663ZM39.1667 37.4997C39.1667 38.42 38.4203 39.1663 37.5 39.1663H20.8333V20.833H39.1667V37.4997ZM19.1667 19.1663H0.833328V2.49967C0.833328 1.5792 1.57952 0.833008 2.49999 0.833008H19.1667V19.1663ZM37.5 0.833008C38.4203 0.833008 39.1667 1.5792 39.1667 2.49967V19.1663H20.8333V0.833008H37.5Z', fill: 'url(#s1)' } }] },
+      { tag: 'defs', attributes: {  }, children: [{ tag: 'linearGradient', attributes: { id: 's1', x1: '6.64196', y1: '0.833007', x2: '31.6167', y2: '39.1663', gradientUnits: 'userSpaceOnUse' }, children: [{ tag: 'stop', attributes: { stopColor: '#4DD2FF' } }, { tag: 'stop', attributes: { offset: '0.75', stopColor: '#0078D4' } }] }, { tag: 'clipPath', attributes: { id: 's2' }, children: [{ tag: 'rect', attributes: { width: '40', height: '40', fill: 'white' } }] }] },
     ],
   },
   'shapes/browser-tab-corner-left.svg': {
