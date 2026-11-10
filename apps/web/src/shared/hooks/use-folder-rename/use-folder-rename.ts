@@ -40,12 +40,15 @@ type ValueChangeDetails = {
  * - 'aria-invalid': 말풍선으로 이유를 보이는 중이면 true
  * - 'aria-describedby': 말풍선으로 이유를 보이는 중이면 말풍선의 id
  */
+/** 이름 바꾸기 입력창 요소. 아이콘 보기는 여러 줄(textarea), 자세히 보기는 한 줄(input)이다. */
+type RenameFieldElement = HTMLInputElement | HTMLTextAreaElement;
+
 type RenameFieldProps = {
-  ref: RefObject<HTMLInputElement | null>;
+  ref: RefObject<RenameFieldElement | null>;
   value: string;
   onValueChange: (value: string, details: ValueChangeDetails) => void;
-  onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
-  onBlur: (event: FocusEvent<HTMLInputElement>) => void;
+  onKeyDown: (event: KeyboardEvent<RenameFieldElement>) => void;
+  onBlur: (event: FocusEvent<RenameFieldElement>) => void;
   maxLength: number;
   'aria-label': string;
   'aria-invalid': boolean;
@@ -114,7 +117,7 @@ export function useFolderRename(options: UseFolderRenameOptions = {}): FolderRen
   const activeIdRef = useRef<string | null>(null);
   // 메시지 상자가 포커스를 가져가며 오는 포커스 잃음으로 다시 확정하지 않게, 메시지 상자가 열린 것을 바로 기억한다.
   const isMessageBoxOpenRef = useRef(false);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<RenameFieldElement | null>(null);
   const errorId = useId();
 
   /**
@@ -133,7 +136,7 @@ export function useFolderRename(options: UseFolderRenameOptions = {}): FolderRen
    * @param input 입력창. 말풍선으로 알리면 포커스를 돌려준다
    * @returns 이름 바꾸기를 끝냈으면 true
    */
-  function commit(input: HTMLInputElement): boolean {
+  function commit(input: RenameFieldElement): boolean {
     if (rename === null || activeIdRef.current !== rename.id || isMessageBoxOpenRef.current) {
       return false;
     }
@@ -180,7 +183,10 @@ export function useFolderRename(options: UseFolderRenameOptions = {}): FolderRen
       current === null ? current : { ...current, value: filtered.value, error },
     );
     const input = details.event.target;
-    if (filtered.value !== value && input instanceof HTMLInputElement) {
+    if (
+      filtered.value !== value &&
+      (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement)
+    ) {
       // 막은 문자만큼 글자 자리를 앞으로 당겨, 다시 그린 뒤에도 입력하던 자리에 둔다.
       const caret = filterFolderNameInput(value.slice(0, input.selectionStart ?? value.length))
         .value.length;
@@ -199,7 +205,7 @@ export function useFolderRename(options: UseFolderRenameOptions = {}): FolderRen
    * Enter는 확정, Esc는 취소한다. 다른 키는 바깥으로 넘기지 않는다.
    * @param event 키 이벤트
    */
-  function handleKeyDown(event: KeyboardEvent<HTMLInputElement>): void {
+  function handleKeyDown(event: KeyboardEvent<RenameFieldElement>): void {
     // 메시지 상자가 열린 동안(포커스가 아직 상자로 옮겨지기 전 포함) 입력창에 온 키는 상자가 처리하게 둔다.
     // 여기서 Esc를 받으면 이름 바꾸기가 끝나 상자를 닫은 뒤 돌아갈 입력창이 사라진다.
     if (isMessageBoxOpenRef.current) {
@@ -232,7 +238,7 @@ export function useFolderRename(options: UseFolderRenameOptions = {}): FolderRen
    * 바깥을 눌러 포커스를 잃으면 확정한다.
    * @param event 포커스 이벤트
    */
-  function handleBlur(event: FocusEvent<HTMLInputElement>): void {
+  function handleBlur(event: FocusEvent<RenameFieldElement>): void {
     commit(event.currentTarget);
   }
 
