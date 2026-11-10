@@ -748,6 +748,11 @@ export function ExplorerBody({
     }
   }
 
+  // 목록의 현재 항목이다. Tab으로 목록에 들어오면 이 항목에 포커스가 가고, 포커스가 목록을 떠나도 1px 선이 남는다.
+  // 고른 적이 없으면 첫 항목이다.
+  // @codocs [[파일 탐색기:조작]]
+  const tabbableId = selection.selection.focusId ?? orderedIds[0];
+
   /**
    * 항목(FileItem·FileRow)마다 선택·열기·키보드 포커스 속성을 만든다.
    * @param item 항목
@@ -755,7 +760,6 @@ export function ExplorerBody({
    */
   function getItemProps(item: PlacedItem): ComponentProps<'div'> & Record<string, unknown> {
     const { id } = item;
-    const tabbableId = selection.selection.focusId ?? orderedIds[0];
     return {
       role: 'option',
       'aria-selected': selectedIds.includes(id),
@@ -903,7 +907,7 @@ export function ExplorerBody({
     }
     // 이름을 바꾸는 항목은 말풍선을 그 바로 아래에 띄우도록 위치 기준 상자로 감싼다.
     return (
-      <div key={item.id} className={isDetails ? 'relative w-full' : 'relative'}>
+      <div key={item.id} className="relative">
         {element}
         {rename.errorMessage !== null && (
           // 항목 바로 아래에 두고, 말풍선 꼬리가 Tooltip 위로 나온 만큼(spacing/sm) 띄운다.
@@ -931,6 +935,8 @@ export function ExplorerBody({
       name: item.name,
       isSelected: isSelected || item.id === dragTargetId,
       isCut: cutSet.has(item.id),
+      // 현재 항목은 포커스와 상관없이 1px 선을 그린다. 선과 선택 바탕의 색은 목록(listbox)의 포커스로 FileItem·FileRow가 고른다.
+      isCurrent: item.id === tabbableId,
       // 끄는 항목이 놓일 폴더를 스토리 테스트가 상태로 확인하도록 속성으로 알린다. 잘라냄은 FileItem이 `data-cut`으로 알린다.
       'data-drop-active': item.id === dragTargetId ? 'true' : undefined,
       isRenaming,
@@ -957,7 +963,6 @@ export function ExplorerBody({
           hasLocation
           location={getItemLocationLabel(workspace, item.parentId)}
           icon={renderItemIcon(item)}
-          className="w-full"
         />
       );
     }
@@ -970,7 +975,6 @@ export function ExplorerBody({
           originalLocation={getOriginalLocation(workspace, item)}
           deletedDate={formatDeletedDate(item.trash?.deletedAt ?? '')}
           icon={renderItemIcon(item)}
-          className="w-full"
         />
       );
     }
@@ -981,7 +985,6 @@ export function ExplorerBody({
         date={formatModifiedDate(item.date)}
         type={getItemTypeLabel(item.kind)}
         icon={renderItemIcon(item)}
-        className="w-full"
       />
     );
   }

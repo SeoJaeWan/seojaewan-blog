@@ -27,7 +27,9 @@ const TOOLTIP_OFFSET = 16;
 
 /**
  * 항목을 끄는 동안 포인터를 따라가는 반투명한 복제본과 `○○(으)로 이동` 툴팁을 그린다. 바탕화면 아이콘과 탐색기 항목이 쓴다.
- * 끄는 항목마다 끌기 시작 때의 화면 자리에서 움직인 거리만큼 옮겨 그리고, 반투명한 모양은 디자인 시스템 FileItem의 잘라낸 항목 모양(`cut`)을 쓴다.
+ * 끄는 항목마다 끌기 시작 때의 화면 자리에서 움직인 거리만큼 옮겨 그리고, 모양은 디자인 시스템 FileItem의 잘라낸 채 선택된 모양
+ * (피그마 State=Cut selected, `isSelected` + `isCut`)을 써서 선택 상자째로 반투명하게 끌린다. 복제본은 목록 밖에 그려지므로
+ * 탐색기 복제본은 목록 포커스와 상관없이 파란 선택 모양(`isListFocused`)으로 그린다.
  * 창 위로 끌어도 가려지지 않게 문서 끝(body)에 포털해 화면 기준으로 그리고, 포인터 아래의 놓을 곳을 찾을 수 있게 포인터를 받지 않는다.
  * @codocs [[항목 조작:끌기]]
  * @codocs [[파일 탐색기:조작]]
@@ -62,7 +64,9 @@ export function ItemDragGhost({
             size={view}
             name={item.name}
             icon={item.icon}
+            isSelected
             isCut
+            isListFocused={surface === 'explorer'}
             aria-hidden="true"
             className="absolute"
             style={{ left: item.origin.x + delta.x, top: item.origin.y + delta.y }}
