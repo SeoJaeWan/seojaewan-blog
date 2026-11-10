@@ -3,6 +3,14 @@
   "name": "FileRow",
   "nodeId": "514:15135",
   "propertyDefinitions": {
+    "Current": {
+      "default": "False",
+      "options": [
+        "False",
+        "True"
+      ],
+      "type": "VARIANT"
+    },
     "Date": {
       "default": "수정한 날짜",
       "type": "TEXT"
@@ -36,10 +44,10 @@
         "Rest",
         "Hover",
         "Selected",
-        "Focused",
         "Rename",
         "Cut",
-        "Cut selected"
+        "Cut selected",
+        "Selected unfocused"
       ],
       "type": "VARIANT"
     },
@@ -57,15 +65,16 @@
     }
   },
   "variants": {
-    "view=default,state=cut": {
+    "view=default,state=cut,current=false": {
       "node": {
-        "height": 32,
-        "width": 840,
+        "height": 28,
+        "width": 652,
         "x": 0,
         "y": 0
       },
       "nodeId": "69:2149",
       "properties": {
+        "Current": "False",
         "State": "Cut",
         "View": "Default"
       },
@@ -142,136 +151,186 @@
               "mode": "HORIZONTAL",
               "padding": [
                 0,
+                "spacing/sm",
                 0,
-                0,
-                0
+                "spacing/sm"
               ],
               "primaryAlign": "MIN"
             },
             "name": "name cell",
             "size": {
               "h": 20,
-              "w": 300
+              "w": 316
             },
             "sizing": {
               "h": "FIXED",
               "v": "FIXED"
             },
             "type": "FRAME",
-            "width": "size/file-row/name-width"
+            "width": "size/details-header/name-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "date",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "수정한",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "date",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "date cell",
             "size": {
               "h": 16,
-              "w": 180
+              "w": 188
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "수정한",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "color/black/61",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "날짜",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/wide-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "type",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "유형",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "type",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "type cell",
             "size": {
               "h": 16,
-              "w": 140
+              "w": 148
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "유형",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/narrow-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
           }
         ],
-        "height": "size/control/height",
+        "height": "size/file-row/height",
         "layout": {
           "counterAlign": "CENTER",
-          "gap": "spacing/sm",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
             "spacing/none",
-            "spacing/sm",
             "spacing/none",
-            "spacing/sm"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "View=Default, State=Cut",
+        "name": "View=Default, State=Cut, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
           "radius/control",
           "radius/control"
         ],
-        "sampleSize": [
-          "width"
-        ],
         "size": {
-          "h": 32,
-          "w": 840
+          "h": 28,
+          "w": 652
         },
         "sizing": {
-          "h": "FIXED",
+          "h": "HUG",
           "v": "FIXED"
         },
         "type": "COMPONENT"
       }
     },
-    "view=default,state=cut-selected": {
+    "view=default,state=cut-selected,current=false": {
       "node": {
-        "height": 32,
-        "width": 840,
+        "height": 28,
+        "width": 652,
         "x": 0,
         "y": 0
       },
       "nodeId": "69:2157",
       "properties": {
+        "Current": "False",
         "State": "Cut selected",
         "View": "Default"
       },
@@ -348,175 +407,34 @@
               "mode": "HORIZONTAL",
               "padding": [
                 0,
+                "spacing/sm",
                 0,
-                0,
-                0
+                "spacing/sm"
               ],
               "primaryAlign": "MIN"
             },
             "name": "name cell",
             "size": {
               "h": 20,
-              "w": 300
+              "w": 316
             },
             "sizing": {
               "h": "FIXED",
               "v": "FIXED"
             },
             "type": "FRAME",
-            "width": "size/file-row/name-width"
+            "width": "size/details-header/name-width"
           },
-          {
-            "fills": [
-              "color/black/61"
-            ],
-            "name": "date",
-            "size": {
-              "h": 16,
-              "w": 180
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "HUG"
-            },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "수정한",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "color/black/61",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "날짜",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/wide-cell-width"
-          },
-          {
-            "fills": [
-              "color/black/61"
-            ],
-            "name": "type",
-            "size": {
-              "h": 16,
-              "w": 140
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "HUG"
-            },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "유형",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/narrow-cell-width"
-          }
-        ],
-        "fills": [
-          "color/blue/9"
-        ],
-        "height": "size/control/height",
-        "layout": {
-          "counterAlign": "CENTER",
-          "gap": "spacing/sm",
-          "mode": "HORIZONTAL",
-          "padding": [
-            "spacing/none",
-            "spacing/sm",
-            "spacing/none",
-            "spacing/sm"
-          ],
-          "primaryAlign": "MIN"
-        },
-        "name": "View=Default, State=Cut selected",
-        "radius": [
-          "radius/control",
-          "radius/control",
-          "radius/control",
-          "radius/control"
-        ],
-        "sampleSize": [
-          "width"
-        ],
-        "size": {
-          "h": 32,
-          "w": 840
-        },
-        "sizing": {
-          "h": "FIXED",
-          "v": "FIXED"
-        },
-        "type": "COMPONENT"
-      }
-    },
-    "view=default,state=focused": {
-      "node": {
-        "height": 32,
-        "width": 840,
-        "x": 0,
-        "y": 0
-      },
-      "nodeId": "29:508",
-      "properties": {
-        "State": "Focused",
-        "View": "Default"
-      },
-      "tree": {
-        "children": [
           {
             "children": [
               {
-                "asset": {
-                  "path": "images/file-folder"
-                },
-                "component": "file/Folder",
                 "fills": [
-                  "IMAGE"
+                  "color/black/61"
                 ],
-                "height": "size/icon/sm",
-                "name": "item icon",
+                "name": "date",
                 "size": {
                   "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              },
-              {
-                "fills": [
-                  "color/black/89"
-                ],
-                "name": "name",
-                "size": {
-                  "h": 16,
-                  "w": 276
+                  "w": 172
                 },
                 "sizing": {
                   "h": "FILL",
@@ -528,18 +446,18 @@
                   "maxLinesVariable": null,
                   "segments": [
                     {
-                      "characters": "파일",
-                      "fill": "color/black/89",
+                      "characters": "수정한",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     },
                     {
                       "characters": " ",
-                      "fill": "color/black/89",
+                      "fill": "color/black/61",
                       "textStyle": "Caption"
                     },
                     {
-                      "characters": "이름",
-                      "fill": "color/black/89",
+                      "characters": "날짜",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -548,153 +466,130 @@
                 "type": "TEXT"
               }
             ],
-            "height": "size/file-row/name-height",
             "layout": {
               "counterAlign": "CENTER",
-              "gap": "spacing/sm",
+              "gap": 0,
               "mode": "HORIZONTAL",
               "padding": [
-                0,
-                0,
-                0,
-                0
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
               ],
               "primaryAlign": "MIN"
             },
-            "name": "name cell",
+            "name": "date cell",
             "size": {
-              "h": 20,
-              "w": 300
+              "h": 16,
+              "w": 188
             },
             "sizing": {
               "h": "FIXED",
-              "v": "FIXED"
+              "v": "HUG"
             },
             "type": "FRAME",
-            "width": "size/file-row/name-width"
+            "width": "size/details-header/wide-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "type",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "유형",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "date",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "type cell",
             "size": {
               "h": 16,
-              "w": 180
+              "w": 148
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "수정한",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "color/black/61",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "날짜",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/wide-cell-width"
-          },
-          {
-            "fills": [
-              "color/black/61"
-            ],
-            "name": "type",
-            "size": {
-              "h": 16,
-              "w": 140
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "HUG"
-            },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "유형",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/narrow-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
           }
         ],
-        "height": "size/control/height",
+        "fills": [
+          "color/blue/9"
+        ],
+        "height": "size/file-row/height",
         "layout": {
           "counterAlign": "CENTER",
-          "gap": "spacing/sm",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
             "spacing/none",
-            "spacing/sm",
             "spacing/none",
-            "spacing/sm"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "View=Default, State=Focused",
+        "name": "View=Default, State=Cut selected, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
           "radius/control",
           "radius/control"
         ],
-        "sampleSize": [
-          "width"
-        ],
         "size": {
-          "h": 32,
-          "w": 840
+          "h": 28,
+          "w": 652
         },
         "sizing": {
-          "h": "FIXED",
+          "h": "HUG",
           "v": "FIXED"
         },
-        "strokeWeight": [
-          "stroke-width/default",
-          "stroke-width/default",
-          "stroke-width/default",
-          "stroke-width/default"
-        ],
-        "strokes": [
-          "color/blue/18"
-        ],
-        "strokesIncludedInLayout": false,
         "type": "COMPONENT"
       }
     },
-    "view=default,state=hover": {
+    "view=default,state=hover,current=false": {
       "node": {
-        "height": 32,
-        "width": 840,
+        "height": 28,
+        "width": 652,
         "x": 0,
         "y": 0
       },
       "nodeId": "29:492",
       "properties": {
+        "Current": "False",
         "State": "Hover",
         "View": "Default"
       },
@@ -769,139 +664,189 @@
               "mode": "HORIZONTAL",
               "padding": [
                 0,
+                "spacing/sm",
                 0,
-                0,
-                0
+                "spacing/sm"
               ],
               "primaryAlign": "MIN"
             },
             "name": "name cell",
             "size": {
               "h": 20,
-              "w": 300
+              "w": 316
             },
             "sizing": {
               "h": "FIXED",
               "v": "FIXED"
             },
             "type": "FRAME",
-            "width": "size/file-row/name-width"
+            "width": "size/details-header/name-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "date",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "수정한",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "date",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "date cell",
             "size": {
               "h": 16,
-              "w": 180
+              "w": 188
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "수정한",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "color/black/61",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "날짜",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/wide-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "type",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "유형",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "type",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "type cell",
             "size": {
               "h": 16,
-              "w": 140
+              "w": 148
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "유형",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/narrow-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
           }
         ],
         "fills": [
           "color/blue/5"
         ],
-        "height": "size/control/height",
+        "height": "size/file-row/height",
         "layout": {
           "counterAlign": "CENTER",
-          "gap": "spacing/sm",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
             "spacing/none",
-            "spacing/sm",
             "spacing/none",
-            "spacing/sm"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "View=Default, State=Hover",
+        "name": "View=Default, State=Hover, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
           "radius/control",
           "radius/control"
         ],
-        "sampleSize": [
-          "width"
-        ],
         "size": {
-          "h": 32,
-          "w": 840
+          "h": 28,
+          "w": 652
         },
         "sizing": {
-          "h": "FIXED",
+          "h": "HUG",
           "v": "FIXED"
         },
         "type": "COMPONENT"
       }
     },
-    "view=default,state=rename": {
+    "view=default,state=rename,current=false": {
       "node": {
-        "height": 32,
-        "width": 840,
+        "height": 28,
+        "width": 652,
         "x": 0,
         "y": 0
       },
       "nodeId": "29:516",
       "properties": {
+        "Current": "False",
         "State": "Rename",
         "View": "Default"
       },
@@ -1038,139 +983,189 @@
               "mode": "HORIZONTAL",
               "padding": [
                 0,
+                "spacing/sm",
                 0,
-                0,
-                0
+                "spacing/sm"
               ],
               "primaryAlign": "MIN"
             },
             "name": "name cell",
             "size": {
               "h": 20,
-              "w": 300
+              "w": 316
             },
             "sizing": {
               "h": "FIXED",
               "v": "FIXED"
             },
             "type": "FRAME",
-            "width": "size/file-row/name-width"
+            "width": "size/details-header/name-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "date",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "수정한",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "date",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "date cell",
             "size": {
               "h": 16,
-              "w": 180
+              "w": 188
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "수정한",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "color/black/61",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "날짜",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/wide-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "type",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "유형",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "type",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "type cell",
             "size": {
               "h": 16,
-              "w": 140
+              "w": 148
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "유형",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/narrow-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
           }
         ],
         "fills": [
           "color/blue/9"
         ],
-        "height": "size/control/height",
+        "height": "size/file-row/height",
         "layout": {
           "counterAlign": "CENTER",
-          "gap": "spacing/sm",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
             "spacing/none",
-            "spacing/sm",
             "spacing/none",
-            "spacing/sm"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "View=Default, State=Rename",
+        "name": "View=Default, State=Rename, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
           "radius/control",
           "radius/control"
         ],
-        "sampleSize": [
-          "width"
-        ],
         "size": {
-          "h": 32,
-          "w": 840
+          "h": 28,
+          "w": 652
         },
         "sizing": {
-          "h": "FIXED",
+          "h": "HUG",
           "v": "FIXED"
         },
         "type": "COMPONENT"
       }
     },
-    "view=default,state=rest": {
+    "view=default,state=rest,current=false": {
       "node": {
-        "height": 32,
-        "width": 840,
+        "height": 28,
+        "width": 652,
         "x": 0,
         "y": 0
       },
       "nodeId": "29:484",
       "properties": {
+        "Current": "False",
         "State": "Rest",
         "View": "Default"
       },
@@ -1245,107 +1240,159 @@
               "mode": "HORIZONTAL",
               "padding": [
                 0,
+                "spacing/sm",
                 0,
-                0,
-                0
+                "spacing/sm"
               ],
               "primaryAlign": "MIN"
             },
             "name": "name cell",
             "size": {
               "h": 20,
-              "w": 300
+              "w": 316
             },
             "sizing": {
               "h": "FIXED",
               "v": "FIXED"
             },
             "type": "FRAME",
-            "width": "size/file-row/name-width"
+            "width": "size/details-header/name-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "date",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "수정한",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "date",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "date cell",
             "size": {
               "h": 16,
-              "w": 180
+              "w": 188
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "수정한",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "color/black/61",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "날짜",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/wide-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "type",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "유형",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "type",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "type cell",
             "size": {
               "h": 16,
-              "w": 140
+              "w": 148
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "유형",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/narrow-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
           }
         ],
-        "height": "size/control/height",
+        "height": "size/file-row/height",
         "layout": {
           "counterAlign": "CENTER",
-          "gap": "spacing/sm",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
             "spacing/none",
-            "spacing/sm",
             "spacing/none",
-            "spacing/sm"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "View=Default, State=Rest",
+        "name": "View=Default, State=Rest, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
@@ -1354,7 +1401,7 @@
         ],
         "reactions": [
           {
-            "destination": "View=Default, State=Hover",
+            "destination": "View=Default, State=Hover, Current=False",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -1370,29 +1417,291 @@
             "trigger": "ON_HOVER"
           }
         ],
-        "sampleSize": [
-          "width"
-        ],
         "size": {
-          "h": 32,
-          "w": 840
+          "h": 28,
+          "w": 652
         },
         "sizing": {
-          "h": "FIXED",
+          "h": "HUG",
           "v": "FIXED"
         },
         "type": "COMPONENT"
       }
     },
-    "view=default,state=selected": {
+    "view=default,state=rest,current=true": {
       "node": {
-        "height": 32,
-        "width": 840,
+        "height": 28,
+        "width": 652,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "29:508",
+      "properties": {
+        "Current": "True",
+        "State": "Rest",
+        "View": "Default"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "images/file-folder"
+                },
+                "component": "file/Folder",
+                "fills": [
+                  "IMAGE"
+                ],
+                "height": "size/icon/sm",
+                "name": "item icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "color/black/89"
+                ],
+                "name": "name",
+                "size": {
+                  "h": 16,
+                  "w": 276
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "파일",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/89",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "이름",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "height": "size/file-row/name-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                "spacing/sm",
+                0,
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "name cell",
+            "size": {
+              "h": 20,
+              "w": 316
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/name-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "date",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "수정한",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "date cell",
+            "size": {
+              "h": 16,
+              "w": 188
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "type",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "유형",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "type cell",
+            "size": {
+              "h": 16,
+              "w": 148
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
+          }
+        ],
+        "height": "size/file-row/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "View=Default, State=Rest, Current=True",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 28,
+          "w": 652
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "color/black/89"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
+      }
+    },
+    "view=default,state=selected,current=false": {
+      "node": {
+        "height": 28,
+        "width": 652,
         "x": 0,
         "y": 0
       },
       "nodeId": "29:500",
       "properties": {
+        "Current": "False",
         "State": "Selected",
         "View": "Default"
       },
@@ -1467,139 +1776,980 @@
               "mode": "HORIZONTAL",
               "padding": [
                 0,
+                "spacing/sm",
                 0,
-                0,
-                0
+                "spacing/sm"
               ],
               "primaryAlign": "MIN"
             },
             "name": "name cell",
             "size": {
               "h": 20,
-              "w": 300
+              "w": 316
             },
             "sizing": {
               "h": "FIXED",
               "v": "FIXED"
             },
             "type": "FRAME",
-            "width": "size/file-row/name-width"
+            "width": "size/details-header/name-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "date",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "수정한",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "date",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "date cell",
             "size": {
               "h": 16,
-              "w": 180
+              "w": 188
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "수정한",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "color/black/61",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "날짜",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/wide-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "type",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "유형",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "type",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "type cell",
             "size": {
               "h": 16,
-              "w": 140
+              "w": 148
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "유형",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/narrow-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
           }
         ],
         "fills": [
           "color/blue/9"
         ],
-        "height": "size/control/height",
+        "height": "size/file-row/height",
         "layout": {
           "counterAlign": "CENTER",
-          "gap": "spacing/sm",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
             "spacing/none",
-            "spacing/sm",
             "spacing/none",
-            "spacing/sm"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "View=Default, State=Selected",
+        "name": "View=Default, State=Selected, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
           "radius/control",
           "radius/control"
         ],
-        "sampleSize": [
-          "width"
-        ],
         "size": {
-          "h": 32,
-          "w": 840
+          "h": 28,
+          "w": 652
         },
         "sizing": {
-          "h": "FIXED",
+          "h": "HUG",
           "v": "FIXED"
         },
         "type": "COMPONENT"
       }
     },
-    "view=recycle-bin,state=cut": {
+    "view=default,state=selected,current=true": {
       "node": {
-        "height": 32,
-        "width": 840,
+        "height": 28,
+        "width": 652,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3473:1128",
+      "properties": {
+        "Current": "True",
+        "State": "Selected",
+        "View": "Default"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "images/file-folder"
+                },
+                "component": "file/Folder",
+                "fills": [
+                  "IMAGE"
+                ],
+                "height": "size/icon/sm",
+                "name": "item icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "color/black/89"
+                ],
+                "name": "name",
+                "size": {
+                  "h": 16,
+                  "w": 276
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "파일",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/89",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "이름",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "height": "size/file-row/name-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                "spacing/sm",
+                0,
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "name cell",
+            "size": {
+              "h": 20,
+              "w": 316
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/name-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "date",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "수정한",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "date cell",
+            "size": {
+              "h": 16,
+              "w": 188
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "type",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "유형",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "type cell",
+            "size": {
+              "h": 16,
+              "w": 148
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
+          }
+        ],
+        "fills": [
+          "color/blue/9"
+        ],
+        "height": "size/file-row/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "View=Default, State=Selected, Current=True",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 28,
+          "w": 652
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "color/black/89"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
+      }
+    },
+    "view=default,state=selected-unfocused,current=false": {
+      "node": {
+        "height": 28,
+        "width": 652,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3473:1138",
+      "properties": {
+        "Current": "False",
+        "State": "Selected unfocused",
+        "View": "Default"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "images/file-folder"
+                },
+                "component": "file/Folder",
+                "fills": [
+                  "IMAGE"
+                ],
+                "height": "size/icon/sm",
+                "name": "item icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "color/black/89"
+                ],
+                "name": "name",
+                "size": {
+                  "h": 16,
+                  "w": 276
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "파일",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/89",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "이름",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "height": "size/file-row/name-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                "spacing/sm",
+                0,
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "name cell",
+            "size": {
+              "h": 20,
+              "w": 316
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/name-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "date",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "수정한",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "date cell",
+            "size": {
+              "h": 16,
+              "w": 188
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "type",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "유형",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "type cell",
+            "size": {
+              "h": 16,
+              "w": 148
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
+          }
+        ],
+        "fills": [
+          "color/gray/13"
+        ],
+        "height": "size/file-row/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "View=Default, State=Selected unfocused, Current=False",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 28,
+          "w": 652
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "view=default,state=selected-unfocused,current=true": {
+      "node": {
+        "height": 28,
+        "width": 652,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3473:1148",
+      "properties": {
+        "Current": "True",
+        "State": "Selected unfocused",
+        "View": "Default"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "images/file-folder"
+                },
+                "component": "file/Folder",
+                "fills": [
+                  "IMAGE"
+                ],
+                "height": "size/icon/sm",
+                "name": "item icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "color/black/89"
+                ],
+                "name": "name",
+                "size": {
+                  "h": 16,
+                  "w": 276
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "파일",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/89",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "이름",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "height": "size/file-row/name-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                "spacing/sm",
+                0,
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "name cell",
+            "size": {
+              "h": 20,
+              "w": 316
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/name-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "date",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "수정한",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "date cell",
+            "size": {
+              "h": 16,
+              "w": 188
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "type",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "유형",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "type cell",
+            "size": {
+              "h": 16,
+              "w": 148
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
+          }
+        ],
+        "fills": [
+          "color/gray/13"
+        ],
+        "height": "size/file-row/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "View=Default, State=Selected unfocused, Current=True",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 28,
+          "w": 652
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "color/gray/39"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
+      }
+    },
+    "view=recycle-bin,state=cut,current=false": {
+      "node": {
+        "height": 28,
+        "width": 652,
         "x": 0,
         "y": 0
       },
       "nodeId": "870:1103",
       "properties": {
+        "Current": "False",
         "State": "Cut",
         "View": "Recycle bin"
       },
@@ -1676,136 +2826,186 @@
               "mode": "HORIZONTAL",
               "padding": [
                 0,
+                "spacing/sm",
                 0,
-                0,
-                0
+                "spacing/sm"
               ],
               "primaryAlign": "MIN"
             },
             "name": "name cell",
             "size": {
               "h": 20,
-              "w": 300
+              "w": 316
             },
             "sizing": {
               "h": "FIXED",
               "v": "FIXED"
             },
             "type": "FRAME",
-            "width": "size/file-row/name-width"
+            "width": "size/details-header/name-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "original location",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "원래",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "위치",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "original location",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "original location cell",
             "size": {
               "h": 16,
-              "w": 180
+              "w": 188
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "원래",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "color/black/61",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "위치",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/wide-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "deleted date",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "삭제한 날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "deleted date",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "deleted date cell",
             "size": {
               "h": 16,
-              "w": 140
+              "w": 148
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "삭제한 날짜",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/narrow-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
           }
         ],
-        "height": "size/control/height",
+        "height": "size/file-row/height",
         "layout": {
           "counterAlign": "CENTER",
-          "gap": "spacing/sm",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
             "spacing/none",
-            "spacing/sm",
             "spacing/none",
-            "spacing/sm"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "View=Recycle bin, State=Cut",
+        "name": "View=Recycle bin, State=Cut, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
           "radius/control",
           "radius/control"
         ],
-        "sampleSize": [
-          "width"
-        ],
         "size": {
-          "h": 32,
-          "w": 840
+          "h": 28,
+          "w": 652
         },
         "sizing": {
-          "h": "FIXED",
+          "h": "HUG",
           "v": "FIXED"
         },
         "type": "COMPONENT"
       }
     },
-    "view=recycle-bin,state=cut-selected": {
+    "view=recycle-bin,state=cut-selected,current=false": {
       "node": {
-        "height": 32,
-        "width": 840,
+        "height": 28,
+        "width": 652,
         "x": 0,
         "y": 0
       },
       "nodeId": "870:1110",
       "properties": {
+        "Current": "False",
         "State": "Cut selected",
         "View": "Recycle bin"
       },
@@ -1882,175 +3082,34 @@
               "mode": "HORIZONTAL",
               "padding": [
                 0,
+                "spacing/sm",
                 0,
-                0,
-                0
+                "spacing/sm"
               ],
               "primaryAlign": "MIN"
             },
             "name": "name cell",
             "size": {
               "h": 20,
-              "w": 300
+              "w": 316
             },
             "sizing": {
               "h": "FIXED",
               "v": "FIXED"
             },
             "type": "FRAME",
-            "width": "size/file-row/name-width"
+            "width": "size/details-header/name-width"
           },
-          {
-            "fills": [
-              "color/black/61"
-            ],
-            "name": "original location",
-            "size": {
-              "h": 16,
-              "w": 180
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "HUG"
-            },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "원래",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "color/black/61",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "위치",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/wide-cell-width"
-          },
-          {
-            "fills": [
-              "color/black/61"
-            ],
-            "name": "deleted date",
-            "size": {
-              "h": 16,
-              "w": 140
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "HUG"
-            },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "삭제한 날짜",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/narrow-cell-width"
-          }
-        ],
-        "fills": [
-          "color/blue/9"
-        ],
-        "height": "size/control/height",
-        "layout": {
-          "counterAlign": "CENTER",
-          "gap": "spacing/sm",
-          "mode": "HORIZONTAL",
-          "padding": [
-            "spacing/none",
-            "spacing/sm",
-            "spacing/none",
-            "spacing/sm"
-          ],
-          "primaryAlign": "MIN"
-        },
-        "name": "View=Recycle bin, State=Cut selected",
-        "radius": [
-          "radius/control",
-          "radius/control",
-          "radius/control",
-          "radius/control"
-        ],
-        "sampleSize": [
-          "width"
-        ],
-        "size": {
-          "h": 32,
-          "w": 840
-        },
-        "sizing": {
-          "h": "FIXED",
-          "v": "FIXED"
-        },
-        "type": "COMPONENT"
-      }
-    },
-    "view=recycle-bin,state=focused": {
-      "node": {
-        "height": 32,
-        "width": 840,
-        "x": 0,
-        "y": 0
-      },
-      "nodeId": "870:1087",
-      "properties": {
-        "State": "Focused",
-        "View": "Recycle bin"
-      },
-      "tree": {
-        "children": [
           {
             "children": [
               {
-                "asset": {
-                  "path": "images/file-folder"
-                },
-                "component": "file/Folder",
                 "fills": [
-                  "IMAGE"
+                  "color/black/61"
                 ],
-                "height": "size/icon/sm",
-                "name": "item icon",
+                "name": "original location",
                 "size": {
                   "h": 16,
-                  "w": 16
-                },
-                "sizing": {
-                  "h": "FIXED",
-                  "v": "FIXED"
-                },
-                "type": "INSTANCE",
-                "width": "size/icon/sm"
-              },
-              {
-                "fills": [
-                  "color/black/89"
-                ],
-                "name": "name",
-                "size": {
-                  "h": 16,
-                  "w": 276
+                  "w": 172
                 },
                 "sizing": {
                   "h": "FILL",
@@ -2062,18 +3121,18 @@
                   "maxLinesVariable": null,
                   "segments": [
                     {
-                      "characters": "파일",
-                      "fill": "color/black/89",
+                      "characters": "원래",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     },
                     {
                       "characters": " ",
-                      "fill": "color/black/89",
+                      "fill": "color/black/61",
                       "textStyle": "Caption"
                     },
                     {
-                      "characters": "이름",
-                      "fill": "color/black/89",
+                      "characters": "위치",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -2082,153 +3141,130 @@
                 "type": "TEXT"
               }
             ],
-            "height": "size/file-row/name-height",
             "layout": {
               "counterAlign": "CENTER",
-              "gap": "spacing/sm",
+              "gap": 0,
               "mode": "HORIZONTAL",
               "padding": [
-                0,
-                0,
-                0,
-                0
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
               ],
               "primaryAlign": "MIN"
             },
-            "name": "name cell",
+            "name": "original location cell",
             "size": {
-              "h": 20,
-              "w": 300
+              "h": 16,
+              "w": 188
             },
             "sizing": {
               "h": "FIXED",
-              "v": "FIXED"
+              "v": "HUG"
             },
             "type": "FRAME",
-            "width": "size/file-row/name-width"
+            "width": "size/details-header/wide-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "deleted date",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "삭제한 날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "original location",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "deleted date cell",
             "size": {
               "h": 16,
-              "w": 180
+              "w": 148
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "원래",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "color/black/61",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "위치",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/wide-cell-width"
-          },
-          {
-            "fills": [
-              "color/black/61"
-            ],
-            "name": "deleted date",
-            "size": {
-              "h": 16,
-              "w": 140
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "HUG"
-            },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "삭제한 날짜",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/narrow-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
           }
         ],
-        "height": "size/control/height",
+        "fills": [
+          "color/blue/9"
+        ],
+        "height": "size/file-row/height",
         "layout": {
           "counterAlign": "CENTER",
-          "gap": "spacing/sm",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
             "spacing/none",
-            "spacing/sm",
             "spacing/none",
-            "spacing/sm"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "View=Recycle bin, State=Focused",
+        "name": "View=Recycle bin, State=Cut selected, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
           "radius/control",
           "radius/control"
         ],
-        "sampleSize": [
-          "width"
-        ],
         "size": {
-          "h": 32,
-          "w": 840
+          "h": 28,
+          "w": 652
         },
         "sizing": {
-          "h": "FIXED",
+          "h": "HUG",
           "v": "FIXED"
         },
-        "strokeWeight": [
-          "stroke-width/default",
-          "stroke-width/default",
-          "stroke-width/default",
-          "stroke-width/default"
-        ],
-        "strokes": [
-          "color/blue/18"
-        ],
-        "strokesIncludedInLayout": false,
         "type": "COMPONENT"
       }
     },
-    "view=recycle-bin,state=hover": {
+    "view=recycle-bin,state=hover,current=false": {
       "node": {
-        "height": 32,
-        "width": 840,
+        "height": 28,
+        "width": 652,
         "x": 0,
         "y": 0
       },
       "nodeId": "870:1073",
       "properties": {
+        "Current": "False",
         "State": "Hover",
         "View": "Recycle bin"
       },
@@ -2303,139 +3339,189 @@
               "mode": "HORIZONTAL",
               "padding": [
                 0,
+                "spacing/sm",
                 0,
-                0,
-                0
+                "spacing/sm"
               ],
               "primaryAlign": "MIN"
             },
             "name": "name cell",
             "size": {
               "h": 20,
-              "w": 300
+              "w": 316
             },
             "sizing": {
               "h": "FIXED",
               "v": "FIXED"
             },
             "type": "FRAME",
-            "width": "size/file-row/name-width"
+            "width": "size/details-header/name-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "original location",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "원래",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "위치",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "original location",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "original location cell",
             "size": {
               "h": 16,
-              "w": 180
+              "w": 188
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "원래",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "color/black/61",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "위치",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/wide-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "deleted date",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "삭제한 날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "deleted date",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "deleted date cell",
             "size": {
               "h": 16,
-              "w": 140
+              "w": 148
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "삭제한 날짜",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/narrow-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
           }
         ],
         "fills": [
           "color/blue/5"
         ],
-        "height": "size/control/height",
+        "height": "size/file-row/height",
         "layout": {
           "counterAlign": "CENTER",
-          "gap": "spacing/sm",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
             "spacing/none",
-            "spacing/sm",
             "spacing/none",
-            "spacing/sm"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "View=Recycle bin, State=Hover",
+        "name": "View=Recycle bin, State=Hover, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
           "radius/control",
           "radius/control"
         ],
-        "sampleSize": [
-          "width"
-        ],
         "size": {
-          "h": 32,
-          "w": 840
+          "h": 28,
+          "w": 652
         },
         "sizing": {
-          "h": "FIXED",
+          "h": "HUG",
           "v": "FIXED"
         },
         "type": "COMPONENT"
       }
     },
-    "view=recycle-bin,state=rename": {
+    "view=recycle-bin,state=rename,current=false": {
       "node": {
-        "height": 32,
-        "width": 840,
+        "height": 28,
+        "width": 652,
         "x": 0,
         "y": 0
       },
       "nodeId": "870:1094",
       "properties": {
+        "Current": "False",
         "State": "Rename",
         "View": "Recycle bin"
       },
@@ -2572,139 +3658,189 @@
               "mode": "HORIZONTAL",
               "padding": [
                 0,
+                "spacing/sm",
                 0,
-                0,
-                0
+                "spacing/sm"
               ],
               "primaryAlign": "MIN"
             },
             "name": "name cell",
             "size": {
               "h": 20,
-              "w": 300
+              "w": 316
             },
             "sizing": {
               "h": "FIXED",
               "v": "FIXED"
             },
             "type": "FRAME",
-            "width": "size/file-row/name-width"
+            "width": "size/details-header/name-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "original location",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "원래",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "위치",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "original location",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "original location cell",
             "size": {
               "h": 16,
-              "w": 180
+              "w": 188
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "원래",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "color/black/61",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "위치",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/wide-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "deleted date",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "삭제한 날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "deleted date",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "deleted date cell",
             "size": {
               "h": 16,
-              "w": 140
+              "w": 148
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "삭제한 날짜",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/narrow-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
           }
         ],
         "fills": [
           "color/blue/9"
         ],
-        "height": "size/control/height",
+        "height": "size/file-row/height",
         "layout": {
           "counterAlign": "CENTER",
-          "gap": "spacing/sm",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
             "spacing/none",
-            "spacing/sm",
             "spacing/none",
-            "spacing/sm"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "View=Recycle bin, State=Rename",
+        "name": "View=Recycle bin, State=Rename, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
           "radius/control",
           "radius/control"
         ],
-        "sampleSize": [
-          "width"
-        ],
         "size": {
-          "h": 32,
-          "w": 840
+          "h": 28,
+          "w": 652
         },
         "sizing": {
-          "h": "FIXED",
+          "h": "HUG",
           "v": "FIXED"
         },
         "type": "COMPONENT"
       }
     },
-    "view=recycle-bin,state=rest": {
+    "view=recycle-bin,state=rest,current=false": {
       "node": {
-        "height": 32,
-        "width": 840,
+        "height": 28,
+        "width": 652,
         "x": 0,
         "y": 0
       },
       "nodeId": "870:1066",
       "properties": {
+        "Current": "False",
         "State": "Rest",
         "View": "Recycle bin"
       },
@@ -2779,136 +3915,450 @@
               "mode": "HORIZONTAL",
               "padding": [
                 0,
+                "spacing/sm",
                 0,
-                0,
-                0
+                "spacing/sm"
               ],
               "primaryAlign": "MIN"
             },
             "name": "name cell",
             "size": {
               "h": 20,
-              "w": 300
+              "w": 316
             },
             "sizing": {
               "h": "FIXED",
               "v": "FIXED"
             },
             "type": "FRAME",
-            "width": "size/file-row/name-width"
+            "width": "size/details-header/name-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "original location",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "원래",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "위치",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "original location",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "original location cell",
             "size": {
               "h": 16,
-              "w": 180
+              "w": 188
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "원래",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "color/black/61",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "위치",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/wide-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "deleted date",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "삭제한 날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "deleted date",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "deleted date cell",
             "size": {
               "h": 16,
-              "w": 140
+              "w": 148
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "삭제한 날짜",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/narrow-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
           }
         ],
-        "height": "size/control/height",
+        "height": "size/file-row/height",
         "layout": {
           "counterAlign": "CENTER",
-          "gap": "spacing/sm",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
             "spacing/none",
-            "spacing/sm",
             "spacing/none",
-            "spacing/sm"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "View=Recycle bin, State=Rest",
+        "name": "View=Recycle bin, State=Rest, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
           "radius/control",
           "radius/control"
         ],
-        "sampleSize": [
-          "width"
-        ],
         "size": {
-          "h": 32,
-          "w": 840
+          "h": 28,
+          "w": 652
         },
         "sizing": {
-          "h": "FIXED",
+          "h": "HUG",
           "v": "FIXED"
         },
         "type": "COMPONENT"
       }
     },
-    "view=recycle-bin,state=selected": {
+    "view=recycle-bin,state=rest,current=true": {
       "node": {
-        "height": 32,
-        "width": 840,
+        "height": 28,
+        "width": 652,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "870:1087",
+      "properties": {
+        "Current": "True",
+        "State": "Rest",
+        "View": "Recycle bin"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "images/file-folder"
+                },
+                "component": "file/Folder",
+                "fills": [
+                  "IMAGE"
+                ],
+                "height": "size/icon/sm",
+                "name": "item icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "color/black/89"
+                ],
+                "name": "name",
+                "size": {
+                  "h": 16,
+                  "w": 276
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "파일",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/89",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "이름",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "height": "size/file-row/name-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                "spacing/sm",
+                0,
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "name cell",
+            "size": {
+              "h": 20,
+              "w": 316
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/name-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "original location",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "원래",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "위치",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "original location cell",
+            "size": {
+              "h": 16,
+              "w": 188
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "deleted date",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "삭제한 날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "deleted date cell",
+            "size": {
+              "h": 16,
+              "w": 148
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
+          }
+        ],
+        "height": "size/file-row/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "View=Recycle bin, State=Rest, Current=True",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 28,
+          "w": 652
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "color/black/89"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
+      }
+    },
+    "view=recycle-bin,state=selected,current=false": {
+      "node": {
+        "height": 28,
+        "width": 652,
         "x": 0,
         "y": 0
       },
       "nodeId": "870:1080",
       "properties": {
+        "Current": "False",
         "State": "Selected",
         "View": "Recycle bin"
       },
@@ -2983,127 +4433,967 @@
               "mode": "HORIZONTAL",
               "padding": [
                 0,
+                "spacing/sm",
                 0,
-                0,
-                0
+                "spacing/sm"
               ],
               "primaryAlign": "MIN"
             },
             "name": "name cell",
             "size": {
               "h": 20,
-              "w": 300
+              "w": 316
             },
             "sizing": {
               "h": "FIXED",
               "v": "FIXED"
             },
             "type": "FRAME",
-            "width": "size/file-row/name-width"
+            "width": "size/details-header/name-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "original location",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "원래",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "위치",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "original location",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "original location cell",
             "size": {
               "h": 16,
-              "w": 180
+              "w": 188
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "원래",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "color/black/61",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "위치",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/wide-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
           },
           {
-            "fills": [
-              "color/black/61"
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "deleted date",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "삭제한 날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
             ],
-            "name": "deleted date",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "deleted date cell",
             "size": {
               "h": 16,
-              "w": 140
+              "w": 148
             },
             "sizing": {
               "h": "FIXED",
               "v": "HUG"
             },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": 1,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "삭제한 날짜",
-                  "fill": "color/black/61",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "ENDING"
-            },
-            "type": "TEXT",
-            "width": "size/file-row/narrow-cell-width"
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
           }
         ],
         "fills": [
           "color/blue/9"
         ],
-        "height": "size/control/height",
+        "height": "size/file-row/height",
         "layout": {
           "counterAlign": "CENTER",
-          "gap": "spacing/sm",
+          "gap": "spacing/none",
           "mode": "HORIZONTAL",
           "padding": [
             "spacing/none",
-            "spacing/sm",
             "spacing/none",
-            "spacing/sm"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "View=Recycle bin, State=Selected",
+        "name": "View=Recycle bin, State=Selected, Current=False",
         "radius": [
           "radius/control",
           "radius/control",
           "radius/control",
           "radius/control"
         ],
-        "sampleSize": [
-          "width"
-        ],
         "size": {
-          "h": 32,
-          "w": 840
+          "h": 28,
+          "w": 652
         },
         "sizing": {
-          "h": "FIXED",
+          "h": "HUG",
           "v": "FIXED"
         },
+        "type": "COMPONENT"
+      }
+    },
+    "view=recycle-bin,state=selected,current=true": {
+      "node": {
+        "height": 28,
+        "width": 652,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3473:1158",
+      "properties": {
+        "Current": "True",
+        "State": "Selected",
+        "View": "Recycle bin"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "images/file-folder"
+                },
+                "component": "file/Folder",
+                "fills": [
+                  "IMAGE"
+                ],
+                "height": "size/icon/sm",
+                "name": "item icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "color/black/89"
+                ],
+                "name": "name",
+                "size": {
+                  "h": 16,
+                  "w": 276
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "파일",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/89",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "이름",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "height": "size/file-row/name-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                "spacing/sm",
+                0,
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "name cell",
+            "size": {
+              "h": 20,
+              "w": 316
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/name-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "original location",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "원래",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "위치",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "original location cell",
+            "size": {
+              "h": 16,
+              "w": 188
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "deleted date",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "삭제한 날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "deleted date cell",
+            "size": {
+              "h": 16,
+              "w": 148
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
+          }
+        ],
+        "fills": [
+          "color/blue/9"
+        ],
+        "height": "size/file-row/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "View=Recycle bin, State=Selected, Current=True",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 28,
+          "w": 652
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "color/black/89"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
+      }
+    },
+    "view=recycle-bin,state=selected-unfocused,current=false": {
+      "node": {
+        "height": 28,
+        "width": 652,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3473:1166",
+      "properties": {
+        "Current": "False",
+        "State": "Selected unfocused",
+        "View": "Recycle bin"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "images/file-folder"
+                },
+                "component": "file/Folder",
+                "fills": [
+                  "IMAGE"
+                ],
+                "height": "size/icon/sm",
+                "name": "item icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "color/black/89"
+                ],
+                "name": "name",
+                "size": {
+                  "h": 16,
+                  "w": 276
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "파일",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/89",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "이름",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "height": "size/file-row/name-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                "spacing/sm",
+                0,
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "name cell",
+            "size": {
+              "h": 20,
+              "w": 316
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/name-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "original location",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "원래",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "위치",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "original location cell",
+            "size": {
+              "h": 16,
+              "w": 188
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "deleted date",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "삭제한 날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "deleted date cell",
+            "size": {
+              "h": 16,
+              "w": 148
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
+          }
+        ],
+        "fills": [
+          "color/gray/13"
+        ],
+        "height": "size/file-row/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "View=Recycle bin, State=Selected unfocused, Current=False",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 28,
+          "w": 652
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "view=recycle-bin,state=selected-unfocused,current=true": {
+      "node": {
+        "height": 28,
+        "width": 652,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3473:1174",
+      "properties": {
+        "Current": "True",
+        "State": "Selected unfocused",
+        "View": "Recycle bin"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "images/file-folder"
+                },
+                "component": "file/Folder",
+                "fills": [
+                  "IMAGE"
+                ],
+                "height": "size/icon/sm",
+                "name": "item icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "color/black/89"
+                ],
+                "name": "name",
+                "size": {
+                  "h": 16,
+                  "w": 276
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "파일",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/89",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "이름",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "height": "size/file-row/name-height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                "spacing/sm",
+                0,
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "name cell",
+            "size": {
+              "h": 20,
+              "w": 316
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/name-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "original location",
+                "size": {
+                  "h": 16,
+                  "w": 172
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "원래",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "color/black/61",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "위치",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "original location cell",
+            "size": {
+              "h": 16,
+              "w": 188
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/wide-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "deleted date",
+                "size": {
+                  "h": 16,
+                  "w": 132
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "삭제한 날짜",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "deleted date cell",
+            "size": {
+              "h": 16,
+              "w": 148
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "FRAME",
+            "width": "size/details-header/narrow-width"
+          }
+        ],
+        "fills": [
+          "color/gray/13"
+        ],
+        "height": "size/file-row/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "View=Recycle bin, State=Selected unfocused, Current=True",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 28,
+          "w": 652
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "color/gray/39"
+        ],
+        "strokesIncludedInLayout": false,
         "type": "COMPONENT"
       }
     }
