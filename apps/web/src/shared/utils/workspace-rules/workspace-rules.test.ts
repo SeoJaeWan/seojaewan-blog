@@ -558,6 +558,13 @@ describe('항목과 폴더:폴더 이름', () => {
     });
   });
 
+  it('붙여넣은 글자의 줄 바꿈도 쓸 수 없는 문자와 함께 뺀다', () => {
+    expect(filterFolderNameInput('React\r\nNext.js\n')).toEqual({
+      value: 'ReactNext.js',
+      hasRemovedInvalidCharacter: true,
+    });
+  });
+
   it('255자를 넘게는 입력되지 않고, 서로게이트 쌍을 가르지 않는다', () => {
     expect(filterFolderNameInput('가'.repeat(300)).value).toHaveLength(255);
     expect(filterFolderNameInput(`${'a'.repeat(254)}😀`).value).toBe('a'.repeat(254));
