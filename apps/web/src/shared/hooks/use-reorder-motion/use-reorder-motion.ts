@@ -18,8 +18,8 @@ const FROM_Y = '--motion-reorder-from-y';
 const DRAGGING_CLASS_NAME = 'z-layer-drag-ghost';
 // 움직임 상태를 드러내는 속성. 동작 스토리가 확인한다.
 const MOTION_ATTRIBUTE = 'data-reorder-motion';
-// 메뉴 이동에서 옮기는 항목이 미끄러짐을 기다리는 동안 숨기는 클래스다.
-const HIDDEN_CLASS_NAME = 'invisible';
+// 메뉴 이동의 교차 페이드에서 옛 자리 사본을 가리키는 속성이다(motion.css의 motion-start-pinned-move-swap).
+const MOVE_PLACE_ATTRIBUTE = 'data-move-place';
 // 이보다 적게 움직인 자리 변화는 움직이지 않은 것으로 본다(px). 소수점 반올림 차이를 거른다.
 const MIN_DISTANCE = 0.5;
 
@@ -41,12 +41,19 @@ type DragState = {
  * 순서 바꾸기 움직임 설정
  * - itemAttribute: 항목 요소에 달린, 항목 id를 담은 속성 이름. 이 속성이 달린 요소가 움직인다
  * - axis: 끄는 항목이 포인터를 따라오는 방향. 작업 표시줄과 탭은 가로(`x`)만, Start 고정됨 격자는 양쪽(`both`)이다
- * - moveClassNames: 메뉴로 옮길 때(`playMove`) 옮기는 항목이 사라지고 나타나는 모션 클래스. Start 고정됨만 준다
+ * - moveClassNames: 메뉴로 옮길 때(`playMove`) 옮기는 항목이 사라지고(exit) 나타나는(enter) 모션 클래스와 자리가 바뀌는 나머지 항목의
+ *   교차 페이드(swap) 클래스. 세 클래스는 시작 시점을 메뉴가 사라진 순간부터 잰 지연으로 가진다. Start 고정됨만 준다
  */
 export type ReorderMotionOptions = {
   itemAttribute: string;
   axis: 'x' | 'both';
-  moveClassNames?: { exit: string; enter: string };
+  moveClassNames?: { exit: string; swap: string; enter: string };
+};
+
+/** 진행 중인 메뉴 이동. ghosts는 옛 자리에 둔 사본, keys는 움직이는 항목 id다 */
+type MoveState = {
+  ghosts: HTMLElement[];
+  keys: string[];
 };
 
 /**
@@ -65,7 +72,7 @@ export type ReorderMotion = {
 
 /**
  * 목록의 순서가 바뀔 때 항목을 FLIP으로 움직인다. 작업 표시줄 고정 앱, 탐색기·Chrome 탭, Start 고정됨이 함께 쓴다.
- * - 끌기: 끄는 항목에 `motion-reorder-lift`(1.1배)를 붙이고, 포인터를 따라오도록 `translate`를 준다. 순서가 바뀌어
+ * - 끌기: 끄는 항목에 `motion-reorder-lift`(끄는 배율)를 붙이고, 포인터를 따라오도록 `translate`를 준다. 순서가 바뀌어
  *   항목의 자리가 바뀌어도 포인터 아래에 남도록 바뀐 자리만큼 되돌려 준다.
  * - 밀려남: 그릴 때마다 항목 순서를 보고, 순서가 바뀌었으면(같은 항목들) 자리가 바뀐 항목마다 이전에 보이던 자리에서
  *   새 자리까지의 거리를 `--motion-reorder-from-x·-y`로 넘기고 `motion-reorder-slide`를 처음부터 재생한다. 끌기 밖에서
@@ -73,9 +80,11 @@ export type ReorderMotion = {
  * - 놓기: 끄는 항목의 `translate`와 lift를 떼고, 놓은 자리에서 새 자리까지의 거리로 `motion-reorder-drop`을 재생한다.
  * - 애니메이션이 끝나면 클래스와 값을 뗀다. 클래스는 항목의 className prop에 두지 않고 classList로 다루며, React가 className을
  *   다시 쓰면 그린 뒤에 다시 붙인다(같은 프레임 안이라 애니메이션은 이어진다). 상태는 `data-reorder-motion`(lift·drop·slide)으로 드러낸다.
- * - 메뉴 이동(`playMove`): 옮기는 항목이 exit 클래스로 제자리에서 사라진 뒤 순서를 바꾸고(숨긴 채), 나머지가 미끄러지기를
- *   기다렸다가 새 자리에서 enter 클래스로 나타난다. 상태는 `data-reorder-motion`(exit·enter)으로 드러낸다.
- *   기다릴 애니메이션이 없으면(동작 줄이기, jsdom) 바로 다음 단계로 간다.
+ * - 메뉴 이동(`playMove`): 세 단계(사라짐 → 교차 페이드 → 나타남)를 겹치지 않게 잇는다. 단계 사이 간격은 클래스가 가진 지연이라,
+ *   메뉴가 사라진 순간 바로 순서를 바꾸고 세 단계의 클래스를 함께 붙인다. 자리가 바뀐 항목마다 옛 자리에 사본(입력을 받지 않음)을 두어,
+ *   옮기는 항목은 사본이 exit 클래스로 옛 자리에서 사라지고 실제 항목이 새 자리에서 enter 클래스로 나타난다. 나머지는 미끄러지지 않고
+ *   사본과 실제 항목이 swap 클래스로 교차 페이드한다(사본에 `data-move-place="old"`). 모두 끝나면 사본과 클래스를 뗀다.
+ *   실제 항목의 상태는 `data-reorder-motion`(enter·swap), 사본은 exit·swap으로 드러낸다. 기다릴 애니메이션이 없으면(동작 줄이기, jsdom) 바로 끝낸다.
  * - 이전 자리는 그릴 때마다 항목의 원래 자리를 목록 바탕 기준으로 기억해 둔다. 목록을 담은 패널이 움직여도(Start 열기) 어긋나지 않게 하기 위해서다.
  * @codocs [[항목 조작:순서 바꾸기 끌기]]
  * @codocs [[피그마 연동:모션 클래스]]
@@ -93,9 +102,10 @@ export function useReorderMotion(
   const orderRef = useRef<readonly string[]>([]);
   const motionsRef = useRef(new Map<string, SettleMotion>());
   const dragRef = useRef<DragState | null>(null);
-  // 메뉴 이동 중인 항목마다 붙들어 둔 클래스(exit·숨김·enter)와, 순서가 바뀌면 나타날 항목이다.
+  // 메뉴 이동 중인 항목마다 붙들어 둔 클래스(enter·swap)와, 순서가 바뀌면 메뉴 이동으로 움직일 항목, 진행 중인 메뉴 이동이다.
   const heldRef = useRef(new Map<string, string>());
-  const arrivingRef = useRef<string | null>(null);
+  const pendingMoveRef = useRef<string | null>(null);
+  const moveRef = useRef<MoveState | null>(null);
 
   useLayoutEffect(
     /** 그릴 때마다 순서가 바뀌었으면 밀려난 항목을 미끄러뜨리고, 움직임 클래스를 다시 붙이고, 자리를 기억한다. */
@@ -107,14 +117,16 @@ export function useReorderMotion(
       const items = getItems(container, itemAttribute);
       const order = [...items.keys()];
       const drag = dragRef.current;
-      if (isReordered(orderRef.current, order)) {
+      const moving = pendingMoveRef.current;
+      pendingMoveRef.current = null;
+      const isOrderChanged = isReordered(orderRef.current, order);
+      if (isOrderChanged && moving !== null && moveClassNames !== undefined) {
+        playCrossFade(container, items, moving, moveClassNames);
+      } else if (isOrderChanged) {
         const base = getBaseOrigin(container);
-        const arriving = arrivingRef.current;
-        arrivingRef.current = null;
-        const slid: HTMLElement[] = [];
         for (const [key, element] of items) {
           const previous = layoutsRef.current.get(key);
-          if (key === drag?.key || key === arriving || previous === undefined) {
+          if (key === drag?.key || previous === undefined) {
             continue;
           }
           const layout = subtract(getRectCenter(getLayoutRect(element)), base);
@@ -126,13 +138,6 @@ export function useReorderMotion(
           const from = subtract(add(previous, shown), layout);
           playSettle(element, { className: SLIDE_CLASS_NAME, from });
           motionsRef.current.set(key, { className: SLIDE_CLASS_NAME, from });
-          slid.push(element);
-        }
-        if (arriving !== null) {
-          // 나머지 칸이 다 미끄러진 뒤 옮긴 칸이 새 자리에서 나타난다.
-          afterAnimations(slid, SLIDE_CLASS_NAME, () => {
-            enter(arriving);
-          });
         }
       }
       // 메뉴 이동 중인 항목의 클래스도 다시 붙인다.
@@ -179,7 +184,12 @@ export function useReorderMotion(
         }
         const key = target.getAttribute(itemAttribute);
         const motion = key === null ? undefined : motionsRef.current.get(key);
-        if (key === null || motion?.className !== event.animationName) {
+        // 트랙마다 키프레임이 나뉜 클래스(`motion-reorder-drop-scale` 등)도 클래스 이름으로 시작하므로 앞부분으로 맞춘다.
+        if (
+          key === null ||
+          motion === undefined ||
+          !event.animationName.startsWith(motion.className)
+        ) {
           return;
         }
         motionsRef.current.delete(key);
@@ -321,30 +331,83 @@ export function useReorderMotion(
   }
 
   /**
-   * 옮긴 항목을 새 자리에서 나타나게 하고, 다 나타나면 클래스를 뗀다.
-   * @param key 항목 id
+   * 메뉴 이동의 세 단계를 함께 시작한다. 자리가 바뀐 항목마다 옛 자리에 사본을 두고, 옮기는 항목은 사본이 사라지고(exit) 실제 항목이
+   * 나타나며(enter), 나머지는 사본과 실제 항목이 교차 페이드한다(swap). 단계 사이 간격은 클래스의 지연이다. 모두 끝나면 사본과 클래스를 뗀다.
+   * @codocs [[Start 메뉴:고정됨]]
+   * @param container 항목들을 담은 요소
+   * @param items 새 순서의 항목 요소
+   * @param movingKey 메뉴로 옮긴 항목 id
+   * @param classNames 세 단계의 모션 클래스
+   * @param classNames.exit 옮기는 항목이 옛 자리에서 사라지는 클래스
+   * @param classNames.swap 나머지 항목이 교차 페이드하는 클래스
+   * @param classNames.enter 옮기는 항목이 새 자리에서 나타나는 클래스
    */
-  function enter(key: string): void {
-    if (moveClassNames === undefined || heldRef.current.get(key) !== HIDDEN_CLASS_NAME) {
-      return;
+  function playCrossFade(
+    container: HTMLElement,
+    items: ReadonlyMap<string, HTMLElement>,
+    movingKey: string,
+    classNames: { exit: string; swap: string; enter: string },
+  ): void {
+    const base = getBaseOrigin(container);
+    const move: MoveState = { ghosts: [], keys: [] };
+    const animated: HTMLElement[] = [];
+    for (const [key, element] of items) {
+      const previous = layoutsRef.current.get(key);
+      const isMoving = key === movingKey;
+      if (previous === undefined) {
+        continue;
+      }
+      const layoutRect = getLayoutRect(element);
+      const layout = subtract(getRectCenter(layoutRect), base);
+      if (!isMoving && getDistance(previous, layout) < MIN_DISTANCE) {
+        continue;
+      }
+      // 미끄러지는 중이었으면 그 미끄러짐을 끝낸다. 메뉴 이동은 미끄러지지 않는다.
+      if (motionsRef.current.delete(key)) {
+        clearSettle(element);
+      }
+      const ghost = placeGhost(element, add(previous, base), layoutRect, itemAttribute);
+      ghost.classList.add(isMoving ? classNames.exit : classNames.swap);
+      ghost.setAttribute(MOTION_ATTRIBUTE, isMoving ? 'exit' : 'swap');
+      if (!isMoving) {
+        ghost.setAttribute(MOVE_PLACE_ATTRIBUTE, 'old');
+      }
+      hold(key, isMoving ? classNames.enter : classNames.swap, isMoving ? 'enter' : 'swap');
+      move.ghosts.push(ghost);
+      move.keys.push(key);
+      animated.push(element, ghost);
     }
-    const enterClassName = moveClassNames.enter;
-    const item = hold(key, enterClassName, 'enter');
+    moveRef.current = move;
     afterAnimations(
-      item === undefined ? [] : [item],
-      enterClassName,
-      /** 다 나타나면 붙든 클래스를 뗀다. */
+      animated,
+      '',
+      /** 세 단계가 모두 끝나면 사본과 클래스를 뗀다. */
       () => {
-        if (heldRef.current.get(key) === enterClassName) {
-          hold(key, null, null);
+        if (moveRef.current === move) {
+          finishMove();
         }
       },
     );
   }
 
+  /** 진행 중인 메뉴 이동을 끝낸다. 옛 자리 사본을 빼고 붙든 클래스를 뗀다. */
+  function finishMove(): void {
+    const move = moveRef.current;
+    moveRef.current = null;
+    if (move === null) {
+      return;
+    }
+    for (const ghost of move.ghosts) {
+      ghost.remove();
+    }
+    for (const key of move.keys) {
+      hold(key, null, null);
+    }
+  }
+
   /**
-   * 메뉴로 항목을 옮긴다. 옮기는 항목이 제자리에서 사라진 뒤 순서를 바꾸고, 나머지가 미끄러진 뒤 새 자리에서 나타난다.
-   * 사라지는 동안 목록이 사라져도(Start 닫힘) 순서는 바꾼다.
+   * 메뉴로 항목을 옮긴다. 메뉴가 사라진 순간 바로 순서를 바꾸고(목록이 사라져도, Start 닫힘), 다시 그릴 때 세 단계를 함께 시작한다.
+   * 순서가 바뀌지 않았으면(그릴 것이 없음) 움직이지 않는다.
    * @param key 옮기는 항목 id
    * @param move 순서를 바꾸는 함수
    */
@@ -353,37 +416,58 @@ export function useReorderMotion(
       move();
       return;
     }
-    // 앞선 이동으로 미끄러지는 중이었으면 그 미끄러짐을 끝낸다. 남겨 두면 끝날 때 이동 중인 상태를 지운다.
-    const container = containerRef.current;
-    const moving = container === null ? undefined : getItems(container, itemAttribute).get(key);
-    if (moving !== undefined && motionsRef.current.delete(key)) {
-      clearSettle(moving);
-    }
-    const item = hold(key, moveClassNames.exit, 'exit');
-    afterAnimations(
-      item === undefined ? [] : [item],
-      moveClassNames.exit,
-      /** 다 사라지면 숨긴 채 순서를 바꾼다. */
-      () => {
-        hold(key, HIDDEN_CLASS_NAME, 'exit');
-        arrivingRef.current = key;
-        move();
-        // 순서가 바뀌지 않았으면(그릴 것이 없음) 기다리지 않고 바로 나타난다.
-        setTimeout(
-          /** 순서가 바뀌지 않아 기다릴 미끄러짐이 없으면 바로 나타난다. */
-          () => {
-            if (arrivingRef.current === key) {
-              arrivingRef.current = null;
-              enter(key);
-            }
-          },
-          0,
-        );
-      },
-    );
+    // 앞선 이동이 아직 진행 중이면 끝 모습으로 바로 끝낸다.
+    finishMove();
+    pendingMoveRef.current = key;
+    move();
   }
 
   return { startDrag, moveDrag, endDrag, playMove };
+}
+
+/**
+ * 메뉴 이동의 교차 페이드를 위해 항목의 사본을 옛 자리에 둔다. 사본은 입력을 받지 않고 화면 읽기 프로그램에도 숨기며,
+ * 항목 id 속성과 안쪽 id를 지워 목록 항목으로 잡히지 않게 한다. 자리는 붙인 뒤 잰 자기 자리에서 옛 자리까지 옮겨 맞춘다.
+ * @param element 실제 항목
+ * @param center 옛 자리 가운데(화면 기준)
+ * @param size 항목의 원래 크기
+ * @param itemAttribute 항목 id를 담은 속성 이름
+ * @returns 붙인 사본
+ */
+function placeGhost(
+  element: HTMLElement,
+  center: LayoutPoint,
+  size: DOMRect,
+  itemAttribute: string,
+): HTMLElement {
+  const ghost = element.cloneNode(true);
+  if (!(ghost instanceof HTMLElement)) {
+    throw new TypeError('항목 사본을 만들지 못했다.');
+  }
+  for (const node of [ghost, ...ghost.querySelectorAll('*')]) {
+    node.removeAttribute(itemAttribute);
+    node.removeAttribute('id');
+  }
+  ghost.removeAttribute(MOTION_ATTRIBUTE);
+  ghost.classList.remove(LIFT_CLASS_NAME, DROP_CLASS_NAME, SLIDE_CLASS_NAME, DRAGGING_CLASS_NAME);
+  ghost.inert = true;
+  ghost.setAttribute('aria-hidden', 'true');
+  Object.assign(ghost.style, {
+    position: 'absolute',
+    left: '0px',
+    top: '0px',
+    margin: '0px',
+    width: `${String(size.width)}px`,
+    height: `${String(size.height)}px`,
+    translate: 'none',
+    pointerEvents: 'none',
+  });
+  element.after(ghost);
+  const placed = ghost.getBoundingClientRect();
+  const x = center.x - size.width / 2 - placed.x;
+  const y = center.y - size.height / 2 - placed.y;
+  ghost.style.translate = `${String(x)}px ${String(y)}px`;
+  return ghost;
 }
 
 /**

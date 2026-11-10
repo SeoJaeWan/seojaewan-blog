@@ -106,7 +106,7 @@ export function StartCategoryCard({
     <div {...divProps} className={cn('group flex flex-col items-center gap-spacing-sm', className)}>
       <div
         className={cn(
-          'flex flex-col items-start rounded-radius-overlay border-stroke-width-default border-color-black-6 bg-color-white-70',
+          'flex flex-col items-start rounded-radius-overlay border-stroke-width-default border-color-black-6 bg-color-white-30',
           'motion-control-state group-hover:bg-color-gray-3-50',
           classNames.tile,
         )}

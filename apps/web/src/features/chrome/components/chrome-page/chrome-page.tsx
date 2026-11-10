@@ -128,21 +128,27 @@ function PostPage({
   useEffect(
     /**
      * 지금 읽는 위치 항목이 목차 안에서 가려지면(목차가 최대 높이를 넘어 스크롤할 때) 그 항목이 보이도록 목차만 스크롤한다.
-     * 페이지는 스크롤하지 않는다.
+     * 페이지는 스크롤하지 않는다. 목차의 스크롤 상자는 Toc가 감싼 ScrollArea의 스크롤 영역이다.
+     * 부드럽게 스크롤하고, 동작 줄이기에서는 바로 옮긴다.
      * @codocs [[Chrome:글 화면]]
      */
     () => {
       const item = tocRef.current?.querySelector('[aria-current="location"]');
-      const list = item?.parentElement;
+      const list = item?.closest('[data-scrollbar-hidden]');
       if (item === null || item === undefined || list === null || list === undefined) {
         return;
       }
       const listRect = list.getBoundingClientRect();
       const itemRect = item.getBoundingClientRect();
-      list.scrollTop = getTocScrollTop(
+      const top = getTocScrollTop(
         { top: listRect.top, bottom: listRect.bottom, scrollTop: list.scrollTop },
         { top: itemRect.top, bottom: itemRect.bottom },
       );
+      if (top === list.scrollTop) {
+        return;
+      }
+      const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      list.scrollTo({ top, behavior: isReduced ? 'instant' : 'smooth' });
     },
     [activeTocIndex, isWide, isTocExpanded],
   );
@@ -262,7 +268,7 @@ function NewTabPage({
   return (
     <div
       className={cn(
-        'flex flex-col items-center gap-spacing-2xl px-spacing-lg',
+        'flex flex-col items-center gap-spacing-2xl px-spacing-lg pb-spacing-2xl',
         isWide ? 'pt-spacing-5xl' : 'pt-spacing-4xl',
       )}
     >
@@ -320,7 +326,7 @@ function SearchResultsPage({
   return (
     <div
       className={cn(
-        'flex flex-col items-center px-spacing-lg',
+        'flex flex-col items-center px-spacing-lg pb-spacing-2xl',
         isWide ? 'pt-spacing-5xl' : 'pt-spacing-2xl',
       )}
     >
@@ -374,7 +380,7 @@ function NotFoundPage({
   onReload: handleReload,
 }: ChromeNotFoundPageProps & { layout: ChromePageLayout }): JSX.Element {
   return (
-    <div className="flex flex-flex-fill items-center justify-center px-spacing-2xl">
+    <div className="flex flex-flex-fill items-center justify-center p-spacing-2xl">
       <EmptyState
         heading={`${WORDMARK} 페이지를 찾을 수 없음`}
         message={`다음 웹 주소에 대한 웹페이지를 찾을 수 없습니다: ${url}`}

@@ -1,5 +1,5 @@
 {
-  "description": "Start 메뉴 맨 아래 줄의 바탕으로, 프로필과 전원 버튼을 담아 Start 메뉴에 쓴다.\n@sample-size width",
+  "description": "Start 메뉴 맨 아래 줄의 바탕으로, 프로필과 전원 버튼을 담아 Start 메뉴에 쓴다.",
   "name": "StartMenuFooter",
   "nodeId": "414:5792",
   "propertyDefinitions": {
@@ -85,8 +85,15 @@
                 },
                 "name": "ProfileButton",
                 "properties": {
-                  "Name": "서재완"
+                  "Name": "서재완",
+                  "State": "Rest"
                 },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
                 "size": {
                   "h": 32,
                   "w": 510
@@ -181,9 +188,6 @@
             "type": "SLOT"
           }
         ],
-        "fills": [
-          "color/black/4"
-        ],
         "layout": {
           "counterAlign": "CENTER",
           "gap": 0,
@@ -197,6 +201,9 @@
           "primaryAlign": "MIN"
         },
         "name": "StartMenuFooter",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 65,
           "w": 638

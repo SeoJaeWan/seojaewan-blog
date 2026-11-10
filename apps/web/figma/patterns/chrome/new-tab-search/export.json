@@ -1,5 +1,5 @@
 {
-  "description": "새 탭 페이지 가운데의 검색창과 입력 중 추천 목록으로, 새 탭 페이지에 쓴다.\n@runtime 입력하면 Flyout이 열린다: 리액트 19 훅 정리, 리액트 서버 컴포넌트 이해하기, 리액트 검색",
+  "description": "새 탭 페이지 가운데의 검색창과 입력 중 추천 목록으로, 새 탭 페이지에 쓴다.",
   "name": "Chrome/NewTabSearch",
   "nodeId": "1379:6298",
   "propertyDefinitions": {},
@@ -13,179 +13,28 @@
       },
       "nodeId": "1379:6298",
       "properties": {},
-      "tree": {
-        "children": [
+      "report": {
+        "components": [
           {
-            "children": [
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "asset": {
-                          "color": "color/black/61",
-                          "path": "icons/ic_fluent_search_16_regular"
-                        },
-                        "component": "ic_fluent_search_16_regular",
-                        "height": "size/icon/sm",
-                        "name": "icon",
-                        "size": {
-                          "h": 16,
-                          "w": 16
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "FIXED"
-                        },
-                        "type": "INSTANCE",
-                        "width": "size/icon/sm"
-                      },
-                      {
-                        "fills": [
-                          "color/black/61"
-                        ],
-                        "name": "label",
-                        "size": {
-                          "h": 20,
-                          "w": 264
-                        },
-                        "sizing": {
-                          "h": "FILL",
-                          "v": "HUG"
-                        },
-                        "text": {
-                          "autoResize": "HEIGHT",
-                          "maxLines": 1,
-                          "maxLinesVariable": null,
-                          "segments": [
-                            {
-                              "characters": "글 검색 또는 URL 입력",
-                              "fill": "color/black/61",
-                              "textStyle": "Hangul/Body"
-                            }
-                          ],
-                          "truncation": "ENDING"
-                        },
-                        "type": "TEXT"
-                      }
-                    ],
-                    "component": "SearchBox",
-                    "fills": [
-                      "color/white/70"
-                    ],
-                    "height": "size/search-box/tall-height",
-                    "layout": {
-                      "counterAlign": "CENTER",
-                      "gap": "spacing/sm",
-                      "mode": "HORIZONTAL",
-                      "padding": [
-                        "spacing/sm",
-                        "spacing/lg",
-                        "spacing/sm",
-                        "spacing/lg"
-                      ],
-                      "primaryAlign": "MIN"
-                    },
-                    "name": "search box",
-                    "properties": {
-                      "Filled": "False",
-                      "Placeholder": "글 검색 또는 URL 입력",
-                      "State": "Rest",
-                      "Value": "검색어",
-                      "Variant": "Web"
-                    },
-                    "radius": [
-                      "radius/circular",
-                      "radius/circular",
-                      "radius/circular",
-                      "radius/circular"
-                    ],
-                    "size": {
-                      "h": 36,
-                      "w": 320
-                    },
-                    "sizing": {
-                      "h": "FIXED",
-                      "v": "FIXED"
-                    },
-                    "strokeWeight": [
-                      "stroke-width/default",
-                      "stroke-width/default",
-                      "stroke-width/default",
-                      "stroke-width/default"
-                    ],
-                    "strokes": [
-                      "color/black/6"
-                    ],
-                    "strokesIncludedInLayout": false,
-                    "type": "INSTANCE"
-                  }
-                ],
-                "layout": {
-                  "counterAlign": "MIN",
-                  "gap": 0,
-                  "mode": "HORIZONTAL",
-                  "padding": [
-                    0,
-                    0,
-                    0,
-                    0
-                  ],
-                  "primaryAlign": "MIN"
-                },
-                "name": "Trigger",
-                "size": {
-                  "h": 36,
-                  "w": 320
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "type": "SLOT"
-              }
+            "component": "SearchBox",
+            "paths": [
+              "popover/Trigger/search box"
             ],
-            "component": "Popover",
-            "layout": {
-              "counterAlign": "MIN",
-              "gap": "spacing/xs",
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/none",
-                "spacing/none",
-                "spacing/none",
-                "spacing/none"
-              ],
-              "primaryAlign": "MIN"
-            },
-            "name": "popover",
             "properties": {
-              "Placement": "Bottom start",
-              "State": "Closed"
-            },
-            "size": {
-              "h": 36,
-              "w": 320
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
+              "Filled": "False",
+              "Placeholder": "글 검색 또는 URL 입력",
+              "State": "Rest",
+              "Value": "검색어",
+              "Variant": "Web"
+            }
           }
         ],
-        "layout": {
-          "counterAlign": "MIN",
-          "gap": "spacing/none",
-          "mode": "VERTICAL",
-          "padding": [
-            "spacing/none",
-            "spacing/none",
-            "spacing/none",
-            "spacing/none"
-          ],
-          "primaryAlign": "MIN"
-        },
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
         "name": "Chrome/NewTabSearch",
         "size": {
           "h": 36,
@@ -194,8 +43,7 @@
         "sizing": {
           "h": "HUG",
           "v": "HUG"
-        },
-        "type": "COMPONENT"
+        }
       }
     }
   }
