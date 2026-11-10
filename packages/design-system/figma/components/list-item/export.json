@@ -1,5 +1,5 @@
 {
-  "description": "아이콘·제목·보조 정보가 있는 목록 한 줄로, Start 목록·검색 결과·주소창 추천에 쓴다.\n@sample-size width",
+  "description": "아이콘·제목·보조 정보가 있는 목록 한 줄로, Start 목록·검색 결과·주소창 추천에 쓴다.",
   "name": "ListItem",
   "nodeId": "31:515",
   "propertyDefinitions": {
@@ -168,6 +168,9 @@
           "radius/control",
           "radius/control"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 36,
           "w": 400
@@ -317,6 +320,9 @@
             "trigger": "ON_HOVER"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 36,
           "w": 400
@@ -450,6 +456,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 36,
@@ -622,6 +631,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 52,
@@ -810,6 +822,9 @@
             "trigger": "ON_HOVER"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 52,
           "w": 400
@@ -981,6 +996,9 @@
           "radius/control",
           "radius/control",
           "radius/control"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 52,

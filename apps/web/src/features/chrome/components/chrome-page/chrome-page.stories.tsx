@@ -213,14 +213,17 @@ export const TocLevelAndScroll: Story = {
 
     await step('지금 읽는 위치 항목이 보이도록 목차만 스크롤하고 페이지는 그대로다', async () => {
       const active = canvas.getByText('목차 30');
-      const list = active.closest('[aria-current="location"]')?.parentElement;
-      if (list === null || list === undefined) {
-        throw new Error('목차 항목 목록이 없다');
+      const list = active.closest('[data-scrollbar-hidden]');
+      if (list === null) {
+        throw new Error('목차 스크롤 영역이 없다');
       }
-      await waitFor(() => expect(list.scrollTop).toBeGreaterThan(0));
-      const listRect = list.getBoundingClientRect();
-      const activeRect = active.getBoundingClientRect();
-      await expect(activeRect.bottom).toBeLessThanOrEqual(listRect.bottom + 1);
+      // 부드럽게 스크롤하므로 끝날 때까지 기다린다.
+      await waitFor(async () => {
+        await expect(list.scrollTop).toBeGreaterThan(0);
+        await expect(active.getBoundingClientRect().bottom).toBeLessThanOrEqual(
+          list.getBoundingClientRect().bottom + 1,
+        );
+      });
       await expect(window.scrollY).toBe(0);
     });
   },
