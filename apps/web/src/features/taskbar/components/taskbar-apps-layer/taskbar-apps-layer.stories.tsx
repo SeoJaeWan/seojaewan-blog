@@ -75,7 +75,7 @@ function getExplorerLocations(): (string | null | undefined)[] {
       return undefined;
     }
     const tab = content.tabs[content.activeTabIndex];
-    return tab?.history[tab.historyIndex];
+    return tab?.history[tab.historyIndex]?.location;
   });
 }
 

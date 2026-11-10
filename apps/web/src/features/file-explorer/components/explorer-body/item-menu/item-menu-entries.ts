@@ -2,6 +2,7 @@ import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import {
   copyLinkMenuItem,
   cutMenuItem,
+  favoritePinMenuItem,
   MENU_ICONS,
   MENU_SEPARATOR,
   openInNewWindowMenuItem,
@@ -18,12 +19,14 @@ type ItemMenuOptions = {
   isInRecycleBin: boolean;
   isMobile: boolean;
   isPinned: boolean;
+  isFavorite: boolean;
   canTrash: boolean;
   onOpen: () => void;
   onOpenInNewTab: () => void;
   onOpenInNewWindow: () => void;
   onCopyLink: () => void;
   onTogglePin: () => void;
+  onToggleFavorite: () => void;
   onCut: () => void;
   onRename: () => void;
   onTrash: () => void;
@@ -63,6 +66,7 @@ export function getItemMenuEntries(options: ItemMenuOptions): MenuPopupEntry[] {
         open,
         ...(options.isMobile ? [] : [openInNewTab]),
         openInNewWindow,
+        favoritePinMenuItem(options.isFavorite, options.onToggleFavorite),
         pin,
         MENU_SEPARATOR,
         cut,

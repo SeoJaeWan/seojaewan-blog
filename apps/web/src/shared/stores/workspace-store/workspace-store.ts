@@ -19,6 +19,7 @@ import {
   pinToFavorites,
   pinToStart,
   pinToTaskbar,
+  placeFavoritePins,
   type PostSummary,
   recordRecentItem,
   renameFolder,
@@ -29,6 +30,7 @@ import {
   setExplorerView,
   type StartAllViewSetting,
   swapStartPin,
+  toggleFavoritePin,
   toSavedWorkspace,
   trashItems,
   unpinFromFavorites,
@@ -71,6 +73,8 @@ export type WorkspaceActionResult = { ok: true } | { ok: false; reason: Workspac
  * - pinToFavorites: 탐색기 즐겨찾기에 폴더를 고정한다(맨 뒤)
  * - unpinFromFavorites: 탐색기 즐겨찾기에서 폴더를 뺀다
  * - moveFavoritePin: 탐색기 즐겨찾기의 순서를 바꾼다(자리는 `favoritePins`의 자리)
+ * - toggleFavoritePin: 폴더가 탐색기 즐겨찾기에 있으면 빼고 없으면 맨 뒤에 고정한다(폴더 우클릭 메뉴)
+ * - placeFavoritePins: 폴더들을 탐색기 즐겨찾기의 한 자리(보이는 목록의 차례)에 놓는다. 이미 있으면 순서를 바꾸고 없으면 고정한다(탐색 창으로 끌어 놓기)
  * - setExplorerView: 탐색기 위치(폴더 id, 바탕화면은 null)의 보기와 정렬을 바꾼다
  * - recordRecentItem: 연 항목을 최근 항목에 넣는다
  * - reset: 처음 상태(초기 구조)로 돌린다(다시 시작). 브라우저 저장분은 따로 지운다
@@ -99,6 +103,8 @@ type WorkspaceActions = {
   pinToFavorites: (id: string) => void;
   unpinFromFavorites: (id: string) => void;
   moveFavoritePin: (id: string, index: number) => void;
+  placeFavoritePins: (ids: readonly string[], slot: number) => void;
+  toggleFavoritePin: (id: string) => void;
   setExplorerView: (folderId: string | null, view: Partial<ExplorerFolderView>) => void;
   recordRecentItem: (id: string) => void;
   reset: () => void;
@@ -305,6 +311,12 @@ function createWorkspaceStore(
     },
     moveFavoritePin: (id, index) => {
       update((state) => moveFavoritePin(state, id, index));
+    },
+    placeFavoritePins: (ids, slot) => {
+      update((state) => placeFavoritePins(state, ids, slot));
+    },
+    toggleFavoritePin: (id) => {
+      update((state) => toggleFavoritePin(state, id));
     },
     setExplorerView: (folderId, view) => {
       update((state) => setExplorerView(state, folderId, view));

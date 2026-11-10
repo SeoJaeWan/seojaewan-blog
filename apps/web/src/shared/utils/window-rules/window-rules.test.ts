@@ -477,7 +477,7 @@ describe('파일 탐색기:탭', () => {
   it('폴더를 열면 그 폴더 하나만 기록에 있는 탭 하나로 연다', () => {
     expect(createExplorerContent('folder:React')).toEqual({
       app: 'file-explorer',
-      tabs: [{ id: 'tab-1', history: ['folder:React'], historyIndex: 0 }],
+      tabs: [{ id: 'tab-1', history: [{ location: 'folder:React' }], historyIndex: 0 }],
       activeTabIndex: 0,
       lastTabSerial: 1,
       treeExpansion: {},
