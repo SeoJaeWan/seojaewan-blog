@@ -143,6 +143,8 @@ export function TaskbarAppItem({
             isOpen={isMenuOpen ?? false}
             onOpenChange={handleMenuOpenChange}
             items={menuItems}
+            // 작업 표시줄 앱 메뉴와 점프 목록은 내용과 상관없이 size/menu/taskbar-width다.
+            width="taskbar"
             placement={isMenuAtPointer === true ? undefined : MENU_PLACEMENT}
           />
         )
