@@ -111,7 +111,21 @@ function isTrashed(id: string): boolean {
  */
 async function openMenu(element: HTMLElement): Promise<HTMLElement> {
   await fireEvent.contextMenu(element);
-  return page().findByRole('menu');
+  const menu = await page().findByRole('menu');
+  // 메뉴는 열리는 쪽으로 미끄러져 나온다(motion-menu-enter). 다 나온 뒤 조작해야 누르는 자리가 움직이지 않는다.
+  await waitFor(async () => {
+    await expect(menu.getAnimations({ subtree: true }).filter(isRunning)).toHaveLength(0);
+  });
+  return menu;
+}
+
+/**
+ * 애니메이션이 아직 도는지 본다.
+ * @param animation 애니메이션
+ * @returns 끝나지 않았으면 true
+ */
+function isRunning(animation: Animation): boolean {
+  return animation.playState === 'running';
 }
 
 /** 메뉴가 사라지기를 기다린다. 실제 브라우저라 닫는 애니메이션이 끝나야 다음 메뉴를 열 수 있다. */

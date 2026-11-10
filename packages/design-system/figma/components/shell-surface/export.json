@@ -18,8 +18,8 @@
   "variants": {
     "device=desktop": {
       "node": {
-        "height": 720,
-        "width": 640,
+        "height": 862,
+        "width": 832,
         "x": 18,
         "y": 9
       },
@@ -44,8 +44,8 @@
             },
             "name": "Content",
             "size": {
-              "h": 718,
-              "w": 638
+              "h": 860,
+              "w": 830
             },
             "sizing": {
               "h": "FILL",
@@ -77,8 +77,8 @@
           "radius/overlay"
         ],
         "size": {
-          "h": 720,
-          "w": 640
+          "h": 862,
+          "w": 832
         },
         "sizing": {
           "h": "FIXED",
