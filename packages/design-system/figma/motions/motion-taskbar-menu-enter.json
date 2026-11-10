@@ -1,0 +1,56 @@
+{
+  "delay": {
+    "ms": 0,
+    "token": null
+  },
+  "directives": {},
+  "duration": {
+    "ms": 167,
+    "token": "motion/duration/fast"
+  },
+  "iterations": 1,
+  "name": "motion-taskbar-menu-enter",
+  "nodeId": "3431:5683",
+  "notes": [
+    {
+      "category": "Development",
+      "path": "Menu/TaskbarApp",
+      "text": "작업 표시줄 앱 버튼 우클릭으로 열린다. 아래 끝은 작업 표시줄 위 끝에서 잘린 채 위로 미끄러져 올라온다(페이드 없음). 닫을 때는 같은 방향으로 내려간다. 메뉴와 작업 표시줄 사이는 12px."
+    }
+  ],
+  "source": "flow",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 167,
+        "token": "motion/duration/fast"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": 135,
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/direct-entrance",
+          "offset": 1,
+          "time": 167,
+          "value": 0,
+          "valueToken": null
+        }
+      ],
+      "node": "Menu/TaskbarApp",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "Menu/TaskbarApp",
+      "property": "TRANSLATION_Y"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=3431-5683"
+}

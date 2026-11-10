@@ -3,27 +3,22 @@
     "ms": 0,
     "token": null
   },
-  "directives": {
-    "hold": [
-      "호버와 포커스 중 하나라도 켜져 있는 동안 유지한다. 이미 켜진 상태에서 다른 쪽이 더해져도 처음부터 다시 돌지 않는다"
-    ],
-    "reduced-motion": [
-      "페이드는 그대로 둔다"
-    ],
-    "repeat": [
-      "1"
-    ],
-    "trigger": [
-      "검색 상자를 호버하거나 포커스할 때"
-    ]
-  },
+  "directives": {},
   "duration": {
     "ms": 1000,
     "token": "motion/duration/slower"
   },
   "iterations": 1,
   "name": "motion-search-box-focus",
-  "nodeId": "864:433",
+  "nodeId": "862:1048",
+  "notes": [
+    {
+      "category": "Development",
+      "path": "",
+      "text": "motion-search-box-focus"
+    }
+  ],
+  "source": "component",
   "tracks": [
     {
       "delay": {
@@ -56,10 +51,10 @@
           "valueToken": "motion/scale/lift"
         }
       ],
-      "node": "icon-color/Search Focus",
-      "nodeKind": "asset",
+      "node": "magnifier",
+      "nodeKind": "layer",
       "operation": "SET",
-      "path": "icon-color/Search Focus",
+      "path": "icon-color/Search Focus / magnifier",
       "property": "SCALE_XY"
     },
     {
@@ -90,7 +85,7 @@
       "node": "gradient",
       "nodeKind": "layer",
       "operation": "SET",
-      "path": "icon-color/Search Focus / gradient",
+      "path": "icon-color/Search Focus / magnifier / gradient",
       "property": "OPACITY"
     },
     {
@@ -121,9 +116,9 @@
       "node": "gradient",
       "nodeKind": "layer",
       "operation": "SET",
-      "path": "icon-color/Search Focus / gradient",
+      "path": "icon-color/Search Focus / magnifier / gradient",
       "property": "ROTATION"
     }
   ],
-  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=864-433"
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=862-1048"
 }

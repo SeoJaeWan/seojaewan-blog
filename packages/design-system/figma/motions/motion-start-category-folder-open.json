@@ -1,0 +1,104 @@
+{
+  "delay": {
+    "ms": 0,
+    "token": null
+  },
+  "directives": {},
+  "duration": {
+    "ms": 333,
+    "token": "motion/duration/slow"
+  },
+  "iterations": 1,
+  "name": "motion-start-category-folder-open",
+  "nodeId": "3431:5935",
+  "notes": [
+    {
+      "category": "Development",
+      "path": "Start/CategoryFolder",
+      "text": "누른 범주 카드의 아이콘과 이름 가운데 점에서 팝업 전체가 한 장처럼 커지며 Start 정가운데로 온다(페이드 없음). 시작 위치는 누른 카드로 정해지는 실행 중 값이고, 여기 이동 값은 &quot;글&quot; 카드 기준 대표값이다. 뒤의 Start는 어두워지거나 흐려지지 않는다."
+    },
+    {
+      "category": "Development",
+      "path": "Start/CategoryFolder",
+      "text": "팝업 안에서 휠을 굴리면 쪽을 넘긴다(motion-start-category-folder-page). 프로토타입은 누르기로 연결했다. 바깥을 누르거나 Esc를 누르면 닫힌다(motion-start-category-folder-close)."
+    }
+  ],
+  "source": "flow",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 333,
+        "token": "motion/duration/slow"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": {
+            "x": 0,
+            "y": 0
+          },
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/direct-entrance",
+          "offset": 1,
+          "time": 333,
+          "value": {
+            "x": 1,
+            "y": 1
+          },
+          "valueToken": null
+        }
+      ],
+      "node": "Start/CategoryFolder",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "Start/CategoryFolder",
+      "property": "SCALE_XY"
+    },
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 333,
+        "token": "motion/duration/slow"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": {
+            "x": -98,
+            "y": -86
+          },
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/direct-entrance",
+          "offset": 1,
+          "time": 333,
+          "value": {
+            "x": 0,
+            "y": 0
+          },
+          "valueToken": null
+        }
+      ],
+      "node": "Start/CategoryFolder",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "Start/CategoryFolder",
+      "property": "TRANSLATION_XY"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=3431-5935"
+}

@@ -3,7 +3,8 @@
  * 컴포넌트와 앱은 이 클래스만 붙이고 duration-*·ease-*·transition-* 같은 클래스를 직접 쓰지 않는다.
  *
  * @codocs [[피그마 연동:모션 클래스]]
- * - 어떤 움직임이 있고 이름이 무엇인지는 피그마 00 · Guide의 Motion이 보여 준다([[디자인 기반:모션]]).
+ * - 움직임은 피그마에서 그 움직임이 일어나는 자리(조립 흐름 프레임, 컴포넌트·자산 원본)에 있고,
+ *   클래스 이름은 흐름 프레임 이름이나 원본의 Development 주석이다([[디자인 기반:모션 견본]]).
  * - 상태 전환(hover·pressed·focus) 클래스는 transition 설정(속성·시간·이징)만 갖고, 바뀐 뒤의 값은 컴포넌트가 가진다.
  * - 시간·이징·배율은 tokens.css의 var(--motion-*)로 쓴다. 토큰 값은 피그마 Motion 변수에서 만들어진다.
  * - @keyframes와 motion-* 클래스(@utility)는 이 파일에서만 정의한다(stylelint.config.mjs).
@@ -131,7 +132,7 @@
 }
 
 /*
- * 창 열기(견본 motion-window-open). WindowFrame 전체가 배율 0.96 → 1, 투명도 0 → 1로 나타난다.
+ * 창 열기(견본 motion-window-open). WindowFrame 전체가 배율 0.85 → 1, 투명도 0 → 1로 나타난다.
  * 두 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다. 앱이 창을 열 때(data-starting-style 자리) 붙인다.
  */
 @keyframes motion-window-open {
@@ -166,7 +167,7 @@
 
   100% {
     opacity: 0;
-    scale: var(--motion-scale-window-enter);
+    scale: var(--motion-scale-window-exit);
   }
 }
 
@@ -260,9 +261,9 @@
 }
 
 /*
- * Start·검색 패널 열기(견본 motion-panel-enter). ShellSurface가 화면 아래에서 제자리로 미끄러져 올라온다.
- * 견본의 720은 견본 패널 높이이고 실행 중 값은 없다. 키프레임은 px 대신 요소 자기 높이(translate 100%)로 써서
- * 실제 패널 높이가 달라도(모바일 640 등) 화면 아래로 빠졌다가 올라오게 한다(견본에서는 720과 같다).
+ * Start·검색 패널 열기(조립 흐름 motion-panel-enter). ShellSurface가 화면 아래에서 제자리로 미끄러져 올라온다(페이드 없음).
+ * 흐름의 862는 패널 기본 높이(size/shell/height)이고 실행 중 값은 없다. 키프레임은 px 대신 요소 자기 높이(translate 100%)로 써서
+ * 실제 패널 높이가 달라도(작은 화면, 모바일 등) 화면 아래로 빠졌다가 올라오게 한다(흐름에서는 862와 같다).
  * 앱이 패널을 열 때(data-starting-style 자리) 붙인다. 시작 모습을 재생 전에도 유지하도록 fill-mode는 both다.
  */
 @keyframes motion-panel-enter {
@@ -277,14 +278,14 @@
 
 @utility motion-panel-enter {
   animation-name: motion-panel-enter;
-  animation-duration: var(--motion-duration-normal);
+  animation-duration: var(--motion-duration-fast);
   animation-timing-function: var(--motion-easing-direct-entrance);
   animation-fill-mode: both;
 }
 
 /*
- * Start·검색 패널 닫기(견본 motion-panel-exit). 패널 열기의 반대로, ShellSurface가 제자리에서 화면 아래로 미끄러져 내려간다.
- * 견본의 720은 견본 패널 높이이고 실행 중 값은 없다. 열기처럼 px 대신 요소 자기 높이(translate 100%)로 쓴다.
+ * Start·검색 패널 닫기(조립 흐름 motion-panel-exit). 패널 열기의 반대로, ShellSurface가 제자리에서 화면 아래로 미끄러져 내려간다.
+ * 흐름의 862는 패널 기본 높이(size/shell/height)이고 실행 중 값은 없다. 열기처럼 px 대신 요소 자기 높이(translate 100%)로 쓴다.
  * 앱이 패널을 닫을 때(data-ending-style 자리) 붙인다. 사라진 모습을 끝난 뒤에도 유지하도록 fill-mode는 both다(창 닫기처럼).
  */
 @keyframes motion-panel-exit {
@@ -372,16 +373,16 @@
 }
 
 /*
- * Start 글자 목록 열기(견본 motion-start-jump-list-enter). 글자 격자가 배율 1.15 → 1로 줄며 페이드 인하고,
+ * Start 글자 목록 열기(조립 흐름 motion-start-jump-list-enter). 글자 격자가 배율 1.5 → 1로 줄며 페이드 인하고,
  * 같은 시간 동안 앱 목록(견본의 list 레이어)이 페이드 아웃한다. 격자와 목록이 한 움직임이라 클래스 하나로 둔다.
  * 앱이 지킬 약속: 클래스는 격자와 목록을 함께 감싼 요소에 붙이고, 안의 글자 격자에 data-jump-list="grid",
  * 앱 목록에 data-jump-list="list"를 둔다(닫기 motion-start-jump-list-exit도 같다).
- * 격자의 배율(direct-entrance)과 투명도(fade)는 이징이 달라 animation을 쉼표로 나눈다. 1.15는 토큰이 아닌 견본 숫자다.
+ * 격자의 배율(direct-entrance)과 투명도(fade)는 이징이 달라 animation을 쉼표로 나눈다. 1.5는 토큰이 아닌 흐름 숫자다(실제 Windows 측정).
  * 시작·끝 모습을 재생 전후에도 유지하도록 fill-mode는 both다.
  */
 @keyframes motion-start-jump-list-enter-grid-scale {
   0% {
-    scale: 1.15;
+    scale: 1.5;
   }
 
   100% {
@@ -425,10 +426,11 @@
 }
 
 /*
- * Start 글자 목록 닫기(견본 motion-start-jump-list-exit). 열기의 반대로, 글자 격자가 배율 1 → 1.15로 커지며 페이드 아웃하고,
+ * Start 글자 목록 닫기(조립 흐름 motion-start-jump-list-exit). 열기의 반대로, 글자 격자가 배율 1 → 1.5로 커지며 페이드 아웃하고,
  * 같은 시간 동안 고른 글자로 이동한 앱 목록(견본의 list 레이어)이 페이드 인한다. 클래스 하나로 두고 data 약속은 열기와 같다
  * (클래스는 격자와 목록을 감싼 요소, 격자에 data-jump-list="grid", 목록에 data-jump-list="list").
- * 격자의 배율(direct-entrance)과 투명도(fade)는 이징이 달라 animation을 쉼표로 나눈다. 1.15는 토큰이 아닌 견본 숫자다.
+ * 격자의 배율(direct-entrance)과 투명도(fade)는 이징이 달라 animation을 쉼표로 나눈다. 1.5는 토큰이 아닌 흐름 숫자다(실제 Windows 측정).
+ * 시간은 열기(fast)보다 긴 normal이다.
  * 사라진 격자가 끝 모습(투명)으로 남도록 fill-mode는 both다.
  */
 @keyframes motion-start-jump-list-exit-grid-scale {
@@ -437,7 +439,7 @@
   }
 
   100% {
-    scale: 1.15;
+    scale: 1.5;
   }
 }
 
@@ -464,69 +466,103 @@
 @utility motion-start-jump-list-exit {
   & [data-jump-list='grid'] {
     animation:
-      motion-start-jump-list-exit-grid-scale var(--motion-duration-fast)
+      motion-start-jump-list-exit-grid-scale var(--motion-duration-normal)
         var(--motion-easing-direct-entrance) both,
-      motion-start-jump-list-exit-grid-fade var(--motion-duration-fast) var(--motion-easing-fade)
+      motion-start-jump-list-exit-grid-fade var(--motion-duration-normal) var(--motion-easing-fade)
         both;
   }
 
   & [data-jump-list='list'] {
-    animation: motion-start-jump-list-exit-list-fade var(--motion-duration-fast)
+    animation: motion-start-jump-list-exit-list-fade var(--motion-duration-normal)
       var(--motion-easing-fade) both;
   }
 }
 
 /*
- * 순서 바꾸기 끌기 시작(견본 motion-reorder-lift). 끄는 항목(작업 표시줄 앱 버튼·탭·Start 고정됨 칸) 전체가 배율 1 → 1.1로 커진다.
- * 앱이 끌기를 시작할 때 붙이고 끄는 동안 붙여 둔다. 끝 모습(1.1배)을 끄는 동안 유지하도록 fill-mode는 both다.
- * 놓을 때는 이 클래스를 떼고 motion-reorder-drop을 붙인다([[항목 조작:순서 바꾸기 끌기]]). 실행 중 값은 없다.
+ * 순서 바꾸기 누름(조립 흐름 motion-reorder-press). 끌 항목(작업 표시줄 앱 버튼·탭·Start 고정됨 칸)을 누르면 전체가
+ * 배율 1 → 눌린 배율(reorder-press)로 작아진다. 한 트랙이라 키프레임 하나다. 끌기가 시작되면 motion-reorder-lift가
+ * 이 끝 모습(눌린 배율)에서 이어받는다([[항목 조작:순서 바꾸기 끌기]]).
+ * 앱이 누를 때 붙이고 누르고 있는 동안 붙여 둔다. 끝 모습을 유지하도록 fill-mode는 both다. 실행 중 값은 없다.
  */
-@keyframes motion-reorder-lift {
+@keyframes motion-reorder-press {
   0% {
     scale: 1;
   }
 
   100% {
-    scale: var(--motion-scale-lift);
+    scale: var(--motion-scale-reorder-press);
+  }
+}
+
+@utility motion-reorder-press {
+  animation-name: motion-reorder-press;
+  animation-duration: var(--motion-duration-fast);
+  animation-timing-function: var(--motion-easing-direct-entrance);
+  animation-fill-mode: both;
+}
+
+/*
+ * 순서 바꾸기 끌기 시작(조립 흐름 motion-reorder-lift). 끄는 항목(작업 표시줄 앱 버튼·탭·Start 고정됨 칸) 전체가 눌린 배율(reorder-press)에서
+ * 끄는 배율(reorder-drag)로 커진다. 한 트랙이라 키프레임 하나다.
+ * 앱이 끌기를 시작할 때 붙이고 끄는 동안 붙여 둔다. 끝 모습을 끄는 동안 유지하도록 fill-mode는 both다.
+ * 놓을 때는 이 클래스를 떼고 motion-reorder-drop을 붙인다([[항목 조작:순서 바꾸기 끌기]]). 실행 중 값은 없다.
+ */
+@keyframes motion-reorder-lift {
+  0% {
+    scale: var(--motion-scale-reorder-press);
+  }
+
+  100% {
+    scale: var(--motion-scale-reorder-drag);
   }
 }
 
 @utility motion-reorder-lift {
   animation-name: motion-reorder-lift;
-  animation-duration: var(--motion-duration-fast);
-  animation-timing-function: var(--motion-easing-point-to-point);
+  animation-duration: var(--motion-duration-slow);
+  animation-timing-function: var(--motion-easing-direct-entrance);
   animation-fill-mode: both;
 }
 
 /*
- * 순서 바꾸기 끌기 놓기(견본 motion-reorder-drop). 끌던 항목이 놓은 자리에서 새 자리로 미끄러져 들어가며
- * 배율 1.1 → 1로 돌아온다. 두 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다.
+ * 순서 바꾸기 끌기 놓기(조립 흐름 motion-reorder-drop). 끌던 항목이 놓은 자리에서 새 자리로 미끄러져 들어가며
+ * 끄는 배율(reorder-drag)에서 배율 1로 돌아온다. motion-reorder-lift의 끝 모습(끄는 배율)에서 이어받는다.
+ * 배율(direct-entrance)과 이동(point-to-point)은 이징이 달라 animation을 쉼표로 나눈다.
  * FLIP 방식이다. 앱이 항목을 새 자리로 옮긴 뒤, 놓은 위치에서 새 자리까지의 거리(놓은 위치 - 새 자리)를
  * --motion-reorder-from-x·-y로 넘기고 motion-reorder-lift를 떼며 이 클래스를 붙인다. 밀려나는 항목의 미끄러짐
  * (motion-reorder-slide)도 같은 변수를 쓴다. 시작 모습을 재생 전에도 유지하도록 fill-mode는 both다.
  */
-@keyframes motion-reorder-drop {
+@keyframes motion-reorder-drop-scale {
   0% {
-    scale: var(--motion-scale-lift);
-    translate: var(--motion-reorder-from-x) var(--motion-reorder-from-y);
+    scale: var(--motion-scale-reorder-drag);
   }
 
   100% {
     scale: 1;
+  }
+}
+
+@keyframes motion-reorder-drop-translate {
+  0% {
+    translate: var(--motion-reorder-from-x) var(--motion-reorder-from-y);
+  }
+
+  100% {
     translate: 0 0;
   }
 }
 
 @utility motion-reorder-drop {
-  animation-name: motion-reorder-drop;
-  animation-duration: var(--motion-duration-normal);
-  animation-timing-function: var(--motion-easing-point-to-point);
-  animation-fill-mode: both;
+  animation:
+    motion-reorder-drop-scale var(--motion-duration-faster) var(--motion-easing-direct-entrance)
+      both,
+    motion-reorder-drop-translate var(--motion-duration-faster) var(--motion-easing-point-to-point)
+      both;
 }
 
 /*
- * 순서 바꾸기 미끄러짐(견본 motion-reorder-slide). 순서가 바뀌어 밀려나는 항목이 이전 자리에서 새 자리로 미끄러진다.
- * 작업 표시줄·탭·Start 고정됨의 끌기와 Start 고정됨 메뉴 이동이 함께 쓴다([[항목 조작:순서 바꾸기 끌기]]).
+ * 순서 바꾸기 미끄러짐(조립 흐름 motion-reorder-slide). 순서가 바뀌어 밀려나는 항목이 이전 자리에서 새 자리로 미끄러진다.
+ * 작업 표시줄·탭·Start 고정됨의 끌기가 함께 쓴다([[항목 조작:순서 바꾸기 끌기]]). 끄는 항목의 가운데가 칸 경계를 지나면 시작한다.
  * FLIP 방식이다. 앱이 항목을 새 자리로 옮긴 뒤, 이전 자리에서 새 자리까지의 거리(이전 자리 - 새 자리)를
  * motion-reorder-drop과 같은 --motion-reorder-from-x·-y로 넘기고 이 클래스를 붙인다.
  * 시작 모습을 재생 전에도 유지하도록 fill-mode는 both다.
@@ -543,16 +579,17 @@
 
 @utility motion-reorder-slide {
   animation-name: motion-reorder-slide;
-  animation-duration: var(--motion-duration-normal);
+  animation-duration: var(--motion-duration-slow);
   animation-timing-function: var(--motion-easing-point-to-point);
   animation-fill-mode: both;
 }
 
 /*
- * Start 고정됨 메뉴 이동의 사라짐(견본 motion-start-pinned-move-exit). 메뉴(앞으로·왼쪽으로·오른쪽으로 이동)로 옮기는 칸
- * 전체(PinnedTile)가 제자리에서 배율 1 → 0.5로 작아지며 투명도 1 → 0으로 사라진다([[Start 메뉴:고정됨]]).
+ * Start 고정됨 메뉴 이동의 사라짐(조립 흐름 motion-start-pinned-move-exit). 메뉴(앞으로·왼쪽으로·오른쪽으로 이동)로 옮기는 칸
+ * 전체(PinnedTile)가 제자리에서 배율 1 → 0.91로 작아지며 투명도 1 → 0으로 사라진다([[Start 메뉴:고정됨]]).
+ * 세 단계(사라짐 → 교차 페이드 → 나타남)의 처음이고, 시작 시점은 메뉴가 사라진 순간부터 잰 지연(motion/delay/pinned-move-exit)이다.
+ * 이어서 나머지 칸이 motion-start-pinned-move-swap으로 교차 페이드하고, 옮기는 칸이 도착할 자리에서 motion-start-pinned-move-enter로 나타난다.
  * 배율(direct-entrance)과 투명도(fade)는 이징이 달라 animation을 쉼표로 나눈다. 실행 중 값은 없다.
- * 이어서 나머지 칸이 motion-reorder-slide로 미끄러지고, 옮기는 칸이 도착할 자리에서 motion-start-pinned-move-enter로 나타난다.
  * 사라진 끝 모습(투명도 0)을 다음 단계까지 유지하도록 fill-mode는 both다.
  */
 @keyframes motion-start-pinned-move-exit-scale {
@@ -561,7 +598,7 @@
   }
 
   100% {
-    scale: var(--motion-scale-half);
+    scale: var(--motion-scale-pinned-move-exit);
   }
 }
 
@@ -577,20 +614,22 @@
 
 @utility motion-start-pinned-move-exit {
   animation:
-    motion-start-pinned-move-exit-scale var(--motion-duration-fast)
-      var(--motion-easing-direct-entrance) both,
-    motion-start-pinned-move-exit-fade var(--motion-duration-fast) var(--motion-easing-fade) both;
+    motion-start-pinned-move-exit-scale var(--motion-duration-faster)
+      var(--motion-easing-direct-entrance) var(--motion-delay-pinned-move-exit) both,
+    motion-start-pinned-move-exit-fade var(--motion-duration-faster) var(--motion-easing-fade)
+      var(--motion-delay-pinned-move-exit) both;
 }
 
 /*
- * Start 고정됨 메뉴 이동의 나타남(견본 motion-start-pinned-move-enter). 나머지 칸이 motion-reorder-slide로 미끄러진 뒤,
- * 옮기는 칸 전체(PinnedTile)가 도착할 자리에서 배율 0.5 → 1로 커지며 투명도 0 → 1로 나타난다([[Start 메뉴:고정됨]]).
+ * Start 고정됨 메뉴 이동의 나타남(조립 흐름 motion-start-pinned-move-enter). 세 단계(사라짐 → 교차 페이드 → 나타남)의 마지막으로,
+ * 옮기는 칸 전체(PinnedTile)가 도착할 자리에서 배율 0.96 → 1로 커지며 투명도 0 → 1로 나타난다([[Start 메뉴:고정됨]]).
+ * 시작 시점은 메뉴가 사라진 순간부터 잰 지연(motion/delay/pinned-move-enter)이다. 그래서 앱은 세 단계의 클래스를 메뉴가 사라진 순간에 함께 붙인다.
  * 배율(direct-entrance)과 투명도(fade)는 이징이 달라 animation을 쉼표로 나눈다. 실행 중 값은 없다.
- * 시작 모습(투명도 0)을 재생 전에도 유지하도록 fill-mode는 both다.
+ * 시작 모습(투명도 0)을 지연 동안에도 유지하도록 fill-mode는 both다.
  */
 @keyframes motion-start-pinned-move-enter-scale {
   0% {
-    scale: var(--motion-scale-half);
+    scale: var(--motion-scale-pinned-move-enter);
   }
 
   100% {
@@ -610,9 +649,51 @@
 
 @utility motion-start-pinned-move-enter {
   animation:
-    motion-start-pinned-move-enter-scale var(--motion-duration-normal)
-      var(--motion-easing-direct-entrance) both,
-    motion-start-pinned-move-enter-fade var(--motion-duration-normal) var(--motion-easing-fade) both;
+    motion-start-pinned-move-enter-scale var(--motion-duration-slow)
+      var(--motion-easing-direct-entrance) var(--motion-delay-pinned-move-enter) both,
+    motion-start-pinned-move-enter-fade var(--motion-duration-slow) var(--motion-easing-fade)
+      var(--motion-delay-pinned-move-enter) both;
+}
+
+/*
+ * Start 고정됨 메뉴 이동의 교차 페이드(조립 흐름 motion-start-pinned-move-swap). 세 단계(사라짐 → 교차 페이드 → 나타남)의 가운데로,
+ * 자리가 바뀌는 나머지 칸(PinnedTile)은 미끄러지지 않고 옛 자리에서 투명도 1 → 0으로 사라지며 동시에 새 자리에서 0 → 1로 나타난다
+ * ([[Start 메뉴:고정됨]]). 시작 시점은 메뉴가 사라진 순간부터 잰 지연(motion/delay/pinned-move-swap)이다.
+ * 앱이 지킬 약속: 칸 하나가 두 자리에 함께 보이므로 앱은 옛 자리에 칸의 사본을 두고 두 요소에 이 클래스를 붙인다.
+ * 옛 자리 요소에는 data-move-place="old"를 달아 사라지게 하고, 새 자리 요소(실제 칸)는 나타난다.
+ * 두 트랙의 시간·지연·이징이 같고 방향만 반대라 키프레임 둘을 자리 속성으로 고른다. 실행 중 값은 없다.
+ * 지연 동안과 끝난 뒤에도 시작·끝 모습을 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-start-pinned-move-swap-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes motion-start-pinned-move-swap-out {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@utility motion-start-pinned-move-swap {
+  animation-name: motion-start-pinned-move-swap-in;
+  animation-duration: var(--motion-duration-fast);
+  animation-timing-function: var(--motion-easing-fade);
+  animation-delay: var(--motion-delay-pinned-move-swap);
+  animation-fill-mode: both;
+
+  &[data-move-place='old'] {
+    animation-name: motion-start-pinned-move-swap-out;
+  }
 }
 
 /*
@@ -663,9 +744,261 @@
 }
 
 /*
- * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다.
+ * 열기 움직임(motion-menu-enter, motion-taskbar-menu-enter, motion-taskbar-preview-enter)의 자르는 틀이 시작 가장자리를 자르는 자리다.
+ * 틀이 처음 그려질 때(@starting-style, Base UI 팝업은 data-starting-style) 시작 가장자리 값을 갖고, 안의 요소가 움직이는 시간만큼 지난 뒤
+ * (transition-delay) 정지 값(-100vmax, 자르지 않음)으로 바로 바뀐다. 그래서 자르기는 움직이는 동안만 있고, 움직임과 전환을 끄면 처음부터
+ * 정지 값이라 자르지 않는다. Base UI 팝업은 처음 그릴 때 전환을 끄고(인라인 transition: none) data-starting-style을 달았다가 다음 프레임에
+ * 둘 다 떼므로, 그 속성에도 시작 값을 주어 떼는 순간부터 전환이 돈다. 닫을 때(data-ending-style)는 전환을 멈춰 Base UI가 남은 지연을
+ * 기다리느라 늦게 닫히지 않게 한다.
+ * 패딩·바깥 여백으로 틀을 넓히지 않고 clip-path로 자르므로 틀의 크기와 자리는 바뀌지 않는다.
+ * 길이 값으로 등록해야 지연 뒤에 값이 바뀌는 전환이 되고, 쪽(data-side)마다 다른 가장자리에 같은 값을 쓸 수 있다.
+ */
+@property --motion-enter-clip-edge {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0;
+}
+
+/*
+ * 드롭다운·우클릭 메뉴 열기(조립 흐름 motion-menu-enter). 메뉴가 열리는 쪽으로 미끄러져 나오고, 시작 가장자리(아래로 열면 위)에서
+ * 잘린다. 페이드는 없다. 흐름의 -102는 흐름 메뉴(Menu/ViewOptions)의 높이라 px 대신 요소 자기 높이(translate -100%)로 써서
+ * 실제 메뉴 높이가 달라도 시작 가장자리 밖에서 나오게 한다(흐름에서는 -102와 같다). 실행 중 값은 없다.
+ * 클래스는 잘라 내는 틀(흐름의 menu clip, 앱에서는 Base UI 메뉴 팝업)에 붙이고 바로 안의 메뉴 바탕이 움직인다.
+ * 틀은 움직이는 동안만 시작 가장자리를 자르고(clip-path), 나머지 세 쪽은 그림자가 보이도록 자르지 않는다. 자르는 자리는
+ * 아래 --motion-enter-clip-edge가 정하고, 열린 뒤에는 자르지 않아 시작 가장자리의 그림자까지 보인다.
+ * 틀의 상자(크기·자리)는 바꾸지 않아, 움직임을 끄면(캡처, 동작 줄이기) 클래스가 남아도 정지 모습이 그대로다([[피그마 연동:캡처 범위]]).
+ * 열리는 쪽은 Base UI가 틀에 단 data-side로 고른다(top이면 위로, 나머지는 아래로). 피그마 흐름은 아래로 여는 모습이다.
+ * 쓰는 곳은 움직임이 끝나면 클래스를 뗀다. 열린 뒤 data-side가 바뀌어도 다시 움직이지 않게 하기 위해서다.
+ * 하위 메뉴는 측정하지 않아 지금처럼 motion-flyout-enter, 작업 표시줄 앱 버튼 메뉴는 아래 motion-taskbar-menu-enter를 쓴다.
+ */
+@keyframes motion-menu-enter {
+  0% {
+    translate: 0 -100%;
+  }
+
+  100% {
+    translate: 0 0;
+  }
+}
+
+@keyframes motion-menu-enter-up {
+  0% {
+    translate: 0 100%;
+  }
+
+  100% {
+    translate: 0 0;
+  }
+}
+
+@utility motion-menu-enter {
+  --motion-enter-clip-edge: -100vmax;
+  clip-path: inset(var(--motion-enter-clip-edge) -100vmax -100vmax);
+  transition-property: --motion-enter-clip-edge;
+  transition-delay: var(--motion-duration-fast);
+
+  @starting-style {
+    --motion-enter-clip-edge: 0;
+  }
+
+  &[data-starting-style] {
+    --motion-enter-clip-edge: 0;
+  }
+
+  &[data-ending-style] {
+    transition: none;
+  }
+
+  & > * {
+    animation-name: motion-menu-enter;
+    animation-duration: var(--motion-duration-fast);
+    animation-timing-function: var(--motion-easing-direct-entrance);
+    animation-fill-mode: both;
+  }
+
+  &[data-side='top'] {
+    clip-path: inset(-100vmax -100vmax var(--motion-enter-clip-edge));
+  }
+
+  &[data-side='top'] > * {
+    animation-name: motion-menu-enter-up;
+  }
+}
+
+/*
+ * 작업 표시줄 앱 버튼 우클릭 메뉴 열기(조립 흐름 motion-taskbar-menu-enter). 메뉴가 작업 표시줄 위 끝에서 잘린 채 위로 미끄러져 올라온다.
+ * 페이드는 없다. 시작 이동은 흐름에서 메뉴(Menu/TaskbarApp) 높이 111에 아래 여백 24를 더한 135이고,
+ * 실제 메뉴 높이는 달라질 수 있어 실행 중 값이다. 키프레임은 --motion-taskbar-menu-offset을 읽고, 앱이 넘기지 않으면 요소 자기 높이(100%)에
+ * 작업 표시줄과의 간격(--spacing-md)을 더한 값을 쓴다. 작업 표시줄과 메뉴 사이는 12px(Development 주석)이라 틀은 아래 끝에서
+ * 그만큼 아래(작업 표시줄 위 끝)를 자르고, 그 끝 밖(높이 100% + 12px)에서 시작해 메뉴가 자르는 자리 아래로 완전히 숨는다.
+ * 자르기는 움직이는 동안만 있고(--motion-enter-clip-edge), 나머지 세 쪽은 그림자가 보이도록 자르지 않는다. 열린 뒤에는 쓰는 곳이 클래스를 뗀다.
+ * 클래스는 잘라 내는 틀(앱에서는 Base UI 메뉴 팝업)에 붙이고 바로 안의 메뉴 바탕이 움직인다.
+ */
+@keyframes motion-taskbar-menu-enter {
+  0% {
+    translate: 0 var(--motion-taskbar-menu-offset, calc(100% + var(--spacing-md)));
+  }
+
+  100% {
+    translate: 0 0;
+  }
+}
+
+@utility motion-taskbar-menu-enter {
+  /* 움직이는 동안만 작업 표시줄 위 끝(틀 아래 끝에서 12px 아래)을 자른다. 나머지 세 쪽은 그림자가 보이도록 자르지 않는다. */
+  --motion-enter-clip-edge: -100vmax;
+  clip-path: inset(-100vmax -100vmax var(--motion-enter-clip-edge));
+  transition-property: --motion-enter-clip-edge;
+  transition-delay: var(--motion-duration-fast);
+
+  @starting-style {
+    --motion-enter-clip-edge: calc(var(--spacing-md) * -1);
+  }
+
+  &[data-starting-style] {
+    --motion-enter-clip-edge: calc(var(--spacing-md) * -1);
+  }
+
+  &[data-ending-style] {
+    transition: none;
+  }
+
+  & > * {
+    animation-name: motion-taskbar-menu-enter;
+    animation-duration: var(--motion-duration-fast);
+    animation-timing-function: var(--motion-easing-direct-entrance);
+    animation-fill-mode: both;
+  }
+}
+
+/*
+ * 작업 표시줄 창 미리보기 목록 열기(조립 흐름 motion-taskbar-preview-enter). 목록이 작업 표시줄 위 끝에서 잘린 채 위로 미끄러져 올라온다.
+ * 페이드는 없다. 시작 이동은 흐름에서 목록(Taskbar/PreviewList) 높이 166에 아래 여백 24를 더한 190이고,
+ * 실제 목록 높이는 달라질 수 있어 실행 중 값이다. 키프레임은 --motion-taskbar-preview-offset을 읽고, 앱이 넘기지 않으면 요소 자기 높이(100%)에
+ * 작업 표시줄과의 간격(--spacing-md)을 더한 값을 쓴다. 작업 표시줄과 목록 사이는 12px(Development 주석)이라 틀은 아래 끝에서
+ * 그만큼 아래(작업 표시줄 위 끝)를 자르고, 그 끝 밖(높이 100% + 12px)에서 시작해 목록이 자르는 자리 아래로 완전히 숨는다.
+ * 자르기는 움직이는 동안만 있고(--motion-enter-clip-edge), 나머지 세 쪽은 그림자가 보이도록 자르지 않는다. 열린 뒤에는 쓰는 곳이 클래스를 뗀다.
+ * 클래스는 잘라 내는 틀(앱에서는 미리보기 목록 팝업)에 붙이고 바로 안의 목록이 움직인다.
+ */
+@keyframes motion-taskbar-preview-enter {
+  0% {
+    translate: 0 var(--motion-taskbar-preview-offset, calc(100% + var(--spacing-md)));
+  }
+
+  100% {
+    translate: 0 0;
+  }
+}
+
+@utility motion-taskbar-preview-enter {
+  /* 움직이는 동안만 작업 표시줄 위 끝(틀 아래 끝에서 12px 아래)을 자른다. 나머지 세 쪽은 그림자가 보이도록 자르지 않는다. */
+  --motion-enter-clip-edge: -100vmax;
+  clip-path: inset(-100vmax -100vmax var(--motion-enter-clip-edge));
+  transition-property: --motion-enter-clip-edge;
+  transition-delay: var(--motion-duration-normal);
+
+  @starting-style {
+    --motion-enter-clip-edge: calc(var(--spacing-md) * -1);
+  }
+
+  &[data-starting-style] {
+    --motion-enter-clip-edge: calc(var(--spacing-md) * -1);
+  }
+
+  &[data-ending-style] {
+    transition: none;
+  }
+
+  & > * {
+    animation-name: motion-taskbar-preview-enter;
+    animation-duration: var(--motion-duration-normal);
+    animation-timing-function: var(--motion-easing-direct-entrance);
+    animation-fill-mode: both;
+  }
+}
+
+/*
+ * Start 범주 팝업 열기(조립 흐름 motion-start-category-folder-open). StartCategoryFolder 전체가 한 장처럼 배율 0 → 1로 커지며
+ * 누른 범주 카드 자리에서 Start 정가운데로 온다(페이드 없음). 두 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다.
+ * 출발 위치(팝업 가운데에서 누른 카드의 아이콘·이름 가운데 점까지의 거리)는 실행 중 값이라 앱이
+ * --motion-category-folder-offset-x·-y로 넘긴다. 닫기(motion-start-category-folder-close)도 같은 변수를 도착 위치로 쓴다.
+ * 끝 모습(배율 1, 제자리)은 닫기의 시작 모습과 같다. 시작 모습을 재생 전에도 유지하도록 fill-mode는 both다.
+ * 뒤의 Start는 어두워지거나 흐려지지 않는다. 앱이 팝업을 열 때(data-starting-style 자리) 붙인다.
+ */
+@keyframes motion-start-category-folder-open {
+  0% {
+    scale: 0;
+    translate: var(--motion-category-folder-offset-x) var(--motion-category-folder-offset-y);
+  }
+
+  100% {
+    scale: 1;
+    translate: 0 0;
+  }
+}
+
+@utility motion-start-category-folder-open {
+  animation-name: motion-start-category-folder-open;
+  animation-duration: var(--motion-duration-slow);
+  animation-timing-function: var(--motion-easing-direct-entrance);
+  animation-fill-mode: both;
+}
+
+/*
+ * Start 범주 팝업 닫기(조립 흐름 motion-start-category-folder-close). StartCategoryFolder 전체가 한 장처럼
+ * 배율 1 → 0으로 줄며 자기 카드 자리로 돌아간다(열기 motion-start-category-folder-open의 반대). 끝까지 불투명하고 끝나면 앱이 숨긴다.
+ * 두 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다. 도착 위치(팝업 가운데에서 연 카드의 아이콘·이름 가운데 점까지의 거리)는
+ * 실행 중 값이라 앱이 --motion-category-folder-offset-x·-y로 넘긴다. 열기도 같은 변수를 출발 위치로 쓴다.
+ * 시작 모습(배율 1, 제자리)은 열기의 끝 모습과 같다. 사라진 모습을 끝난 뒤에도 유지하도록 fill-mode는 both다.
+ * 앱이 팝업을 닫을 때(data-ending-style 자리) 붙인다. 열린 채 다른 카드를 누르면 이 움직임 없이 닫히기만 한다.
+ */
+@keyframes motion-start-category-folder-close {
+  0% {
+    scale: 1;
+    translate: 0 0;
+  }
+
+  100% {
+    scale: 0;
+    translate: var(--motion-category-folder-offset-x) var(--motion-category-folder-offset-y);
+  }
+}
+
+@utility motion-start-category-folder-close {
+  animation-name: motion-start-category-folder-close;
+  animation-duration: var(--motion-duration-fast);
+  animation-timing-function: var(--motion-easing-gentle-exit);
+  animation-fill-mode: both;
+}
+
+/*
+ * Start 범주 팝업 쪽 넘김(조립 흐름 motion-start-category-folder-page). 격자(tile grid)가 한 쪽(3줄, 252px)만큼 위로 미끄러지고
+ * 다음 쪽이 아래에서 올라온다(페이드·크기 변화 없음). 제목과 쪽 표시 점은 제자리이고 격자만 위쪽 경계(page clip)에서 잘린다.
+ * 클래스는 격자 요소에 붙이고, 격자를 감싼 틀이 넘치는 부분을 자른다. 한 쪽만큼의 움직임이라 쪽을 되돌리거나 더 넘기는 일은 앱이 한다.
+ * 이 클래스를 팝업에 붙이는 쪽 넘김 기능(휠)은 따로 만든다. 실행 중 값은 없다.
+ */
+@keyframes motion-start-category-folder-page {
+  0% {
+    translate: 0 0;
+  }
+
+  100% {
+    translate: 0 -252px;
+  }
+}
+
+@utility motion-start-category-folder-page {
+  animation-name: motion-start-category-folder-page;
+  animation-duration: var(--motion-duration-slow);
+  animation-timing-function: var(--motion-easing-direct-entrance);
+  animation-fill-mode: both;
+}
+
+/*
+ * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다. 멈추면 정보가 사라지는 움직임만 남긴다([[디자인 기반:동작 줄이기]]).
  * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환, 순서 바꾸기 끌기는 여기서 움직임 없이 바로 바꾼다.
- * hover·pressed 색 전환, 검색 돋보기 페이드, ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
+ * hover·pressed·focus 색 전환도 서서히 바뀌지 않고 바로 바뀐다.
+ * 검색 돋보기 강조(배율·그라데이션 페이드·회전)는 움직임 없이 끝 모습으로 바로 바뀐다. ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
  * 이미지 스켈레톤 반짝임은 반짝이지 않고 회색 칸만 보인다(반짝임 칠은 칸 밖 정지 자리에 남는다).
  * 애니메이션을 없애면 사라지는 요소는 기다릴 애니메이션이 없어 바로 빠진다([[피그마 연동:모션 클래스]]).
  */
@@ -682,18 +1015,46 @@
   .motion-boot-screen-exit,
   .motion-start-jump-list-enter [data-jump-list],
   .motion-start-jump-list-exit [data-jump-list],
+  .motion-reorder-press,
   .motion-reorder-lift,
   .motion-reorder-drop,
   .motion-reorder-slide,
   .motion-start-pinned-move-exit,
+  .motion-start-pinned-move-swap,
   .motion-start-pinned-move-enter,
+  .motion-start-category-folder-page,
+  .motion-start-category-folder-close,
+  .motion-start-category-folder-open,
   .motion-image-skeleton,
-  .motion-image-enter {
+  .motion-image-enter,
+  .motion-search-box-focus,
+  .motion-search-box-focus rect,
+  .motion-menu-enter > *,
+  .motion-taskbar-menu-enter > *,
+  .motion-taskbar-preview-enter > * {
     animation: none;
   }
 
-  /* 끄는 동안의 1.1배는 움직임 없이 바로 갖는다. */
-  .motion-reorder-lift {
+  /* 메뉴 열기(작업 표시줄 앱 메뉴 포함)와 작업 표시줄 미리보기 목록 열기의 자르는 틀은 움직임이 없으면 필요 없어 처음부터 자르지 않는다. */
+  .motion-menu-enter,
+  .motion-taskbar-menu-enter,
+  .motion-taskbar-preview-enter {
+    clip-path: none;
+    transition: none;
+  }
+
+  .motion-control-state,
+  .motion-search-box-focus-state {
+    transition: none;
+  }
+
+  /* 검색 돋보기 강조의 끝 모습(배율 1.1)은 motion-search-box-focus-rest와 같다. 그라데이션은 보이고(투명도 1) 회전 160deg는 사각형 규칙이 이미 갖는다. */
+  .motion-search-box-focus {
     scale: var(--motion-scale-lift);
+  }
+
+  /* 끄는 동안의 1.2배는 움직임 없이 바로 갖는다. */
+  .motion-reorder-lift {
+    scale: var(--motion-scale-reorder-drag);
   }
 }

@@ -291,7 +291,7 @@ export const PinnedTiles: Story = {
 
     // @codocs [[Start 메뉴:고정됨]]
     await step(
-      '메뉴로 옮기면 칸이 사라진 뒤 순서가 바뀌고, 나머지가 미끄러진 뒤 새 자리에서 나타난다',
+      '메뉴로 옮기면 바로 순서가 바뀌고, 옮긴 칸은 옛 자리에서 사라져 새 자리에서 나타나며 나머지는 교차 페이드한다',
       async () => {
         const chrome = pinnedTile(panel, 'Chrome');
         const explorer = pinnedTile(panel, 'File Explorer');
@@ -301,7 +301,18 @@ export const PinnedTiles: Story = {
         await openContextMenu(chrome);
         const chromeMotion = recordMotion(chrome);
         const explorerMotion = recordMotion(explorer);
+        const chromeBefore = chrome.getBoundingClientRect();
         await userEvent.click(screen.getByRole('menuitem', { name: '왼쪽으로 이동' }));
+        // 옮긴 칸의 사본이 옛 자리에서 사라진다.
+        const ghost = await waitFor(() => {
+          const found = panel.querySelector('[data-reorder-motion="exit"]');
+          if (found === null) {
+            throw new Error('옛 자리 사본이 아직 없다');
+          }
+          return found;
+        });
+        await expect(Math.round(ghost.getBoundingClientRect().x)).toBe(Math.round(chromeBefore.x));
+        await expect(Math.round(ghost.getBoundingClientRect().y)).toBe(Math.round(chromeBefore.y));
         await waitFor(() =>
           expect(useWorkspaceStore.getState().startPins.slice(2, 4)).toEqual([
             'app:chrome',
@@ -310,8 +321,10 @@ export const PinnedTiles: Story = {
         );
         await waitFor(() => expect(chrome).not.toHaveAttribute('data-reorder-motion'));
         await waitFor(() => expect(explorer).not.toHaveAttribute('data-reorder-motion'));
-        await expect(chromeMotion.stop()).toEqual(['exit', 'enter', 'none']);
-        await expect(explorerMotion.stop()).toEqual(['slide', 'none']);
+        await expect(chromeMotion.stop()).toEqual(['enter', 'none']);
+        await expect(explorerMotion.stop()).toEqual(['swap', 'none']);
+        // 옛 자리에 둔 사본은 움직임이 끝나면 빠진다.
+        await expect(panel.querySelectorAll('[data-move-place]')).toHaveLength(0);
       },
     );
 
@@ -541,7 +554,7 @@ export const AllList: Story = {
 
     // @codocs [[Start 메뉴:모두]]
     await step(
-      '범주 카드의 묶음이나 빈 곳을 누르면 펼침 팝업이 열리고, Esc나 바깥 누르기로 팝업만 닫힌다',
+      '범주 카드의 묶음이나 빈 곳을 누르면 펼침 팝업이 Start 가운데에 열리고, Esc나 바깥 누르기로 팝업만 닫히며, 열린 채 다른 카드를 누르면 닫히기만 한다',
       async () => {
         /**
          * 범주 카드의 빈 곳(카드 바탕)을 누른다.
@@ -558,6 +571,21 @@ export const AllList: Story = {
         await clickCard('글');
         const popup = await screen.findByRole('dialog', { name: '글' });
         await expect(within(popup).getByRole('button', { name: 'Next.js 캐시' })).toBeVisible();
+        // 누른 카드와 상관없이 Start 패널의 가로·세로 정가운데에 연다.
+        const shell = panel.querySelector('[data-start-menu-panel]');
+        if (shell === null) {
+          throw new Error('Start 패널 바탕이 없다');
+        }
+        await waitFor(async () => {
+          const popupRect = popup.getBoundingClientRect();
+          const shellRect = shell.getBoundingClientRect();
+          await expect(
+            Math.abs(popupRect.left + popupRect.width / 2 - (shellRect.left + shellRect.width / 2)),
+          ).toBeLessThanOrEqual(1);
+          await expect(
+            Math.abs(popupRect.top + popupRect.height / 2 - (shellRect.top + shellRect.height / 2)),
+          ).toBeLessThanOrEqual(1);
+        });
         await expect(
           await openContextMenu(within(popup).getByRole('button', { name: 'Next.js 캐시' })),
         ).toContain('열기');
@@ -572,6 +600,13 @@ export const AllList: Story = {
         await userEvent.click(within(panel).getByText('고정됨'));
         await waitFor(() => expect(screen.queryByRole('dialog', { name: '글' })).toBeNull());
         await expect(usePanelStore.getState().openPanel).toBe('start');
+
+        // 열린 채 다른 카드를 누르면 닫히기만 하고 그 카드의 팝업은 열지 않는다.
+        await clickCard('글');
+        await screen.findByRole('dialog', { name: '글' });
+        await userEvent.click(within(all()).getByText('외부 링크'));
+        await waitFor(() => expect(screen.queryByRole('dialog', { name: '글' })).toBeNull());
+        await expect(screen.queryByRole('dialog', { name: '외부 링크' })).toBeNull();
       },
     );
 

@@ -1,5 +1,5 @@
 {
-  "description": "범주 하나의 항목을 큰 아이콘 3개와 작은 아이콘 묶음으로 보여 주는 카드로, Start 모두의 범주 보기에 쓴다.\n@sample-size width",
+  "description": "범주 하나의 항목을 큰 아이콘 3개와 작은 아이콘 묶음으로 보여 주는 카드로, Start 모두의 범주 보기에 쓴다.",
   "name": "StartCategoryCard",
   "nodeId": "3348:1889",
   "propertyDefinitions": {
@@ -264,6 +264,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Items=1, State=Hover, Device=Desktop",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 146,
           "w": 148
@@ -492,6 +495,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Items=1, State=Hover, Device=Mobile",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 110,
           "w": 85
@@ -637,7 +643,7 @@
               }
             ],
             "fills": [
-              "color/white/70"
+              "color/white/30"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -737,6 +743,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 146,
@@ -883,7 +892,7 @@
               }
             ],
             "fills": [
-              "color/white/70"
+              "color/white/30"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -983,6 +992,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 110,
@@ -1219,6 +1231,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Items=2, State=Hover, Device=Desktop",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 146,
           "w": 148
@@ -1454,6 +1469,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Items=2, State=Hover, Device=Mobile",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 110,
           "w": 85
@@ -1606,7 +1624,7 @@
               }
             ],
             "fills": [
-              "color/white/70"
+              "color/white/30"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -1706,6 +1724,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 146,
@@ -1859,7 +1880,7 @@
               }
             ],
             "fills": [
-              "color/white/70"
+              "color/white/30"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -1959,6 +1980,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 110,
@@ -2202,6 +2226,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Items=3, State=Hover, Device=Desktop",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 146,
           "w": 148
@@ -2444,6 +2471,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Items=3, State=Hover, Device=Mobile",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 110,
           "w": 85
@@ -2603,7 +2633,7 @@
               }
             ],
             "fills": [
-              "color/white/70"
+              "color/white/30"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -2703,6 +2733,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 146,
@@ -2863,7 +2896,7 @@
               }
             ],
             "fills": [
-              "color/white/70"
+              "color/white/30"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -2963,6 +2996,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 110,
@@ -3302,6 +3338,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Items=Full, State=Hover, Device=Desktop",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 146,
           "w": 148
@@ -3640,6 +3679,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Items=Full, State=Hover, Device=Mobile",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 110,
           "w": 85
@@ -3895,7 +3937,7 @@
               }
             ],
             "fills": [
-              "color/white/70"
+              "color/white/30"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -3995,6 +4037,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 146,
@@ -4251,7 +4296,7 @@
               }
             ],
             "fills": [
-              "color/white/70"
+              "color/white/30"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -4351,6 +4396,9 @@
             },
             "trigger": "ON_HOVER"
           }
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 110,
