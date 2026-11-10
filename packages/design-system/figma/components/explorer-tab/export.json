@@ -408,7 +408,7 @@
           }
         ],
         "fills": [
-          "color/white/70"
+          "color/gray/4"
         ],
         "height": "size/control/height",
         "layout": {
