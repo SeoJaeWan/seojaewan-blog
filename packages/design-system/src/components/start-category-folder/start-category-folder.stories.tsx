@@ -1,41 +1,61 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 
-import startCategoryFolderExport from '../../../figma/components/start-category-folder/export.json';
-import { figmaFrame } from '../../story/figma-frame';
+import { Asset } from '../asset/asset';
 import { ImageAsset } from '../image-asset/image-asset';
 import { PinnedTile } from '../pinned-tile/pinned-tile';
 import { StartCategoryFolder } from './start-category-folder';
 
-// 피그마 기본 내용의 항목 8개다(PinnedTile, 앱 이름, app/File Explorer).
-const TILE_KEYS = [1, 2, 3, 4, 5, 6, 7, 8] as const;
+// 피그마 StartCategoryFolder의 변형 속성 값이다(정규화한 이름).
+const DEVICES = ['desktop', 'mobile'] as const;
 
+type FigmaArgs = {
+  device: (typeof DEVICES)[number];
+};
+
+const linkIcon = <Asset name="illustrations/file-link.svg" />;
+const folderIcon = <ImageAsset name="images/file-folder" alt="" />;
+
+// 피그마 Tiles 슬롯 기본 내용(PinnedTile 8개)이다.
+const FIGMA_TILES = [
+  { label: 'File Explorer', icon: <ImageAsset name="images/app-file-explorer" alt="" /> },
+  { label: 'Chrome', icon: <ImageAsset name="images/app-chrome" alt="" /> },
+  { label: 'Blog', icon: folderIcon },
+  { label: 'GitHub', icon: linkIcon },
+  { label: '이력서', icon: linkIcon },
+  { label: '사이드 프로젝트', icon: linkIcon },
+  { label: 'React', icon: folderIcon },
+  { label: 'React 19 훅 정리', icon: <ImageAsset name="images/file-document" alt="" /> },
+] as const;
+
+// 크기는 Device마다 고정이라 FigmaFrame으로 감싸지 않는다.
 const meta = {
   title: 'Components/StartCategoryFolder',
-  // 너비와 높이는 쓰는 곳이 정하므로 FigmaFrame이 export.json 견본 크기(@sample-size width height)로 감싼다.
-  decorators: [figmaFrame(startCategoryFolderExport)],
-  render: () => (
-    <StartCategoryFolder>
-      {TILE_KEYS.map((key) => (
-        <PinnedTile key={key} icon={<ImageAsset name="images/app-file-explorer" alt="" />} />
+  args: { device: 'desktop' },
+  argTypes: {
+    device: { control: 'inline-radio', options: DEVICES },
+  },
+  render: (args) => (
+    <StartCategoryFolder device={args.device}>
+      {FIGMA_TILES.map((tile) => (
+        <PinnedTile key={tile.label} label={tile.label} icon={tile.icon} />
       ))}
     </StartCategoryFolder>
   ),
-} satisfies Meta;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 피그마 변형은 하나뿐이다. 안쪽 격자에 피그마 기본 내용(PinnedTile 8개)을 넣는다.
 export const Figma: Story = {};
 
 // @codocs [[Start 메뉴:모두]]
-/** 범주 이름을 쓰고, 항목이 넘치면 팝업 안에서 스크롤한다 */
+/** 범주 이름을 쓰고, 항목이 넘치면 격자 영역 안에서 스크롤하며 쪽 표시 점을 보인다 */
 export const Overflow: Story = {
-  render: () => (
-    <StartCategoryFolder label="글">
+  render: (args) => (
+    <StartCategoryFolder device={args.device} label="글" hasPages pageCount={2}>
       {Array.from({ length: 24 }, (_, index) => (
         <PinnedTile
           key={index}
