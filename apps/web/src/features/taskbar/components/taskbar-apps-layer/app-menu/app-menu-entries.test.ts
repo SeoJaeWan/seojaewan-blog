@@ -35,11 +35,10 @@ describe('작업 표시줄:우클릭 메뉴', () => {
     onAction: vi.fn(),
   } as const;
 
-  it('앱 이름, 고정 해제, 창 닫기 순서로 구분선을 두어 항목을 만든다', () => {
+  it('앱 이름, 작업 표시줄에서 제거, 창 닫기 순서로 구분선 없이 항목을 만든다', () => {
     expect(toLabels(getAppMenuEntries(menuOptions))).toEqual([
       '파일 탐색기',
-      '-',
-      '작업 표시줄에서 고정 해제',
+      '작업 표시줄에서 제거',
       '창 닫기',
     ]);
   });
@@ -48,7 +47,7 @@ describe('작업 표시줄:우클릭 메뉴', () => {
     const unpin = getAppMenuEntries(menuOptions);
     const pin = getAppMenuEntries({ ...menuOptions, isPinned: false });
     expect(
-      unpin.find((entry) => 'label' in entry && entry.label === '작업 표시줄에서 고정 해제'),
+      unpin.find((entry) => 'label' in entry && entry.label === '작업 표시줄에서 제거'),
     ).toMatchObject({
       icon: 'icons/ic_fluent_pin_off_20_regular.svg',
     });
@@ -62,7 +61,7 @@ describe('작업 표시줄:우클릭 메뉴', () => {
   it('앱 이름 줄을 고르면 새 창을 연다', () => {
     const onAction = vi.fn();
     const entries = getAppMenuEntries({ ...menuOptions, app: 'chrome', onAction });
-    select(entries, 'Chrome');
+    select(entries, 'Google Chrome');
     expect(onAction).toHaveBeenCalledWith('open-new');
   });
 
@@ -81,9 +80,8 @@ describe('작업 표시줄:우클릭 메뉴', () => {
 
   it('창이 없으면 창 닫기 항목을 숨긴다', () => {
     expect(toLabels(getAppMenuEntries({ ...menuOptions, app: 'chrome', windowCount: 0 }))).toEqual([
-      'Chrome',
-      '-',
-      '작업 표시줄에서 고정 해제',
+      'Google Chrome',
+      '작업 표시줄에서 제거',
     ]);
   });
 });

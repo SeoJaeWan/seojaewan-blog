@@ -254,7 +254,9 @@ export function WindowView({
       className={cn(
         'pointer-events-auto absolute flex outline-none',
         isMobile && 'inset-spacing-none',
-        windowMotionClassNames[motion],
+        // 열기·복원이 끝나면(entered) 클래스를 뗀다. 남은 animation이 창을 배경 흐림의 기준(backdrop root)으로 만들어
+        // 창 안 재질의 흐림을 막기 때문이다.
+        presence.status !== 'entered' && windowMotionClassNames[motion],
       )}
       style={isMobile || isEntry ? { zIndex } : { zIndex, left: x, top: y, width, height }}
     >
@@ -342,7 +344,7 @@ function ResizeHandle({ direction, className, onResizeStart }: ResizeHandleProps
 }
 
 /**
- * 지금 단계에 맞는 창 모션을 고른다. 모션 클래스와 `data-window-motion`이 이 값을 따른다.
+ * 지금 단계에 맞는 창 모션을 고른다. 모션 클래스와 `data-window-motion`이 이 값을 따르고, 클래스는 `entered`에서 뗀다.
  * 최소화가 끝난 뒤(exited)에도 최소화 클래스를 두어 끝 모습(투명도 0)을 붙든다. 숨김은 `hidden`이 맡는다.
  * @codocs [[디자인 기반:모션]]
  * @param status presence 단계
