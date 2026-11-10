@@ -1,0 +1,89 @@
+{
+  "description": "데스크톱 Chrome 탭 줄 왼쪽의 ⌄(탭 검색) 버튼을 누르면 여는 열린 탭 목록 메뉴로, Chrome 탭 검색 메뉴에 쓴다.",
+  "name": "Menu/ChromeTabSearch",
+  "nodeId": "3477:16176",
+  "propertyDefinitions": {},
+  "variants": {
+    "default": {
+      "node": {
+        "height": 102,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "3477:16176",
+      "properties": {},
+      "report": {
+        "components": [
+          {
+            "component": "Menu",
+            "paths": [
+              "Menu"
+            ],
+            "properties": {}
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item TypeScript 제네릭 이해하기"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "TypeScript 제네릭 이해하기",
+              "Shortcut": "단축키",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item React 19 훅 정리"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "React 19 훅 정리",
+              "Shortcut": "단축키",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item CSS 컨테이너 쿼리 정리"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "CSS 컨테이너 쿼리 정리",
+              "Shortcut": "단축키",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          }
+        ],
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
+        "name": "Menu/ChromeTabSearch",
+        "size": {
+          "h": 102,
+          "w": 250
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        }
+      }
+    }
+  }
+}
