@@ -114,14 +114,6 @@ jobs:
           node tools/figma-parity/src/motion-post-comment.ts --repository "$REPOSITORY" --server "$SERVER" \
             --run-id "$RUN_ID" --pr "$PR_NUMBER"
 
-      - uses: actions/upload-artifact@v7.0.2
-        if: always() && steps.range.outputs.has-range == 'true'
-        with:
-          name: motion-check-results
-          path: tools/figma-parity/parity-results/motion/
-          if-no-files-found: ignore
-          retention-days: 7
-
       - name: Fail when motion check failed
         if: steps.check.outcome == 'failure'
         run: exit 1
