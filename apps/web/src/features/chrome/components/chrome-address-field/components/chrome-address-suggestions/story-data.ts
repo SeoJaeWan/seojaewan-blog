@@ -9,6 +9,8 @@ export const addressSuggestions = {
   query: '리액',
   /** 주소창 너비(px). 피그마 조립의 주소창 크기다 */
   width: 640,
+  /** 열린 모습에서 고른(Selected) 줄의 순서. 피그마 Open의 두 번째 줄이다 */
+  selectedIndex: 1,
   items: [
     {
       kind: 'post',
@@ -24,4 +26,9 @@ export const addressSuggestions = {
     },
     { kind: 'search', title: '리액트 검색', page: { kind: 'search', query: '리액' } },
   ],
-} as const satisfies { query: string; width: number; items: readonly AddressSuggestionTarget[] };
+} as const satisfies {
+  query: string;
+  width: number;
+  selectedIndex: number;
+  items: readonly AddressSuggestionTarget[];
+};

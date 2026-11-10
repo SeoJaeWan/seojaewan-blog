@@ -49,6 +49,7 @@ import type { PostImageBlock } from './components/post-blocks/post-blocks';
 import { useChromePageLayout } from './hooks/use-chrome-page-layout/use-chrome-page-layout';
 import { getChromeMoreMenuEntries } from './more-menu/more-menu-entries';
 import { useChromeZoomStore } from './stores/chrome-zoom-store/chrome-zoom-store';
+import { getChromeTabSearchMenuEntries } from './tab-search-menu/tab-search-menu-entries';
 import {
   type AddressSuggestionTarget,
   getAddressSuggestions,
@@ -143,6 +144,7 @@ export function ChromeWindowLayer({
   const resetZoom = useChromeZoomStore((state) => state.resetZoom);
   const [reloadCount, setReloadCount] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isTabSearchMenuOpen, setIsTabSearchMenuOpen] = useState(false);
   const [find, setFind] = useState<FindState | null>(null);
   const [imageViewer, setImageViewer] = useState<ImageViewerState | null>(null);
   const [trashedPost, setTrashedPost] = useState<PostRef | null>(null);
@@ -258,6 +260,14 @@ export function ChromeWindowLayer({
    */
   function handleMenuOpenChange(isOpen: boolean): void {
     setIsMenuOpen(isOpen);
+  }
+
+  /**
+   * 탭 검색(⌄) 메뉴를 열거나 닫는다.
+   * @param isOpen 열지
+   */
+  function handleTabSearchMenuOpenChange(isOpen: boolean): void {
+    setIsTabSearchMenuOpen(isOpen);
   }
 
   /**
@@ -429,24 +439,26 @@ export function ChromeWindowLayer({
     });
   }
 
+  const tabs = content.tabs.map(
+    /**
+     * 탭 하나의 제목(그 탭이 보는 페이지)을 정한다.
+     * @param tab 탭
+     * @param index 차례
+     * @returns Chrome 창 탭
+     */
+    (tab, index) => ({
+      id: tab.id,
+      title: getChromeTabTitle(workspace, getChromeTabPage(tab)),
+      isActive: index === content.activeTabIndex,
+    }),
+  );
+
   return (
     <ChromeWindow
       {...controls}
       device={device}
       onKeyDown={handleWindowKeyDown}
-      tabs={content.tabs.map(
-        /**
-         * 탭 하나의 제목(그 탭이 보는 페이지)을 정한다.
-         * @param tab 탭
-         * @param index 차례
-         * @returns Chrome 창 탭
-         */
-        (tab, index) => ({
-          id: tab.id,
-          title: getChromeTabTitle(workspace, getChromeTabPage(tab)),
-          isActive: index === content.activeTabIndex,
-        }),
-      )}
+      tabs={tabs}
       url={getPageAddress(page)}
       addressBar={
         <ChromeAddressField
@@ -471,6 +483,9 @@ export function ChromeWindowLayer({
       isMoreMenuOpen={isMenuOpen}
       onMoreMenuOpenChange={handleMenuOpenChange}
       moreMenuFinalFocus={getMenuFinalFocus}
+      tabSearchMenuItems={getChromeTabSearchMenuEntries(tabs, handleTabSelect)}
+      isTabSearchMenuOpen={isTabSearchMenuOpen}
+      onTabSearchMenuOpenChange={handleTabSearchMenuOpenChange}
     >
       <ChromePageArea
         areaRef={areaRef}
