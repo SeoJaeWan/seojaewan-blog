@@ -11,7 +11,7 @@
     "default": {
       "node": {
         "height": 34,
-        "width": 276,
+        "width": 312,
         "x": 0,
         "y": 0
       },
@@ -19,6 +19,92 @@
       "properties": {},
       "tree": {
         "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/gray/70",
+                      "path": "icons/ic_material_keyboard_arrow_down_20_outlined"
+                    },
+                    "component": "ic_material_keyboard_arrow_down_20_outlined",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "IconButton",
+                "fills": [
+                  "color/white/0"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "tab search",
+                "properties": {
+                  "Checked": "False",
+                  "State": "Rest",
+                  "Variant": "Chrome"
+                },
+                "radius": [
+                  "radius/circular",
+                  "radius/circular",
+                  "radius/circular",
+                  "radius/circular"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 32
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/2xs",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "tab search wrap",
+            "size": {
+              "h": 34,
+              "w": 32
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          },
           {
             "children": [
               {
@@ -90,11 +176,11 @@
                   {
                     "asset": {
                       "color": "color/black/89",
-                      "path": "icons/ic_fluent_dismiss_20_regular"
+                      "path": "icons/ic_material_close_20_outlined"
                     },
-                    "component": "ic_fluent_dismiss_20_regular",
+                    "component": "ic_material_close_20_outlined",
                     "height": "size/icon/sm",
-                    "name": "ic_fluent_dismiss_20_regular",
+                    "name": "close",
                     "size": {
                       "h": 16,
                       "w": 16
@@ -105,6 +191,92 @@
                     },
                     "type": "INSTANCE",
                     "width": "size/icon/sm"
+                  },
+                  {
+                    "absolute": {
+                      "horizontal": "MIN",
+                      "vertical": "MAX"
+                    },
+                    "children": [
+                      {
+                        "asset": {
+                          "color": "color/white",
+                          "path": "shapes/browser-tab-corner-left"
+                        },
+                        "component": "browser-tab/Corner left",
+                        "name": "corner",
+                        "sampleSize": [
+                          "width",
+                          "height"
+                        ],
+                        "size": {
+                          "h": 8,
+                          "w": 8
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "INSTANCE"
+                      }
+                    ],
+                    "name": "corner left",
+                    "sampleSize": [
+                      "width",
+                      "height"
+                    ],
+                    "size": {
+                      "h": 8,
+                      "w": 8
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "FRAME"
+                  },
+                  {
+                    "absolute": {
+                      "horizontal": "MAX",
+                      "vertical": "MAX"
+                    },
+                    "children": [
+                      {
+                        "asset": {
+                          "color": "color/white",
+                          "path": "shapes/browser-tab-corner-right"
+                        },
+                        "component": "browser-tab/Corner right",
+                        "name": "corner",
+                        "sampleSize": [
+                          "width",
+                          "height"
+                        ],
+                        "size": {
+                          "h": 8,
+                          "w": 8
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "INSTANCE"
+                      }
+                    ],
+                    "name": "corner right",
+                    "sampleSize": [
+                      "width",
+                      "height"
+                    ],
+                    "size": {
+                      "h": 8,
+                      "w": 8
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "FRAME"
                   }
                 ],
                 "component": "BrowserTab",
@@ -178,9 +350,9 @@
                   {
                     "asset": {
                       "color": "color/gray/70",
-                      "path": "icons/ic_fluent_add_20_regular"
+                      "path": "icons/ic_material_add_20_outlined"
                     },
-                    "component": "ic_fluent_add_20_regular",
+                    "component": "ic_material_add_20_outlined",
                     "height": "size/icon/sm",
                     "name": "icon",
                     "size": {
@@ -213,14 +385,15 @@
                 },
                 "name": "new tab",
                 "properties": {
+                  "Checked": "False",
                   "State": "Rest",
                   "Variant": "Chrome"
                 },
                 "radius": [
-                  "radius/control",
-                  "radius/control",
-                  "radius/control",
-                  "radius/control"
+                  "radius/circular",
+                  "radius/circular",
+                  "radius/circular",
+                  "radius/circular"
                 ],
                 "size": {
                   "h": 32,
@@ -272,7 +445,7 @@
         "name": "BrowserTabStrip",
         "size": {
           "h": 34,
-          "w": 276
+          "w": 312
         },
         "sizing": {
           "h": "HUG",

@@ -8,6 +8,7 @@ import { BrowserTabStrip } from './browser-tab-strip';
 
 type StoryArgs = {
   onNewTab?: () => void;
+  onTabSearch?: () => void;
 };
 
 const meta = {
@@ -16,9 +17,9 @@ const meta = {
   // 탭은 tablist 안에서만 쓰므로 Base UI 탭 줄로 감싼다. 피그마 기본 내용은 탭 하나라 탭 줄(Tabs.Root·Tabs.List)이
   // 탭 하나 크기로 그려진다. 탭 여럿을 가로로 늘어놓고 넘치면 스크롤하는 배치는 앱의 탭 줄이 정한다.
   render: (args) => {
-    const { onNewTab: handleNewTab } = args;
+    const { onNewTab: handleNewTab, onTabSearch: handleTabSearch } = args;
     return (
-      <BrowserTabStrip onNewTab={handleNewTab}>
+      <BrowserTabStrip onNewTab={handleNewTab} onTabSearch={handleTabSearch}>
         <Tabs.Root value={0}>
           <Tabs.List aria-label="탭">
             <BrowserTab
@@ -44,9 +45,15 @@ export const Figma: Story = {};
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 export const Default: Story = {
-  args: { onNewTab: fn() },
+  args: { onNewTab: fn(), onTabSearch: fn() },
   play: async ({ args, canvasElement, step }) => {
     const canvas = within(canvasElement);
+
+    // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+    await step('탭 검색 버튼을 누르면 onTabSearch를 부른다', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: '탭 검색' }));
+      await expect(args.onTabSearch).toHaveBeenCalledTimes(1);
+    });
 
     // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
     await step('새 탭 버튼을 누르면 onNewTab을 부른다', async () => {
