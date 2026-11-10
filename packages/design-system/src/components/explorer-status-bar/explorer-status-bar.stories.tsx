@@ -11,6 +11,8 @@ const DEVICES = ['desktop', 'mobile'] as const;
 
 type FigmaArgs = {
   device: (typeof DEVICES)[number];
+  /** 동작 스토리가 쓴다. 주지 않으면 보통 아이콘(둘 다 꺼짐)이다 */
+  view?: ComponentProps<typeof ExplorerStatusBar>['view'];
   /** 동작 스토리가 쓴다. 주지 않으면 피그마 기본 글자다 */
   itemCount?: string;
   selection?: string;
@@ -32,6 +34,7 @@ const meta = {
     return (
       <ExplorerStatusBar
         device={args.device}
+        view={args.view}
         itemCount={args.itemCount}
         selection={args.selection}
         hasSelection={args.hasSelection}
@@ -84,6 +87,60 @@ export const WithoutSelection: Story = {
     // @codocs [[컴포넌트 목록:Windows 화면 요소]]
     await step('hasSelection이 false면 선택 정보를 그리지 않는다', async () => {
       await expect(within(canvasElement).queryByText('1개 선택')).not.toBeInTheDocument();
+    });
+  },
+};
+
+// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+export const DetailsView: Story = {
+  args: { view: 'details' },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    await step('details면 자세히 버튼만 켜짐이다', async () => {
+      await expect(canvas.getByRole('button', { name: '자세히' })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      await expect(canvas.getByRole('button', { name: '큰 아이콘' })).toHaveAttribute(
+        'aria-pressed',
+        'false',
+      );
+    });
+  },
+};
+
+// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+export const LargeView: Story = {
+  args: { view: 'large' },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    await step('large면 큰 아이콘 버튼만 켜짐이다', async () => {
+      await expect(canvas.getByRole('button', { name: '큰 아이콘' })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      await expect(canvas.getByRole('button', { name: '자세히' })).toHaveAttribute(
+        'aria-pressed',
+        'false',
+      );
+    });
+  },
+};
+
+// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+export const MediumView: Story = {
+  args: { view: 'medium' },
+  play: async ({ canvasElement, step }) => {
+    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    await step('medium(보통 아이콘)이면 두 버튼 모두 꺼짐이다', async () => {
+      const buttons = within(canvasElement).getAllByRole('button');
+      for (const button of buttons) {
+        await expect(button).toHaveAttribute('aria-pressed', 'false');
+      }
     });
   },
 };

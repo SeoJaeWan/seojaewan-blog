@@ -1,12 +1,15 @@
 import { Button as BaseButton } from '@base-ui/react/button';
 import type { ComponentProps, JSX } from 'react';
 
+import type { SvgAssetName } from '../../assets/asset-data';
 import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
 type DropDownButtonProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'children'> & {
   label: string;
   subject?: string;
+  hasIcon?: boolean;
+  icon?: SvgAssetName;
   className?: string;
 };
 
@@ -18,11 +21,15 @@ type DropDownButtonProps = Omit<ComponentProps<typeof BaseButton>, 'className' |
  * @param props 컴포넌트 속성
  * @param props.label 피그마 Label. 현재 선택값 글자다
  * @param props.subject 무엇을 고르는 버튼인지. 주면 글자와 접근성 이름이 `무엇: 값`이 된다(`보기: 범주`)
+ * @param props.hasIcon 피그마 Has icon. 글자 앞에 16px 아이콘을 그린다
+ * @param props.icon 피그마 Icon. hasIcon일 때 그릴 아이콘이며 기본은 더하기 아이콘이다
  * @param props.className 덧붙이거나 덮어쓸 클래스
  */
 export function DropDownButton({
   label,
   subject,
+  hasIcon = false,
+  icon = 'icons/ic_fluent_add_20_regular.svg',
   className,
   ...buttonProps
 }: DropDownButtonProps): JSX.Element {
@@ -40,6 +47,7 @@ export function DropDownButton({
         className,
       )}
     >
+      {hasIcon && <Asset name={icon} className="size-size-icon-sm" />}
       <span className="text-start type-body">
         {subject === undefined ? label : `${subject}: ${label}`}
       </span>

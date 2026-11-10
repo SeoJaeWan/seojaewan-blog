@@ -57,7 +57,7 @@ export const RestartWithOpenWindow: Story = {
     }
 
     try {
-      await userEvent.click(body.getByRole('button', { name: 'Chrome' }));
+      await userEvent.click(body.getByRole('button', { name: 'Google Chrome' }));
       await expect(await body.findByRole('region', { name: '새 탭 - Chrome' })).toBeInTheDocument();
 
       // @codocs [[다시 시작:순서]]
@@ -142,7 +142,7 @@ export const PageLoad: Story = {
           documentBody.querySelector('[data-boot-screen-fallback] .motion-boot-screen-exit'),
         ).not.toBeNull();
         await expect(
-          body.getByRole('button', { name: 'Chrome' }).closest('[inert]'),
+          body.getByRole('button', { name: 'Google Chrome' }).closest('[inert]'),
         ).not.toBeNull();
       },
     );
@@ -160,7 +160,9 @@ export const PageLoad: Story = {
         await waitFor(() => expect(useRestartStore.getState().phase).toBe('idle'));
         await expect(body.queryByRole('progressbar')).not.toBeInTheDocument();
         await expect(documentBody.querySelector('[data-boot-screen-fallback]')).toBeNull();
-        await expect(body.getByRole('button', { name: 'Chrome' }).closest('[inert]')).toBeNull();
+        await expect(
+          body.getByRole('button', { name: 'Google Chrome' }).closest('[inert]'),
+        ).toBeNull();
         await expect(desktop).toHaveFocus();
       },
     );

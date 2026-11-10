@@ -13,6 +13,7 @@ type ColumnHeaderProps = Omit<ComponentProps<typeof BaseButton>, 'className' | '
 /**
  * 눌러서 정렬하는 열 제목 하나(피그마 ColumnHeader)를 그린다. DetailsHeader에 쓴다.
  * 너비는 부모가 정한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]). Hover는 실제 CSS hover로 그린다.
+ * 정렬 화살표는 칸 위쪽 가운데에 절대 위치로 겹쳐 그려, 글자 자리는 정렬 여부와 상관없이 그대로다.
  * 오른쪽 구분선은 피그마에서 레이아웃에 들어가므로 실제 border로 그린다.
  * @codocs [[컴포넌트 목록:상태]]
  * @param props 컴포넌트 속성
@@ -32,7 +33,7 @@ export function ColumnHeader({
       // 정렬 방향을 상태 속성으로 알린다. 꺾쇠 모양은 이 값을 따른다.
       data-sort={sort}
       className={cn(
-        'flex h-size-control-height items-center gap-spacing-xs border-r-stroke-width-default border-color-black-8 px-spacing-sm select-none',
+        'relative flex h-size-control-height items-center border-r-stroke-width-default border-color-black-8 px-spacing-sm select-none',
         'bg-color-white-0 hover:bg-color-black-4',
         'motion-control-state',
         className,
@@ -45,7 +46,7 @@ export function ColumnHeader({
         <Asset
           name="icons/ic_fluent_chevron_down_16_regular.svg"
           className={cn(
-            'size-size-icon-xs shrink-shrink-none text-color-black-61',
+            'absolute top-spacing-none left-position-half size-size-icon-xs -translate-x-position-half text-color-black-61',
             sort === 'ascending' && 'rotate-rotate-half',
           )}
         />

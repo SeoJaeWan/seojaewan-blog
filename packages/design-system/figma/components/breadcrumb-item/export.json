@@ -24,8 +24,8 @@
   "variants": {
     "state=hover": {
       "node": {
-        "height": 24,
-        "width": 73,
+        "height": 28,
+        "width": 89,
         "x": 0,
         "y": 0
       },
@@ -43,8 +43,8 @@
                 ],
                 "name": "label",
                 "size": {
-                  "h": 16,
-                  "w": 45
+                  "h": 20,
+                  "w": 53
                 },
                 "sizing": {
                   "h": "HUG",
@@ -58,17 +58,17 @@
                     {
                       "characters": "위치",
                       "fill": "color/black/89",
-                      "textStyle": "Hangul/Caption"
+                      "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
                       "fill": "color/black/89",
-                      "textStyle": "Caption"
+                      "textStyle": "Body"
                     },
                     {
                       "characters": "이름",
                       "fill": "color/black/89",
-                      "textStyle": "Hangul/Caption"
+                      "textStyle": "Hangul/Body"
                     }
                   ],
                   "truncation": "ENDING"
@@ -100,8 +100,8 @@
               "radius/control"
             ],
             "size": {
-              "h": 24,
-              "w": 57
+              "h": 28,
+              "w": 65
             },
             "sizing": {
               "h": "HUG",
@@ -110,20 +110,58 @@
             "type": "FRAME"
           },
           {
-            "asset": {
-              "color": "color/black/61",
-              "path": "icons/ic_fluent_chevron_right_16_regular"
-            },
-            "component": "ic_fluent_chevron_right_16_regular",
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/61",
+                  "path": "icons/ic_fluent_chevron_right_16_regular"
+                },
+                "component": "ic_fluent_chevron_right_16_regular",
+                "height": "size/icon/sm",
+                "name": "chevron",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "BreadcrumbChevron",
             "height": "size/icon/sm",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/xs",
+                "spacing/xs",
+                "spacing/xs",
+                "spacing/xs"
+              ],
+              "primaryAlign": "CENTER"
+            },
             "name": "separator",
+            "properties": {
+              "State": "Rest"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
             "size": {
-              "h": 16,
-              "w": 16
+              "h": 24,
+              "w": 24
             },
             "sizing": {
-              "h": "FIXED",
-              "v": "FIXED"
+              "h": "HUG",
+              "v": "HUG"
             },
             "type": "INSTANCE",
             "width": "size/icon/sm"
@@ -161,8 +199,8 @@
           }
         ],
         "size": {
-          "h": 24,
-          "w": 73
+          "h": 28,
+          "w": 89
         },
         "sizing": {
           "h": "HUG",
@@ -173,8 +211,8 @@
     },
     "state=pressed": {
       "node": {
-        "height": 24,
-        "width": 73,
+        "height": 28,
+        "width": 89,
         "x": 0,
         "y": 0
       },
@@ -192,8 +230,8 @@
                 ],
                 "name": "label",
                 "size": {
-                  "h": 16,
-                  "w": 45
+                  "h": 20,
+                  "w": 53
                 },
                 "sizing": {
                   "h": "HUG",
@@ -207,17 +245,17 @@
                     {
                       "characters": "위치",
                       "fill": "color/black/89",
-                      "textStyle": "Hangul/Caption"
+                      "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
                       "fill": "color/black/89",
-                      "textStyle": "Caption"
+                      "textStyle": "Body"
                     },
                     {
                       "characters": "이름",
                       "fill": "color/black/89",
-                      "textStyle": "Hangul/Caption"
+                      "textStyle": "Hangul/Body"
                     }
                   ],
                   "truncation": "ENDING"
@@ -249,8 +287,8 @@
               "radius/control"
             ],
             "size": {
-              "h": 24,
-              "w": 57
+              "h": 28,
+              "w": 65
             },
             "sizing": {
               "h": "HUG",
@@ -259,20 +297,58 @@
             "type": "FRAME"
           },
           {
-            "asset": {
-              "color": "color/black/61",
-              "path": "icons/ic_fluent_chevron_right_16_regular"
-            },
-            "component": "ic_fluent_chevron_right_16_regular",
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/61",
+                  "path": "icons/ic_fluent_chevron_right_16_regular"
+                },
+                "component": "ic_fluent_chevron_right_16_regular",
+                "height": "size/icon/sm",
+                "name": "chevron",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "BreadcrumbChevron",
             "height": "size/icon/sm",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/xs",
+                "spacing/xs",
+                "spacing/xs",
+                "spacing/xs"
+              ],
+              "primaryAlign": "CENTER"
+            },
             "name": "separator",
+            "properties": {
+              "State": "Rest"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
             "size": {
-              "h": 16,
-              "w": 16
+              "h": 24,
+              "w": 24
             },
             "sizing": {
-              "h": "FIXED",
-              "v": "FIXED"
+              "h": "HUG",
+              "v": "HUG"
             },
             "type": "INSTANCE",
             "width": "size/icon/sm"
@@ -292,8 +368,8 @@
         },
         "name": "State=Pressed",
         "size": {
-          "h": 24,
-          "w": 73
+          "h": 28,
+          "w": 89
         },
         "sizing": {
           "h": "HUG",
@@ -304,8 +380,8 @@
     },
     "state=rest": {
       "node": {
-        "height": 24,
-        "width": 73,
+        "height": 28,
+        "width": 89,
         "x": 0,
         "y": 0
       },
@@ -323,8 +399,8 @@
                 ],
                 "name": "label",
                 "size": {
-                  "h": 16,
-                  "w": 45
+                  "h": 20,
+                  "w": 53
                 },
                 "sizing": {
                   "h": "HUG",
@@ -338,17 +414,17 @@
                     {
                       "characters": "위치",
                       "fill": "color/black/89",
-                      "textStyle": "Hangul/Caption"
+                      "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
                       "fill": "color/black/89",
-                      "textStyle": "Caption"
+                      "textStyle": "Body"
                     },
                     {
                       "characters": "이름",
                       "fill": "color/black/89",
-                      "textStyle": "Hangul/Caption"
+                      "textStyle": "Hangul/Body"
                     }
                   ],
                   "truncation": "ENDING"
@@ -377,8 +453,8 @@
               "radius/control"
             ],
             "size": {
-              "h": 24,
-              "w": 57
+              "h": 28,
+              "w": 65
             },
             "sizing": {
               "h": "HUG",
@@ -387,20 +463,58 @@
             "type": "FRAME"
           },
           {
-            "asset": {
-              "color": "color/black/61",
-              "path": "icons/ic_fluent_chevron_right_16_regular"
-            },
-            "component": "ic_fluent_chevron_right_16_regular",
+            "children": [
+              {
+                "asset": {
+                  "color": "color/black/61",
+                  "path": "icons/ic_fluent_chevron_right_16_regular"
+                },
+                "component": "ic_fluent_chevron_right_16_regular",
+                "height": "size/icon/sm",
+                "name": "chevron",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "BreadcrumbChevron",
             "height": "size/icon/sm",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/xs",
+                "spacing/xs",
+                "spacing/xs",
+                "spacing/xs"
+              ],
+              "primaryAlign": "CENTER"
+            },
             "name": "separator",
+            "properties": {
+              "State": "Rest"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
             "size": {
-              "h": 16,
-              "w": 16
+              "h": 24,
+              "w": 24
             },
             "sizing": {
-              "h": "FIXED",
-              "v": "FIXED"
+              "h": "HUG",
+              "v": "HUG"
             },
             "type": "INSTANCE",
             "width": "size/icon/sm"
@@ -438,8 +552,8 @@
           }
         ],
         "size": {
-          "h": 24,
-          "w": 73
+          "h": 28,
+          "w": 89
         },
         "sizing": {
           "h": "HUG",
