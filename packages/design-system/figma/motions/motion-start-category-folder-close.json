@@ -1,0 +1,99 @@
+{
+  "delay": {
+    "ms": 0,
+    "token": null
+  },
+  "directives": {},
+  "duration": {
+    "ms": 167,
+    "token": "motion/duration/fast"
+  },
+  "iterations": 1,
+  "name": "motion-start-category-folder-close",
+  "nodeId": "3431:6276",
+  "notes": [
+    {
+      "category": "Development",
+      "path": "Start/CategoryFolder",
+      "text": "자기 카드 자리로 줄어들며 닫힌다. 끝까지 불투명하고 끝나면 숨긴다. 도착 위치는 연 카드로 정해지는 실행 중 값이고, 여기 이동 값은 \"글\" 카드 기준 대표값이다. 열린 채 다른 카드를 누르면 닫히기만 한다."
+    }
+  ],
+  "source": "flow",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 167,
+        "token": "motion/duration/fast"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": {
+            "x": 1,
+            "y": 1
+          },
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/gentle-exit",
+          "offset": 1,
+          "time": 167,
+          "value": {
+            "x": 0,
+            "y": 0
+          },
+          "valueToken": null
+        }
+      ],
+      "node": "Start/CategoryFolder",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "Start/CategoryFolder",
+      "property": "SCALE_XY"
+    },
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 167,
+        "token": "motion/duration/fast"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": {
+            "x": 0,
+            "y": 0
+          },
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/gentle-exit",
+          "offset": 1,
+          "time": 167,
+          "value": {
+            "x": -98,
+            "y": -86
+          },
+          "valueToken": null
+        }
+      ],
+      "node": "Start/CategoryFolder",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "Start/CategoryFolder",
+      "property": "TRANSLATION_XY"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=3431-6276"
+}
