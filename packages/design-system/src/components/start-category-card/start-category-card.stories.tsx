@@ -39,7 +39,7 @@ const meta = {
     state: { control: 'inline-radio', options: STATES },
     device: { control: 'inline-radio', options: DEVICES },
   },
-  // 너비는 쓰는 곳이 정하므로 FigmaFrame이 export.json 견본 너비(@sample-size width)로 감싼다.
+  // 너비는 쓰는 곳이 정하므로 FigmaFrame이 export.json 견본 너비(sampleSize width)로 감싼다.
   decorators: [figmaFrame(startCategoryCardExport)],
   render: (args) => (
     <StartCategoryCard
