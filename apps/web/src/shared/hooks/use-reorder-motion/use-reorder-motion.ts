@@ -72,7 +72,7 @@ export type ReorderMotion = {
 
 /**
  * 목록의 순서가 바뀔 때 항목을 FLIP으로 움직인다. 작업 표시줄 고정 앱, 탐색기·Chrome 탭, Start 고정됨이 함께 쓴다.
- * - 끌기: 끄는 항목에 `motion-reorder-lift`(1.1배)를 붙이고, 포인터를 따라오도록 `translate`를 준다. 순서가 바뀌어
+ * - 끌기: 끄는 항목에 `motion-reorder-lift`(끄는 배율)를 붙이고, 포인터를 따라오도록 `translate`를 준다. 순서가 바뀌어
  *   항목의 자리가 바뀌어도 포인터 아래에 남도록 바뀐 자리만큼 되돌려 준다.
  * - 밀려남: 그릴 때마다 항목 순서를 보고, 순서가 바뀌었으면(같은 항목들) 자리가 바뀐 항목마다 이전에 보이던 자리에서
  *   새 자리까지의 거리를 `--motion-reorder-from-x·-y`로 넘기고 `motion-reorder-slide`를 처음부터 재생한다. 끌기 밖에서
@@ -184,7 +184,12 @@ export function useReorderMotion(
         }
         const key = target.getAttribute(itemAttribute);
         const motion = key === null ? undefined : motionsRef.current.get(key);
-        if (key === null || motion?.className !== event.animationName) {
+        // 트랙마다 키프레임이 나뉜 클래스(`motion-reorder-drop-scale` 등)도 클래스 이름으로 시작하므로 앞부분으로 맞춘다.
+        if (
+          key === null ||
+          motion === undefined ||
+          !event.animationName.startsWith(motion.className)
+        ) {
           return;
         }
         motionsRef.current.delete(key);
