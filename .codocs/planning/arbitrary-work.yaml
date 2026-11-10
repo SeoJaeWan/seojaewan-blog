@@ -249,7 +249,20 @@ Notion 열 나누기: |
   - 끄는 동안 버튼 모양은 `TaskbarAppItem`의 `isDragging`으로 준다. 실행 표시는 `none`으로, 호버·눌림 바탕과 테두리는 클래스로 꺼서 디자인 시스템 `TaskbarButton`은 바꾸지 않았다. 놓거나 끌기가 취소되면 돌아온다.
   - "Google Chrome"으로 바꾼 곳은 `taskbar-apps.ts`의 `label`뿐이다. 이 이름은 작업 표시줄 버튼 접근성 이름과 앱 우클릭 메뉴의 앱 이름 줄에만 쓰여, 그 이름을 찾는 스토리·E2E만 따라 고쳤다. Start 목록·타일의 제목(`Chrome`)과 Chrome 창 제목(`새 탭 - Chrome`)은 따로 정의돼 바뀌지 않았다.
   - E2E 조건 값 `Chrome`(앱 조건의 값 이름)과 창 제목 확인은 그대로 두었다.
-  - [[작업 표시줄:우클릭 메뉴]]의 "작업 표시줄에서 고정 해제" 문구는 이 PR에서 허락받지 않은 문서라 고치지 않았다. 코드는 "작업 표시줄에서 제거"다. 사람이 맞출 곳이다.
+  - [[작업 표시줄:우클릭 메뉴]]의 "작업 표시줄에서 고정 해제" 문구는 이 PR에서 허락받지 않은 문서라 고치지 않았다. 코드는 "작업 표시줄에서 제거"다. 사람이 맞출 곳이다. → 조립 PR(`feat/figma-patterns-taskbar`)에서 허락받아 "작업 표시줄에서 제거"로 맞췄다.
+
+  조립 PR(`feat/figma-patterns-taskbar`)에서 4·6·10번을 마치며 정한 것이다.
+  - 메뉴 너비: 메뉴 항목 데이터가 아니라 메뉴를 여는 쪽이 고르게 했다. `MenuPopup`의 `width`에 `taskbar`(`w-size-menu-taskbar-width`)를 더하고, `ContextMenuArea`가 `width`를 받아 넘기며, 작업 표시줄 앱 버튼(`TaskbarAppItem`)만 `taskbar`를 준다. 그래서 점프 목록이 있든 없든 작업 표시줄 앱 메뉴는 모두 294다.
+  - 점프 목록 머리글: 피그마가 Content 안에 직접 그린 머리글(`header 자주 방문`)을 메뉴 항목 종류 `kind: 'group'`(머리글 + 항목)으로 만들어 Base UI `Menu.Group`·`Menu.GroupLabel`로 그렸다. 보조 기술에는 머리글이 이름인 메뉴 묶음이다. 모양은 피그마 변수대로 높이 32(`py-spacing-sm` + Caption 16), 왼쪽 `px-spacing-lg`, `type-caption`, `text-color-black-61`이다. 피그마 글꼴은 `Hangul/Caption`인데 같은 크기·굵기·줄 높이의 `type-caption`을 썼다(한글은 같은 Pretendard로 그려진다).
+  - 점프 목록 구조: 앱마다 점프 목록을 만드는 자리 `getAppJumpList(app)`(작업 표시줄 앱 층)를 두고, `getAppMenuEntries`가 받은 `jumpList`를 앱 묶음 위에 붙이며 사이에 구분선 하나를 넣는다. 목록이 비면 구분선도 없다. 9번 탐색기는 `file-explorer` 자리에 목록을 넣으면 된다. 메뉴 폴더의 `-entries` 파일 하나만 import할 수 있는 경계 규칙 때문에 `getChromeJumpListEntries`도 `app-menu-entries.ts`에 두었다.
+  - Chrome 점프 목록의 글: 새 탭 페이지와 같은 `getLatestPosts`를 쓰고, 개수(6)는 두 곳이 함께 쓰도록 `CHROME_LATEST_POST_COUNT`로 `workspace-rules`에 옮겼다. 글을 고르면 다른 입구(바탕화면·탐색기·Start)와 같은 `useOpenItem`으로 연다. 그래서 가장 최근에 쓴 Chrome 창(최소화된 창 포함)의 새 탭으로 열고 복원·맨 앞으로 가져오며, 모바일은 그 창의 고른 탭에서 열고, 최근 항목에도 넣는다. "자주 방문"에 글이 하나도 없으면 그 칸(머리글 포함)을 숨기고 "작업"만 둔다.
+  - "새 창" 아이콘은 피그마대로 Chrome 앱 아이콘(`images/app-chrome`), 글 아이콘은 새 탭 페이지와 같은 `images/file-document`다. "새 창"은 앱 이름 줄과 같은 `open-new` 동작이다.
+  - 카드 폭 계산: 카드 너비는 `WindowPreview`가 `aspectRatio`로 CSS에서 정하고, 앱은 같은 규칙의 `getPreviewCardWidth`·`getPreviewThumbnailBox`(`window-geometry`)로 축소 화면 자리를 구해 `WindowThumbnail` 배율을 정한다. 창 비율은 창이 화면에서 차지한 크기(최대화·스냅이면 그 자리, 모바일은 작업 영역)로 구한다. 모바일 축소 화면 크기도 전에는 창의 원래 자리였는데 화면에 보이는 크기(작업 영역)로 바로잡았다.
+  - 모바일 목록: 카드마다 비율 폭으로 놓은 합이 화면 폭(좌우 12 여백)을 넘으면 전처럼 같은 너비로 줄인다. 모바일 창은 모두 작업 영역 크기라 카드가 모두 같은 비율이고, 세로 화면에서는 카드가 좁다(320×520 작업 영역이면 약 82.5).
+  - Snap Assist: 같은 `WindowPreview`를 쓰므로 앱이 창 비율을 넘기게 했다. Snap Assist 조립 스토리(`Window/SnapAssist`)는 피그마 그림이 아직 고정 폭이라 `aspectRatio` 없이 둔다.
+  - 조립 스토리 `Taskbar/PreviewList`: 피그마 새 그림처럼 1024×640 창을 108 높이에 맞춰(0.16875) 비율 폭 188.8 카드로 그린다.
+  - 피그마 `Menu/TaskbarJumpListChrome`에는 "자주 방문"과 "작업" 사이에도 구분선이 있지만, 맡긴 일과 검수 2번 규칙(점프 목록과 앱 묶음 사이에만 구분선)을 따라 넣지 않았다. 캡처 표에서 "작업" 아래가 9px 위로 올라간 차이로 보인다.
+  - `WindowPreview`의 `@codocs` 연결은 지운 검수 섹션 대신 규칙을 옮긴 [[작업 표시줄:창 미리보기]]로 바꿨다.
 
 Chrome 세션: |
   2026-11-10 Chrome 검수 후속([[Chrome 검수]])에서 사람에게 묻지 않고 정한 것이다.
