@@ -77,8 +77,11 @@ jobs:
       - name: Format check
         run: pnpm format:check
 
+      # 호스티드 러너에는 ESLint 캐시가 남지 않아 전체를 타입 정보와 함께 검사한다. Node 기본 힙(약 2GB)에서는 메모리가 모자란다
       - name: Lint
         run: pnpm lint
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
 
       - name: Typecheck
         run: pnpm typecheck
