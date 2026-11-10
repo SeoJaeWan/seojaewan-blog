@@ -5,12 +5,16 @@ import { cn, SnapPreview, WindowPreview } from '@seojaewan/design-system';
 
 import { useRovingFocus } from '@/shared/hooks/use-roving-focus/use-roving-focus';
 
-/** Snap Assist가 제안하는 창 하나. id는 목록 안에서 창을 가리키는 값(창 id)이고 appIcon은 창 앱 아이콘(16px)이다. thumbnail은 창 축소 화면이며 실제 창 조립을 `WindowThumbnail`로 줄여 넣는다. */
+/**
+ * Snap Assist가 제안하는 창 하나. id는 목록 안에서 창을 가리키는 값(창 id)이고 appIcon은 창 앱 아이콘(16px)이다. thumbnail은 창 축소 화면이며 실제 창 조립을 `WindowThumbnail`로 줄여 넣는다.
+ * aspectRatio는 창이 화면에서 차지한 너비 ÷ 높이이고, 카드 너비가 이 비율을 따른다. 없으면 카드 최대 너비다.
+ */
 export type SnapAssistSuggestion = {
   id: string;
   appIcon: ReactNode;
   title: string;
   thumbnail: ReactNode;
+  aspectRatio?: number;
 };
 
 type SnapAssistProps = {
@@ -85,6 +89,7 @@ export function SnapAssist({
                 appIcon={suggestion.appIcon}
                 title={suggestion.title}
                 thumbnail={suggestion.thumbnail}
+                aspectRatio={suggestion.aspectRatio}
                 className="shrink-shrink-none"
               />
             );

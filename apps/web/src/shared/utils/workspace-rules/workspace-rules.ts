@@ -1070,7 +1070,14 @@ export function getDescendantIds(state: Pick<WorkspaceState, 'items'>, folderId:
 }
 
 /**
- * 휴지통에 없는 Blog 글을 최신순(작성일이 같으면 이름순)으로 돌려준다. Chrome 새 탭 페이지와 검색 추천에 쓴다.
+ * Chrome 새 탭 페이지와 작업 표시줄 Chrome 점프 목록("자주 방문")에 보이는 최신 글 개수(피그마 Chrome/Page `Page=New tab`).
+ * @codocs [[Chrome:새 탭 페이지]]
+ * @codocs [[작업 표시줄:우클릭 메뉴]]
+ */
+export const CHROME_LATEST_POST_COUNT = 6;
+
+/**
+ * 휴지통에 없는 Blog 글을 최신순(작성일이 같으면 이름순)으로 돌려준다. Chrome 새 탭 페이지, 작업 표시줄 Chrome 점프 목록, 검색 추천에 쓴다.
  * Project·About 항목은 넣지 않는다.
  * @codocs [[검색:입력 전 화면]]
  * @codocs [[Chrome:새 탭 페이지]]

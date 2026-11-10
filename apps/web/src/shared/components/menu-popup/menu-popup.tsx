@@ -67,6 +67,16 @@ export type MenuPopupZoom = {
 /** 항목 사이 구분선(피그마 MenuSeparator) */
 export type MenuPopupSeparator = { kind: 'separator' };
 
+/**
+ * 머리글이 붙은 항목 묶음(작업 표시줄 점프 목록의 "자주 방문"·"작업" 칸). 피그마 메뉴 조립이 Content 안에 직접 그린 머리글(`header <이름>`)
+ * 아래에 항목을 둔다. 보조 기술에는 머리글이 이름인 메뉴 묶음으로 알린다.
+ */
+export type MenuPopupGroup = {
+  kind: 'group';
+  label: string;
+  entries: readonly MenuPopupEntry[];
+};
+
 /** 메뉴 한 줄 */
 export type MenuPopupEntry =
   | MenuPopupCommand
@@ -74,15 +84,18 @@ export type MenuPopupEntry =
   | MenuPopupCheckbox
   | MenuPopupRadioGroup
   | MenuPopupZoom
-  | MenuPopupSeparator;
+  | MenuPopupSeparator
+  | MenuPopupGroup;
 
-export type MenuPopupWidth = 'default' | 'view-options';
+export type MenuPopupWidth = 'default' | 'view-options' | 'taskbar';
 
 // 메뉴 바탕(Menu) 너비다. 피그마 메뉴 조립이 Menu 인스턴스에 연결한 너비 변수로, 기본은 Menu 자신의 너비(size/menu/width)이고
-// `Menu/ViewOptions`만 size/menu/view-options-width다. 항목(MenuItem)은 늘 바탕 너비를 채운다.
+// `Menu/ViewOptions`만 size/menu/view-options-width, 작업 표시줄 앱 메뉴·점프 목록(`Menu/TaskbarApp`, `Menu/TaskbarJumpList*`)은
+// size/menu/taskbar-width다. 항목(MenuItem)은 늘 바탕 너비를 채운다.
 const menuWidthClassNames = {
   default: undefined,
   'view-options': 'w-size-menu-view-options-width',
+  taskbar: 'w-size-menu-taskbar-width',
 } as const satisfies Record<MenuPopupWidth, string | undefined>;
 const DEFAULT_MENU_WIDTH: MenuPopupWidth = 'default';
 
@@ -196,6 +209,8 @@ function entryKey(entry: MenuPopupEntry, index: number): string {
       return 'zoom';
     case 'radio-group':
       return `radio-group-${entry.options[0]?.value ?? String(index)}`;
+    case 'group':
+      return `group-${entry.label}`;
     default:
       return entry.label;
   }
@@ -213,6 +228,27 @@ function MenuEntry({ entry }: { entry: MenuPopupEntry }): JSX.Element {
       return <MenuSeparator />;
     case 'submenu':
       return <SubmenuEntry entry={entry} />;
+    case 'group':
+      return (
+        // 피그마 `header <이름>` 프레임: 높이 32(글자 16 + 위아래 spacing/sm), 왼쪽 spacing/lg, Caption 글자 color/black/61이다.
+        // 묶음은 항목을 바로 담아 메뉴 바탕의 세로 배치를 그대로 잇는다(`contents`).
+        <BaseMenu.Group className="contents">
+          <BaseMenu.GroupLabel className="self-stretch truncate px-spacing-lg py-spacing-sm type-caption text-color-black-61 select-none">
+            {entry.label}
+          </BaseMenu.GroupLabel>
+          {entry.entries.map(
+            /**
+             * 묶음 안의 한 줄을 그린다.
+             * @param child 메뉴 한 줄
+             * @param index 순서
+             * @returns 메뉴 요소
+             */
+            (child, index) => (
+              <MenuEntry key={entryKey(child, index)} entry={child} />
+            ),
+          )}
+        </BaseMenu.Group>
+      );
     case 'zoom': {
       const { onZoomOut: handleZoomOut, onZoomIn: handleZoomIn } = entry;
       return (
