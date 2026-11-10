@@ -34,6 +34,8 @@ import {
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
 import {
+  BREADCRUMB_MENU_ALIGN_OFFSET,
+  BREADCRUMB_MENU_SIDE_OFFSET,
   type BreadcrumbMenuTarget,
   getBreadcrumbMenuEntries,
   getSubfolderTargets,
@@ -578,6 +580,8 @@ function BreadcrumbSeparatorMenu({
       trigger={separator}
       items={getBreadcrumbMenuEntries(targets, onNavigate)}
       isOpen={isOpen}
+      sideOffset={BREADCRUMB_MENU_SIDE_OFFSET}
+      alignOffset={BREADCRUMB_MENU_ALIGN_OFFSET}
       onOpenChange={handleOpenChange}
     />
   );
