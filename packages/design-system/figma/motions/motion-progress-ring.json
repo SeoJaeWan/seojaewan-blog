@@ -16,6 +16,11 @@
       "category": "Development",
       "path": "",
       "text": "motion-progress-ring"
+    },
+    {
+      "category": "Accessibility",
+      "path": "progress-ring/Arc / Arc",
+      "text": "동작 줄이기에서도 그대로 돈다. 진행 정보라서"
     }
   ],
   "source": "component",
