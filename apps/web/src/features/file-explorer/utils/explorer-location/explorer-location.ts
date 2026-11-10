@@ -2,6 +2,7 @@ import {
   DESKTOP_NAME,
   getFolderPath,
   isItemInTrash,
+  isRecycleBinFull,
   type PlacedItem,
   RECYCLE_BIN_ID,
   RECYCLE_BIN_NAME,
@@ -10,6 +11,40 @@ import {
 
 /** 탐색기가 읽는 작업 공간. 항목 배치다 */
 export type ExplorerWorkspace = Pick<WorkspaceState, 'items'>;
+
+/** 위치 아이콘 자산 이름. 바탕화면은 한 가지 색 SVG 아이콘, 휴지통·폴더는 래스터 그림이다 */
+export type ExplorerLocationIcon =
+  | 'icons/ic_fluent_desktop_20_regular.svg'
+  | 'images/file-recycle-bin-full'
+  | 'images/file-recycle-bin-empty'
+  | 'images/file-folder';
+
+/** 바탕화면 위치 아이콘. 한 가지 색이라 쓰는 곳이 글자 색으로 칠한다 */
+export const DESKTOP_LOCATION_ICON = 'icons/ic_fluent_desktop_20_regular.svg';
+
+/**
+ * 위치 아이콘 자산 이름. 탭·위치 칸·탐색 창·경로 꺾쇠 목록이 함께 쓴다. 바탕화면은 바탕 화면 아이콘, 휴지통은 찬·빈 모양, 그 밖(폴더)은 폴더다.
+ * @codocs [[파일 탐색기:탭]]
+ * @codocs [[파일 탐색기:탐색 창]]
+ * @codocs [[파일 탐색기:구성]]
+ * @param workspace 작업 공간
+ * @param location 위치(폴더 id, 휴지통 id, 바탕화면은 null)
+ * @returns 자산 이름
+ */
+export function getExplorerLocationIcon(
+  workspace: ExplorerWorkspace,
+  location: string | null,
+): ExplorerLocationIcon {
+  if (location === null) {
+    return DESKTOP_LOCATION_ICON;
+  }
+  if (location === RECYCLE_BIN_ID) {
+    return isRecycleBinFull(workspace)
+      ? 'images/file-recycle-bin-full'
+      : 'images/file-recycle-bin-empty';
+  }
+  return 'images/file-folder';
+}
 
 // 창 제목 뒤에 붙는 앱 이름이다.
 const EXPLORER_TITLE_SUFFIX = ' - 파일 탐색기';

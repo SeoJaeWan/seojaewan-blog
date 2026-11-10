@@ -527,6 +527,20 @@ export const AddressEdit: Story = {
 
     // @codocs [[파일 탐색기:주소창 편집]]
     await step(
+      '지우기 버튼(×)은 입력을 비우고 포커스를 입력칸에 남기며, 비면 버튼이 사라진다',
+      async () => {
+        const field = await startEditing();
+        await user.click(canvas.getByRole('button', { name: '지우기' }));
+        await expect(field).toHaveValue('');
+        await expect(field).toHaveFocus();
+        await expect(canvas.queryByRole('button', { name: '지우기' })).not.toBeInTheDocument();
+        await user.keyboard('{Escape}');
+        await expect(canvas.queryByRole('textbox', { name: '주소' })).not.toBeInTheDocument();
+      },
+    );
+
+    // @codocs [[파일 탐색기:주소창 편집]]
+    await step(
       'Enter를 누르면 대소문자를 가리지 않고 경로의 폴더로 가고 뒤로 기록에 남는다',
       async () => {
         const field = await startEditing();
@@ -569,6 +583,97 @@ export const AddressEdit: Story = {
       await user.type(field, '휴지통');
       await user.keyboard('{Enter}');
       await expect(getTabTitles(canvasElement)).toEqual(['휴지통']);
+    });
+  },
+};
+
+/**
+ * 경로 꺾쇠 버튼들의 열림 상태. 맨 앞 꺾쇠(최상위 항목)는 빼고 마디 뒤 꺾쇠만 차례대로 본다.
+ * @param canvasElement 캔버스
+ * @returns 꺾쇠마다 열렸는지(`data-open`)
+ */
+function getSeparatorStates(canvasElement: HTMLElement): (string | null)[] {
+  return within(canvasElement)
+    .queryAllByRole('button', { name: '하위 폴더' })
+    .map((separator) => separator.getAttribute('data-open'));
+}
+
+/**
+ * 열린 목록의 줄 이름들.
+ * @returns 줄 이름
+ */
+async function getMenuLabels(): Promise<string[]> {
+  return (await screen.findAllByRole('menuitem')).map((item) => item.textContent);
+}
+
+/** 경로 꺾쇠 목록. 꺾쇠를 누르면 그 마디의 하위 폴더(맨 앞은 최상위 칸)를 보이고, 고르면 같은 탭에서 간다 */
+export const BreadcrumbMenu: Story = {
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+
+    // @codocs [[파일 탐색기:구성]]
+    await step('마지막 마디 뒤 꺾쇠는 하위 폴더가 있을 때만 그린다', async () => {
+      // Blog 안에는 React 폴더가 있어 바탕 화면·Blog 뒤에 꺾쇠가 있다.
+      await expect(getSeparatorStates(canvasElement)).toEqual(['false', 'false']);
+    });
+
+    // @codocs [[파일 탐색기:구성]]
+    await step('꺾쇠를 누르면 ⌄로 바뀌고 그 마디 폴더의 하위 폴더를 보인다', async () => {
+      const [, blogSeparator] = canvas.getAllByRole('button', { name: '하위 폴더' });
+      if (blogSeparator === undefined) {
+        throw new Error('Blog 뒤 꺾쇠가 없다');
+      }
+      await user.click(blogSeparator);
+      await expect(await getMenuLabels()).toEqual(['React']);
+      await expect(getSeparatorStates(canvasElement)).toEqual(['false', 'true']);
+    });
+
+    // @codocs [[파일 탐색기:구성]]
+    // @codocs [[파일 탐색기:탭]]
+    await step('목록에서 고르면 같은 탭에서 그 폴더로 가고 기록에 남는다', async () => {
+      await user.click(screen.getByRole('menuitem', { name: 'React' }));
+      await expect(getTabTitles(canvasElement)).toEqual(['React']);
+      await waitForMenuGone();
+      await expect(canvas.getByRole('button', { name: '뒤로' })).toBeEnabled();
+    });
+
+    // @codocs [[파일 탐색기:구성]]
+    await step('하위 폴더가 없는 마지막 마디 뒤에는 꺾쇠가 없다', async () => {
+      const [, , reactSeparator] = canvas.getAllByRole('button', { name: '하위 폴더' });
+      if (reactSeparator === undefined) {
+        throw new Error('React 뒤 꺾쇠가 없다');
+      }
+      await user.click(reactSeparator);
+      await user.click(await screen.findByRole('menuitem', { name: 'Hooks' }));
+      await expect(getTabTitles(canvasElement)).toEqual(['Hooks']);
+      await waitForMenuGone();
+      await expect(getSeparatorStates(canvasElement)).toEqual(['false', 'false', 'false']);
+      await expect(
+        canvas.getByRole('button', { current: 'page' }).closest('[data-separator]'),
+      ).toHaveAttribute('data-separator', 'false');
+    });
+
+    // @codocs [[파일 탐색기:구성]]
+    await step('Esc를 누르면 목록이 닫히고 꺾쇠가 >로 돌아간다', async () => {
+      const [desktopSeparator] = canvas.getAllByRole('button', { name: '하위 폴더' });
+      if (desktopSeparator === undefined) {
+        throw new Error('바탕 화면 뒤 꺾쇠가 없다');
+      }
+      await user.click(desktopSeparator);
+      await expect(await getMenuLabels()).toContain('Blog');
+      await user.keyboard('{Escape}');
+      await waitForMenuGone();
+      await expect(getSeparatorStates(canvasElement)).toEqual(['false', 'false', 'false']);
+    });
+
+    // @codocs [[파일 탐색기:구성]]
+    await step('맨 앞 꺾쇠는 탐색 창의 최상위 칸(바탕 화면, 휴지통)을 보인다', async () => {
+      await user.click(canvas.getByRole('button', { name: '최상위 항목' }));
+      await expect(await getMenuLabels()).toEqual(['바탕 화면', '휴지통']);
+      await user.click(screen.getByRole('menuitem', { name: '휴지통' }));
+      await expect(getTabTitles(canvasElement)).toEqual(['휴지통']);
+      await waitForMenuGone();
     });
   },
 };
@@ -850,6 +955,11 @@ export const Mobile: Story = {
     await step('모바일은 탭 하나만 써서 탭 줄과 새 탭 버튼이 없다', async () => {
       await expect(canvas.queryByRole('tab')).not.toBeInTheDocument();
       await expect(canvas.queryByRole('button', { name: '새 탭' })).not.toBeInTheDocument();
+    });
+
+    // @codocs [[파일 탐색기:모바일]]
+    await step('모바일은 경로를 한 칸으로만 보여 마디 뒤 꺾쇠 목록이 없다', async () => {
+      await expect(canvas.queryByRole('button', { name: '하위 폴더' })).not.toBeInTheDocument();
     });
 
     // @codocs [[파일 탐색기:조작]]
