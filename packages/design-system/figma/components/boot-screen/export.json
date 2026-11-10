@@ -34,8 +34,8 @@
             "height": "size/boot-screen/logo",
             "name": "windows logo",
             "size": {
-              "h": 120,
-              "w": 120
+              "h": 100,
+              "w": 100
             },
             "sizing": {
               "h": "FIXED",
@@ -151,8 +151,8 @@
             "height": "size/boot-screen/logo-mobile",
             "name": "windows logo",
             "size": {
-              "h": 96,
-              "w": 96
+              "h": 80,
+              "w": 80
             },
             "sizing": {
               "h": "FIXED",
