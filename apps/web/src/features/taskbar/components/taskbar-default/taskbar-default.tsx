@@ -61,8 +61,9 @@ export function TaskbarDefault({
             icon={<Asset name="illustrations/logo-windows.svg" />}
           />
           {search === 'box' ? (
-            // 돋보기 자리를 눌러도 검색칸으로 보도록 상자 전체를 감싼다. contents라 배치는 바뀌지 않는다
-            <div data-panel-trigger className="contents">
+            // 돋보기 자리를 눌러도 검색칸으로 보도록 상자 전체를 감싼다. contents라 배치는 바뀌지 않는다.
+            // 검색 패널 층은 data-search-panel-anchor가 달린 이 상자의 왼쪽 끝에 데스크톱 검색 패널을 맞춘다
+            <div data-panel-trigger data-search-panel-anchor className="contents">
               <SearchBox
                 {...searchBoxProps}
                 variant="taskbar"
