@@ -255,6 +255,11 @@ Notion 열 나누기: |
   - 위치 아이콘 함수는 자산 이름을 고르는 `getExplorerLocationIcon` 하나로 탭·위치 칸·탐색 창·꺾쇠 목록이 함께 쓴다.
   - 이 섹션 위의 `@hold를 없앰` 키가 `@`로 시작해 YAML로 읽히지 않아 따옴표로 감쌌다. 내용은 바꾸지 않았다.
 
+  꺾쇠 목록 위치 PR(`fix/explorer-breadcrumb-menu-position`)에서 정한 것이다.
+  - 위치 값: 패리티 캡처(`Explorer/BreadcrumbMenu`)의 피그마 그림과 코드 그림에서 목록 테두리 위치를 픽셀로 재어 맞췄다. 코드는 피그마보다 11px 오른쪽, 3px 위였고(주소 줄 위 테두리 기준 목록 위 테두리 거리가 피그마 34, 코드 31), `MenuButton`에 `sideOffset`·`alignOffset` 속성을 더해 꺾쇠 목록만 `sideOffset` 6(기본 4에서 +2)과 `alignOffset` -11을 준다. 3px이 아니라 2px만 더한 것은 3을 넣으면 1px 아래로 넘어갔기 때문이다(잰 값 31이 아니라 32였다). 맞춘 뒤 어긋남은 0px이다.
+  - 값은 `breadcrumb-menu-entries.ts`의 상수(`BREADCRUMB_MENU_SIDE_OFFSET`, `BREADCRUMB_MENU_ALIGN_OFFSET`)에 두어 실제 탐색기와 조립 스토리가 함께 쓴다. 속성 이름은 Base UI `Menu.Positioner`와 같게 했고 다른 메뉴는 속성을 주지 않아 그대로다.
+  - [[컴포넌트 목록]] 문서에는 컴포넌트별 목록이 없어(컴포넌트 목록은 피그마 description이 가진다) BreadcrumbChevron을 더할 자리가 없었다. 그래서 `Open` 변형 규칙의 예외 한 줄만 더했다.
+
 작업 표시줄 세션: |
   `fix/taskbar-review` PR에서 작업 표시줄 검수(마지막 PR에서 지웠다)의 2·3·7번과 10번의 앱 이름을 고치며 규칙으로 정한 것이다.
   - 앱 우클릭 메뉴(`getAppMenuEntries`)에서 앱 이름 아래 구분선만 뺐다. 점프 목록(9·10번)이 들어오면 목록과 앱 묶음 사이 구분선을 그때 더한다.

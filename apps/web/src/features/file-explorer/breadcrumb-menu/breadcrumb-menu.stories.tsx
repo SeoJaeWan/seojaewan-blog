@@ -9,7 +9,11 @@ import { figmaFrame } from '@seojaewan/design-system/story';
 import { MenuButton } from '@/shared/components/menu-button/menu-button';
 import { menuStoryA11y } from '@/shared/components/menu-popup/story-menu';
 
-import { getBreadcrumbMenuEntries } from './breadcrumb-menu-entries';
+import {
+  BREADCRUMB_MENU_ALIGN_OFFSET,
+  BREADCRUMB_MENU_SIDE_OFFSET,
+  getBreadcrumbMenuEntries,
+} from './breadcrumb-menu-entries';
 import { BREADCRUMB_MENU_TRAIL, breadcrumbMenuTargets } from './story-data';
 
 /** 조립 스토리는 목록에서 골라도 가지 않는다. */
@@ -26,6 +30,8 @@ function renderOpenMenu(separator: ReactElement): JSX.Element {
       trigger={separator}
       items={getBreadcrumbMenuEntries(breadcrumbMenuTargets, handleNavigate)}
       isOpen
+      sideOffset={BREADCRUMB_MENU_SIDE_OFFSET}
+      alignOffset={BREADCRUMB_MENU_ALIGN_OFFSET}
     />
   );
 }

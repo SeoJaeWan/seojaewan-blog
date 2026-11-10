@@ -20,6 +20,12 @@ export type BreadcrumbMenuTarget = {
   icon: ExplorerLocationIcon;
 };
 
+// @codocs [[파일 탐색기:구성]]
+// 피그마 Explorer/BreadcrumbMenu에서 목록은 꺾쇠 바로 아래가 아니라 이만큼 더 아래, 꺾쇠 왼쪽 끝보다 이만큼 더 왼쪽에 그려진다.
+// 패리티 캡처의 피그마 그림과 코드 그림에서 목록 테두리 위치를 재어 맞춘 값이다(px).
+export const BREADCRUMB_MENU_SIDE_OFFSET = 6;
+export const BREADCRUMB_MENU_ALIGN_OFFSET = -11;
+
 /**
  * 경로 꺾쇠 목록(피그마 Explorer/BreadcrumbMenu의 MenuPopup) 항목을 만든다. 실제 탐색기와 조립 스토리가 함께 쓴다.
  * 줄마다 위치 아이콘과 이름을 보이고, 고르면 그 위치로 간다.
