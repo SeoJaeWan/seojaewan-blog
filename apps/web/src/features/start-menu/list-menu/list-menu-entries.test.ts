@@ -40,7 +40,7 @@ describe('Start 메뉴:모두', () => {
     );
   });
 
-  it('앱만 작업 표시줄 고정 항목이 있고, 이미 고정된 앱은 작업 표시줄에서 고정 해제다', () => {
+  it('앱만 작업 표시줄 고정 항목이 있고, 이미 고정된 앱은 작업 표시줄에서 제거다', () => {
     expect(labels(getListMenuEntries({ ...listOptions, isPinnedToTaskbar: false }))).toEqual([
       '열기',
       '-',
@@ -48,7 +48,7 @@ describe('Start 메뉴:모두', () => {
       '작업 표시줄에 고정',
     ]);
     expect(labels(getListMenuEntries({ ...listOptions, isPinnedToTaskbar: true })).at(-1)).toBe(
-      '작업 표시줄에서 고정 해제',
+      '작업 표시줄에서 제거',
     );
   });
 });
