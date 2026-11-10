@@ -1,5 +1,5 @@
 {
-  "description": "글 본문의 인용으로, 글 페이지에 쓴다.\n@sample-size width",
+  "description": "글 본문의 인용으로, 글 페이지에 쓴다.",
   "name": "Quote",
   "nodeId": "1380:1125",
   "propertyDefinitions": {
@@ -152,6 +152,9 @@
           "primaryAlign": "MIN"
         },
         "name": "Quote",
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 28,
           "w": 720

@@ -1,0 +1,56 @@
+{
+  "delay": {
+    "ms": 0,
+    "token": null
+  },
+  "directives": {},
+  "duration": {
+    "ms": 167,
+    "token": "motion/duration/fast"
+  },
+  "iterations": 1,
+  "name": "motion-menu-enter",
+  "nodeId": "3431:6883",
+  "notes": [
+    {
+      "category": "Development",
+      "path": "menu clip / Menu/ViewOptions",
+      "text": "드롭다운·우클릭 메뉴는 열리는 쪽으로(여기서는 아래로) 위가 잘린 채 미끄러져 나온다(페이드 없음). 우클릭 메뉴는 측정하지 못해 드롭다운과 같은 방식으로 본다. 작업 표시줄 메뉴는 motion-taskbar-menu-enter."
+    }
+  ],
+  "source": "flow",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 167,
+        "token": "motion/duration/fast"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": -102,
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/direct-entrance",
+          "offset": 1,
+          "time": 167,
+          "value": 0,
+          "valueToken": null
+        }
+      ],
+      "node": "Menu/ViewOptions",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "menu clip / Menu/ViewOptions",
+      "property": "TRANSLATION_Y"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=3431-6883"
+}
