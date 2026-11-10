@@ -52,7 +52,7 @@ type Story = StoryObj<typeof meta>;
 export const Figma: Story = {};
 
 // @codocs [[Start 메뉴:모두]]
-/** 범주 이름을 쓰고, 항목이 넘치면 격자 영역 안에서 스크롤하며 쪽 표시 점을 보인다 */
+/** 범주 이름을 쓰고, 항목이 넘치면 스크롤바 없이 격자 영역 경계에서 자르며 쪽 표시 점을 보인다 */
 export const Overflow: Story = {
   render: (args) => (
     <StartCategoryFolder device={args.device} label="글" hasPages pageCount={2}>
@@ -70,10 +70,11 @@ export const Overflow: Story = {
     await step('범주 이름을 쓴다', async () => {
       await expect(canvas.getByText('글')).toBeInTheDocument();
     });
-    await step('항목이 넘치면 격자를 스크롤한다', async () => {
-      const grid = canvas.getByRole('button', { name: '항목 1' }).closest('.overflow-y-auto');
-      await expect(grid).not.toBeNull();
-      await expect(grid?.scrollHeight).toBeGreaterThan(grid?.clientHeight ?? 0);
+    await step('항목이 넘치면 스크롤바 없이 격자 영역 경계에서 자른다', async () => {
+      const clip = canvas.getByRole('button', { name: '항목 1' }).closest('.overflow-clip');
+      await expect(clip).not.toBeNull();
+      await expect(clip?.scrollHeight).toBeGreaterThan(clip?.clientHeight ?? 0);
+      await expect(canvasElement.querySelector('.overflow-y-auto')).toBeNull();
     });
   },
 };
