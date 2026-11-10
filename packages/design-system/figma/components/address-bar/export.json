@@ -1,5 +1,5 @@
 {
-  "description": "Chrome 주소창으로, BrowserToolbar와 주소창 추천 조립의 트리거에 쓴다.\n@sample-size width",
+  "description": "Chrome 주소창으로, BrowserToolbar와 주소창 추천 조립의 트리거에 쓴다.",
   "name": "AddressBar",
   "nodeId": "36:582",
   "propertyDefinitions": {
@@ -172,6 +172,9 @@
           "radius/circular",
           "radius/circular"
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 40,
           "w": 640
@@ -312,6 +315,9 @@
           "radius/circular",
           "radius/circular",
           "radius/circular"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 36,
@@ -462,6 +468,9 @@
             "trigger": "ON_HOVER"
           }
         ],
+        "sampleSize": [
+          "width"
+        ],
         "size": {
           "h": 36,
           "w": 640
@@ -583,6 +592,9 @@
           "radius/overlay",
           "radius/overlay",
           "radius/overlay"
+        ],
+        "sampleSize": [
+          "width"
         ],
         "size": {
           "h": 36,
