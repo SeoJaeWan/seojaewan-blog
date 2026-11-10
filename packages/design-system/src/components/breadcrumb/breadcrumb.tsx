@@ -58,7 +58,7 @@ export function Breadcrumb({
   isEditing = false,
   editFieldProps,
   onClear: handleClear,
-  separatorLabel = '최상위 위치',
+  separatorLabel = '최상위 항목',
   isSeparatorOpen = false,
   renderSeparator,
   className,
