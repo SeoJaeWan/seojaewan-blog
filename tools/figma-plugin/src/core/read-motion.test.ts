@@ -10,6 +10,8 @@ type FakeNode = Record<string, unknown>;
 const categories: Readonly<Record<string, string>> = {
   dev: 'Development',
   a11y: 'Accessibility',
+  devKo: '개발',
+  a11yKo: ' 접근성 ',
 };
 
 /**
@@ -348,6 +350,34 @@ describe('모션 읽기', () => {
     });
     expect(sample.tracks.map((track) => [track.path, track.node, track.nodeKind])).toEqual([
       ['State=Loading / shimmer', 'shimmer', 'layer'],
+    ]);
+  });
+
+  it('한국어 화면의 카테고리 이름(개발·접근성)도 이름·주석으로 읽는다', async () => {
+    const loading = withFind({
+      id: '6:1',
+      type: 'COMPONENT',
+      name: 'State=Loading',
+      visible: true,
+      parent: { type: 'COMPONENT_SET', name: 'Figure', description: '', parent: null },
+      description: '',
+      children: [animatedNode('6:2', 'shimmer', [], { type: 'RECTANGLE' })],
+      annotations: [
+        { label: 'motion-image-skeleton', categoryId: 'devKo' },
+        { label: '동작 줄이기에서도 돈다', categoryId: 'a11yKo' },
+      ],
+      playbackSettings: { autoplay: true, loop: true },
+      timelines: [{ id: 't', duration: 2 }],
+    });
+    stubFigma([loading], [page('02 · Components', [loading])]);
+    const sample = await readMotionSample('6:1');
+    expect(sample.name).toBe('motion-image-skeleton');
+    expect(sample.notes).toEqual([
+      { path: '', category: 'Development', text: 'motion-image-skeleton' },
+      { path: '', category: 'Accessibility', text: '동작 줄이기에서도 돈다' },
+    ]);
+    expect(await listMotionSamples()).toEqual([
+      { id: '6:1', name: 'motion-image-skeleton', source: 'component' },
     ]);
   });
 });
