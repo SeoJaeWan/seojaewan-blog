@@ -1,10 +1,19 @@
 {
-  "description": "Chrome 주소창에 입력하는 중 아래에 추천 목록을 연 모습으로, 주소창 입력 중 추천 화면에 쓴다.",
+  "description": "Chrome 주소창과 그 아래 추천 목록. Closed는 입력 줄만, Open은 입력하는 중 추천 목록이 열린 모습(Flyout 한 장이 입력 줄까지 감싼다)이다.",
   "name": "Chrome/AddressSuggestions",
-  "nodeId": "543:14685",
-  "propertyDefinitions": {},
+  "nodeId": "3488:8353",
+  "propertyDefinitions": {
+    "State": {
+      "default": "Closed",
+      "options": [
+        "Closed",
+        "Open"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
-    "default": {
+    "state=closed": {
       "node": {
         "height": 36,
         "width": 640,
@@ -12,7 +21,9 @@
         "y": 0
       },
       "nodeId": "543:14685",
-      "properties": {},
+      "properties": {
+        "State": "Closed"
+      },
       "report": {
         "components": [
           {
@@ -35,7 +46,7 @@
         "offToken": []
       },
       "tree": {
-        "name": "Chrome/AddressSuggestions",
+        "name": "State=Closed",
         "size": {
           "h": 36,
           "w": 640
@@ -43,6 +54,104 @@
         "sizing": {
           "h": "HUG",
           "v": "HUG"
+        }
+      }
+    },
+    "state=open": {
+      "node": {
+        "height": 162,
+        "width": 640,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "3488:8314",
+      "properties": {
+        "State": "Open"
+      },
+      "report": {
+        "components": [
+          {
+            "component": "Flyout",
+            "paths": [
+              "Flyout"
+            ],
+            "properties": {
+              "Material": "Solid"
+            }
+          },
+          {
+            "component": "ListItem",
+            "paths": [
+              "Flyout/Content/list inset/items/item 리액트 19 훅 정리"
+            ],
+            "properties": {
+              "Has subtitle": false,
+              "Has trailing": true,
+              "Size": "Compact",
+              "State": "Rest",
+              "Subtitle": "보조 설명",
+              "Title": "리액트 19 훅 정리",
+              "Trailing": "seojaewan.com/posts/react-19-hooks"
+            }
+          },
+          {
+            "component": "ListItem",
+            "paths": [
+              "Flyout/Content/list inset/items/item 리액트 서버 컴포넌트 이해하기"
+            ],
+            "properties": {
+              "Has subtitle": false,
+              "Has trailing": true,
+              "Size": "Compact",
+              "State": "Selected",
+              "Subtitle": "보조 설명",
+              "Title": "리액트 서버 컴포넌트 이해하기",
+              "Trailing": "seojaewan.com/posts/react-server-components"
+            }
+          },
+          {
+            "component": "ListItem",
+            "paths": [
+              "Flyout/Content/list inset/items/item 리액트 검색"
+            ],
+            "properties": {
+              "Has subtitle": false,
+              "Has trailing": false,
+              "Size": "Compact",
+              "State": "Rest",
+              "Subtitle": "보조 설명",
+              "Title": "리액트 검색",
+              "Trailing": "부가 정보"
+            }
+          },
+          {
+            "component": "AddressBar",
+            "paths": [
+              "popover/Trigger/address bar"
+            ],
+            "properties": {
+              "Filled": "True",
+              "Placeholder": "글 검색 또는 URL 입력",
+              "Query": "리액",
+              "State": "Suggesting",
+              "URL": "seojaewan.com/posts/react-19-hooks"
+            }
+          }
+        ],
+        "displayOnly": [],
+        "drawn": [],
+        "motion": [],
+        "offToken": []
+      },
+      "tree": {
+        "name": "State=Open",
+        "size": {
+          "h": 162,
+          "w": 640
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
         }
       }
     }

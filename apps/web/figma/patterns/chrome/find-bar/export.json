@@ -65,6 +65,7 @@
               "flyout/Content/find row/IconButton"
             ],
             "properties": {
+              "Checked": "False",
               "State": "Rest",
               "Variant": "Subtle"
             }
@@ -145,6 +146,7 @@
               "flyout/Content/find row/IconButton"
             ],
             "properties": {
+              "Checked": "False",
               "State": "Rest",
               "Variant": "Subtle"
             }

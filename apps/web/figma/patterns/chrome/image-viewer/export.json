@@ -32,6 +32,7 @@
               "toolbar/close button"
             ],
             "properties": {
+              "Checked": "False",
               "State": "Rest",
               "Variant": "Standard"
             }
@@ -91,6 +92,7 @@
               "toolbar/close button"
             ],
             "properties": {
+              "Checked": "False",
               "State": "Rest",
               "Variant": "Standard"
             }
