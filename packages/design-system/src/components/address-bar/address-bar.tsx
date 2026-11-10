@@ -14,21 +14,24 @@ type AddressBarProps = Omit<ComponentProps<typeof Input>, 'className' | 'default
 // Base UI Input이 넘기는 마우스 이벤트다.
 type InputMouseEvent = Parameters<NonNullable<AddressBarProps['onMouseDown']>>[0];
 
-// 상태별 바깥 상자다. Hover·Focused는 실제 CSS 상태(hover, focus-within)로 바꾼다.
+// 평소(Suggesting이 아닐 때) 바깥 상자다. Hover·Focused는 실제 CSS 상태(hover, focus-within)로 바꾼다.
 // 피그마 Focused의 선은 안쪽 선이지만 레이아웃에 포함되어(strokesIncludedInLayout) 높이가 40으로 늘어난다.
 // 그래서 CSS border로 그려 입력 줄(36) 바깥에 2px씩 더한다.
-const CONTAINER_CLASS_NAMES = {
-  rest: [
-    'rounded-radius-circular bg-color-blue-5',
-    'hover:not-focus-within:bg-color-gray-9',
-    'focus-within:border-stroke-width-focus-outer focus-within:border-color-blue-60 focus-within:bg-color-white',
-  ],
-  suggesting: 'rounded-radius-overlay bg-color-white shadow-elevation-flyout',
-} as const;
+// Suggesting은 추천 목록 조립의 Flyout 한 장이 입력 줄까지 감싸므로 바탕·그림자 없이 투명하다.
+const REST_CONTAINER_CLASS_NAMES = [
+  'rounded-radius-circular bg-color-blue-5',
+  'hover:not-focus-within:bg-color-gray-9',
+  'focus-within:border-stroke-width-focus-outer focus-within:border-color-blue-60 focus-within:bg-color-white',
+] as const;
+
+// 앞 아이콘 자리다.
+const ICON_CLASS_NAME = 'size-size-icon-sm shrink-shrink-none text-color-gray-70';
 
 /**
  * Chrome 주소창(피그마 AddressBar)을 그린다. BrowserToolbar와 주소창 추천 조립의 트리거에 쓴다.
  * 입력과 접근성은 Base UI Input이 맡는다. 접근성 이름은 `aria-label`이나 label 요소로 붙인다.
+ * 입력값이 비면 피그마 Filled=False 모양이 된다. SearchBox처럼 값으로 정하고 prop을 두지 않는다.
+ * 안내 문구가 보이는 동안(`:placeholder-shown`) 앞 아이콘이 사이트 정보(i)에서 돋보기로 바뀐다.
  * 포커스를 받으면 주소 전체를 선택한다. 피그마 Focused의 주소 글자 모습은 실제 글자 선택(`::selection`)이다.
  * 추천 목록은 조립이 Popover로 붙이고, 열려 있는 동안 `isSuggesting`을 켠다.
  * 너비는 갖지 않고 쓰는 곳이 정한다.
@@ -38,8 +41,9 @@ const CONTAINER_CLASS_NAMES = {
  * @param props.className 바깥 상자에 덧붙일 클래스. 너비 같은 바깥 배치에만 쓴다
  * @param props.query 피그마 TEXT 속성 Query. 추천 목록이 열린 동안(`isSuggesting`) 입력창의 처음 값이다
  * @param props.isSuggesting 피그마 State=Suggesting. 입력하는 중이고 추천 목록이 열려 있음을 나타낸다.
- *   바탕이 흰 팝업 머리 모양(모서리 overlay, 그림자)이 되고 앞 아이콘이 돋보기로 바뀐다
+ *   바탕과 그림자가 없는 투명한 입력 줄이 되고(추천 목록 조립의 Flyout이 감싼다) 앞 아이콘이 돋보기로 바뀐다
  * @param props.url 피그마 TEXT 속성 URL. 평소 입력창의 처음 값이다(`value`를 주면 url·query를 쓰지 않는다)
+ * @param props.placeholder 피그마 TEXT 속성 Placeholder. 입력값이 비었을 때 보이는 안내 문구다
  * @param props.value 입력창 값(제어). 주면 url·query를 처음 값으로 쓰지 않는다
  * @param props.onFocus 포커스를 받았을 때 호출. 부르기 전에 입력창 글자를 모두 고른다
  * @param props.onMouseDown 입력창을 눌렀을 때 호출
@@ -50,6 +54,7 @@ export function AddressBar({
   query = '검색어',
   isSuggesting = false,
   url = '웹 주소',
+  placeholder = '글 검색 또는 URL 입력',
   value,
   onFocus,
   onMouseDown,
@@ -84,22 +89,29 @@ export function AddressBar({
     <div
       className={cn(
         'flex flex-col motion-control-state',
-        isSuggesting ? CONTAINER_CLASS_NAMES.suggesting : CONTAINER_CLASS_NAMES.rest,
+        !isSuggesting && REST_CONTAINER_CLASS_NAMES,
         className,
       )}
     >
-      <div className="flex h-size-address-bar-height items-center gap-spacing-md overflow-clip px-spacing-lg">
-        <Asset
-          name={
-            isSuggesting
-              ? 'icons/ic_fluent_search_16_regular.svg'
-              : 'icons/ic_fluent_info_24_regular.svg'
-          }
-          className="size-size-icon-sm shrink-shrink-none text-color-gray-70"
-        />
+      <div className="group flex h-size-address-bar-height items-center gap-spacing-md overflow-clip px-spacing-lg">
+        {isSuggesting ? (
+          <Asset name="icons/ic_material_search_20_outlined.svg" className={ICON_CLASS_NAME} />
+        ) : (
+          <>
+            <Asset
+              name="icons/ic_fluent_info_24_regular.svg"
+              className={cn(ICON_CLASS_NAME, 'group-has-placeholder-shown:hidden')}
+            />
+            <Asset
+              name="icons/ic_material_search_20_outlined.svg"
+              className={cn(ICON_CLASS_NAME, 'hidden group-has-placeholder-shown:block')}
+            />
+          </>
+        )}
         <Input
           {...inputProps}
           type="text"
+          placeholder={placeholder}
           value={value}
           defaultValue={value === undefined ? (isSuggesting ? query : url) : undefined}
           onFocus={(event) => {
@@ -109,7 +121,7 @@ export function AddressBar({
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           className={cn(
-            'min-w-size-none flex-flex-fill truncate type-body text-color-gray-88 outline-none',
+            'min-w-size-none flex-flex-fill truncate type-body text-color-gray-88 outline-none placeholder:text-color-black-61',
             'selection:bg-color-blue-9 selection:text-color-gray-88',
           )}
         />
