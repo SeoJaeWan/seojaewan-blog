@@ -97,6 +97,7 @@ export function favoritePinMenuItem(isFavorite: boolean, onClick: () => void): M
  * 작업 표시줄 앱 메뉴와 Start 모두 목록 메뉴가 쓴다.
  * @codocs [[작업 표시줄:우클릭 메뉴]]
  * @codocs [[Start 메뉴:모두]]
+ * @codocs [[고정:작업 표시줄 고정]]
  * @param isPinned 이미 작업 표시줄에 고정됐는지
  * @param onClick 골랐을 때 할 일
  * @returns 메뉴 항목
