@@ -1,5 +1,13 @@
 import { Menu as BaseMenu } from '@base-ui/react/menu';
-import { type AnimationEvent, type ComponentProps, type JSX, useState } from 'react';
+import {
+  type AnimationEvent,
+  type ComponentProps,
+  type JSX,
+  type PointerEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { Menu, MenuItem, MenuSeparator } from '@seojaewan/design-system';
 
@@ -105,6 +113,16 @@ const DEFAULT_MOTION: MenuPopupMotion = 'menu';
 // 피그마 Popover의 트리거(하위 메뉴 항목)와 팝업(하위 메뉴) 사이 간격(spacing/4)이다.
 const SUBMENU_OFFSET = 4;
 
+// 마우스가 항목에 이만큼(ms) 머물러야 하위 메뉴를 열거나 바꾸거나 닫는다. Windows 기본 `MenuShowDelay`(400ms)라 모션 토큰이 아니다.
+export const SUBMENU_HOVER_DELAY = 400;
+
+// 하위 메뉴 항목을 감싼 요소에 다는 속성이다. 값은 그 항목의 key이고, 마우스가 어느 하위 메뉴 항목 위에 있는지 찾는 데 쓴다.
+const SUBMENU_KEY_ATTRIBUTE = 'data-submenu-key';
+
+// 따르지 않는 Base UI의 하위 메뉴 여닫기 이유다. 마우스로 여닫는 것은 MenuPanel의 타이머 하나가 정한다.
+// trigger-hover는 항목에 올리거나 벗어날 때, sibling-open은 같은 메뉴의 다른 항목에 올릴 때 Base UI가 보낸다.
+const pointerOpenChangeReasons: ReadonlySet<string> = new Set(['trigger-hover', 'sibling-open']);
+
 type MenuPopupProps = MenuPanelProps & {
   motion?: MenuPopupMotion;
 } & Omit<ComponentProps<typeof BaseMenu.Popup>, 'children' | 'className' | 'render'>;
@@ -160,13 +178,125 @@ export function MenuPopup({
 
 /**
  * 메뉴 바탕(Menu)과 그 안의 항목을 그린다. 하위 메뉴도 같은 바탕으로 그린다.
+ * 이 메뉴의 하위 메뉴는 한 번에 하나만 열리고, 마우스로는 타이머 하나가 여닫는다. 마우스가 한 항목에 `SUBMENU_HOVER_DELAY` 동안
+ * 머물면 그 항목이 하위 메뉴 항목일 때 그 하위 메뉴를 열고(열려 있던 다른 하위 메뉴는 같은 순간 닫는다), 일반 항목이면 열린 하위 메뉴를 닫는다.
+ * 그래서 하위 메뉴가 바뀌는 사이에 하위 메뉴가 없는 빈 구간이 없다. 열린 하위 메뉴 안으로 들어가면 타이머를 멈춰, 지나온 항목으로 바뀌지 않는다.
+ * 클릭과 키보드(→, Enter)는 기다리지 않고 바로 연다.
+ * @codocs [[디자인 시스템:팝업]]
  * @param props 컴포넌트 속성
  * @param props.width 메뉴 바탕 너비(피그마 메뉴 조립의 Menu 너비). 없으면 Menu 기본 너비다
  * @param props.items 메뉴 항목과 구분선. 위에서부터 그린다
  */
 function MenuPanel({ width, items }: MenuPanelProps): JSX.Element {
+  const [openSubmenuKey, setOpenSubmenuKey] = useState<string | null>(null);
+  const timerRef = useRef<number | undefined>(undefined);
+  // 타이머가 끝나면 열 하위 메뉴 항목의 key다(일반 항목이면 null). 타이머가 없으면 undefined다.
+  const pendingKeyRef = useRef<string | null | undefined>(undefined);
+
+  useEffect(
+    /**
+     * 메뉴가 사라지면 기다리던 타이머를 멈춘다.
+     * @returns 타이머를 멈추는 정리 함수
+     */
+    () => {
+      return () => {
+        window.clearTimeout(timerRef.current);
+      };
+    },
+    [],
+  );
+
+  /** 기다리던 마우스 여닫기를 그만둔다. */
+  function cancelPending(): void {
+    window.clearTimeout(timerRef.current);
+    timerRef.current = undefined;
+    pendingKeyRef.current = undefined;
+  }
+
+  /**
+   * 하위 메뉴 하나만 바로 열거나(key) 모두 닫는다(null).
+   * @param key 열 하위 메뉴 항목의 key
+   */
+  function showSubmenu(key: string | null): void {
+    cancelPending();
+    setOpenSubmenuKey(key);
+  }
+
+  /**
+   * 마우스가 이 메뉴의 항목에 올라왔을 때 타이머를 건다. 그 하위 메뉴가 이미 열려 있으면 기다리던 것을 그만두고,
+   * 같은 항목을 기다리는 중이면 타이머를 다시 걸지 않는다.
+   * @param key 하위 메뉴 항목이면 그 key, 일반 항목이면 null
+   */
+  function hoverEntry(key: string | null): void {
+    if (key === openSubmenuKey) {
+      cancelPending();
+      return;
+    }
+    if (timerRef.current !== undefined && pendingKeyRef.current === key) {
+      return;
+    }
+    cancelPending();
+    pendingKeyRef.current = key;
+    timerRef.current = window.setTimeout(() => {
+      showSubmenu(key);
+    }, SUBMENU_HOVER_DELAY);
+  }
+
+  /**
+   * 마우스가 올라온 곳을 본다. 포털로 그린 하위 메뉴 안의 이벤트도 React 트리로 올라오므로, 이 메뉴 바탕 밖(열린 하위 메뉴 안)이면
+   * 기다리던 것을 그만두고, 이 메뉴의 항목 위면 그 항목으로 타이머를 건다. 항목이 아닌 곳(구분선, 바탕 여백)은 그대로 둔다.
+   * @param event 포인터 이벤트
+   */
+  function handlePointerOver(event: PointerEvent<HTMLDivElement>): void {
+    if (event.pointerType === 'touch' || !(event.target instanceof Element)) {
+      return;
+    }
+    if (!event.currentTarget.contains(event.target)) {
+      cancelPending();
+      return;
+    }
+    if (event.target.closest('[role^="menuitem"]') === null) {
+      return;
+    }
+    hoverEntry(
+      event.target.closest(`[${SUBMENU_KEY_ATTRIBUTE}]`)?.getAttribute(SUBMENU_KEY_ATTRIBUTE) ??
+        null,
+    );
+  }
+
+  /** 마우스가 메뉴 밖으로 나가면 기다리던 여닫기를 그만둔다. 열린 하위 메뉴로 들어가는 것은 React 트리 안이라 나가는 것이 아니다. */
+  function handlePointerLeave(): void {
+    cancelPending();
+  }
+
+  /**
+   * 마우스로 하위 메뉴 항목을 누르면 기다리지 않고 바로 연다. Base UI는 마우스를 올려 여는 항목의 마우스 누름을 받지 않는다.
+   * @param event 포인터 이벤트
+   */
+  function handlePointerDown(event: PointerEvent<HTMLDivElement>): void {
+    if (
+      event.pointerType === 'touch' ||
+      event.button !== 0 ||
+      !(event.target instanceof Element) ||
+      !event.currentTarget.contains(event.target)
+    ) {
+      return;
+    }
+    const key = event.target
+      .closest(`[${SUBMENU_KEY_ATTRIBUTE}]`)
+      ?.getAttribute(SUBMENU_KEY_ATTRIBUTE);
+    if (key !== undefined && key !== null) {
+      showSubmenu(key);
+    }
+  }
+
   return (
-    <Menu className={menuWidthClassNames[width ?? DEFAULT_MENU_WIDTH]}>
+    <Menu
+      className={menuWidthClassNames[width ?? DEFAULT_MENU_WIDTH]}
+      onPointerOver={handlePointerOver}
+      onPointerLeave={handlePointerLeave}
+      onPointerDown={handlePointerDown}
+    >
       {items.map(
         /**
          * 메뉴 한 줄을 그린다.
@@ -174,13 +304,37 @@ function MenuPanel({ width, items }: MenuPanelProps): JSX.Element {
          * @param index 순서
          * @returns 메뉴 요소
          */
-        (entry, index) => (
-          <MenuEntry key={entryKey(entry, index)} entry={entry} />
-        ),
+        (entry, index) => {
+          const key = entryKey(entry, index);
+          return (
+            <MenuEntry
+              key={key}
+              entry={entry}
+              submenu={{
+                key,
+                isOpen: openSubmenuKey === key,
+                onOpenChange: (isOpen: boolean) => {
+                  if (isOpen) {
+                    showSubmenu(key);
+                  } else if (openSubmenuKey === key) {
+                    showSubmenu(null);
+                  }
+                },
+              }}
+            />
+          );
+        },
       )}
     </Menu>
   );
 }
+
+/** 하위 메뉴 항목이 받는 열림 상태. MenuPanel이 이 메뉴의 하위 메뉴를 하나만 열도록 정한다. */
+type SubmenuControl = {
+  key: string;
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
+};
 
 /**
  * 메뉴 한 줄의 React key를 만든다. 구분선은 순서로, 라디오 묶음은 첫 선택지 값으로, 나머지는 이름으로 구분한다.
@@ -205,14 +359,21 @@ function entryKey(entry: MenuPopupEntry, index: number): string {
  * 메뉴 한 줄을 종류에 맞는 MenuItem이나 구분선으로 그린다.
  * @param props 컴포넌트 속성
  * @param props.entry 메뉴 한 줄
+ * @param props.submenu 하위 메뉴 항목일 때의 열림 상태
  */
-function MenuEntry({ entry }: { entry: MenuPopupEntry }): JSX.Element {
+function MenuEntry({
+  entry,
+  submenu,
+}: {
+  entry: MenuPopupEntry;
+  submenu: SubmenuControl;
+}): JSX.Element {
   switch (entry.kind) {
     case 'separator':
       // 메뉴 안쪽 너비를 채우는 구분선(피그마 MenuSeparator)이다. 너비는 메뉴 바탕(Flyout)이 채운다.
       return <MenuSeparator />;
     case 'submenu':
-      return <SubmenuEntry entry={entry} />;
+      return <SubmenuEntry entry={entry} control={submenu} />;
     case 'zoom': {
       const { onZoomOut: handleZoomOut, onZoomIn: handleZoomIn } = entry;
       return (
@@ -283,22 +444,81 @@ function MenuEntry({ entry }: { entry: MenuPopupEntry }): JSX.Element {
 }
 
 /**
+ * 하위 메뉴를 연 메뉴(부모 메뉴) 안을 눌러 Base UI가 하위 메뉴를 닫으려는지 본다. 부모 메뉴의 다른 하위 메뉴 항목을 누르면 MenuPanel이
+ * 그 하위 메뉴로 바로 바꾸므로, 그 전에 닫혀 하위 메뉴가 없는 순간이 생기지 않게 이 닫기는 받지 않는다.
+ * @param eventDetails Base UI 여닫기 정보
+ * @param eventDetails.reason 여닫는 이유
+ * @param eventDetails.event 여닫게 한 이벤트
+ * @param eventDetails.trigger 하위 메뉴 항목 요소
+ * @returns 부모 메뉴 안을 눌러 닫으려는지
+ */
+function isPressInParentMenu({
+  reason,
+  event,
+  trigger,
+}: {
+  reason: string;
+  event: Event;
+  trigger?: Element;
+}): boolean {
+  const { target } = event;
+  return (
+    reason === 'outside-press' &&
+    target instanceof Node &&
+    (trigger?.closest('[role="menu"]')?.contains(target) ?? false)
+  );
+}
+
+/**
  * 하위 메뉴 항목을 그린다. 여닫을 하위 메뉴(`entries`)가 있으면 항목 오른쪽에 위를 맞춰 붙이는 실제 하위 메뉴로 그리고,
  * 없으면 닫은 모습으로 그린다. 피그마 조립은 하위 메뉴를 닫은 모양으로만 그린다.
+ * 실제 하위 메뉴의 열림은 MenuPanel이 정한다(Base UI `SubmenuRoot`의 `open` 제어). Base UI가 마우스를 올리거나 벗어나 여닫으려는 것은
+ * 받지 않고, 키보드·Esc·바깥 누르기처럼 그 밖의 이유는 그대로 따른다.
+ * @codocs [[디자인 시스템:팝업]]
  * @param props 컴포넌트 속성
  * @param props.entry 하위 메뉴 항목
+ * @param props.control 열림 상태
  */
-function SubmenuEntry({ entry }: { entry: MenuPopupSubmenu }): JSX.Element {
+function SubmenuEntry({
+  entry,
+  control,
+}: {
+  entry: MenuPopupSubmenu;
+  control: SubmenuControl;
+}): JSX.Element {
   if (entry.entries !== undefined) {
+    const { onOpenChange: handleOpenChange } = control;
     return (
-      // 실제 하위 메뉴다. Base UI가 마우스·키보드로 여닫고, 피그마 Popover `Right-Start`처럼 항목 오른쪽에 위를 맞춰 간격(spacing/4)을 두고 붙인다.
-      <BaseMenu.SubmenuRoot>
-        <MenuItem
-          variant="submenu"
-          label={entry.label}
-          icon={entry.icon}
-          isDisabled={entry.isDisabled}
-        />
+      // 실제 하위 메뉴다. 피그마 Popover `Right-Start`처럼 항목 오른쪽에 위를 맞춰 간격(spacing/4)을 두고 붙인다.
+      <BaseMenu.SubmenuRoot
+        open={control.isOpen}
+        onOpenChange={
+          /**
+           * Base UI가 하위 메뉴를 여닫으려 할 때 마우스로 여닫는 것은 막고, 그 밖의 이유는 MenuPanel에 알린다.
+           * @param isOpen 열려는지
+           * @param eventDetails Base UI 여닫기 정보
+           */
+          (isOpen, eventDetails) => {
+            if (
+              pointerOpenChangeReasons.has(eventDetails.reason) ||
+              isPressInParentMenu(eventDetails)
+            ) {
+              eventDetails.cancel();
+              return;
+            }
+            handleOpenChange(isOpen);
+          }
+        }
+      >
+        {/* 마우스가 어느 하위 메뉴 항목 위에 있는지 MenuPanel이 찾는 표시다. 배치에 끼지 않는다. */}
+        <div className="contents" {...{ [SUBMENU_KEY_ATTRIBUTE]: control.key }}>
+          <MenuItem
+            variant="submenu"
+            label={entry.label}
+            icon={entry.icon}
+            isDisabled={entry.isDisabled}
+          />
+        </div>
         <BaseMenu.Portal>
           <BaseMenu.Positioner side="inline-end" align="start" sideOffset={SUBMENU_OFFSET}>
             <MenuPopup items={entry.entries} motion="submenu" />

@@ -184,6 +184,14 @@ function getOption(canvasElement: HTMLElement, name: string | RegExp): HTMLEleme
 }
 
 /**
+ * Blog 폴더에 기억한 보기.
+ * @returns 보기. 바꾼 적이 없으면 undefined
+ */
+function blogFolderView(): string | undefined {
+  return useWorkspaceStore.getState().explorerViews[BLOG_FOLDER_ID]?.view;
+}
+
+/**
  * 고른 항목 이름들.
  * @param canvas 캔버스
  * @returns 이름
@@ -397,6 +405,32 @@ export const ViewAndSort: Story = {
     await step('보기는 폴더마다 따로 기억한다', async () => {
       await expect(useWorkspaceStore.getState().explorerViews['folder:React']).toBeUndefined();
     });
+
+    await step(
+      'Ctrl + Shift + 2·3·6은 큰 아이콘·보통 아이콘·자세히로 바꾸고, 창 밖에 포커스가 있으면 바꾸지 않는다',
+      async () => {
+        await user.click(within(getList(canvasElement)).getByRole('option', { name: /^React/ }));
+        for (const [digit, view] of [
+          ['2', 'large'],
+          ['3', 'medium'],
+          ['6', 'details'],
+        ] as const) {
+          await user.keyboard(`{Control>}{Shift>}${digit}{/Shift}{/Control}`);
+          await expect(blogFolderView()).toBe(view);
+          // 보기가 바뀌어 새로 그린 같은 항목에 포커스가 남는다.
+          await waitFor(async () => {
+            await expect(getOption(canvasElement, /^React/u)).toHaveFocus();
+          });
+        }
+        await fireEvent.keyDown(document.body, {
+          key: '@',
+          code: 'Digit2',
+          ctrlKey: true,
+          shiftKey: true,
+        });
+        await expect(blogFolderView()).toBe('details');
+      },
+    );
   },
 };
 

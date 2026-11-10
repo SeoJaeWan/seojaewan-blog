@@ -12,6 +12,7 @@ export const desktopMenuOptions = {
   iconSize: 'medium',
   isAutoArrange: true,
   isAutoArrangeLocked: false,
+  isMobile: false,
   sortBy: 'name',
   canPaste: true,
   onIconSizeChange: ignoreMenuAction,

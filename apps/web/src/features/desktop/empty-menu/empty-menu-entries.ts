@@ -12,6 +12,9 @@ import { getDesktopSortMenuEntries } from './sort-submenu/sort-submenu-entries';
 import type { DesktopViewMenuOptions } from './view-submenu/view-submenu-entries';
 import { getDesktopViewMenuEntries } from './view-submenu/view-submenu-entries';
 
+// 바탕화면 키 처리가 보기 단축키를 찾는다. 단축키 표는 보기 하위 메뉴가 가진다.
+export { getDesktopIconSizeForShortcut } from './view-submenu/view-submenu-entries';
+
 /** 빈 곳 메뉴가 보이는 설정과 동작. canPaste는 붙여넣을 수 있는지(잘라낸 항목을 바탕화면으로 옮길 수 있는지)다. */
 type DesktopMenuOptions = DesktopViewMenuOptions &
   DesktopSortMenuOptions & {

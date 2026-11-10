@@ -173,7 +173,7 @@ async function findSubmenuItem(
   user: StoryUser,
   submenu: string,
   role: MenuItemRole,
-  name: string,
+  name: string | RegExp,
 ): Promise<HTMLElement> {
   await openMenu(page().getByRole('listbox'));
   await user.click(page().getByRole('menuitem', { name: submenu }));
@@ -191,7 +191,7 @@ async function chooseSubmenuItem(
   user: StoryUser,
   submenu: string,
   role: MenuItemRole,
-  name: string,
+  name: string | RegExp,
 ): Promise<void> {
   await user.click(await findSubmenuItem(user, submenu, role, name));
   await waitForMenuClosed();
@@ -455,6 +455,24 @@ export const SelectIcons: Story = {
         await expect(selectedNames()).toEqual(['휴지통', 'About', 'Blog', 'Project', 'GitHub']);
       },
     );
+  },
+};
+
+// 보기 하위 메뉴에 보이는 단축키로 아이콘 크기를 바꾼다.
+// @codocs [[항목 조작:단축키]]
+export const ViewShortcuts: Story = {
+  play: async ({ step }) => {
+    const user = startUser();
+
+    await step('Ctrl + Shift + 2·3·4는 큰·보통·작은 아이콘으로 바꾼다', async () => {
+      await user.click(icon('Blog'));
+      await user.keyboard('{Control>}{Shift>}2{/Shift}{/Control}');
+      await expect(useWorkspaceStore.getState().desktop.iconSize).toBe('large');
+      await user.keyboard('{Control>}{Shift>}4{/Shift}{/Control}');
+      await expect(useWorkspaceStore.getState().desktop.iconSize).toBe('small');
+      await user.keyboard('{Control>}{Shift>}3{/Shift}{/Control}');
+      await expect(useWorkspaceStore.getState().desktop.iconSize).toBe('medium');
+    });
   },
 };
 
@@ -806,7 +824,8 @@ export const DesktopMenu: Story = {
     });
 
     await step('보기에서 아이콘 크기와 자동 정렬을, 정렬 기준에서 기준을 고른다', async () => {
-      await chooseSubmenuItem(user, '보기', 'menuitemradio', '큰 아이콘');
+      // 아이콘 크기 항목은 이름 뒤에 단축키 글자가 붙는다.
+      await chooseSubmenuItem(user, '보기', 'menuitemradio', /^큰 아이콘/u);
       await expect(useWorkspaceStore.getState().desktop.iconSize).toBe('large');
 
       await chooseSubmenuItem(user, '보기', 'menuitemcheckbox', '아이콘 자동 정렬');
@@ -986,8 +1005,12 @@ export const Mobile: Story = {
       await expect(isAutoArrange).toHaveAttribute('aria-disabled', 'true');
       await user.click(isAutoArrange);
       await expect(useWorkspaceStore.getState().desktop.isAutoArrange).toBe(true);
+      // Esc는 하위 메뉴만 닫고 빈 곳 메뉴로 돌아간다. 한 번 더 누르면 빈 곳 메뉴도 닫힌다.
       await fireEvent.keyDown(isAutoArrange, { key: 'Escape' });
-      await waitForMenuClosed();
+      await waitFor(async () => {
+        await expect(page().queryAllByRole('menu')).toHaveLength(1);
+      });
+      await closeMenu();
     });
 
     open.mockRestore();

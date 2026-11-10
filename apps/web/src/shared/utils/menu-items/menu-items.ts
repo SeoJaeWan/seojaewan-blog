@@ -1,6 +1,7 @@
 import type {
   MenuPopupCommand,
   MenuPopupRadioGroup,
+  MenuPopupRadioOption,
 } from '@/shared/components/menu-popup/menu-popup';
 
 // 메뉴 항목 아이콘(피그마 메뉴 조립 `Menu/*`과 같은 Fluent 아이콘)이다.
@@ -21,14 +22,45 @@ export const MENU_ICONS = {
   refresh: 'icons/ic_fluent_arrow_clockwise_20_regular.svg',
   restore: 'icons/ic_fluent_arrow_counterclockwise_20_regular.svg',
   grid: 'icons/ic_fluent_grid_20_regular.svg',
+  laptop: 'icons/ic_fluent_laptop_20_regular.svg',
+  laptopSmall: 'icons/ic_fluent_laptop_16_regular.svg',
+  details: 'icons/ic_fluent_line_horizontal_4_20_regular.svg',
+  autoArrange: 'illustrations/icon-color-auto-arrange.svg',
   sort: 'icons/ic_fluent_arrow_sort_20_regular.svg',
-  folderAdd: 'icons/ic_fluent_folder_add_20_regular.svg',
+  addCircle: 'icons/ic_fluent_add_circle_20_regular.svg',
+  folder: 'images/file-folder',
   paste: 'icons/ic_fluent_clipboard_paste_20_regular.svg',
   dismiss: 'icons/ic_fluent_dismiss_20_regular.svg',
 } as const;
 
 // 항목 사이 구분선이다.
 export const MENU_SEPARATOR = { kind: 'separator' } as const;
+
+/** 단축키를 누른 키보드 이벤트에서 보는 값 */
+type ShortcutKeyEvent = Pick<KeyboardEvent, 'ctrlKey' | 'metaKey' | 'shiftKey' | 'altKey' | 'code'>;
+
+/**
+ * 보기를 바꾸는 `Ctrl+Shift+숫자` 단축키의 메뉴 글자를 만든다. 모바일 메뉴는 단축키 글자를 보이지 않는다(Chrome ⋮ 메뉴와 같다).
+ * @param digit 숫자 키
+ * @param isMobile 모바일인지
+ * @returns 메뉴 오른쪽에 보일 단축키 글자. 모바일이면 없다
+ */
+export function ctrlShiftDigitShortcut(digit: number, isMobile: boolean): string | undefined {
+  return isMobile ? undefined : `Ctrl+Shift+${String(digit)}`;
+}
+
+/**
+ * 누른 키가 `Ctrl+Shift+숫자`(맥은 Cmd)면 그 숫자를 돌려준다. Shift를 누르면 `key`가 기호로 바뀌므로 자판 자리(`code`)로 본다.
+ * @param event 키보드 이벤트
+ * @returns 숫자. 아니면 undefined
+ */
+export function getCtrlShiftDigit(event: ShortcutKeyEvent): number | undefined {
+  const match = /^Digit(\d)$/u.exec(event.code);
+  if (match === null || !(event.ctrlKey || event.metaKey) || !event.shiftKey || event.altKey) {
+    return undefined;
+  }
+  return Number(match[1]);
+}
 
 /**
  * `열기` 항목을 만든다. 바탕화면·탐색기·Start 메뉴가 쓴다.
@@ -178,13 +210,13 @@ export function emptyRecycleBinMenuItem(
  * 여럿 중 하나를 고르는 묶음(피그마 메뉴의 라디오 항목)을 만든다. 바탕화면·탐색기의 보기·정렬 메뉴가 쓴다.
  * 메뉴는 고른 값을 글자로 넘기므로 선택지에 있는 값인지 보고 맞을 때만 알린다.
  * @param value 지금 고른 값
- * @param options 선택지(차례와 글자)
+ * @param options 선택지(차례와 글자, 아이콘, 단축키 글자)
  * @param onChange 다른 값을 고르면 부른다
  * @returns 메뉴 항목
  */
 export function singleChoiceEntry<Value extends string>(
   value: Value,
-  options: readonly { value: Value; label: string }[],
+  options: readonly (MenuPopupRadioOption & { value: Value })[],
   onChange: (value: Value) => void,
 ): MenuPopupRadioGroup {
   return {

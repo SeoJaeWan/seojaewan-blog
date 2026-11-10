@@ -8,6 +8,7 @@ const MENU_OPTIONS = {
   iconSize: 'medium',
   isAutoArrange: true,
   isAutoArrangeLocked: false,
+  isMobile: false,
   sortBy: 'name',
   onIconSizeChange: vi.fn(),
   onAutoArrangeChange: vi.fn(),

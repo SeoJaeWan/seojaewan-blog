@@ -16,6 +16,7 @@ import { getEmptyMenuEntries } from './empty-menu-entries';
 export function emptyMenuOptions(isRecycleBin: boolean): Parameters<typeof getEmptyMenuEntries>[0] {
   return {
     view: DEFAULT_EXPLORER_VIEW,
+    isMobile: false,
     onViewChange: ignoreMenuAction,
     onSortByChange: ignoreMenuAction,
     onSortDirectionChange: ignoreMenuAction,

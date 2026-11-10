@@ -6,6 +6,7 @@ import { getSortMenuEntries } from './sort-submenu-entries';
 
 const viewOptions = {
   view: DEFAULT_EXPLORER_VIEW,
+  isMobile: false,
   onViewChange: vi.fn(),
   onSortByChange: vi.fn(),
   onSortDirectionChange: vi.fn(),

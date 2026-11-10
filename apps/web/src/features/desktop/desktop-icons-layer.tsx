@@ -57,7 +57,10 @@ import {
 import { DesktopIconImage } from './components/desktop-icon-image/desktop-icon-image';
 import type { DesktopIcon, DesktopIconProps } from './components/desktop-icons/desktop-icons';
 import { DesktopIcons } from './components/desktop-icons/desktop-icons';
-import { getDesktopMenuEntries } from './empty-menu/empty-menu-entries';
+import {
+  getDesktopIconSizeForShortcut,
+  getDesktopMenuEntries,
+} from './empty-menu/empty-menu-entries';
 import { getItemMenuEntries } from './item-menu/item-menu-entries';
 import {
   arrangeInGridOrder,
@@ -449,7 +452,7 @@ export function DesktopIconsLayer(): JSX.Element {
 
   /**
    * 바탕화면 키를 처리한다. 방향키·Ctrl + A는 선택, Enter는 열기, Delete는 휴지통으로 보내기, F2는 폴더 이름 바꾸기,
-   * Ctrl + X는 잘라내기, Ctrl + V는 붙여넣기다.
+   * Ctrl + X는 잘라내기, Ctrl + V는 붙여넣기, Ctrl + Shift + 2·3·4는 큰·보통·작은 아이콘 보기다.
    * @codocs [[항목 조작:단축키]]
    * @codocs [[항목 조작:잘라내기와 붙여넣기]]
    * @param event 키 이벤트
@@ -467,6 +470,12 @@ export function DesktopIconsLayer(): JSX.Element {
     if (isCommand && event.key.toLowerCase() === 'v') {
       event.preventDefault();
       paste();
+      return;
+    }
+    const shortcutIconSize = getDesktopIconSizeForShortcut(event);
+    if (shortcutIconSize !== undefined) {
+      event.preventDefault();
+      getWorkspace().setDesktopIconSize(shortcutIconSize);
       return;
     }
     switch (event.key) {
@@ -592,6 +601,7 @@ export function DesktopIconsLayer(): JSX.Element {
         iconSize,
         isAutoArrange,
         isAutoArrangeLocked: isMobile,
+        isMobile,
         sortBy: settings.sortBy,
         onIconSizeChange: (size: DesktopIconSize) => {
           getWorkspace().setDesktopIconSize(size);

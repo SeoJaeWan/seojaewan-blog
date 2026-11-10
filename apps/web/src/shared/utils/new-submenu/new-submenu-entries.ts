@@ -7,7 +7,7 @@ import { MENU_ICONS } from '@/shared/utils/menu-items/menu-items';
  * @returns 하위 메뉴 항목
  */
 export function getNewSubmenuEntries(onNewFolder: () => void): MenuPopupCommand[] {
-  return [{ label: '폴더', icon: MENU_ICONS.folderAdd, onClick: onNewFolder }];
+  return [{ label: '폴더', icon: MENU_ICONS.folder, onClick: onNewFolder }];
 }
 
 /**
@@ -19,7 +19,7 @@ export function newSubmenuItem(onNewFolder: () => void): MenuPopupSubmenu {
   return {
     kind: 'submenu',
     label: '새로 만들기',
-    icon: MENU_ICONS.folderAdd,
+    icon: MENU_ICONS.addCircle,
     entries: getNewSubmenuEntries(onNewFolder),
   };
 }
