@@ -3,5 +3,4 @@
 // @codocs [[테스트 작성 규칙:스토리 테스트]]
 export { codeBlockStorySample } from './components/code-block/story-data';
 export { FigmaFrame, figmaFrame } from './story/figma-frame';
-export { StoryListbox } from './story/story-listbox';
 export { StoryStage, type StoryStagePlacement } from './story/story-stage';

@@ -3,11 +3,19 @@ import { expect } from 'storybook/test';
 
 import fileRowExport from '../../../figma/components/file-row/export.json';
 import { figmaFrame } from '../../story/figma-frame';
-import { StoryListbox } from '../../story/story-listbox';
 import { FileRow } from './file-row';
 
 // 피그마 FileRow Icon 속성의 기본 인스턴스(폴더 이미지)다. Vite와 Next.js가 모두 파일 주소로 바꿔 준다.
 const folderIcon = new URL('../../assets/images/file-folder.webp', import.meta.url).href;
+
+/**
+ * 줄을 그린 뒤 줄에 포커스를 두어 목록 안에 포커스가 있는 모습을 만든다.
+ * 줄 안이 이미 포커스를 가졌으면 그대로 둔다. 이름 바꾸기 입력창은 이 뒤(effect)에 포커스를 가져가므로 빼앗기지 않는다.
+ * @param row 줄 요소
+ */
+function focusRow(row: HTMLDivElement | null): void {
+  if (row !== null && !row.contains(document.activeElement)) row.focus();
+}
 
 // 피그마 FileRow의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로 재현한다.
 const VIEWS = ['default', 'recycle-bin'] as const;
@@ -72,11 +80,12 @@ const meta = {
   },
   // 줄 너비는 칸 너비의 합(HUG)이고, FigmaFrame이 피그마 원본의 크기 방식대로 감싼다.
   decorators: [figmaFrame(fileRowExport)],
-  // 선택 바탕과 현재 항목 선의 색은 목록 포커스로 고른다. 피그마 Selected unfocused만 포커스가 목록 밖에 있는 모습이고,
-  // 나머지 변형은 포커스가 목록 안에 있는 모습이라 StoryListbox가 줄에 포커스를 둔다.
+  // 선택 바탕과 현재 항목 선의 색은 목록(role="listbox") 포커스로 고른다. 피그마 Selected unfocused만 포커스가 목록 밖에 있는
+  // 모습이고, 나머지 변형은 포커스가 목록 안에 있는 모습이라 ref 콜백으로 줄에 포커스를 둔다.
   render: (args) => (
-    <StoryListbox label="폴더 내용" isFocused={args.state !== 'selected-unfocused'}>
+    <div role="listbox" aria-label="폴더 내용">
       <FileRow
+        ref={args.state === 'selected-unfocused' ? undefined : focusRow}
         role="option"
         aria-selected={args.state.includes('selected')}
         tabIndex={0}
@@ -94,7 +103,7 @@ const meta = {
         isRenaming={args.state === 'rename'}
         isCurrent={args.isCurrent}
       />
-    </StoryListbox>
+    </div>
   ),
 } satisfies Meta<FigmaArgs>;
 
@@ -185,12 +194,12 @@ export const Renaming: Story = {
 // @codocs [[바탕화면 검수:12. 탐색기 항목의 포커스 테두리]]
 // @codocs [[바탕화면 검수:13. 포커스가 없는 선택은 회색]]
 /**
- * 선택 바탕과 현재 항목 선의 색은 목록(group/list)에 포커스가 있는지로 바뀐다. 현재 항목 선은 포커스가 목록을 떠나도 남고,
+ * 선택 바탕과 현재 항목 선의 색은 목록(role="listbox")에 포커스가 있는지로 바뀐다. 현재 항목 선은 포커스가 목록을 떠나도 남고,
  * 현재 항목이 아닌 줄에는 없다. 선은 크기에 넣지 않는다
  */
 export const ListFocus: Story = {
   render: () => (
-    <StoryListbox label="폴더 내용">
+    <div role="listbox" aria-label="폴더 내용">
       <FileRow
         data-testid="current"
         role="option"
@@ -209,7 +218,7 @@ export const ListFocus: Story = {
         icon={<i />}
         name="다른 항목"
       />
-    </StoryListbox>
+    </div>
   ),
   play: async ({ canvas, userEvent, step }) => {
     const current = canvas.getByTestId('current');

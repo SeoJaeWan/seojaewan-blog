@@ -54,8 +54,8 @@ function fileRowState({
  * 줄 너비는 칸 너비의 합이다(`inline-flex w-fit`). 칸 너비와 좌우 여백은 열 제목(DetailsHeader)과 같은 토큰이라,
  * 칸 글자가 열 제목 글자와 같은 x에서 시작하고 선택 바탕이 마지막 열 끝까지만 칠해진다.
  * Rest·Hover는 CSS hover로 바꾸고, 선택·잘라냄·이름 바꾸기·현재 항목은 prop으로 바꾼다.
- * 선택 바탕과 현재 항목 선의 색은 prop이 아니라 목록 포커스로 고른다. 줄을 담은 목록(`role="listbox"`)에 `group/list`를 걸면
- * 포커스가 목록 안에 있을 때 파란 바탕·검은 선(피그마 State=Selected), 아닐 때 회색 바탕·회색 선(State=Selected unfocused)이다.
+ * 선택 바탕과 현재 항목 선의 색은 prop이 아니라 목록 포커스로 고른다. 줄을 담은 목록(`role="listbox"`)을 기준으로
+ * (`in-[[role=listbox]:focus-within]:`) 포커스가 목록 안에 있을 때 파란 바탕·검은 선(피그마 State=Selected), 아닐 때 회색 바탕·회색 선(State=Selected unfocused)이다.
  * 현재 항목 선은 1px 안쪽 선으로 겹쳐 그려 크기를 바꾸지 않는다.
  * @codocs [[피그마 작업 검수:5. FileRow]]
  * @codocs [[바탕화면 검수:12. 탐색기 항목의 포커스 테두리]]
@@ -108,10 +108,10 @@ export function FileRow({
         // 현재 항목은 아래 안쪽 선 고리로 그리므로 브라우저 기본 외곽선은 그리지 않는다.
         'relative isolate inline-flex h-size-file-row-height w-fit items-center gap-spacing-none rounded-radius-control p-spacing-none outline-none select-none',
         isSelected || isRenaming
-          ? 'bg-color-gray-13 group-focus-within/list:bg-color-blue-9'
+          ? 'bg-color-gray-13 in-[[role=listbox]:focus-within]:bg-color-blue-9'
           : 'bg-color-white-0 hover:bg-color-blue-5',
         isCurrent &&
-          'inner-border-color-gray-39 inner-border-w-stroke-width-default group-focus-within/list:inner-border-color-black-89',
+          'inner-border-color-gray-39 inner-border-w-stroke-width-default in-[[role=listbox]:focus-within]:inner-border-color-black-89',
         className,
       )}
     >
