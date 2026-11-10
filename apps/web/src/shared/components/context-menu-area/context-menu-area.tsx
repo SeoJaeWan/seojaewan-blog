@@ -4,11 +4,11 @@ import { useState } from 'react';
 
 import { getMenuPortalContainer, MenuPopup } from '@/shared/components/menu-popup/menu-popup';
 
-/** 메뉴를 영역 요소에 붙이는 자리(피그마 Popover Placement). side는 영역의 위(top)나 아래(bottom)에 붙고, align은 영역의 시작(start)·가운데(center)·끝(end)에 맞추며, offset은 영역과 메뉴 사이 간격(px)이다. */
+/** 메뉴를 영역 요소에 붙이는 자리(피그마 Popover Placement). side는 영역의 위(top)나 아래(bottom)에 붙고, align은 영역의 시작(start)·가운데(center)·끝(end)에 맞추며, offset은 영역과 메뉴 사이 간격(px)이다. 열 때마다 계산하는 간격(토큰 CSS 변수에서 읽는 값)은 함수로 넘긴다. */
 export type ContextMenuAreaPlacement = {
   side: 'top' | 'bottom';
   align: 'start' | 'center' | 'end';
-  offset: number;
+  offset: number | (() => number);
 };
 
 type ContextMenuAreaProps = Pick<ComponentProps<typeof MenuPopup>, 'items'> & {

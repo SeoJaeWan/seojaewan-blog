@@ -8,6 +8,10 @@ import { ContextMenuArea } from '@/shared/components/context-menu-area/context-m
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 
 import { TaskbarAppButton } from './components/taskbar-app/taskbar-app';
+import {
+  getTaskbarPopupOffset,
+  getTaskbarPreviewMargin,
+} from './utils/taskbar-popup-offset/taskbar-popup-offset';
 
 // 목록이 열려 있는 동안(data-preview-open) 앱 버튼을 TaskbarButton Hover 모습(테두리 control-stroke/default, 바탕 control-fill/default)으로
 // 둔다. 창 미리보기는 마우스를 올려 여는 팝업이라 그동안 마우스가 버튼 위에 있다고 보기 때문이다. 버튼 동작이 없는 조립(스토리)에서도
@@ -15,8 +19,16 @@ import { TaskbarAppButton } from './components/taskbar-app/taskbar-app';
 const OPEN_TRIGGER_CLASS_NAME =
   'data-preview-open:border-color-black-6 data-preview-open:bg-color-white-70';
 
-// 우클릭 메뉴(Menu/TaskbarApp)는 피그마 Popover `Top-Center`처럼 버튼 위 가운데에 붙는다. 버튼과 메뉴 사이 간격은 spacing/4다.
-const MENU_PLACEMENT = { side: 'top', align: 'center', offset: 4 } as const;
+/**
+ * 우클릭 메뉴와 버튼 위 끝 사이 간격(px)이다. 메뉴가 작업 표시줄 위 끝에서 spacing/md 떨어지게 열 때마다 토큰 값으로 계산한다.
+ * @returns 버튼 위 끝과 메뉴 아래 끝 사이 간격(px)
+ */
+function getMenuOffset(): number {
+  return getTaskbarPopupOffset('button');
+}
+
+// 우클릭 메뉴(Menu/TaskbarApp)는 피그마 Popover `Top-Center`처럼 버튼 위 가운데에 붙고, 작업 표시줄 위 끝에서 spacing/md 떨어진다.
+const MENU_PLACEMENT = { side: 'top', align: 'center', offset: getMenuOffset } as const;
 
 type TaskbarAppItemProps = {
   app: TaskbarAppId;
@@ -36,7 +48,7 @@ type TaskbarAppItemProps = {
 
 /**
  * 작업 표시줄 앱 하나의 버튼과 그 창 미리보기 목록(피그마 조립 `Taskbar/AppPreview`), 우클릭 메뉴(피그마 조립 `Taskbar/AppMenu`)를 그린다.
- * 목록은 버튼 위 가운데 맞춤(피그마 Popover `Top-Center`)으로 띄운다. 열림 여부와 버튼 클릭 동작은 쓰는 곳이 prop으로 넣는다.
+ * 목록은 버튼 위 가운데 맞춤(피그마 Popover `Top-Center`)으로 띄우고, 메뉴와 목록 모두 작업 표시줄 위 끝에서 `spacing/md` 떨어진다. 열림 여부와 버튼 클릭 동작은 쓰는 곳이 prop으로 넣는다.
  * 열렸을 때 버튼의 `aria-expanded`가 true고 버튼은 Hover 모양이다(`data-preview-open` 변형 클래스, [[컴포넌트 목록:상태]]의 예외). 마우스를 올려 여닫는 시간은 쓰는 곳이 재고, 포인터 들어옴·나감만 받아 넘긴다.
  * `menuItems`를 주면 버튼을 우클릭(모바일은 길게 누르기)할 때 같은 `Top-Center` 자리에 우클릭 메뉴를 연다(`isMenuAtPointer`면 누른 자리 근처). 메뉴가 열려 있는 동안 버튼은 `Rest` 모양 그대로다
  * ([[컴포넌트 목록:상태]]). 창 미리보기가 마우스를 올려 여는 팝업이라 `Hover`인 것과 다르다.
@@ -127,7 +139,13 @@ export function TaskbarAppItem({
           />
         )
       }
-      popup={previews}
+      popup={
+        previews === undefined ? undefined : (
+          <div style={{ marginBottom: getTaskbarPreviewMargin(isCentered ? 'taskbar' : 'button') }}>
+            {previews}
+          </div>
+        )
+      }
     />
   );
 }
