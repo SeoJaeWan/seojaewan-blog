@@ -1,12 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
+import windowPreviewExport from '../../../figma/components/window-preview/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { WindowPreview } from './window-preview';
 
 // 피그마 WindowPreview의 변형 속성 값이다(정규화한 이름). Hover는 도구가 실제 마우스로 재현한다.
+const VARIANTS = ['default', 'title'] as const;
 const STATES = ['rest', 'hover'] as const;
 
 type FigmaArgs = {
+  variant: (typeof VARIANTS)[number];
   state: (typeof STATES)[number];
 };
 
@@ -15,12 +19,13 @@ const appIcon = new URL('../../assets/images/app-file-explorer.webp', import.met
 
 const meta = {
   title: 'Components/WindowPreview',
-  args: { state: 'rest' },
+  args: { variant: 'default', state: 'rest' },
   argTypes: {
+    variant: { control: 'inline-radio', options: VARIANTS },
     state: { control: 'inline-radio', options: STATES },
   },
   // 컴포넌트의 thumbnail 슬롯은 피그마에서 언제나 비어 있어 넣지 않는다. 축소 화면 자리의 크기는 WindowPreview가 갖는다.
-  render: () => <WindowPreview appIcon={<img src={appIcon} alt="" />} />,
+  render: (args) => <WindowPreview variant={args.variant} appIcon={<img src={appIcon} alt="" />} />,
 } satisfies Meta<FigmaArgs>;
 
 export default meta;
@@ -28,8 +33,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 피그마 변형 하나를 args 하나로 고른다.
-export const Figma: Story = {};
+// 피그마 변형 하나를 args 하나로 고른다. Title은 너비를 갖지 않고 쓰는 곳이 정하므로, FigmaFrame이 피그마 원본 크기로 감싼다.
+export const Figma: Story = {
+  decorators: [figmaFrame(windowPreviewExport)],
+};
 
 // @codocs [[작업 표시줄:창 미리보기]]
 /** 카드 너비는 축소 화면 높이(108) × 창 비율 + 좌우 여백(8 × 2)이고, 최대 208이다 */
@@ -100,6 +107,42 @@ export const Default: CloseStory = {
 
     await step('닫기 버튼은 onClose만 부르고 카드의 onClick은 부르지 않는다', async () => {
       // 닫기 버튼은 마우스 전용이라 보조 기술에 숨겨져 역할 이름이 비므로 aria-label로 찾는다.
+      await userEvent.click(canvas.getByLabelText('창 닫기'));
+      await expect(args.onClose).toHaveBeenCalledTimes(1);
+      await expect(args.onClick).not.toHaveBeenCalled();
+    });
+  },
+};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** Title은 축소 화면 없이 제목 줄만 그리고, 터치로 쓰므로 닫기 버튼이 마우스를 올리지 않아도 보인다 */
+export const Title: CloseStory = {
+  args: { onClose: fn(), onClick: fn() },
+  render: (args) => {
+    const { onClose: handleClose, onClick: handleClick } = args;
+    return (
+      <WindowPreview
+        variant="title"
+        data-testid="row"
+        appIcon={<span>앱</span>}
+        title="문서"
+        onClose={handleClose}
+        onClick={handleClick}
+      />
+    );
+  },
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('닫기 버튼이 늘 보인다', async () => {
+      await expect(canvas.getByLabelText('창 닫기')).toBeVisible();
+    });
+
+    await step('축소 화면 자리 없이 제목 줄 하나만 그린다', async () => {
+      await expect(canvas.getByTestId('row').children).toHaveLength(1);
+    });
+
+    await step('닫기 버튼은 onClose만 부르고 줄의 onClick은 부르지 않는다', async () => {
       await userEvent.click(canvas.getByLabelText('창 닫기'));
       await expect(args.onClose).toHaveBeenCalledTimes(1);
       await expect(args.onClick).not.toHaveBeenCalled();

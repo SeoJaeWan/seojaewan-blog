@@ -341,6 +341,27 @@ function getPinnedNames(canvasElement: HTMLElement): (string | null)[] {
 }
 
 /**
+ * 열린 메뉴를 모두 돌려준다. 항목 메뉴가 열린 동안 점프 목록은 다른 우클릭 메뉴처럼 막혀(모달) 접근성 트리에서 숨으므로 숨은 메뉴도 센다.
+ * @param canvasElement 스토리를 그린 요소
+ * @returns 열린 메뉴
+ */
+function getOpenMenus(canvasElement: HTMLElement): HTMLElement[] {
+  return within(canvasElement.ownerDocument.body).queryAllByRole('menu', { hidden: true });
+}
+
+/**
+ * 점프 목록 위에 항목 메뉴가 열리길 기다려 돌려준다. 점프 목록은 열려 있지만 막혀서 보조 기술에는 항목 메뉴 하나만 보인다.
+ * @param canvasElement 스토리를 그린 요소
+ * @returns 항목 메뉴
+ */
+async function waitForItemMenu(canvasElement: HTMLElement): Promise<HTMLElement> {
+  const body = within(canvasElement.ownerDocument.body);
+  await waitFor(() => expect(getOpenMenus(canvasElement)).toHaveLength(2));
+  await waitFor(() => expect(body.getAllByRole('menu')).toHaveLength(1));
+  return body.getByRole('menu');
+}
+
+/**
  * 탐색기 창이 하나다. 탐색기 버튼 우클릭 메뉴 위에 즐겨찾기와 같은 "고정됨" 점프 목록이 붙는다.
  * 압정 해제 버튼과 항목 메뉴로 목록에서 빼도 점프 목록은 열려 있고, 항목을 고르면 그 폴더를 연 새 탐색기 창을 띄운다.
  */
@@ -390,11 +411,7 @@ export const ExplorerJumpList: Story = {
       '항목을 우클릭하면 항목 메뉴(열기 / 구분선 / 이 목록에서 고정 해제)를 띄우고 점프 목록은 닫지 않는다',
       async () => {
         await fireEvent.contextMenu(body.getByRole('menuitem', { name: 'Project' }));
-        await waitFor(() => expect(body.getAllByRole('menu')).toHaveLength(2));
-        const itemMenu = body.getAllByRole('menu')[1];
-        if (itemMenu === undefined) {
-          throw new Error('항목 메뉴가 없다');
-        }
+        const itemMenu = await waitForItemMenu(canvasElement);
         await expect(
           within(itemMenu)
             .getAllByRole('menuitem')
@@ -404,9 +421,9 @@ export const ExplorerJumpList: Story = {
         await userEvent.click(
           within(itemMenu).getByRole('menuitem', { name: '이 목록에서 고정 해제' }),
         );
-        await waitFor(() => expect(body.getAllByRole('menu')).toHaveLength(1));
+        await waitFor(() => expect(getOpenMenus(canvasElement)).toHaveLength(1));
         await expect(getPinnedNames(canvasElement)).toEqual(['About']);
-        // 항목이 사라져도 포커스는 점프 목록 안에 남는다.
+        // 항목이 사라져도 포커스는 점프 목록으로 돌아온다.
         await waitFor(() =>
           expect(body.getByRole('menu').contains(document.activeElement)).toBe(true),
         );
@@ -424,7 +441,7 @@ export const ExplorerJumpList: Story = {
     await step('항목 메뉴의 열기도 그 폴더를 연 새 창을 띄우고 메뉴를 모두 닫는다', async () => {
       await openAppMenu(canvasElement, '파일 탐색기');
       await fireEvent.contextMenu(body.getByRole('menuitem', { name: 'About' }));
-      await waitFor(() => expect(body.getAllByRole('menu')).toHaveLength(2));
+      await waitForItemMenu(canvasElement);
       await clickMenuItem(canvasElement, '열기');
       await expect(getExplorerLocations()).toEqual([null, 'about', 'about']);
     });
@@ -482,12 +499,11 @@ export const ExplorerJumpListFolders: Story = {
         const project = body.getByRole('menuitem', { name: 'Project' });
         project.focus();
         await fireEvent.contextMenu(project);
-        await waitFor(() => expect(body.getAllByRole('menu')).toHaveLength(2));
         // 항목 메뉴로 포커스가 옮겨 간 뒤에 Esc를 누른다. 옮기기 전에 누르면 점프 목록이 키를 받는다.
-        const itemMenu = body.getAllByRole('menu')[1];
-        await waitFor(() => expect(itemMenu?.contains(document.activeElement)).toBe(true));
+        const itemMenu = await waitForItemMenu(canvasElement);
+        await waitFor(() => expect(itemMenu.contains(document.activeElement)).toBe(true));
         await userEvent.keyboard('{Escape}');
-        await waitFor(() => expect(body.getAllByRole('menu')).toHaveLength(1));
+        await waitFor(() => expect(getOpenMenus(canvasElement)).toHaveLength(1));
         await waitFor(() => expect(document.activeElement).toBe(project));
         await userEvent.keyboard('{Escape}');
         await waitFor(() => expect(body.queryByRole('menu')).not.toBeInTheDocument());
