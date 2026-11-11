@@ -10,15 +10,18 @@ const meta = {
   title: 'Patterns/Chrome/AddressSuggestions',
   // 가운데 놓으면 소수 px 위치에 놓여 캡처가 1px 밀리므로 정수 위치(padded)에 둔다.
   parameters: { layout: 'padded' },
+  // 피그마 조립의 바깥 상자는 카드이고, 코드의 바깥 상자는 입력 줄이라 카드를 캡처 기준으로 지정한다.
   render: () => (
-    <ChromeAddressSuggestions
-      aria-label="주소 및 검색창"
-      query={addressSuggestions.query}
-      width={addressSuggestions.width}
-      suggestions={addressSuggestions.items}
-      isOpen
-      selectedIndex={addressSuggestions.selectedIndex}
-    />
+    <div data-parity-target data-parity-box='[data-slot="suggestions-card"]'>
+      <ChromeAddressSuggestions
+        aria-label="주소 및 검색창"
+        query={addressSuggestions.query}
+        width={addressSuggestions.width}
+        suggestions={addressSuggestions.items}
+        isOpen
+        selectedIndex={addressSuggestions.selectedIndex}
+      />
+    </div>
   ),
 } satisfies Meta;
 
