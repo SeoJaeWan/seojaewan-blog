@@ -23,3 +23,9 @@ export const PREVIEW_THUMBNAIL = {
   scale: 0.16875,
   aspectRatio: 1.6,
 } as const;
+
+/**
+ * 피그마 Taskbar/PreviewList `Device=Mobile` 목록 너비: 모바일 화면 폭 390에서 좌우 12px을 뺀 366이다.
+ * 실제 앱은 화면 폭으로 실행 중에 구하고, 스토리는 피그마 값을 쓴다.
+ */
+export const PREVIEW_MOBILE_LIST_WIDTH = 366;

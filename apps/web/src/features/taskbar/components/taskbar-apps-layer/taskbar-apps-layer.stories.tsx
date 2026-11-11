@@ -8,7 +8,6 @@ import {
   pressStoryPointer,
   storyPointerInit,
 } from '@/features/window/story-pointer';
-import { getWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { openStoryWindows, resetStoryStores } from '@/shared/stores/store-reset/story-stores';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import {
@@ -886,7 +885,7 @@ export const DragHidesIndicator: Story = {
   },
 };
 
-/** 모바일 폭이다. 창 미리보기 목록을 화면 폭에서 좌우 12px 여백을 뺀 폭에 맞추고 카드를 같은 너비로 줄인다 */
+/** 모바일 폭이다. 창 미리보기 목록은 축소 화면 없는 제목 줄을 세로로 쌓고, 목록은 화면 폭에서 좌우 12px 여백을 뺀 폭이다 */
 export const Mobile: Story = {
   args: { renderWindow: () => null },
   globals: { viewport: { value: 'mobile1', isRotated: false } },
@@ -898,42 +897,28 @@ export const Mobile: Story = {
 
     // @codocs [[작업 표시줄:모바일]]
     await step(
-      '카드를 창 비율 폭으로 놓아 넘치면 목록을 화면 폭에서 좌우 12px 여백을 뺀 폭에 맞추고 카드를 같은 너비로 줄인다',
+      '목록은 화면 폭에서 좌우 12px 여백을 뺀 폭이고, 축소 화면 없는 제목 줄이 세로로 쌓여 그 너비를 채운다',
       async () => {
         await userEvent.click(body.getByRole('button', { name: 'Google Chrome' }));
-        // 버튼 역할은 카드 안 누르는 영역이 가지므로 그 부모(카드)의 크기를 본다.
-        const cards = (await body.findAllByRole('button', { name: PREVIEW_CARD_NAME })).map(
+        // 버튼 역할은 줄 안 누르는 영역이 가지므로 그 부모(줄)의 크기와 위치를 본다.
+        const rows = (await body.findAllByRole('button', { name: PREVIEW_CARD_NAME })).map(
           (pressArea) => pressArea.parentElement as HTMLElement,
         );
-        await expect(cards).toHaveLength(4);
-        // 실제 브라우저라 여는 애니메이션의 scale이 getBoundingClientRect에 들어가므로 배치 크기를 본다.
+        await expect(rows).toHaveLength(4);
+        // 실제 브라우저라 여는 애니메이션의 scale이 getBoundingClientRect에 들어가므로 배치 크기와 위치를 본다.
         const listWidth = window.innerWidth - 12 * 2;
-        // 카드는 틈 없이 붙고 목록 판은 테두리 합 2px만 갖는다 (예: 320폭이면 (296 - 2) / 4 = 73)
-        const cardWidth = Math.floor((listWidth - 2) / 4);
-        await expect(cards[0]?.parentElement?.offsetWidth).toBe(listWidth);
-        await expect(cards.map((card) => card.offsetWidth)).toEqual(Array(4).fill(cardWidth));
+        await expect(rows[0]?.parentElement?.offsetWidth).toBe(listWidth);
+        // 목록 판은 테두리(좌우 1px씩)만 갖고 줄이 그 안쪽 너비를 채운다.
+        await expect(rows.map((row) => row.offsetWidth)).toEqual(Array(4).fill(listWidth - 2));
+        const tops = rows.map((row) => row.offsetTop);
+        await expect(tops.every((top, index) => index === 0 || top > (tops[index - 1] ?? 0))).toBe(
+          true,
+        );
+        await expect(new Set(rows.map((row) => row.offsetLeft)).size).toBe(1);
+        for (const row of rows) {
+          await expect(row.querySelector('[inert]')).toBeNull();
+        }
       },
     );
-
-    // @codocs [[작업 표시줄:모바일]]
-    // @codocs [[작업 표시줄:창 미리보기]]
-    await step('화면 폭 안에 들어가면 카드마다 창(작업 영역) 비율 폭이다', async () => {
-      const { order } = useWindowStore.getState();
-      useWindowStore.getState().close(order[0] ?? '');
-      await waitFor(async () =>
-        expect(await body.findAllByRole('button', { name: PREVIEW_CARD_NAME })).toHaveLength(3),
-      );
-      // 버튼 역할은 카드 안 누르는 영역이 가지므로 그 부모(카드)를 본다.
-      const cards = body
-        .getAllByRole('button', { name: PREVIEW_CARD_NAME })
-        .map((pressArea) => pressArea.parentElement as HTMLElement);
-      const workArea = getWorkArea(window.innerWidth, window.innerHeight);
-      // 축소 화면 높이 108 × 작업 영역 비율 + 좌우 여백 16 (예: 320×520이면 82.5)
-      const cardWidth = 108 * (workArea.width / workArea.height) + 16;
-      for (const card of cards) {
-        // 배치 크기(offsetWidth)는 정수로 반올림되므로 1px 안에서 본다.
-        await expect(Math.abs(card.offsetWidth - cardWidth)).toBeLessThanOrEqual(1);
-      }
-    });
   },
 };
