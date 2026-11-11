@@ -332,6 +332,15 @@ Notion 열 나누기: |
   - 동작 스토리 `Mobile`로 줄이 세로로 쌓이고 판 안쪽 너비를 채우는 것을 확인한다.
   - 앱(작업 표시줄)이 모바일에서 이 변형을 쓰게 하는 것은 조립 PR(#930)에서 한다.
 
+  WindowPreview 닫기 버튼 형제 PR(`fix/window-preview-close-sibling`)에서 정한 것이다. 모바일 제목 줄에서 axe `nested-interactive`(버튼 안 버튼)가 나 사람이 구조를 바꾸기로 했다.
+  - API: 쓰는 곳이 카드 전체를 `<Button render={card} />`로 감싸던 것을 없애고, `WindowPreview`에 `onSelect`를 더했다. 주면 누르는 영역(앱 아이콘·제목·축소 화면)만 Base UI Button(`nativeButton={false}`, `div`)이 되고 `aria-keyshortcuts="Delete"`를 단다. ExplorerTab이 `Tabs.Tab`을 안에 두는 방식과 같게 디자인 시스템이 버튼 요소를 가진다. `render`를 받는 방식은 쓰는 곳이 `Button`을 다시 `render={<div />}`로 감싸야 해 고르지 않았다. `onSelect`가 없으면 누르는 영역은 그냥 `div`다(디자인 시스템 스토리 등).
+  - Delete 키 처리는 ExplorerTab처럼 쓰는 곳이 바깥 상자의 `onKeyDown`으로 받는다(누르는 영역에서 거품으로 올라온다). 그 밖의 속성(`data-snap-assist-suggestion`, `style` 너비 등)도 바깥 상자에 간다.
+  - 닫기 버튼은 누르는 영역 밖이라 머리글 오른쪽 자리(`size-control-height` 빈 칸, 닫기 버튼과 같은 보임 규칙)를 누르는 영역 안에 두고, 닫기 버튼을 그 위(`absolute top-spacing-sm right-spacing-sm`)에 겹쳐 놓았다. 그래서 제목이 줄어드는 폭과 닫기 버튼 자리가 전과 같다.
+  - Default에서 키보드 포커스일 때 닫기 버튼이 보이는 조건을 카드 포커스(`group-focus-visible`)에서 누르는 영역 포커스(`group-has-focus-visible`)로 바꿨다.
+  - 포커스 선: 전에는 따로 정하지 않아 카드에 브라우저 기본 외곽선이 그려졌다. 포커스가 안쪽 누르는 영역으로 옮겨 가 기본 외곽선이 카드보다 작게 그려지므로, 누르는 영역은 `outline-none`으로 끄고 카드 테두리에 ExplorerTab·IconButton과 같은 토큰 외곽선(`has-focus-visible:outline-stroke-width-focus-outer outline-color-black-89`)을 그렸다([[피그마 연동:포커스 구현]]).
+  - Snap Assist가 뜰 때 첫 카드로 옮기는 포커스는 카드 안 누르는 영역(`[data-snap-assist-suggestion] [role="button"]`)으로 옮긴다. 바깥 누르기 판정(`closest('[data-snap-assist-suggestion]')`)은 카드 전체(닫기 버튼 포함) 그대로다.
+  - 동작 스토리: `WindowPreview` `Default`·`Title`에 누르는 영역만 버튼이고 닫기 버튼이 그 안에 없는 것을 더했다. 작업 표시줄 스토리는 버튼 역할이 누르는 영역으로 옮겨 닫기 버튼과 카드 너비를 그 부모(카드)에서 찾게 고쳤다.
+
 Chrome 세션: |
   2026-11-10 Chrome 검수 후속([[Chrome 검수]])에서 사람에게 묻지 않고 정한 것이다.
   - #884 BrowserTab: 활성 탭 오목 모서리는 검수 문서의 가상 요소 원형 그라디언트 대신 export.json대로 Shapes 자산(`shapes/browser-tab-corner-left·right`)을 `Asset`으로 탭 밖 아래 양옆에 그렸다. 크기는 견본 크기(8, 변수 없음)라 같은 값의 `size-spacing-sm`으로, 위치는 `right-position-full`·`left-position-full`과 `bottom-spacing-none`으로 두었다. 칠은 탭 바탕과 같은 `text-color-white`다.

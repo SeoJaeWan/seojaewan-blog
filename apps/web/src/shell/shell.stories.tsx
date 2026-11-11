@@ -115,8 +115,10 @@ export const WindowPreview: Story = {
       await userEvent.click(body.getByRole('button', { name: '파일 탐색기' }));
       const [preview] = await body.findAllByRole('button', { name: 'Blog - 파일 탐색기' });
 
-      // 닫기 버튼은 마우스 전용이라 보조 기술에 숨겨져 역할 이름이 없다
-      await userEvent.click(within(preview ?? document.body).getByLabelText('창 닫기'));
+      // 닫기 버튼은 마우스 전용이라 보조 기술에 숨겨져 역할 이름이 없다. 누르는 영역의 형제라 카드(부모) 안에서 찾는다
+      await userEvent.click(
+        within(preview?.parentElement ?? document.body).getByLabelText('창 닫기'),
+      );
 
       await waitFor(() =>
         expect(body.getAllByRole('region', { name: 'Blog - 파일 탐색기' })).toHaveLength(1),
