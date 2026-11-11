@@ -130,6 +130,7 @@ _codocs:
   - 완전한 원과 사각형은 자산으로 두지 않는다. 코드에서 그리는 방법은 [[피그마 연동:자산]]에서 정한다.
   - 이미지는 이름 있는 Images 자산으로만 쓴다. 배경화면(`wallpaper/Bloom`)도 Images 자산이다. 플러그인은 이미지 해시로 자산 이름을 찾고, 이름 있는 자산에 없는 이미지는 막는다.
   - UI 아이콘은 Fluent UI System Icons(MIT, github.com/microsoft/fluentui-system-icons)의 SVG 경로를 그대로 넣었다. 코드는 피그마에서 내보낸 같은 SVG를 쓴다.
+  - 예외: Chrome 창 안의 아이콘은 Material Symbols(Apache 2.0, `ic_material_<이름>_20_outlined`)에서 가져온다. 실제 Chrome이 Google의 Material 계열 아이콘을 쓰기 때문이다. 창 버튼(최소화·최대화·닫기)은 실제 Chrome도 Windows 모양이라 그대로 둔다.
   - Windows 자산은 Windows 11 PC에 들어 있는 원본에서 가져왔다. 추측하거나 다시 그리지 않기 위해서다.
 
   | 자산 | 출처 |

@@ -9,6 +9,8 @@ const RENDER_TIMEOUT_MS = 15_000;
 export const PARITY_TARGET_ATTRIBUTE = 'data-parity-target';
 // 마우스를 대상 가운데가 아닌 안쪽 요소에 올려야 하는 스토리가 캡처 대상에 다는 속성이다. 값은 그 요소의 CSS 선택자다.
 export const PARITY_HOVER_ATTRIBUTE = 'data-parity-hover';
+// 배치 상자보다 그림이 크게 떠 있는 컴포넌트의 스토리가 캡처 대상에 다는 속성이다. 값은 피그마 노드에 해당하는 안쪽 요소의 CSS 선택자다.
+export const PARITY_BOX_ATTRIBUTE = 'data-parity-box';
 
 // Storybook 미리보기가 스토리 렌더링을 마쳤는지 확인하는 브라우저 코드다.
 // 내부 API(__STORYBOOK_PREVIEW__)가 없으면 루트에 요소가 생겼는지로 판단한다.
@@ -62,7 +64,31 @@ export async function openStory(
     return { ok: false, message: interactionError };
   }
   await finishTransitions(page);
-  return { ok: true, target };
+  return resolveParityBox(target);
+}
+
+/**
+ * 캡처 기준 요소를 고른다. 대상에 `data-parity-box`가 없으면 대상 자신이다(지금 동작 그대로).
+ * 있으면 대상 안에서 그 선택자에 맞는 요소 하나다. 상자·그림자·바깥선·넘친 자식을 재는 기준이 이 요소가 된다.
+ * 맞는 요소가 없거나 여럿이면 캡처 기준이 모호하므로 실패로 돌려준다.
+ * @codocs [[피그마 연동:캡처 표]]
+ * @param target 캡처 대상
+ * @returns 캡처 기준 요소, 또는 실패 이유
+ */
+export async function resolveParityBox(target: Locator): Promise<StoryPageResult> {
+  const selector = await target.getAttribute(PARITY_BOX_ATTRIBUTE);
+  if (selector === null || selector.trim() === '') {
+    return { ok: true, target };
+  }
+  const boxes = target.locator(selector);
+  const count = await boxes.count();
+  if (count !== 1) {
+    return {
+      ok: false,
+      message: `${PARITY_BOX_ATTRIBUTE}="${selector}"에 맞는 요소가 대상 안에 ${String(count)}개다. 정확히 하나여야 한다.`,
+    };
+  }
+  return { ok: true, target: boxes };
 }
 
 /**

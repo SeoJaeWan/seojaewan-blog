@@ -262,6 +262,8 @@
   --size-jump-list-letter-box: 40px;
   --size-list-item-compact-height: 36px;
   --size-list-item-two-line-height: 52px;
+  --size-menu-command-button-height: 48px;
+  --size-menu-command-button-width: 64px;
   --size-menu-item-bullet: 6px;
   --size-menu-item-value-width: 40px;
   --size-menu-taskbar-width: 294px;
@@ -501,6 +503,8 @@
   --size-size-jump-list-letter-box: var(--size-jump-list-letter-box);
   --size-size-list-item-compact-height: var(--size-list-item-compact-height);
   --size-size-list-item-two-line-height: var(--size-list-item-two-line-height);
+  --size-size-menu-command-button-height: var(--size-menu-command-button-height);
+  --size-size-menu-command-button-width: var(--size-menu-command-button-width);
   --size-size-menu-item-bullet: var(--size-menu-item-bullet);
   --size-size-menu-item-value-width: var(--size-menu-item-value-width);
   --size-size-menu-taskbar-width: var(--size-menu-taskbar-width);

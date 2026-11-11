@@ -1,29 +1,76 @@
 {
-  "description": "Chrome 주소창에 입력하는 중 아래에 추천 목록을 연 모습으로, 주소창 입력 중 추천 화면에 쓴다.",
+  "description": "Chrome 주소창에 입력하는 중 추천 목록이 열린 모습이다. AddressBar Suggesting의 Suggestions 자리에 찾은 글 줄과 맨 끝의 검색 줄을 채운다.",
   "name": "Chrome/AddressSuggestions",
-  "nodeId": "543:14685",
+  "nodeId": "3497:15974",
   "propertyDefinitions": {},
   "variants": {
     "default": {
       "node": {
-        "height": 36,
+        "height": 160,
         "width": 640,
         "x": 16,
         "y": 8
       },
-      "nodeId": "543:14685",
+      "nodeId": "3497:15974",
       "properties": {},
       "report": {
         "components": [
           {
             "component": "AddressBar",
             "paths": [
-              "popover/Trigger/address bar"
+              "address bar"
             ],
             "properties": {
+              "Filled": "True",
+              "Placeholder": "글 검색 또는 URL 입력",
               "Query": "리액",
               "State": "Suggesting",
-              "URL": "seojaewan.com/posts/react-19-hooks"
+              "URL": "웹 주소"
+            }
+          },
+          {
+            "component": "ListItem",
+            "paths": [
+              "address bar/Suggestions/item 리액트 19 훅 정리"
+            ],
+            "properties": {
+              "Has subtitle": false,
+              "Has trailing": true,
+              "Size": "Compact",
+              "State": "Rest",
+              "Subtitle": "보조 설명",
+              "Title": "리액트 19 훅 정리",
+              "Trailing": "seojaewan.com/posts/react-19-hooks"
+            }
+          },
+          {
+            "component": "ListItem",
+            "paths": [
+              "address bar/Suggestions/item 리액트 서버 컴포넌트 이해하기"
+            ],
+            "properties": {
+              "Has subtitle": false,
+              "Has trailing": true,
+              "Size": "Compact",
+              "State": "Selected",
+              "Subtitle": "보조 설명",
+              "Title": "리액트 서버 컴포넌트 이해하기",
+              "Trailing": "seojaewan.com/posts/react-server-components"
+            }
+          },
+          {
+            "component": "ListItem",
+            "paths": [
+              "address bar/Suggestions/item 리액트 검색"
+            ],
+            "properties": {
+              "Has subtitle": false,
+              "Has trailing": false,
+              "Size": "Compact",
+              "State": "Rest",
+              "Subtitle": "보조 설명",
+              "Title": "리액트 검색",
+              "Trailing": "부가 정보"
             }
           }
         ],
@@ -35,7 +82,7 @@
       "tree": {
         "name": "Chrome/AddressSuggestions",
         "size": {
-          "h": 36,
+          "h": 160,
           "w": 640
         },
         "sizing": {

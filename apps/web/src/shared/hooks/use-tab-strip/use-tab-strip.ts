@@ -98,8 +98,11 @@ export function useTabStrip(options: UseTabStripOptions): TabStripControls {
       if (list === null || !(selected instanceof HTMLElement)) {
         return;
       }
-      const start = selected.offsetLeft - list.offsetLeft;
-      const end = start + selected.offsetWidth;
+      // 탭 줄의 양옆 안쪽 여백(Chrome 활성 탭의 모서리 조각 자리)까지 보이게 한다.
+      const style = getComputedStyle(list);
+      const tabStart = selected.offsetLeft - list.offsetLeft;
+      const start = tabStart - (Number.parseFloat(style.paddingLeft) || 0);
+      const end = tabStart + selected.offsetWidth + (Number.parseFloat(style.paddingRight) || 0);
       if (start < list.scrollLeft) {
         list.scrollLeft = start;
       } else if (end > list.scrollLeft + list.clientWidth) {

@@ -206,7 +206,8 @@ export const WithWindows: Story = {
     // @codocs [[작업 표시줄:우클릭 메뉴]]
     await step('창이 하나인 앱은 창 닫기로 그 앱의 창을 닫는다', async () => {
       await openAppMenu(canvasElement, '파일 탐색기');
-      await expect(getMenuItemNames(canvasElement)).toEqual([
+      // 앞의 점프 목록("고정됨")을 빼고 앱 묶음만 본다.
+      await expect(getMenuItemNames(canvasElement).slice(-3)).toEqual([
         '파일 탐색기',
         '작업 표시줄에서 제거',
         '창 닫기',
@@ -307,6 +308,207 @@ export const ChromeJumpList: Story = {
       await userEvent.keyboard('{Escape}');
       await waitFor(() => expect(body.queryByRole('menu')).not.toBeInTheDocument());
     });
+  },
+};
+
+/**
+ * 점프 목록 "고정됨" 항목의 압정 해제 버튼을 찾는다. 버튼은 마우스 전용(`aria-hidden`)이라 역할로 찾지 않고 줄 안에서 이름으로 찾는다.
+ * @param item 점프 목록 항목
+ * @returns 압정 해제 버튼
+ */
+function getUnpinButton(item: HTMLElement): HTMLElement {
+  const button = item.parentElement?.querySelector<HTMLElement>(
+    'button[aria-label="이 목록에서 고정 해제"]',
+  );
+  if (button === null || button === undefined) {
+    throw new Error('압정 해제 버튼이 없다');
+  }
+  return button;
+}
+
+/**
+ * 탐색기 점프 목록 "고정됨"의 항목 이름을 차례대로 돌려준다. 묶음이 없으면 빈 목록이다.
+ * @param canvasElement 스토리를 그린 요소
+ * @returns 항목 이름
+ */
+function getPinnedNames(canvasElement: HTMLElement): (string | null)[] {
+  const group = within(canvasElement.ownerDocument.body).queryByRole('group', { name: '고정됨' });
+  return group === null
+    ? []
+    : within(group)
+        .getAllByRole('menuitem')
+        .map((item) => item.textContent);
+}
+
+/**
+ * 열린 메뉴를 모두 돌려준다. 항목 메뉴가 열린 동안 점프 목록은 다른 우클릭 메뉴처럼 막혀(모달) 접근성 트리에서 숨으므로 숨은 메뉴도 센다.
+ * @param canvasElement 스토리를 그린 요소
+ * @returns 열린 메뉴
+ */
+function getOpenMenus(canvasElement: HTMLElement): HTMLElement[] {
+  return within(canvasElement.ownerDocument.body).queryAllByRole('menu', { hidden: true });
+}
+
+/**
+ * 점프 목록 위에 항목 메뉴가 열리길 기다려 돌려준다. 점프 목록은 열려 있지만 막혀서 보조 기술에는 항목 메뉴 하나만 보인다.
+ * @param canvasElement 스토리를 그린 요소
+ * @returns 항목 메뉴
+ */
+async function waitForItemMenu(canvasElement: HTMLElement): Promise<HTMLElement> {
+  const body = within(canvasElement.ownerDocument.body);
+  await waitFor(() => expect(getOpenMenus(canvasElement)).toHaveLength(2));
+  await waitFor(() => expect(body.getAllByRole('menu')).toHaveLength(1));
+  return body.getByRole('menu');
+}
+
+/**
+ * 탐색기 창이 하나다. 탐색기 버튼 우클릭 메뉴 위에 즐겨찾기와 같은 "고정됨" 점프 목록이 붙는다.
+ * 압정 해제 버튼과 항목 메뉴로 목록에서 빼도 점프 목록은 열려 있고, 항목을 고르면 그 폴더를 연 새 탐색기 창을 띄운다.
+ */
+export const ExplorerJumpList: Story = {
+  beforeEach: () => {
+    openStoryWindows(['file-explorer']);
+  },
+  play: async ({ canvasElement, step }) => {
+    const body = within(canvasElement.ownerDocument.body);
+
+    // @codocs [[작업 표시줄:우클릭 메뉴]]
+    await step(
+      '"고정됨"에 즐겨찾기 폴더를 고정한 차례로 두고, 구분선 아래 앱 묶음이 뒤따른다',
+      async () => {
+        await openAppMenu(canvasElement, '파일 탐색기');
+        await expect(getPinnedNames(canvasElement)).toEqual(['Project', 'Blog', 'About']);
+        await expect(getMenuItemNames(canvasElement).slice(-3)).toEqual([
+          '파일 탐색기',
+          '작업 표시줄에서 제거',
+          '창 닫기',
+        ]);
+        await expect(body.getAllByRole('separator')).toHaveLength(1);
+      },
+    );
+
+    // @codocs [[작업 표시줄:우클릭 메뉴]]
+    await step(
+      '강조한 항목에만 마우스 전용 압정 해제 버튼이 나오고, 누르면 목록에서 빼고 점프 목록은 열어 둔다',
+      async () => {
+        const blog = body.getByRole('menuitem', { name: 'Blog' });
+        const unpin = getUnpinButton(blog);
+        await expect(unpin).not.toBeVisible();
+        // 흉내 낸 포인터 이벤트로는 CSS :hover가 걸리지 않아, 같은 버튼을 보이는 강조 상태(포커스)로 확인한다.
+        blog.focus();
+        await waitFor(() => expect(unpin).toBeVisible());
+        await expect(unpin).toHaveAttribute('aria-hidden', 'true');
+        await expect(unpin).toHaveAttribute('tabindex', '-1');
+        await userEvent.click(unpin);
+        await waitFor(() => expect(getPinnedNames(canvasElement)).toEqual(['Project', 'About']));
+        await expect(useWorkspaceStore.getState().favoritePins).toEqual(['project', 'about']);
+        await expect(body.getByRole('menu')).toBeInTheDocument();
+      },
+    );
+
+    // @codocs [[작업 표시줄:우클릭 메뉴]]
+    await step(
+      '항목을 우클릭하면 항목 메뉴(열기 / 구분선 / 이 목록에서 고정 해제)를 띄우고 점프 목록은 닫지 않는다',
+      async () => {
+        await fireEvent.contextMenu(body.getByRole('menuitem', { name: 'Project' }));
+        const itemMenu = await waitForItemMenu(canvasElement);
+        await expect(
+          within(itemMenu)
+            .getAllByRole('menuitem')
+            .map((item) => item.textContent),
+        ).toEqual(['열기', '이 목록에서 고정 해제']);
+        await expect(within(itemMenu).getAllByRole('separator')).toHaveLength(1);
+        await userEvent.click(
+          within(itemMenu).getByRole('menuitem', { name: '이 목록에서 고정 해제' }),
+        );
+        await waitFor(() => expect(getOpenMenus(canvasElement)).toHaveLength(1));
+        await expect(getPinnedNames(canvasElement)).toEqual(['About']);
+        // 항목이 사라져도 포커스는 점프 목록으로 돌아온다.
+        await waitFor(() =>
+          expect(body.getByRole('menu').contains(document.activeElement)).toBe(true),
+        );
+      },
+    );
+
+    // @codocs [[작업 표시줄:우클릭 메뉴]]
+    await step('항목을 고르면 탐색기 창이 열려 있어도 그 폴더를 연 새 창을 띄운다', async () => {
+      await clickMenuItem(canvasElement, 'About');
+      await expect(getOpenApps()).toEqual(['file-explorer', 'file-explorer']);
+      await expect(getExplorerLocations()).toEqual([null, 'about']);
+    });
+
+    // @codocs [[작업 표시줄:우클릭 메뉴]]
+    await step('항목 메뉴의 열기도 그 폴더를 연 새 창을 띄우고 메뉴를 모두 닫는다', async () => {
+      await openAppMenu(canvasElement, '파일 탐색기');
+      await fireEvent.contextMenu(body.getByRole('menuitem', { name: 'About' }));
+      await waitForItemMenu(canvasElement);
+      await clickMenuItem(canvasElement, '열기');
+      await expect(getExplorerLocations()).toEqual([null, 'about', 'about']);
+    });
+
+    // @codocs [[작업 표시줄:우클릭 메뉴]]
+    await step('목록이 비면 머리글과 구분선을 함께 숨긴다', async () => {
+      await openAppMenu(canvasElement, '파일 탐색기');
+      await userEvent.click(getUnpinButton(body.getByRole('menuitem', { name: 'About' })));
+      await waitFor(() => expect(getPinnedNames(canvasElement)).toEqual([]));
+      await expect(body.queryByRole('separator')).not.toBeInTheDocument();
+      await expect(getMenuItemNames(canvasElement)).toEqual([
+        '파일 탐색기',
+        '작업 표시줄에서 제거',
+        '모든 창 닫기',
+      ]);
+      await userEvent.keyboard('{Escape}');
+      await waitFor(() => expect(body.queryByRole('menu')).not.toBeInTheDocument());
+    });
+  },
+};
+
+/** 즐겨찾기 폴더가 휴지통에 있으면 점프 목록에서 숨기고, 복원하면 다시 보인다. 이름을 바꾸면 바뀐 이름으로 보인다 */
+export const ExplorerJumpListFolders: Story = {
+  play: async ({ canvasElement, step }) => {
+    const body = within(canvasElement.ownerDocument.body);
+
+    // @codocs [[작업 표시줄:우클릭 메뉴]]
+    // @codocs [[고정:즐겨찾기 고정]]
+    await step('휴지통에 넣은 폴더는 숨기고 복원하면 다시 보인다', async () => {
+      useWorkspaceStore.getState().trashItems(['blog']);
+      await openAppMenu(canvasElement, '파일 탐색기');
+      await expect(getPinnedNames(canvasElement)).toEqual(['Project', 'About']);
+      await userEvent.keyboard('{Escape}');
+      useWorkspaceStore.getState().restoreItems(['blog']);
+      await openAppMenu(canvasElement, '파일 탐색기');
+      await expect(getPinnedNames(canvasElement)).toEqual(['Project', 'Blog', 'About']);
+      await userEvent.keyboard('{Escape}');
+    });
+
+    // @codocs [[작업 표시줄:우클릭 메뉴]]
+    // @codocs [[고정:즐겨찾기 고정]]
+    await step('이름을 바꾼 폴더는 바뀐 이름으로 보인다', async () => {
+      useWorkspaceStore.getState().renameFolder('about', '소개');
+      await openAppMenu(canvasElement, '파일 탐색기');
+      await expect(getPinnedNames(canvasElement)).toEqual(['Project', 'Blog', '소개']);
+      await userEvent.keyboard('{Escape}');
+    });
+
+    // @codocs [[작업 표시줄:우클릭 메뉴]]
+    // @codocs [[접근성:포커스]]
+    await step(
+      '키보드로 항목에 간 뒤 contextmenu를 보내면(Shift+F10·메뉴 키) 항목 메뉴가 열리고, Esc는 항목 메뉴만 닫는다',
+      async () => {
+        await openAppMenu(canvasElement, '파일 탐색기');
+        const project = body.getByRole('menuitem', { name: 'Project' });
+        project.focus();
+        await fireEvent.contextMenu(project);
+        // 항목 메뉴로 포커스가 옮겨 간 뒤에 Esc를 누른다. 옮기기 전에 누르면 점프 목록이 키를 받는다.
+        const itemMenu = await waitForItemMenu(canvasElement);
+        await waitFor(() => expect(itemMenu.contains(document.activeElement)).toBe(true));
+        await userEvent.keyboard('{Escape}');
+        await waitFor(() => expect(getOpenMenus(canvasElement)).toHaveLength(1));
+        await waitFor(() => expect(document.activeElement).toBe(project));
+        await userEvent.keyboard('{Escape}');
+        await waitFor(() => expect(body.queryByRole('menu')).not.toBeInTheDocument());
+      },
+    );
   },
 };
 
@@ -534,7 +736,9 @@ export const PinAndUnpin: Story = {
     // @codocs [[작업 표시줄:우클릭 메뉴]]
     await step('창이 없는 앱의 메뉴에는 창 닫기가 없다', async () => {
       await openAppMenu(canvasElement, '파일 탐색기');
-      await expect(getMenuItemNames(canvasElement)).toEqual([
+      // 앞의 점프 목록("고정됨")을 빼고 앱 묶음만 본다.
+      await expect(getMenuItemNames(canvasElement).slice(-3)).toEqual([
+        'About',
         '파일 탐색기',
         '작업 표시줄에서 제거',
       ]);

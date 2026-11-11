@@ -1,10 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { ComponentProps } from 'react';
+import { type ComponentProps, type JSX, useState } from 'react';
 import { expect, fireEvent, fn, userEvent, within } from 'storybook/test';
 
 import addressBarExport from '../../../figma/components/address-bar/export.json';
 import { figmaFrame } from '../../story/figma-frame';
+import { ImageAsset } from '../image-asset/image-asset';
+import { ListItem } from '../list-item/list-item';
 import { AddressBar } from './address-bar';
+
+// 피그마 Suggestions 슬롯의 기본 내용이다(Compact ListItem 하나, 글 문서 아이콘).
+const defaultSuggestions = <ListItem icon={<ImageAsset name="images/file-document" />} />;
 
 // 피그마 AddressBar의 변형 속성 값이다(정규화한 이름).
 const STATES = ['rest', 'hover', 'focused', 'suggesting'] as const;
@@ -53,7 +58,7 @@ const meta = {
   decorators: [figmaFrame(addressBarExport)],
   render: (args) => {
     const { onChange: handleChange } = args;
-    return (
+    const bar = (
       <AddressBar
         // 상태나 글자를 바꾸면 처음 값부터 다시 그리도록 key를 바꾼다.
         key={`${args.state}-${String(args.isFilled)}-${args.url}-${args.query}`}
@@ -62,8 +67,17 @@ const meta = {
         query={args.isFilled ? args.query : ''}
         placeholder={args.placeholder}
         isSuggesting={args.state === 'suggesting'}
+        suggestions={defaultSuggestions}
         onChange={handleChange}
       />
+    );
+    // Suggesting은 카드가 입력 줄 위로 떠 있어 바깥 상자가 피그마 변형 노드(카드)와 다르다. 카드를 캡처 기준으로 지정한다([[피그마 연동:캡처 표]]).
+    return args.state === 'suggesting' ? (
+      <div data-parity-target data-parity-box='[data-slot="suggestions-card"]'>
+        {bar}
+      </div>
+    ) : (
+      bar
     );
   },
 } satisfies Meta<FigmaArgs>;
@@ -129,6 +143,48 @@ export const Suggesting: Story = {
       await expect(within(canvasElement).getByRole('textbox', { name: '주소' })).toHaveValue(
         '리액트',
       );
+    });
+
+    // @codocs [[Chrome:주소창]]
+    await step('추천 자리에 넣은 내용을 입력 줄 아래 카드에 보인다', async () => {
+      await expect(within(canvasElement).getByText('항목 이름')).toBeVisible();
+    });
+  },
+};
+
+/**
+ * 입력하면 Suggesting을 켜는 주소창이다. 켜질 때 입력칸이 같은 요소로 남는지 본다.
+ * @returns 주소창
+ */
+function SuggestOnInput(): JSX.Element {
+  const [isSuggesting, setIsSuggesting] = useState(false);
+  return (
+    <AddressBar
+      aria-label="주소"
+      url="seojaewan.com"
+      isSuggesting={isSuggesting}
+      suggestions={defaultSuggestions}
+      onChange={() => {
+        setIsSuggesting(true);
+      }}
+    />
+  );
+}
+
+// @codocs [[Chrome:주소창]]
+export const KeepsInputWhileSuggesting: Story = {
+  render: () => <SuggestOnInput />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole<HTMLInputElement>('textbox', { name: '주소' });
+
+    // @codocs [[Chrome:주소창]]
+    await step('입력해 추천이 열려도 입력칸이 같은 요소로 남아 포커스를 잃지 않는다', async () => {
+      await userEvent.click(input);
+      await userEvent.keyboard('a');
+      await expect(canvas.getByText('항목 이름')).toBeVisible();
+      await expect(canvas.getByRole('textbox', { name: '주소' })).toBe(input);
+      await expect(input).toHaveFocus();
     });
   },
 };

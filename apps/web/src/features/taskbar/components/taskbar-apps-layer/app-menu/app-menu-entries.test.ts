@@ -1,8 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
+import type { MenuPopupEntry, MenuPopupPinned } from '@/shared/components/menu-popup/menu-popup';
 
-import { getAppMenuEntries, getChromeJumpListEntries } from './app-menu-entries';
+import {
+  getAppMenuEntries,
+  getChromeJumpListEntries,
+  getExplorerJumpListEntries,
+} from './app-menu-entries';
 
 /**
  * 메뉴 항목의 이름을 차례로 돌려준다. 구분선은 `-`다.
@@ -152,5 +156,86 @@ describe('작업 표시줄:우클릭 메뉴 - Chrome 점프 목록', () => {
       onNewWindow: vi.fn(),
     });
     expect(toLabels(entries)).toEqual(['작업']);
+  });
+});
+
+// @codocs [[작업 표시줄:우클릭 메뉴]]
+describe('작업 표시줄:우클릭 메뉴 - 탐색기 점프 목록', () => {
+  const folders = [
+    { id: 'project', name: 'Project' },
+    { id: 'folder:a', name: '내 폴더' },
+  ] as const;
+
+  /**
+   * 점프 목록의 "고정됨" 묶음 안 고정 항목을 꺼낸다.
+   * @param entries 점프 목록 항목
+   * @returns 고정 항목
+   */
+  function getPinned(entries: readonly MenuPopupEntry[]): MenuPopupPinned[] {
+    const [group] = entries;
+    if (group?.kind !== 'group') {
+      throw new Error('묶음이 없다');
+    }
+    return group.entries.flatMap((entry) => (entry.kind === 'pinned' ? [entry] : []));
+  }
+
+  it('"고정됨"에 받은 폴더를 받은 차례로 폴더 아이콘과 함께 고정 항목으로 둔다', () => {
+    const entries = getExplorerJumpListEntries({
+      folders,
+      onOpenFolder: vi.fn(),
+      onUnpin: vi.fn(),
+    });
+    expect(toLabels(entries)).toEqual(['고정됨']);
+    expect(getPinned(entries)).toMatchObject([
+      {
+        id: 'project',
+        label: 'Project',
+        icon: 'images/file-folder',
+        unpinLabel: '이 목록에서 고정 해제',
+      },
+      { id: 'folder:a', label: '내 폴더', icon: 'images/file-folder' },
+    ]);
+  });
+
+  it('항목 메뉴는 열기, 구분선, 이 목록에서 고정 해제 차례다', () => {
+    const [first] = getPinned(
+      getExplorerJumpListEntries({ folders, onOpenFolder: vi.fn(), onUnpin: vi.fn() }),
+    );
+    expect(toLabels(first?.entries ?? [])).toEqual(['열기', '-', '이 목록에서 고정 해제']);
+  });
+
+  it('항목·열기를 고르면 그 폴더 id로 열고, 압정 해제·고정 해제는 그 폴더 id로 뺀다', () => {
+    const onOpenFolder = vi.fn();
+    const onUnpin = vi.fn();
+    const [, second] = getPinned(getExplorerJumpListEntries({ folders, onOpenFolder, onUnpin }));
+    if (second === undefined) {
+      throw new Error('항목이 없다');
+    }
+    second.onClick();
+    select(second.entries, '열기');
+    second.onUnpin();
+    select(second.entries, '이 목록에서 고정 해제');
+    expect(onOpenFolder.mock.calls).toEqual([['folder:a'], ['folder:a']]);
+    expect(onUnpin.mock.calls).toEqual([['folder:a'], ['folder:a']]);
+  });
+
+  it('폴더가 없으면 빈 목록이라 앱 메뉴에 머리글과 구분선이 없다', () => {
+    const jumpList = getExplorerJumpListEntries({
+      folders: [],
+      onOpenFolder: vi.fn(),
+      onUnpin: vi.fn(),
+    });
+    expect(jumpList).toEqual([]);
+    expect(
+      toLabels(
+        getAppMenuEntries({
+          app: 'file-explorer',
+          isPinned: true,
+          windowCount: 0,
+          jumpList,
+          onAction: vi.fn(),
+        }),
+      ),
+    ).toEqual(['파일 탐색기', '작업 표시줄에서 제거']);
   });
 });

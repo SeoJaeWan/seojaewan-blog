@@ -75,6 +75,7 @@
                 "fills": [
                   "color/white/0"
                 ],
+                "height": "size/menu-command-button/height",
                 "layout": {
                   "counterAlign": "CENTER",
                   "gap": "spacing/xs",
@@ -98,18 +99,16 @@
                   "radius/control",
                   "radius/control"
                 ],
-                "sampleSize": [
-                  "height"
-                ],
                 "size": {
                   "h": 48,
-                  "w": 80
+                  "w": 64
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "FIXED",
                   "v": "FIXED"
                 },
-                "type": "INSTANCE"
+                "type": "INSTANCE",
+                "width": "size/menu-command-button/width"
               },
               {
                 "children": [
@@ -211,6 +210,7 @@
                 "fills": [
                   "color/white/0"
                 ],
+                "height": "size/menu-command-button/height",
                 "layout": {
                   "counterAlign": "CENTER",
                   "gap": "spacing/xs",
@@ -234,18 +234,16 @@
                   "radius/control",
                   "radius/control"
                 ],
-                "sampleSize": [
-                  "height"
-                ],
                 "size": {
                   "h": 48,
-                  "w": 80
+                  "w": 64
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "FIXED",
                   "v": "FIXED"
                 },
-                "type": "INSTANCE"
+                "type": "INSTANCE",
+                "width": "size/menu-command-button/width"
               },
               {
                 "children": [
@@ -347,6 +345,7 @@
                 "fills": [
                   "color/white/0"
                 ],
+                "height": "size/menu-command-button/height",
                 "layout": {
                   "counterAlign": "CENTER",
                   "gap": "spacing/xs",
@@ -370,18 +369,16 @@
                   "radius/control",
                   "radius/control"
                 ],
-                "sampleSize": [
-                  "height"
-                ],
                 "size": {
                   "h": 48,
-                  "w": 80
+                  "w": 64
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "FIXED",
                   "v": "FIXED"
                 },
-                "type": "INSTANCE"
+                "type": "INSTANCE",
+                "width": "size/menu-command-button/width"
               }
             ],
             "layout": {

@@ -3428,7 +3428,7 @@
     },
     "surface=explorer,size=large,state=selected,current=true": {
       "node": {
-        "height": 126,
+        "height": 124,
         "width": 112,
         "x": 0,
         "y": 0
@@ -3470,7 +3470,7 @@
             "name": "name",
             "size": {
               "h": 16,
-              "w": 102
+              "w": 104
             },
             "sizing": {
               "h": "FILL",
@@ -3525,7 +3525,7 @@
           "radius/control"
         ],
         "size": {
-          "h": 126,
+          "h": 124,
           "w": 112
         },
         "sizing": {
@@ -3541,7 +3541,7 @@
         "strokes": [
           "color/black/89"
         ],
-        "strokesIncludedInLayout": true,
+        "strokesIncludedInLayout": false,
         "type": "COMPONENT",
         "width": "size/file-item/large-width"
       }
@@ -3658,7 +3658,7 @@
     },
     "surface=explorer,size=large,state=selected-unfocused,current=true": {
       "node": {
-        "height": 126,
+        "height": 124,
         "width": 112,
         "x": 0,
         "y": 0
@@ -3700,7 +3700,7 @@
             "name": "name",
             "size": {
               "h": 16,
-              "w": 102
+              "w": 104
             },
             "sizing": {
               "h": "FILL",
@@ -3755,7 +3755,7 @@
           "radius/control"
         ],
         "size": {
-          "h": 126,
+          "h": 124,
           "w": 112
         },
         "sizing": {
@@ -3771,7 +3771,7 @@
         "strokes": [
           "color/gray/39"
         ],
-        "strokesIncludedInLayout": true,
+        "strokesIncludedInLayout": false,
         "type": "COMPONENT",
         "width": "size/file-item/large-width"
       }
@@ -4633,7 +4633,7 @@
     },
     "surface=explorer,size=medium,state=selected,current=true": {
       "node": {
-        "height": 78,
+        "height": 76,
         "width": 88,
         "x": 0,
         "y": 0
@@ -4675,7 +4675,7 @@
             "name": "name",
             "size": {
               "h": 16,
-              "w": 78
+              "w": 80
             },
             "sizing": {
               "h": "FILL",
@@ -4730,7 +4730,7 @@
           "radius/control"
         ],
         "size": {
-          "h": 78,
+          "h": 76,
           "w": 88
         },
         "sizing": {
@@ -4746,7 +4746,7 @@
         "strokes": [
           "color/black/89"
         ],
-        "strokesIncludedInLayout": true,
+        "strokesIncludedInLayout": false,
         "type": "COMPONENT",
         "width": "size/file-item/explorer-width"
       }
@@ -4863,7 +4863,7 @@
     },
     "surface=explorer,size=medium,state=selected-unfocused,current=true": {
       "node": {
-        "height": 78,
+        "height": 76,
         "width": 88,
         "x": 0,
         "y": 0
@@ -4905,7 +4905,7 @@
             "name": "name",
             "size": {
               "h": 16,
-              "w": 78
+              "w": 80
             },
             "sizing": {
               "h": "FILL",
@@ -4960,7 +4960,7 @@
           "radius/control"
         ],
         "size": {
-          "h": 78,
+          "h": 76,
           "w": 88
         },
         "sizing": {
@@ -4976,7 +4976,7 @@
         "strokes": [
           "color/gray/39"
         ],
-        "strokesIncludedInLayout": true,
+        "strokesIncludedInLayout": false,
         "type": "COMPONENT",
         "width": "size/file-item/explorer-width"
       }

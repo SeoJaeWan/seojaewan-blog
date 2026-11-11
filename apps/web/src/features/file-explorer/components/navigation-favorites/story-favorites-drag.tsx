@@ -1,17 +1,11 @@
 import type { JSX } from 'react';
 
-import {
-  FileItem,
-  ImageAsset,
-  NavigationItem,
-  NavigationPane,
-  Tooltip,
-} from '@seojaewan/design-system';
+import { FileItem, ImageAsset, NavigationPane, Tooltip } from '@seojaewan/design-system';
 
 import { getExplorerWindowParts } from '@/features/file-explorer/components/explorer-window/story-explorer-window-parts';
 
 import { NavigationFavorites } from './navigation-favorites';
-import { FAVORITE_LABELS, FAVORITES_DRAG } from './story-data';
+import { FAVORITES_DRAG } from './story-data';
 
 type StoryFavoritesDragProps = {
   drop: keyof typeof FAVORITES_DRAG;
@@ -29,18 +23,12 @@ type StoryFavoritesDragProps = {
  */
 export function StoryFavoritesDrag({ drop }: StoryFavoritesDragProps): JSX.Element {
   const drag = FAVORITES_DRAG[drop];
+  const parts = getExplorerWindowParts({ device: 'desktop', folder: 'blog', selection: 'none' });
   return (
     <div className="relative flex size-full flex-col justify-end">
       <NavigationPane role="tree" aria-label="탐색 창" className="w-fit">
-        <NavigationFavorites
-          areaId="story"
-          items={FAVORITE_LABELS.map(toFavoriteEntry)}
-          dropSlot={drag.dropSlot}
-        />
-        {
-          getExplorerWindowParts({ device: 'desktop', folder: 'blog', selection: 'none' })
-            .navigation
-        }
+        <NavigationFavorites areaId="story" items={parts.favorites} dropSlot={drag.dropSlot} />
+        {parts.navigation}
       </NavigationPane>
       <FileItem
         surface="explorer"
@@ -63,23 +51,4 @@ export function StoryFavoritesDrag({ drop }: StoryFavoritesDragProps): JSX.Eleme
       />
     </div>
   );
-}
-
-/**
- * 즐겨찾기 칸 하나를 그린다. 압정이 늘 보이는 폴더 칸이다.
- * @param label 칸 이름
- * @returns 즐겨찾기 칸과 열쇠
- */
-function toFavoriteEntry(label: string): { key: string; item: JSX.Element } {
-  return {
-    key: label,
-    item: (
-      <NavigationItem
-        label={label}
-        hasPin
-        icon={<ImageAsset name="images/file-folder" />}
-        className="w-size-navigation-item-width"
-      />
-    ),
-  };
 }

@@ -36,12 +36,12 @@ import {
   getSortColumn,
   sortExplorerItems,
 } from '@/features/file-explorer/utils/explorer-sort/explorer-sort';
-import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
 import {
   ItemDragGhost,
   type ItemDragGhostItem,
 } from '@/shared/components/item-drag-ghost/item-drag-ghost';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
+import { ContextMenuArea } from '@/shared/components/menu-popup/menu-popup';
 import { MessageBoxDialog } from '@/shared/components/message-box-dialog/message-box-dialog';
 import { EMPTY_RECYCLE_BIN_MESSAGE } from '@/shared/components/message-box-empty-recycle-bin/message-box-empty-recycle-bin';
 import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
@@ -117,6 +117,8 @@ type ExplorerBodyProps = Pick<
   | 'onForward'
   | 'onUp'
   | 'onKeyDown'
+  | 'isBreadcrumbSeparatorOpen'
+  | 'renderBreadcrumbSeparator'
 > & {
   device: DeviceVariant;
   location: ExplorerLocation;
@@ -153,7 +155,8 @@ const ICON_VIEWS = { large: 'large', medium: 'medium' } as const;
  * - 명령 모음, 우클릭(모바일은 길게 누르기) 메뉴, 상태 줄(항목 수, 선택 수, 자세히·큰 아이콘 보기).
  * - 휴지통은 늘 자세히 보기(이름·원래 위치·삭제한 날짜)이고 항목을 열 수 없으며 복원만 된다. 휴지통 비우기는 메시지 상자만 보인다.
  * - 폴더 안 검색. 모바일은 주소 줄의 검색 버튼으로 검색 줄을 열고, ← 버튼·Esc·다른 위치로 가기로 검색어를 지우며 닫는다.
- * - 주소창 편집: 경로의 빈 곳을 눌러 경로를 입력하고 Enter로 간다. 경로 끝이 글·외부 링크면 열고, 휴지통 항목이면 복원할지 묻는다. 찾지 못하면 메시지 상자를 띄운다(`useAddressEdit`).
+ * - 주소창 편집: 경로의 빈 곳을 눌러 경로를 입력하고 Enter로 간다. 경로 끝이 글·외부 링크면 열고, 휴지통 항목이면 복원할지 묻는다. 찾지 못하면 메시지 상자를 띄운다.
+ *   지우기 버튼(×)은 입력을 비운다(`useAddressEdit`).
  * 쓸 수 없는 조작(같은 이름 충돌, 자기·하위 폴더로 옮기기)은 명령과 메뉴를 비활성으로 두고, 거부되면 제자리다.
  * @codocs [[파일 탐색기:구성]]
  * @codocs [[파일 탐색기:보기와 정렬]]
@@ -1180,6 +1183,7 @@ export function ExplorerBody({
         onSearchClose={handleMobileSearchClose}
         isBreadcrumbEditing={addressEdit.isEditing}
         breadcrumbEditFieldProps={addressEdit.editFieldProps}
+        onBreadcrumbClear={addressEdit.handleClear}
         onAddressRowClick={addressEdit.handleRowClick}
         dropTarget={{
           id: location ?? DESKTOP_DROP_TARGET,
