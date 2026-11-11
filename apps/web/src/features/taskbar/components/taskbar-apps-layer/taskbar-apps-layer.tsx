@@ -12,7 +12,7 @@ import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import {
-  getMobilePreviewLayout,
+  getMobilePreviewListWidth,
   getPreviewCardWidth,
   getPreviewThumbnailBox,
   getThumbnailScale,
@@ -77,6 +77,7 @@ export type TaskbarAppsLayerProps = {
  * - 키보드로 목록을 열면 첫 카드로 포커스를 옮기고, Esc로 닫거나 마지막 카드를 닫으면 앱 버튼으로 돌려준다.
  * @codocs [[작업 표시줄:앱 버튼]]
  * @codocs [[작업 표시줄:창 미리보기]]
+ * @codocs [[작업 표시줄:모바일]]
  * @codocs [[작업 표시줄:고정과 순서]]
  * @codocs [[작업 표시줄:우클릭 메뉴]]
  * @codocs [[접근성:Tab]]
@@ -411,7 +412,7 @@ export function TaskbarAppsLayer({
   }
 
   /**
-   * 창이 화면에서 차지한 크기를 구한다. 최대화·스냅한 창은 그 자리 크기이고, 창을 늘 최대화해 보이는 모바일은 작업 영역 크기다.
+   * 창이 화면에서 차지한 크기를 구한다. 최대화·스냅한 창은 그 자리 크기다. 축소 화면은 데스크톱 미리보기 카드에만 그린다.
    * @param target 열린 창
    * @returns 창 크기
    */
@@ -419,7 +420,7 @@ export function TaskbarAppsLayer({
     if (workArea === null) {
       return target.bounds;
     }
-    return device === 'mobile' ? workArea : getWindowRect(target, workArea);
+    return getWindowRect(target, workArea);
   }
 
   /**
@@ -439,7 +440,7 @@ export function TaskbarAppsLayer({
       <WindowThumbnail width={size.width} height={size.height} scale={getThumbnailScale(size, box)}>
         {renderWindow(target, {
           isInactive: false,
-          placement: device === 'mobile' ? 'maximized' : target.placement,
+          placement: target.placement,
           onMinimize: ignoreControl,
           onClose: ignoreControl,
         })}
@@ -499,30 +500,28 @@ export function TaskbarAppsLayer({
     });
     const isPreviewOpen = openPreviewApp === app;
     const isMobile = device === 'mobile';
-    // 카드 너비는 창 비율을 따르고, 축소 화면 자리는 그 카드 너비에서 안쪽 여백을 뺀 너비다.
-    // 모바일은 목록이 화면 폭을 넘치면 목록을 화면 폭에 맞추고 카드를 같은 너비로 줄인다.
-    const aspectRatios = appWindows.map((target) =>
-      getWindowAspectRatio(getShownWindowSize(target)),
-    );
-    const mobileLayout =
-      isMobile && workArea !== null
-        ? getMobilePreviewLayout(workArea.width, aspectRatios)
-        : undefined;
+    // 데스크톱 카드 너비는 창 비율을 따르고, 축소 화면 자리는 그 카드 너비에서 안쪽 여백을 뺀 너비다.
+    // 모바일은 축소 화면 없는 제목 줄이라 제목만 넘기고, 목록 너비는 화면 폭에서 좌우 12px을 뺀 폭이다.
     const previews = appWindows.map(
       /**
        * 창 하나의 미리보기 데이터를 만든다.
        * @param target 열린 창
-       * @param index 창 순서
        * @returns 미리보기 데이터
        */
-      (target, index) => {
-        const aspectRatio = aspectRatios[index] ?? getWindowAspectRatio(target.bounds);
-        const cardWidth = mobileLayout?.cardWidth ?? getPreviewCardWidth(aspectRatio);
+      (target) => {
+        const title = getWindowTitle(target);
+        if (isMobile) {
+          return { id: target.id, title };
+        }
+        const aspectRatio = getWindowAspectRatio(getShownWindowSize(target));
         return {
           id: target.id,
-          title: getWindowTitle(target),
+          title,
           aspectRatio,
-          thumbnail: renderThumbnail(target, getPreviewThumbnailBox(cardWidth)),
+          thumbnail: renderThumbnail(
+            target,
+            getPreviewThumbnailBox(getPreviewCardWidth(aspectRatio)),
+          ),
         };
       },
     );
@@ -547,8 +546,12 @@ export function TaskbarAppsLayer({
             <TaskbarWindowPreviewList
               app={app}
               windows={previews}
-              listWidth={mobileLayout?.listWidth}
-              cardWidth={mobileLayout?.cardWidth}
+              device={isMobile ? 'mobile' : 'desktop'}
+              listWidth={
+                isMobile && workArea !== null
+                  ? getMobilePreviewListWidth(workArea.width)
+                  : undefined
+              }
               onSelect={handlePreviewSelect}
               onClose={handlePreviewClose}
             />

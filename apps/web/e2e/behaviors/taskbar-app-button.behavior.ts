@@ -29,6 +29,7 @@ export const behavior = defineBehavior({
       base: 'PC',
     },
   },
+  requires: [{ when: { input: '터치' }, then: { screen: '모바일' } }],
   cases: [
     {
       id: 'open-minimize-restore-close',
@@ -101,6 +102,79 @@ export const behavior = defineBehavior({
         });
         await check('Blog 창은 뒤로 간다', async () => {
           await expect(blog).toHaveAttribute('data-window-state', 'inactive');
+        });
+      },
+    },
+    {
+      id: 'mobile-title-list',
+      result: '제목 줄 목록에서 고르고 닫음',
+      change: { input: '터치' },
+      combine: {
+        change: { windows: '여러 개' },
+        reason: '모바일은 창이 여러 개일 때만 미리보기 목록을 연다',
+      },
+      device: 'Pixel 7',
+      scenario:
+        '모바일에서 탐색기 창을 바탕 화면과 Blog 두 개 열어 둔 채 작업 표시줄의 파일 탐색기 버튼을 탭하고, 목록에서 바탕 화면 줄을 탭한 뒤, 다시 연 목록에서 Blog 줄의 닫기를 탭한다',
+      expected: [
+        '버튼을 탭하면 축소 화면 없는 제목 줄 목록이 세로로 열린다',
+        '줄의 창 제목이 잘리지 않는다',
+        '바탕 화면 줄을 탭하면 그 창이 맨 앞으로 온다',
+        'Blog 줄의 닫기를 탭하면 Blog 창이 닫힌다',
+      ],
+      docs: ['[[작업 표시줄:모바일]]', '[[작업 표시줄:창 미리보기]]'],
+      async run({ page, touch, check }) {
+        await page.goto('/');
+        const taskbarButton = page.getByRole('button', { name: '파일 탐색기' });
+        await touch.tap(taskbarButton);
+        const desktopWindow = page.getByRole('region', { name: '바탕 화면 - 파일 탐색기' });
+        await expect(desktopWindow).toBeVisible();
+        // 모바일 창은 화면을 채워 바탕화면 아이콘을 가리므로, 점프 목록의 고정 폴더로 새 창을 연다.
+        await touch.longPress(taskbarButton);
+        await touch.tap(page.getByRole('menuitem', { name: 'Blog' }));
+        const blog = page.getByRole('region', { name: 'Blog - 파일 탐색기' });
+        await expect(blog).toHaveAttribute('data-window-state', 'active');
+
+        await touch.tap(taskbarButton);
+        const desktopRow = page.getByRole('button', { name: '바탕 화면 - 파일 탐색기' });
+        const blogRow = page.getByRole('button', { name: 'Blog - 파일 탐색기' });
+        await check('버튼을 탭하면 축소 화면 없는 제목 줄 목록이 세로로 열린다', async () => {
+          await expect(desktopRow).toBeVisible();
+          await expect(blogRow).toBeVisible();
+          await expect(desktopRow.locator('[inert]')).toHaveCount(0);
+          const first = await desktopRow.boundingBox();
+          const second = await blogRow.boundingBox();
+          expect(first).not.toBeNull();
+          expect(second).not.toBeNull();
+          expect(second?.y ?? 0).toBeGreaterThan(first?.y ?? 0);
+          expect(Math.abs((second?.x ?? 0) - (first?.x ?? 0))).toBeLessThanOrEqual(1);
+        });
+        await check('줄의 창 제목이 잘리지 않는다', async () => {
+          for (const [row, title] of [
+            [desktopRow, '바탕 화면 - 파일 탐색기'],
+            [blogRow, 'Blog - 파일 탐색기'],
+          ] as const) {
+            const text = row.getByText(title, { exact: true });
+            await expect(text).toBeVisible();
+            expect(
+              await text.evaluate((element) => element.scrollWidth <= element.clientWidth),
+            ).toBe(true);
+          }
+        });
+
+        await touch.tap(desktopRow);
+        await check('바탕 화면 줄을 탭하면 그 창이 맨 앞으로 온다', async () => {
+          await expect(desktopWindow).toHaveAttribute('data-window-state', 'active');
+          await expect(blog).toHaveAttribute('data-window-state', 'inactive');
+        });
+
+        await touch.tap(taskbarButton);
+        await expect(blogRow).toBeVisible();
+        // 닫기 버튼은 마우스 전용(aria-hidden)이고 누르는 영역(버튼 역할)의 형제라 줄(부모)에서 찾는다.
+        await touch.tap(blogRow.locator('xpath=..').locator('[aria-label="창 닫기"]'));
+        await check('Blog 줄의 닫기를 탭하면 Blog 창이 닫힌다', async () => {
+          await expect(blog).not.toBeAttached();
+          await expect(desktopWindow).toBeAttached();
         });
       },
     },
