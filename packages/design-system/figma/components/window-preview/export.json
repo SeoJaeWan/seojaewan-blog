@@ -1,5 +1,5 @@
 {
-  "description": "창 축소 화면과 제목으로 된 창 미리보기 카드로, 작업 표시줄 창 미리보기와 Snap Assist에 쓴다.",
+  "description": "창 축소 화면과 제목으로 된 창 미리보기 카드로, 작업 표시줄 창 미리보기와 Snap Assist에 쓴다. Variant=Title은 축소 화면 없이 아이콘·제목·닫기만 있는 제목 줄로, 모바일 미리보기 목록에 쓴다(안).",
   "name": "WindowPreview",
   "nodeId": "70:1426",
   "propertyDefinitions": {
@@ -13,10 +13,18 @@
     },
     "Thumbnail": {
       "type": "SLOT"
+    },
+    "Variant": {
+      "default": "Default",
+      "options": [
+        "Default",
+        "Title"
+      ],
+      "type": "VARIANT"
     }
   },
   "variants": {
-    "state=hover": {
+    "variant=default,state=hover": {
       "node": {
         "height": 164,
         "width": 208,
@@ -25,7 +33,8 @@
       },
       "nodeId": "70:1415",
       "properties": {
-        "State": "Hover"
+        "State": "Hover",
+        "Variant": "Default"
       },
       "tree": {
         "children": [
@@ -274,7 +283,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "State=Hover",
+        "name": "Variant=Default, State=Hover",
         "radius": [
           "radius/control",
           "radius/control",
@@ -293,7 +302,7 @@
         "width": "size/window-preview/width"
       }
     },
-    "state=rest": {
+    "variant=default,state=rest": {
       "node": {
         "height": 164,
         "width": 208,
@@ -302,7 +311,8 @@
       },
       "nodeId": "70:1404",
       "properties": {
-        "State": "Rest"
+        "State": "Rest",
+        "Variant": "Default"
       },
       "tree": {
         "children": [
@@ -491,7 +501,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "State=Rest",
+        "name": "Variant=Default, State=Rest",
         "radius": [
           "radius/control",
           "radius/control",
@@ -500,7 +510,7 @@
         ],
         "reactions": [
           {
-            "destination": "State=Hover",
+            "destination": "Variant=Default, State=Hover",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -526,6 +536,464 @@
         },
         "type": "COMPONENT",
         "width": "size/window-preview/width"
+      }
+    },
+    "variant=title,state=hover": {
+      "node": {
+        "height": 48,
+        "width": 366,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3497:16013",
+      "properties": {
+        "State": "Hover",
+        "Variant": "Title"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/app-file-explorer"
+                    },
+                    "component": "app/File Explorer",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/sm",
+                    "name": "app icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "fills": [
+                      "color/black/89"
+                    ],
+                    "name": "title",
+                    "size": {
+                      "h": 16,
+                      "w": 282
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "창",
+                          "fill": "color/black/89",
+                          "textStyle": "Hangul/Caption"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "color/black/89",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "제목",
+                          "fill": "color/black/89",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "WindowTitle",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "icon + title",
+                "properties": {
+                  "State": "Active",
+                  "Title": "창 제목",
+                  "Variant": "Preview"
+                },
+                "size": {
+                  "h": 16,
+                  "w": 306
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_dismiss_20_regular"
+                    },
+                    "component": "ic_fluent_dismiss_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "IconButton",
+                "fills": [
+                  "color/white/0"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "close",
+                "properties": {
+                  "Checked": "False",
+                  "State": "Rest",
+                  "Variant": "Close"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 32
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "height": "size/control/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/xs"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "header",
+            "size": {
+              "h": 32,
+              "w": 350
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "fills": [
+          "color/white/70"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/sm",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Variant=Title, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "sampleSize": [
+          "width"
+        ],
+        "size": {
+          "h": 48,
+          "w": 366
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "variant=title,state=rest": {
+      "node": {
+        "height": 48,
+        "width": 366,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3497:16008",
+      "properties": {
+        "State": "Rest",
+        "Variant": "Title"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/app-file-explorer"
+                    },
+                    "component": "app/File Explorer",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/sm",
+                    "name": "app icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "fills": [
+                      "color/black/89"
+                    ],
+                    "name": "title",
+                    "size": {
+                      "h": 16,
+                      "w": 282
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "창",
+                          "fill": "color/black/89",
+                          "textStyle": "Hangul/Caption"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "color/black/89",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "제목",
+                          "fill": "color/black/89",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "WindowTitle",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "icon + title",
+                "properties": {
+                  "State": "Active",
+                  "Title": "창 제목",
+                  "Variant": "Preview"
+                },
+                "size": {
+                  "h": 16,
+                  "w": 306
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_dismiss_20_regular"
+                    },
+                    "component": "ic_fluent_dismiss_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "IconButton",
+                "fills": [
+                  "color/white/0"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "close",
+                "properties": {
+                  "Checked": "False",
+                  "State": "Rest",
+                  "Variant": "Close"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 32
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "height": "size/control/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/xs"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "header",
+            "size": {
+              "h": 32,
+              "w": 350
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "fills": [
+          "color/white/0"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/sm",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Variant=Title, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "sampleSize": [
+          "width"
+        ],
+        "size": {
+          "h": 48,
+          "w": 366
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     }
   }
