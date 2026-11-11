@@ -223,4 +223,11 @@ describe('시나리오 케이스 표', () => {
     });
     expect(data.areas).toEqual(['바탕화면']);
   });
+
+  it('보고서 설정(뷰어 주소, 실패만, PR 번호)을 화면 데이터에 싣는다. 로컬은 없다', () => {
+    const report = { traceViewer: '../../trace/', isFailedOnly: true, pr: 7 };
+
+    expect(buildTable([behavior], { ...inputs, mode: 'report', report }).report).toEqual(report);
+    expect(buildTable([behavior], inputs).report).toBeNull();
+  });
 });

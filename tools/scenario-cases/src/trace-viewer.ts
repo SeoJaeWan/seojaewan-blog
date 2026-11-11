@@ -19,8 +19,9 @@ export function traceViewerSourceDir(): string {
 }
 
 /**
- * 보고서 폴더에 Trace Viewer를 복사한다. 보고서가 Cloudflare Access(로그인) 뒤에 있어
- * 외부 뷰어(trace.playwright.dev)는 trace zip을 받지 못하므로, 보고서와 같은 주소에서 연다.
+ * 보고서 폴더에 Trace Viewer를 복사한다. 실행해보기는 외부 뷰어(trace.playwright.dev)가 아니라
+ * 보고서를 만든 Playwright와 같은 버전의 뷰어로 같은 사이트에서 trace zip을 연다.
+ * `main` 보고서만 사이트 루트에 복사하고, PR 실패 보고서는 그 뷰어를 함께 쓴다(`--trace-viewer`).
  * @codocs [[테스트 작성 규칙:E2E]]
  * @param outDir 보고서 폴더
  * @returns 복사한 폴더

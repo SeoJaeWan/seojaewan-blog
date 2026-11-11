@@ -29,10 +29,12 @@ describe('copyTraceViewer', () => {
     expect(existsSync(path.join(target, 'sw.bundle.js'))).toBe(true);
   });
 
-  it('보고서의 실행해보기는 외부 뷰어가 아니라 보고서 안의 뷰어로 연다', () => {
+  it('보고서의 실행해보기는 외부 뷰어가 아니라 같은 사이트의 뷰어로 연다', () => {
     const script = readFileSync(pageScript, 'utf8');
 
-    expect(script).toContain(`'${TRACE_VIEWER_DIR}/?trace='`);
+    // 보고서 설정에 뷰어 주소가 없으면 보고서 안의 trace 폴더를 쓴다.
+    expect(script).toContain(`'${TRACE_VIEWER_DIR}/'`);
+    expect(script).toContain('report?.traceViewer');
     expect(script).not.toContain('trace.playwright.dev');
   });
 });
