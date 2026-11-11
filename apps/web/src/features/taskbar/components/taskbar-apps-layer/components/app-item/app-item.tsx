@@ -4,8 +4,8 @@ import type { DragEvent, JSX, MouseEventHandler, PointerEventHandler, ReactNode 
 import { Popover } from '@seojaewan/design-system';
 
 import type { TaskbarAppId } from '@/features/taskbar/data/taskbar-apps/taskbar-apps';
-import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
+import { ContextMenuArea } from '@/shared/components/menu-popup/menu-popup';
 
 import { TaskbarAppButton } from './components/taskbar-app/taskbar-app';
 import {

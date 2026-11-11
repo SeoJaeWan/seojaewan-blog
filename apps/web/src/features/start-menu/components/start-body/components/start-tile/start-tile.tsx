@@ -6,8 +6,8 @@ import { PinnedTile } from '@seojaewan/design-system';
 import { renderItemIcon } from '@/features/start-menu/components/item-icon/item-icon';
 import type { StartItem } from '@/features/start-menu/utils/start-items/start-items';
 import { START_TILE_ID_ATTRIBUTE } from '@/features/start-menu/utils/start-items/start-items';
-import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
+import { ContextMenuArea } from '@/shared/components/menu-popup/menu-popup';
 
 type StartTileProps = {
   item: StartItem;

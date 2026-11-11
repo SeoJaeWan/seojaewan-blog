@@ -36,12 +36,12 @@ import {
   getSortColumn,
   sortExplorerItems,
 } from '@/features/file-explorer/utils/explorer-sort/explorer-sort';
-import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
 import {
   ItemDragGhost,
   type ItemDragGhostItem,
 } from '@/shared/components/item-drag-ghost/item-drag-ghost';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
+import { ContextMenuArea } from '@/shared/components/menu-popup/menu-popup';
 import { MessageBoxDialog } from '@/shared/components/message-box-dialog/message-box-dialog';
 import { EMPTY_RECYCLE_BIN_MESSAGE } from '@/shared/components/message-box-empty-recycle-bin/message-box-empty-recycle-bin';
 import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';

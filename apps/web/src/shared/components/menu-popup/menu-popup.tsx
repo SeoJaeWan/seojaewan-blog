@@ -1,9 +1,14 @@
+import { ContextMenu } from '@base-ui/react/context-menu';
 import { Menu as BaseMenu } from '@base-ui/react/menu';
 import {
   type AnimationEvent,
   type ComponentProps,
+  type HTMLProps,
   type JSX,
   type MouseEvent,
+  type ReactElement,
+  type TouchEvent,
+  useEffect,
   useRef,
   useState,
 } from 'react';
@@ -359,11 +364,13 @@ const UNPIN_BUTTON_CLASS_NAME =
  * 고정 항목 한 줄을 그린다. 누르면 `onClick`을 부르고 메뉴를 닫는 `Variant=Default` 항목에, 마우스 전용 압정 해제 버튼과 항목 메뉴를 붙인다.
  * - 압정 해제 버튼은 창 미리보기 닫기 버튼처럼 마우스 전용이다(`aria-hidden`, Tab·방향키로 닿지 않음). 메뉴 항목 밖에 있어 눌러도 메뉴가 닫히지 않고,
  *   눌러도 포커스를 옮기지 않는다. 키보드는 항목 메뉴의 고정 해제를 쓴다.
- * - 줄을 우클릭(키보드는 포커스한 항목에서 Shift+F10·메뉴 키)하면 그 자리에 항목 메뉴를 띄운다. 항목 메뉴는 Base UI ContextMenu가 아니라
- *   줄 옆에 둔 Menu.Root다. ContextMenu.Root로 줄을 감싸면 안의 메뉴 항목이 이 메뉴가 아니라 항목 메뉴에 붙어 방향키·고르기가 깨지기 때문이다.
- *   이 메뉴의 팝업 안에서 열려 Base UI가 같은 팝업 묶음의 자식으로 보므로, 항목 메뉴를 쓰는 동안 이 메뉴는 닫히지 않는다.
- *   항목 메뉴가 닫히면 포커스를 그 줄로 돌려준다.
+ * - 줄을 우클릭(모바일은 길게 누르기, 키보드는 포커스한 항목에서 Shift+F10·메뉴 키)하면 그 자리에 항목 메뉴를 띄운다. 다른 우클릭 메뉴처럼
+ *   `ContextMenuArea`로 연다. 메뉴 항목(Base UI `Menu.Item`)이 `render`로 우클릭 영역을 그리므로, 항목의 훅은 이 메뉴 안에서 돌아 방향키·강조·고르기가
+ *   이 메뉴에 붙고, 항목 메뉴(ContextMenu.Root)는 항목 요소 안쪽에만 생긴다. ContextMenu.Root로 항목을 감싸면 항목이 항목 메뉴에 붙어 깨진다.
+ *   이 메뉴의 팝업 안에서 열려 Base UI가 같은 팝업 묶음의 자식으로 보므로, 항목 메뉴를 쓰는 동안 이 메뉴는 닫히지 않는다. 다른 우클릭 메뉴처럼
+ *   항목 메뉴가 열린 동안 이 메뉴는 막힌다(모달). 항목 메뉴가 닫히면 포커스는 그 줄로, 줄이 사라졌으면(고정 해제) 이 메뉴로 돌아온다.
  * @codocs [[작업 표시줄:우클릭 메뉴]]
+ * @codocs [[반응형:입력 차이]]
  * @codocs [[접근성:역할]]
  * @codocs [[접근성:포커스]]
  * @param props 컴포넌트 속성
@@ -371,9 +378,7 @@ const UNPIN_BUTTON_CLASS_NAME =
  */
 function PinnedEntry({ entry }: { entry: MenuPopupPinned }): JSX.Element {
   const { onClick: handleClick, onUnpin } = entry;
-  // 항목 메뉴를 띄울 자리(화면 좌표). null이면 닫혀 있다.
-  const [menuPoint, setMenuPoint] = useState<{ x: number; y: number } | null>(null);
-  const rowRef = useRef<HTMLDivElement>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   /**
    * 압정 해제 버튼을 누르면 목록에서 뺀다.
@@ -385,74 +390,49 @@ function PinnedEntry({ entry }: { entry: MenuPopupPinned }): JSX.Element {
   }
 
   /**
-   * 줄을 우클릭하면 누른 자리에 항목 메뉴를 연다. 키보드(Shift+F10·메뉴 키)로 보낸 이벤트는 좌표가 없어 줄의 왼쪽 아래에 연다.
-   * @param event 우클릭 이벤트
-   */
-  function handleContextMenu(event: MouseEvent<HTMLDivElement>): void {
-    event.preventDefault();
-    event.stopPropagation();
-    const rect = event.currentTarget.getBoundingClientRect();
-    const isPointer = event.clientX !== 0 || event.clientY !== 0;
-    setMenuPoint(
-      isPointer ? { x: event.clientX, y: event.clientY } : { x: rect.left, y: rect.bottom },
-    );
-  }
-
-  /**
-   * 항목 메뉴가 닫히려 하면 닫는다.
+   * 항목 메뉴를 열거나 닫는다.
    * @param isOpen 열리려는지
    */
   function handleMenuOpenChange(isOpen: boolean): void {
-    if (!isOpen) {
-      setMenuPoint(null);
-    }
+    setIsMenuOpen(isOpen);
   }
 
   /**
-   * 항목 메뉴가 닫힌 뒤 포커스를 둘 곳으로 그 줄의 메뉴 항목을 고른다.
-   * @returns 줄의 메뉴 항목. 줄이 사라졌으면(고정 해제) null이라 Base UI가 정한다
+   * 항목 요소를 우클릭 영역으로 그린다. Base UI가 넘긴 항목 속성(역할, ref, 이벤트)을 영역 요소에 그대로 준다.
+   * @param itemProps Base UI 메뉴 항목 속성
+   * @returns 항목 메뉴가 붙은 항목 요소
    */
-  function getFinalFocus(): HTMLElement | null {
-    return rowRef.current?.querySelector<HTMLElement>('[role="menuitem"]') ?? null;
+  function renderItem(itemProps: HTMLProps<HTMLDivElement>): ReactElement {
+    return (
+      <ContextMenuArea
+        area={<div {...itemProps} />}
+        isOpen={isMenuOpen}
+        onOpenChange={handleMenuOpenChange}
+        items={entry.entries}
+      />
+    );
   }
 
-  const anchor =
-    menuPoint === null
-      ? null
-      : { getBoundingClientRect: () => DOMRect.fromRect({ ...menuPoint, width: 0, height: 0 }) };
-
   return (
-    <>
-      <div
-        ref={rowRef}
-        className="group/pinned relative flex w-full flex-col"
-        onContextMenu={handleContextMenu}
-      >
-        <MenuItem
-          label={entry.label}
-          icon={entry.icon}
-          onClick={handleClick}
-          className={PINNED_ROW_CLASS_NAME}
-        />
-        <IconButton
-          variant="subtle"
-          label={entry.unpinLabel}
-          icon={UNPIN_ICON}
-          aria-hidden
-          tabIndex={-1}
-          onMouseDown={handleUnpinMouseDown}
-          onClick={handleUnpinClick}
-          className={UNPIN_BUTTON_CLASS_NAME}
-        />
-      </div>
-      <BaseMenu.Root open={anchor !== null} onOpenChange={handleMenuOpenChange} modal={false}>
-        <BaseMenu.Portal container={getMenuPortalContainer()}>
-          <BaseMenu.Positioner anchor={anchor} side="bottom" align="start">
-            <MenuPopup items={entry.entries} finalFocus={getFinalFocus} />
-          </BaseMenu.Positioner>
-        </BaseMenu.Portal>
-      </BaseMenu.Root>
-    </>
+    <div className="group/pinned relative flex w-full flex-col">
+      <MenuItem
+        label={entry.label}
+        icon={entry.icon}
+        onClick={handleClick}
+        className={PINNED_ROW_CLASS_NAME}
+        render={renderItem}
+      />
+      <IconButton
+        variant="subtle"
+        label={entry.unpinLabel}
+        icon={UNPIN_ICON}
+        aria-hidden
+        tabIndex={-1}
+        onMouseDown={handleUnpinMouseDown}
+        onClick={handleUnpinClick}
+        className={UNPIN_BUTTON_CLASS_NAME}
+      />
+    </div>
   );
 }
 
@@ -512,4 +492,188 @@ function SubmenuEntry({ entry }: { entry: MenuPopupSubmenu }): JSX.Element {
  */
 export function getMenuPortalContainer(): HTMLElement | undefined {
   return typeof document === 'undefined' ? undefined : document.body;
+}
+
+/**
+ * 한 틱 뒤에 포커스를 잃었으면(문서 끝) 그 요소로 포커스를 준다. 사라진 요소가 문서에서 빠진 다음에 보기 위해 미룬다.
+ * @param element 포커스를 줄 요소. 없거나 문서에서 빠졌으면 아무것도 하지 않는다
+ */
+function focusIfLostLater(element: HTMLElement | null): void {
+  /** 포커스를 잃었으면 요소로 준다. */
+  function focusIfLost(): void {
+    const activeElement = document.activeElement;
+    const isFocusLost = activeElement === null || activeElement === document.body;
+    if (isFocusLost && element?.isConnected === true) {
+      element.focus();
+    }
+  }
+  window.setTimeout(focusIfLost, 0);
+}
+
+/** 메뉴를 영역 요소에 붙이는 자리(피그마 Popover Placement). side는 영역의 위(top)나 아래(bottom)에 붙고, align은 영역의 시작(start)·가운데(center)·끝(end)에 맞추며, offset은 영역과 메뉴 사이 간격(px)이다. 열 때마다 계산하는 간격(토큰 CSS 변수에서 읽는 값)은 함수로 넘긴다. */
+export type ContextMenuAreaPlacement = {
+  side: 'top' | 'bottom';
+  align: 'start' | 'center' | 'end';
+  offset: number | (() => number);
+};
+
+type ContextMenuAreaProps = Pick<ComponentProps<typeof MenuPopup>, 'items' | 'width'> & {
+  area: ReactElement;
+  placement?: ContextMenuAreaPlacement;
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean, target: Element | null) => void;
+  onCloseComplete?: () => void;
+};
+
+/**
+ * 영역을 우클릭하거나 길게 누르면(500ms, Base UI) 누른 자리 옆에 메뉴 조립(`Menu/*`)을 띄운다.
+ * 바탕화면과 탐색기의 빈 곳·항목 메뉴에 쓴다. 메뉴 내용은 쓰는 곳이 연 자리(`target`)를 보고 정한다.
+ * 키보드(Shift+F10, 메뉴 키)로 연 메뉴는 브라우저가 포커스된 요소에 보내는 `contextmenu` 이벤트로 열린다.
+ * 닫힌 뒤 포커스는 Base UI가 옮기지 않고 여기서 정한다. 닫히고 나서 `onCloseComplete`를 부르고, 포커스가 갈 곳을 잃었으면(문서 끝)
+ * 메뉴를 열 때 포커스가 있던 요소로 돌려준다. Base UI가 돌려주면 그 포커스가 메뉴 항목이 띄운 입력창(이름 바꾸기)보다 늦게 와
+ * 입력창을 닫기 때문이다. 바깥을 눌러 닫았으면 누른 곳의 포커스를 그대로 둔다. 닫기가 끝난 때 포커스가 아직 사라질 팝업 안에 있어도(Esc) 잃은 것으로 본다.
+ * 그 요소가 사라졌으면(메뉴 항목이 영역을 없앰) 영역을 담은 가장 가까운 포커스 받는 요소(점프 목록 팝업 등)로 돌려준다.
+ * 길게 눌러 열었으면 그 손가락의 touchend 기본 동작을 막아 따라오는 클릭(mousedown·click)이 생기지 않게 한다.
+ * 메뉴 안(이 메뉴가 품은 항목 메뉴)에서 뗀 mouseup이 Base UI의 "여는 동작 취소"(`cancel-open`)로 이 메뉴를 닫으려 하면 막는다.
+ * 메뉴 항목도 영역이 될 수 있다(점프 목록 고정 항목의 항목 메뉴). 이때는 항목이 `render`로 이 컴포넌트를 그려 항목의 훅은 바깥 메뉴에 붙는다.
+ * `placement`를 주면 누른 자리 대신 영역 요소에 붙여 연다(모바일 길게 누르기도 같다).
+ * 팝업은 문서 끝(body)에 포털해 영역의 `overflow`에 잘리지 않게 한다.
+ * `MenuPopup`과 서로를 그리므로(메뉴 항목의 항목 메뉴) 같은 파일에 둔다.
+ * @codocs [[바탕화면 우클릭 메뉴:빈 곳]]
+ * @codocs [[바탕화면 우클릭 메뉴:아이콘]]
+ * @codocs [[반응형:입력 차이]]
+ * @codocs [[작업 표시줄:우클릭 메뉴]]
+ * @codocs [[접근성:포커스]]
+ * @param props 컴포넌트 속성
+ * @param props.area 우클릭(모바일은 길게 누르기)을 받는 영역 요소. Base UI `ContextMenu.Trigger`가 이 요소에 여는 동작을 합쳐 그린다. 요소의 ref와 이벤트 속성은 그대로 남는다
+ * @param props.placement 주면 메뉴를 누른 자리가 아니라 영역 요소에 붙인다(작업 표시줄 앱 버튼처럼 메뉴가 버튼 위 가운데에 붙는 경우). 주지 않으면 누른 자리 옆에 띄운다
+ * @param props.isOpen 메뉴가 열렸는지. 쓰는 곳이 정한다
+ * @param props.onOpenChange 메뉴를 열거나 닫으려 할 때 부른다(우클릭, 길게 누르기, Esc, 바깥 클릭, 항목 고르기). 쓰는 곳이 `isOpen`을 바꾼다. 열 때는 우클릭·길게 누른 자리의 요소(`target`)를 함께 넘겨, 쓰는 곳이 어떤 메뉴를 보일지 정하게 한다
+ * @param props.onCloseComplete 메뉴가 닫힌 뒤 부른다. 메뉴 항목이 다른 곳에 포커스를 줄 일(이름 바꾸기 입력창)은 여기서 시작한다. 그 뒤 포커스가 갈 곳이 없으면 메뉴를 열 때 포커스가 있던 요소로 돌아간다
+ * @param props.items 메뉴 항목과 구분선. 위에서부터 그린다
+ * @param props.width 메뉴 바탕 너비(피그마 메뉴 조립의 Menu 너비). 없으면 Menu 기본 너비다
+ */
+export function ContextMenuArea({
+  area,
+  placement,
+  isOpen,
+  onOpenChange,
+  onCloseComplete,
+  items,
+  width,
+}: ContextMenuAreaProps): JSX.Element {
+  const [returnFocusElement, setReturnFocusElement] = useState<HTMLElement | null>(null);
+  const [areaElement, setAreaElement] = useState<HTMLElement | null>(null);
+  // 영역을 담은 가장 가까운 포커스 받는 요소(점프 목록 팝업, 목록). 포커스를 가졌던 요소가 사라지면 여기로 돌린다.
+  const [containerElement, setContainerElement] = useState<HTMLElement | null>(null);
+  const positionerRef = useRef<HTMLDivElement>(null);
+  const containerElementRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    containerElementRef.current = containerElement;
+  }, [containerElement]);
+
+  useEffect(
+    /**
+     * 메뉴 항목이 영역 자체를 없애면(점프 목록에서 고정 해제) 닫기가 끝나기 전에 이 컴포넌트가 사라져 닫힌 뒤의 포커스 복귀가 돌지 않는다.
+     * 그래서 사라질 때, 포커스를 잃었으면(문서 끝) 영역을 담은 요소로 돌린다. 요소가 문서에서 빠진 다음에 보도록 한 틱 미룬다.
+     * @returns 사라질 때 포커스를 돌리는 정리 함수
+     */
+    () => {
+      const containerRef = containerElementRef;
+      return () => {
+        focusIfLostLater(containerRef.current);
+      };
+    },
+    [],
+  );
+
+  // 길게 눌러 메뉴를 연 손가락이 아직 닿아 있는지. 그 손가락을 뗄 때 따라오는 클릭을 막는다.
+  const isLongPressOpenRef = useRef(false);
+
+  /**
+   * 길게 눌러 메뉴를 연 손가락을 떼면 기본 동작을 막아, 브라우저가 이어 보내는 mousedown·click(따라오는 클릭)이 생기지 않게 한다.
+   * 막지 않으면 그 클릭이 메뉴 바깥을 누른 것으로 잡혀 이 메뉴를 품은 메뉴(점프 목록)가 닫히거나, 누른 자리의 항목이 열린다.
+   * @param event 터치 끝 이벤트
+   */
+  function handleTouchEnd(event: TouchEvent): void {
+    if (isLongPressOpenRef.current) {
+      event.preventDefault();
+    }
+    isLongPressOpenRef.current = false;
+  }
+
+  /**
+   * 열림이 바뀐 것을 연 자리와 함께 쓰는 곳에 알린다.
+   * @param isNextOpen 바뀐 열림 여부
+   * @param details Base UI가 넘기는 바뀐 까닭과 이벤트
+   */
+  function handleOpenChange(
+    isNextOpen: boolean,
+    details: ContextMenu.Root.ChangeEventDetails,
+  ): void {
+    const target = details.event.target;
+    if (
+      !isNextOpen &&
+      details.reason === 'cancel-open' &&
+      target instanceof Element &&
+      target.closest('[role="menu"]') !== null
+    ) {
+      details.cancel();
+      return;
+    }
+    if (isNextOpen) {
+      isLongPressOpenRef.current = details.event.type.startsWith('touch');
+      const focused = document.activeElement;
+      setReturnFocusElement(focused instanceof HTMLElement ? focused : null);
+      setContainerElement(areaElement?.parentElement?.closest<HTMLElement>('[tabindex]') ?? null);
+    }
+    onOpenChange(isNextOpen, target instanceof Element ? target : null);
+  }
+
+  /**
+   * 열고 닫기가 끝나면, 닫힌 경우 쓰는 곳에 알린다.
+   * @param isNextOpen 끝난 열림 여부
+   */
+  function handleOpenChangeComplete(isNextOpen: boolean): void {
+    if (isNextOpen) {
+      return;
+    }
+    onCloseComplete?.();
+    // 닫기가 끝난 때 포커스가 아직 곧 사라질 팝업 안에 남아 있으면(Esc로 닫음) 잃은 것과 같다.
+    const activeElement = document.activeElement;
+    const isFocusLost =
+      activeElement === null ||
+      activeElement === document.body ||
+      positionerRef.current?.contains(activeElement) === true;
+    if (!isFocusLost) {
+      return;
+    }
+    if (returnFocusElement?.isConnected === true) {
+      returnFocusElement.focus();
+    } else if (containerElement?.isConnected === true) {
+      containerElement.focus();
+    }
+  }
+
+  return (
+    <ContextMenu.Root
+      open={isOpen}
+      onOpenChange={handleOpenChange}
+      onOpenChangeComplete={handleOpenChangeComplete}
+    >
+      <ContextMenu.Trigger ref={setAreaElement} render={area} onTouchEnd={handleTouchEnd} />
+      <ContextMenu.Portal container={getMenuPortalContainer()}>
+        <ContextMenu.Positioner
+          ref={positionerRef}
+          anchor={placement === undefined ? undefined : areaElement}
+          side={placement?.side}
+          align={placement?.align}
+          sideOffset={placement?.offset}
+        >
+          <MenuPopup items={items} width={width} finalFocus={false} />
+        </ContextMenu.Positioner>
+      </ContextMenu.Portal>
+    </ContextMenu.Root>
+  );
 }
