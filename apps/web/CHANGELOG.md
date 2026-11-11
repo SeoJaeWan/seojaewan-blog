@@ -1,5 +1,73 @@
 # @seojaewan/web
 
+## 0.3.0
+
+### Minor Changes
+
+- 99e3dfc: Chrome 주소창 추천 목록을 팝업이 아니라 주소창이 펼쳐진 모습(AddressBar Suggesting 카드 한 장)으로 바꾸고, 탭 검색(⌄) 버튼에 열린 탭 목록 메뉴를 붙인다. 탭 파비콘과 추천 줄 아이콘을 Material 아이콘으로 바꾸고, 맨 끝 활성 탭의 모서리 조각이 잘리지 않게 한다. 디자인 시스템은 내보낸 경고 아이콘 자산을 다시 생성했다.
+- 6c0a749: 탐색기 경로의 꺾쇠를 누르면 하위 폴더(맨 앞은 바탕 화면·휴지통) 목록을 열어 고른 폴더로 가고, 주소창 편집의 지우기 버튼(×)이 입력을 비운다.
+- 9afbe19: 탐색기 즐겨찾기 목록(처음 Project·Blog·About, 폴더만 고정, 휴지통의 폴더는 숨김)과 고정·해제·순서 바꾸기를 작업 공간 저장소에 더하고 방문자 브라우저에 저장한다.
+- f37536a: 탐색기 탐색 창 맨 위에 즐겨찾기(압정, 구분선, 끌어 놓아 고정·순서 바꾸기)와 폴더 메뉴의 즐겨찾기에 고정·제거를 더하고, 위로·뒤로·앞으로 뒤에 선택을 되살리며, 명령 모음(정렬·보기 꺾쇠, 원 안 + 새로 만들기, 주소 줄 아래 구분선)·상태 표시줄(`N개 항목`, 지금 보기 켜짐)·위치 아이콘·탐색 창과 자세히 보기의 현재 칸 표시를 실제 Windows에 맞춘다.
+- b8aa8d9: 작업 표시줄 탐색기 앱 메뉴 위에 즐겨찾기와 같은 "고정됨" 점프 목록(압정 해제 버튼, 항목 메뉴, 새 탐색기 창으로 열기)을 더했다.
+- 553ab1d: 작업 표시줄 앱 메뉴를 294 너비로 넓히고 Chrome 점프 목록(자주 방문 최신 글, 새 창)을 더했으며, 창 미리보기 카드 폭이 창 비율을 따르게 했다.
+
+### Patch Changes
+
+- 75329e6: Windows 로고 자산을 여백 없는 40 프레임으로 다시 내보내고, 재부팅 화면 로고 크기 그림을 맞췄다.
+- bc8d3ca: 바탕화면·탐색기 항목 메뉴의 잘라내기·이름 바꾸기·삭제를 단추 줄로 올리고(위로 열리면 맨 아래), 빈 곳 메뉴는 붙여넣을 것이 있을 때만 단추 줄에 붙여넣기를 보이게 했다. 끄는 복제본을 선택 상자째로 그리고, 탐색기 목록의 현재 항목에 1px 선을 그리며 자세히 보기 행이 목록 너비를 덮지 않게 했다.
+- 07a7445: 보기 하위 메뉴에 아이콘과 보기 단축키(바탕화면 Ctrl+Shift+2·3·4, 탐색기 Ctrl+Shift+2·3·6)를 더하고 단축키가 실제로 동작하게 했다. 새로 만들기·폴더 메뉴 아이콘을 바꾸고, 하위 메뉴는 마우스가 400ms 머물러야 열리거나 바뀌게 했다.
+- e68dba0: 경로 꺾쇠 목록 조립 그림을 위치 아이콘이 붙은 목록으로 다시 내보내고, 탐색기 창 조립 스토리를 피그마에 맞춰 즐겨찾기 칸, 경로 끝 꺾쇠, 탐색 창의 고른 칸, 상태 줄 보기를 그린다.
+- e2f5b84: 탐색기 경로 꺾쇠 목록이 피그마 그림과 같은 자리에 열린다.
+- ce60626: FileItem에 탐색기 현재 항목 선(`isCurrent`), 목록 포커스에 따른 회색 선택과 목록 밖 파란 선택(`isListFocused`)을 더하고, 바탕화면에서 이름을 바꾸는 동안 선택 바탕을 그리지 않는다. RenameField에 줄을 바꾸며 아래로 길어지는 여러 줄 방식(`isMultiline`)을 더하고 FileItem이 쓴다. 앱의 이름 바꾸기 훅 타입을 textarea도 받게 맞춘다.
+- 0df2133: 점프 목록 고정 폴더의 항목 메뉴를 다른 우클릭 메뉴와 같은 공용 영역으로 열어, 모바일 길게 누르기로 열고 터치로 고정 해제해도 점프 목록이 열려 있게 한다. `MenuItem`이 `render`를 받는다.
+- 20c60fc: 재질 값(플라이아웃·셸 아크릴·미카)을 실제 화면 측정에 맞추고, 창 열기·스냅 모션 클래스가 끝난 뒤 남아 창 안 흐림을 막던 문제를 고친다.
+- dd2ecf9: MenuItem의 확인·라디오 항목이 선택 표시 다음에 아이콘과 이름 뒤에 단축키를 그리고, 앱 메뉴 타입이 두 속성을 받는다
+- 5577726: 바탕화면·탐색기·작업 표시줄·Chrome 메뉴 조립 그림과 새 아이콘 자산을 피그마에서 다시 내보냈다.
+- ab13170: 작업 표시줄 창 미리보기 조립 그림의 탐색기 축소 화면을 경로 끝 꺾쇠, 고른 칸, `N개 항목` 문구가 앱과 같은 모습으로 다시 내보냈다.
+- 503881d: 탐색기 창 조립 그림을 보통 아이콘 보기에서 상태 줄 보기 버튼이 모두 꺼진 모습으로 다시 내보냈다.
+- 933f3fa: Chrome·탐색기 창 조립 그림과 그 그림이 쓰는 새 자산을 피그마에서 다시 내보냈다.
+- 813e375: 고정 메뉴 항목을 만드는 함수의 문서 연결을 고정 문서 섹션으로 맞춘다.
+- 5ca06f0: SearchBox 작업 표시줄 변형의 돋보기를 채운 아이콘·거의 검정으로 바꾸고 왼쪽 여백을 12px로 줄였다.
+- 8c729a0: Taskbar 피그마 내보내기를 시작 로고 여백 없는 자산과 채운 검색 돋보기 기준으로 갱신했다.
+- b787591: 모바일 작업 표시줄 창 미리보기 목록을 축소 화면 없는 제목 줄로 세로로 쌓고, 목록 너비를 화면 폭에서 좌우 12px을 뺀 폭으로 맞춘다.
+- 410c735: 작업 표시줄 앱 우클릭 메뉴의 구분선을 빼고 "작업 표시줄에서 제거"로 문구를 바꿨다. 앱 버튼을 끌어 순서를 바꾸는 동안 호버 바탕과 실행 표시를 끄고, Chrome 이름을 "Google Chrome"으로 바꿨다.
+- 89daf85: WindowPreview: 누르는 영역과 닫기 버튼을 형제로 두고 `onSelect`로 누르는 영역만 버튼이 되게 해, 작업 표시줄 미리보기·Snap Assist에서 버튼 안 버튼이 생기지 않게 했다.
+- Updated dependencies [f0abdb8]
+- Updated dependencies [98328f2]
+- Updated dependencies [75329e6]
+- Updated dependencies [fda6e14]
+- Updated dependencies [c16c125]
+- Updated dependencies [2ea7a6a]
+- Updated dependencies [3bd0eed]
+- Updated dependencies [60a1509]
+- Updated dependencies [671b848]
+- Updated dependencies [99e3dfc]
+- Updated dependencies [c36be91]
+- Updated dependencies [99e1d42]
+- Updated dependencies [86915d9]
+- Updated dependencies [c967538]
+- Updated dependencies [e6038cc]
+- Updated dependencies [c9a839d]
+- Updated dependencies [ce60626]
+- Updated dependencies [6e95f3b]
+- Updated dependencies [cb8b507]
+- Updated dependencies [0df2133]
+- Updated dependencies [20c60fc]
+- Updated dependencies [7347752]
+- Updated dependencies [d16dcbe]
+- Updated dependencies [dd2ecf9]
+- Updated dependencies [48d4305]
+- Updated dependencies [5577726]
+- Updated dependencies [933f3fa]
+- Updated dependencies [5ca06f0]
+- Updated dependencies [8c729a0]
+- Updated dependencies [553ab1d]
+- Updated dependencies [6b35412]
+- Updated dependencies [89daf85]
+- Updated dependencies [4d5ab1b]
+- Updated dependencies [148e363]
+  - @seojaewan/design-system@0.3.0
+
 ## 0.2.1
 
 ### Patch Changes

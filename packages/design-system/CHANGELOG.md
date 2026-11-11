@@ -1,5 +1,47 @@
 # @seojaewan/design-system
 
+## 0.3.0
+
+### Minor Changes
+
+- f0abdb8: AddressBar: 빈 주소창(안내 문구 `placeholder`와 Material 돋보기)을 더하고, Suggesting을 바탕·그림자 없는 투명한 입력 줄로 바꿨다.
+- 98328f2: AddressBar: Suggesting에서 입력 줄과 추천 자리(`suggestions`)를 함께 감싸는 카드를 스스로 그린다. 카드는 절대 위치라 주소창 높이는 그대로다.
+- fda6e14: 경로 마디 사이 꺾쇠 버튼 BreadcrumbChevron을 더한다(Rest·Hover·Open, 메뉴 트리거로 쓸 수 있다).
+- c16c125: Breadcrumb의 맨 앞 꺾쇠를 BreadcrumbChevron 버튼으로 바꾸고(separatorLabel, isSeparatorOpen, renderSeparator), 편집 중에는 위치 아이콘을 숨기고 입력이 있을 때만 지우기 버튼(onClear)을 보이며 입력칸 글자를 type-body로 키운다.
+- 2ea7a6a: BreadcrumbItem의 위치 이름을 type-body로 키우고, 구분자를 BreadcrumbChevron 버튼으로 바꾼다(separatorLabel, isSeparatorOpen, renderSeparator).
+- 60a1509: BrowserTabStrip 맨 왼쪽에 탭 검색(⌄) 버튼을 더하고, 새 탭(+) 아이콘을 Material 아이콘으로 바꾼다. 앱이 탭 목록 메뉴를 붙일 수 있게 `renderTabSearchButton`을 연다.
+- 99e1d42: DropDownButton에 글자 앞 아이콘(hasIcon, icon)을 더한다.
+- 86915d9: ExplorerAddressRow 아래에 1px 구분선을 그리고, 안쪽 Breadcrumb의 맨 앞 꺾쇠(breadcrumbSeparatorLabel, isBreadcrumbSeparatorOpen, renderBreadcrumbSeparator)와 지우기 동작(onBreadcrumbClear)을 넘긴다.
+- c967538: ExplorerStatusBar가 지금 보기(view)를 받아 해당 보기 버튼을 켜짐으로 그리고, 보기 아이콘을 가로줄·노트북으로 바꾼다.
+- ce60626: FileItem에 탐색기 현재 항목 선(`isCurrent`), 목록 포커스에 따른 회색 선택과 목록 밖 파란 선택(`isListFocused`)을 더하고, 바탕화면에서 이름을 바꾸는 동안 선택 바탕을 그리지 않는다. RenameField에 줄을 바꾸며 아래로 길어지는 여러 줄 방식(`isMultiline`)을 더하고 FileItem이 쓴다. 앱의 이름 바꾸기 훅 타입을 textarea도 받게 맞춘다.
+- 0df2133: 점프 목록 고정 폴더의 항목 메뉴를 다른 우클릭 메뉴와 같은 공용 영역으로 열어, 모바일 길게 누르기로 열고 터치로 고정 해제해도 점프 목록이 열려 있게 한다. `MenuItem`이 `render`를 받는다.
+- 7347752: 메뉴 위·아래에 놓는 단추 줄 MenuCommandBar 컴포넌트를 추가한다.
+- d16dcbe: 메뉴 위·아래 단추 줄에 놓는 MenuCommandButton 컴포넌트를 추가한다.
+- 6b35412: TaskbarPreviewList: `device="mobile"`을 더했다. 미리보기(WindowPreview 제목 줄)를 세로로 쌓고 줄이 판 너비를 채운다.
+- 89daf85: WindowPreview: 누르는 영역과 닫기 버튼을 형제로 두고 `onSelect`로 누르는 영역만 버튼이 되게 해, 작업 표시줄 미리보기·Snap Assist에서 버튼 안 버튼이 생기지 않게 했다.
+- 4d5ab1b: WindowPreview의 호버를 흰색 70% 덧칠로, 닫기 버튼을 `IconButton variant="close"`로 바꾸고, 축소 화면 칸의 바탕·선·둥글기를 빼고, 창 비율(`aspectRatio`)로 카드 너비를 정할 수 있게 한다(최대 208).
+- 148e363: WindowPreview: 축소 화면 없이 앱 아이콘·제목·닫기 버튼만 그리는 제목 줄 `variant="title"`을 더했다. 너비는 쓰는 곳이 정하고 닫기 버튼은 늘 보인다.
+
+### Patch Changes
+
+- 75329e6: Windows 로고 자산을 여백 없는 40 프레임으로 다시 내보내고, 재부팅 화면 로고 크기 그림을 맞췄다.
+- 3bd0eed: BrowserTab 활성 탭 아래 양옆에 오목한 모서리를 그리고, 닫기 아이콘 기본값을 Material 닫기 아이콘으로 바꾼다.
+- 671b848: BrowserToolbar: 뒤로·앞으로·새로고침·⋮ 아이콘을 Material Symbols로 바꾸고, 아래에 1px 안쪽 선(`color/black/22`)을 더했다.
+- 99e3dfc: Chrome 주소창 추천 목록을 팝업이 아니라 주소창이 펼쳐진 모습(AddressBar Suggesting 카드 한 장)으로 바꾸고, 탭 검색(⌄) 버튼에 열린 탭 목록 메뉴를 붙인다. 탭 파비콘과 추천 줄 아이콘을 Material 아이콘으로 바꾸고, 맨 끝 활성 탭의 모서리 조각이 잘리지 않게 한다. 디자인 시스템은 내보낸 경고 아이콘 자산을 다시 생성했다.
+- c36be91: ColumnHeader의 정렬 화살표를 칸 위쪽 가운데에 겹쳐 그려 글자 자리가 줄지 않게 한다.
+- e6038cc: 선택된 ExplorerTab의 바탕을 불투명(gray/4)으로 바꾼다.
+- c9a839d: AddressBar: Suggesting 카드에 `data-slot="suggestions-card"` 이름표를 달고, `Figma` 스토리가 이 카드를 캡처 기준으로 지정한다. 모양과 동작은 같다.
+- 6e95f3b: FileRow 행 높이를 28px로, 너비를 열 너비의 합으로 바꾸고, 현재 항목 선(`isCurrent`)과 목록 포커스에 따른 회색 선택을 더한다.
+- cb8b507: IconButton에 close 변형과 켜짐(isChecked) 모양을 더하고, chrome 변형의 반지름을 radius/circular로 바꾼다.
+- 20c60fc: 재질 값(플라이아웃·셸 아크릴·미카)을 실제 화면 측정에 맞추고, 창 열기·스냅 모션 클래스가 끝난 뒤 남아 창 안 흐림을 막던 문제를 고친다.
+- dd2ecf9: MenuItem의 확인·라디오 항목이 선택 표시 다음에 아이콘과 이름 뒤에 단축키를 그리고, 앱 메뉴 타입이 두 속성을 받는다
+- 48d4305: NavigationItem에 포커스 없는 선택(회색)·현재 칸 선(isCurrent)·즐겨찾기 압정(hasPin)을 더하고 브라우저 기본 외곽선을 지운다.
+- 5577726: 바탕화면·탐색기·작업 표시줄·Chrome 메뉴 조립 그림과 새 아이콘 자산을 피그마에서 다시 내보냈다.
+- 933f3fa: Chrome·탐색기 창 조립 그림과 그 그림이 쓰는 새 자산을 피그마에서 다시 내보냈다.
+- 5ca06f0: SearchBox 작업 표시줄 변형의 돋보기를 채운 아이콘·거의 검정으로 바꾸고 왼쪽 여백을 12px로 줄였다.
+- 8c729a0: Taskbar 피그마 내보내기를 시작 로고 여백 없는 자산과 채운 검색 돋보기 기준으로 갱신했다.
+- 553ab1d: 작업 표시줄 앱 메뉴를 294 너비로 넓히고 Chrome 점프 목록(자주 방문 최신 글, 새 창)을 더했으며, 창 미리보기 카드 폭이 창 비율을 따르게 했다.
+
 ## 0.2.0
 
 ### Minor Changes
