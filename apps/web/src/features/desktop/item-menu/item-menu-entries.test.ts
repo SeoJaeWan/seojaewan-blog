@@ -6,6 +6,7 @@ import { getItemMenuEntries } from './item-menu-entries';
 
 const ITEM_OPTIONS = {
   kind: 'folder',
+  isMobile: false,
   isPinned: true,
   isFavorite: false,
   canTrash: true,
@@ -96,6 +97,11 @@ describe('바탕화면 우클릭 메뉴:아이콘', () => {
       kind: 'command-bar',
       buttons: [{ shortcut: 'Ctrl+X' }, { shortcut: 'F2' }, { shortcut: 'Delete' }],
     });
+  });
+
+  it('모바일 메뉴는 열기에 Enter를 보이지 않는다', () => {
+    const entries = getItemMenuEntries({ ...ITEM_OPTIONS, isMobile: true });
+    expect(findEntry(entries, '열기')).not.toHaveProperty('shortcut');
   });
 
   it('휴지통으로 보낼 수 없으면 삭제 단추가 없다', () => {

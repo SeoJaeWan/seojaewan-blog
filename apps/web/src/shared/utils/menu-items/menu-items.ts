@@ -74,13 +74,16 @@ export function openMenuItem(onClick: () => void): MenuPopupCommand {
 }
 
 /**
- * 바탕화면·탐색기 항목 메뉴의 `열기` 항목을 만든다. 항목을 고른 채 Enter를 누르면 열리므로 오른쪽에 `Enter`를 보인다(Windows 11 파일 메뉴와 같다).
+ * 바탕화면·탐색기 항목 메뉴의 `열기` 항목을 만든다. 항목을 고른 채 Enter를 누르면 열리므로 오른쪽에 `Enter`를 보인다(Windows 11 파일 메뉴와 같다). 모바일 메뉴는 단축키 글자를 보이지 않는다(`ctrlShiftDigitShortcut`과 같다).
  * @codocs [[바탕화면 우클릭 메뉴:아이콘]]
+ * @codocs [[반응형:입력 차이]]
  * @param onClick 골랐을 때 할 일
- * @returns 메뉴 항목
+ * @param isMobile 모바일인지
+ * @returns 메뉴 항목. 모바일이면 단축키 글자가 없다
  */
-export function openItemMenuItem(onClick: () => void): MenuPopupCommand {
-  return { ...openMenuItem(onClick), shortcut: 'Enter' };
+export function openItemMenuItem(onClick: () => void, isMobile: boolean): MenuPopupCommand {
+  const item = openMenuItem(onClick);
+  return isMobile ? item : { ...item, shortcut: 'Enter' };
 }
 
 /**

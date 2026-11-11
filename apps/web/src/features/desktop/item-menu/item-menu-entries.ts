@@ -15,9 +15,10 @@ import {
 } from '@/shared/utils/menu-items/menu-items';
 import type { WorkspaceItemKind } from '@/shared/utils/workspace-rules/workspace-rules';
 
-/** 아이콘 메뉴가 보이는 상태와 동작. kind는 우클릭한 항목 종류이며 여럿이면 null이다. isPinned는 Start 고정됨에 있는지(하나일 때)이고 canTrash는 휴지통으로 보낼 수 있는지(휴지통은 보낼 수 없다)다. isRecycleBinEmpty가 true면 휴지통 비우기를 고를 수 없다. */
+/** 아이콘 메뉴가 보이는 상태와 동작. kind는 우클릭한 항목 종류이며 여럿이면 null이다. isMobile이면 모바일이라 단축키 글자를 보이지 않는다. isPinned는 Start 고정됨에 있는지(하나일 때)이고 canTrash는 휴지통으로 보낼 수 있는지(휴지통은 보낼 수 없다)다. isRecycleBinEmpty가 true면 휴지통 비우기를 고를 수 없다. */
 type ItemMenuOptions = {
   kind: WorkspaceItemKind | null;
+  isMobile: boolean;
   isPinned: boolean;
   isFavorite: boolean;
   canTrash: boolean;
@@ -35,7 +36,7 @@ type ItemMenuOptions = {
 
 /**
  * 아이콘 우클릭 메뉴(피그마 Menu/Folder·Post·Link·RecycleBin·Multiple)의 항목을 만든다. 실제 메뉴와 메뉴 조립 스토리가 함께 쓴다.
- * 잘라내기·이름 바꾸기·삭제는 단추 줄에 두고, 목록의 열기에 `Enter`를 보인다. 휴지통은 단추 줄 없이 목록만이다.
+ * 잘라내기·이름 바꾸기·삭제는 단추 줄에 두고, 목록의 열기에 `Enter`를 보인다(모바일은 단축키 글자를 보이지 않는다). 휴지통은 단추 줄 없이 목록만이다.
  * 이미 Start에 고정된 항목은 `시작 화면에 고정` 대신 `시작 화면에서 고정 해제`다. 단추에는 비활성 모양이 없어
  * 휴지통으로 보낼 수 없으면 삭제 단추를 빼고, 휴지통이 비었으면 휴지통 비우기를 고를 수 없다(탐색기와 같다).
  * @codocs [[바탕화면 우클릭 메뉴:아이콘]]
@@ -45,7 +46,7 @@ type ItemMenuOptions = {
  * @returns 메뉴 항목
  */
 export function getItemMenuEntries(options: ItemMenuOptions): MenuPopupEntry[] {
-  const open = openItemMenuItem(options.onOpen);
+  const open = openItemMenuItem(options.onOpen, options.isMobile);
   const openInNewWindow = openInNewWindowMenuItem(options.onOpenInNewWindow);
   const copyLink = copyLinkMenuItem(options.onCopyLink);
   const pin = startPinMenuItem(options.isPinned, options.onTogglePin);

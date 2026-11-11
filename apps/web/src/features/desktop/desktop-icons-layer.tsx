@@ -633,6 +633,7 @@ export function DesktopIconsLayer(): JSX.Element {
     const first = ids.length === 1 && firstId !== undefined ? items[firstId] : undefined;
     return getItemMenuEntries({
       kind: ids.length === 1 ? (first?.kind ?? null) : null,
+      isMobile,
       isPinned: firstId !== undefined && startPins.includes(firstId),
       isFavorite: firstId !== undefined && favoritePins.includes(firstId),
       canTrash: trashItems(getWorkspace(), ids, new Date().toISOString()).ok,

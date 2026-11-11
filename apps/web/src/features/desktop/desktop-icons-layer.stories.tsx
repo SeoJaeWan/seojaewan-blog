@@ -942,6 +942,35 @@ export const ItemMenu: Story = {
   },
 };
 
+// 화면 아래쪽에서 아이콘을 우클릭해 자리가 모자라면 메뉴가 위로 뒤집혀 열리고, 단추 줄이 메뉴 맨 아래로 내려간다.
+// @codocs [[바탕화면 우클릭 메뉴:아이콘]]
+export const ItemMenuFlipsUp: Story = {
+  play: async ({ step }) => {
+    await step('화면 아래쪽을 우클릭하면 메뉴가 위로 열리고 단추 줄이 맨 아래에 있다', async () => {
+      await fireEvent.contextMenu(icon('Blog'), {
+        clientX: 200,
+        clientY: window.innerHeight - 4,
+      });
+      const menu = await page().findByRole('menu');
+      await waitFor(async () => {
+        await expect(menu.getAnimations({ subtree: true }).filter(isRunning)).toHaveLength(0);
+      });
+      const names = menuItemNames();
+      await expect(names[0]).not.toBe('잘라내기');
+      await expect(names.slice(-3)).toEqual(['잘라내기', '이름 바꾸기', '삭제']);
+      // 메뉴는 누른 자리 위에 붙는다(아래로 넘치지 않는다).
+      await expect(menu.getBoundingClientRect().bottom).toBeLessThanOrEqual(window.innerHeight + 2);
+      await closeMenu();
+    });
+
+    await step('위쪽을 우클릭하면 아래로 열리고 단추 줄이 맨 위에 있다', async () => {
+      await openMenu(icon('Blog'));
+      await expect(menuItemNames().slice(0, 3)).toEqual(['잘라내기', '이름 바꾸기', '삭제']);
+      await closeMenu();
+    });
+  },
+};
+
 // 모바일 폭의 바탕화면이다. 뷰포트는 addon-vitest가 실제 브라우저 크기로 바꾼다.
 // @codocs [[바탕화면 아이콘:모바일]]
 // @codocs [[반응형:입력 차이]]

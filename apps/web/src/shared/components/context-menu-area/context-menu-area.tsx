@@ -28,6 +28,8 @@ type ContextMenuAreaProps = Pick<ComponentProps<typeof MenuPopup>, 'items' | 'wi
  * 입력창을 닫기 때문이다. 바깥을 눌러 닫았으면 누른 곳의 포커스를 그대로 둔다.
  * `placement`를 주면 누른 자리 대신 영역 요소에 붙여 연다(모바일 길게 누르기도 같다).
  * 팝업은 문서 끝(body)에 포털해 영역의 `overflow`에 잘리지 않게 한다.
+ * 화면 아래쪽에서 열어 아래에 자리가 모자라면 위로 뒤집혀 열린다(`collisionAvoidance`의 `side: 'flip'`). 위로 열리면 `MenuPopup`이 Base UI `side`를 보고
+ * 단추 줄을 메뉴 맨 아래에 둔다. 작업 표시줄 앱 메뉴(`placement`의 side가 top)는 처음부터 위로 열리므로 그대로다.
  * @codocs [[바탕화면 우클릭 메뉴:빈 곳]]
  * @codocs [[바탕화면 우클릭 메뉴:아이콘]]
  * @codocs [[반응형:입력 차이]]
@@ -98,6 +100,7 @@ export function ContextMenuArea({
           side={placement?.side}
           align={placement?.align}
           sideOffset={placement?.offset}
+          collisionAvoidance={{ side: 'flip' }}
         >
           <MenuPopup items={items} width={width} finalFocus={false} />
         </ContextMenu.Positioner>

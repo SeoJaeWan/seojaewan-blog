@@ -119,6 +119,13 @@ describe('창 동작:모바일', () => {
     );
   });
 
+  it('모바일 메뉴는 열기에 Enter를 보이지 않는다', () => {
+    const entries = getItemMenuEntries({ ...ITEM_OPTIONS, isMobile: true });
+    expect(entries.find((entry) => 'label' in entry && entry.label === '열기')).not.toHaveProperty(
+      'shortcut',
+    );
+  });
+
   it('모바일 길게 누르기 메뉴에도 옮기기 위한 잘라내기가 있다', () => {
     expect(labels(getItemMenuEntries({ ...ITEM_OPTIONS, isMobile: true }))[0]).toContain(
       '잘라내기',
