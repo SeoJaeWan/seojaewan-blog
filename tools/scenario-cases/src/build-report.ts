@@ -8,13 +8,16 @@ import { loadTable } from './load-table.ts';
 import { defaultReportDir, pageDir } from './paths.ts';
 import { checksOf, type JsonReport, readReportedCases } from './playwright-results.ts';
 import { readBehaviors } from './read-behaviors.ts';
+import { keepsTrace, reportPlanOf } from './report-options.ts';
 import type { CaseResult, ResultStatus } from './table-types.ts';
 import { copyTraceViewer } from './trace-viewer.ts';
 
 // @codocs [[테스트 작성 규칙:E2E]]
-// CI가 모든 케이스를 돌린 Playwright JSON 보고서와 trace를 화면 데이터에 붙여 정적 보고서를 만든다.
-// trace zip과 Playwright Trace Viewer(`trace/`)를 보고서와 함께 두어, 실행해보기가 같은 주소의 뷰어로 그 zip을 연다.
-// 실행 기록은 지금 보고서의 history.json에 이번 실행을 더해 쌓는다.
+// CI가 케이스를 돌린 Playwright JSON 보고서와 trace를 화면 데이터에 붙여 정적 보고서를 만든다.
+// trace zip과 Playwright Trace Viewer(`trace/`)를 보고서와 함께 두어, 실행해보기가 같은 사이트의 뷰어로 그 zip을 연다.
+// 실행 기록은 지난 보고서의 history.json에 이번 실행을 더해 쌓는다.
+// PR 실패 보고서(`--only-failed --pr <번호> --no-history --trace-viewer ../../trace/`)는 실패한 케이스의 trace만 담고,
+// 뷰어를 복사하지 않고 사이트 루트의 뷰어를 함께 쓰며, 실행 기록을 읽지도 쓰지도 않는다.
 const { values } = parseArgs({
   options: {
     results: { type: 'string' },
@@ -22,7 +25,17 @@ const { values } = parseArgs({
     commit: { type: 'string', default: process.env.GITHUB_SHA ?? 'local' },
     'run-url': { type: 'string' },
     history: { type: 'string' },
+    'only-failed': { type: 'boolean', default: false },
+    pr: { type: 'string' },
+    'no-history': { type: 'boolean', default: false },
+    'trace-viewer': { type: 'string' },
   },
+});
+const plan = reportPlanOf({
+  isOnlyFailed: values['only-failed'],
+  pr: values.pr,
+  isWithoutHistory: values['no-history'],
+  traceViewer: values['trace-viewer'],
 });
 
 if (values.results === undefined || !existsSync(values.results)) {
@@ -56,7 +69,11 @@ const currentResults: Record<string, ResultStatus> = {};
 for (const [token, reported] of readReportedCases(report)) {
   const name = token.replace(/[^\w-]/gu, '_');
   let trace: string | null = null;
-  if (reported.tracePath !== null && existsSync(reported.tracePath)) {
+  if (
+    reported.tracePath !== null &&
+    keepsTrace(reported.status, plan.isFailedOnly) &&
+    existsSync(reported.tracePath)
+  ) {
     trace = `traces/${name}.zip`;
     copyFileSync(reported.tracePath, path.join(outDir, trace));
   }
@@ -86,7 +103,7 @@ const current: HistoryRun = {
   results: currentResults,
 };
 let previous: unknown = [];
-if (values.history !== undefined && existsSync(values.history)) {
+if (plan.shouldWriteHistory && values.history !== undefined && existsSync(values.history)) {
   try {
     previous = JSON.parse(readFileSync(values.history, 'utf8'));
   } catch {
@@ -96,13 +113,23 @@ if (values.history !== undefined && existsSync(values.history)) {
 const history = mergeHistory(previous, current);
 const run = runSummaryOf(current);
 
-const { table } = await loadTable({ mode: 'report', results, run });
+const { table } = await loadTable({
+  mode: 'report',
+  results,
+  run,
+  report: { traceViewer: plan.traceViewer, isFailedOnly: plan.isFailedOnly, pr: plan.pr },
+});
 writeFileSync(path.join(outDir, 'table.json'), JSON.stringify(table));
-writeFileSync(path.join(outDir, 'history.json'), JSON.stringify(history));
+if (plan.shouldWriteHistory) {
+  writeFileSync(path.join(outDir, 'history.json'), JSON.stringify(history));
+}
 for (const file of ['index.html', 'app.js', 'style.css']) {
   copyFileSync(path.join(pageDir, file), path.join(outDir, file));
 }
-copyTraceViewer(outDir);
+if (plan.shouldCopyViewer) {
+  copyTraceViewer(outDir);
+}
+const historyNote = plan.shouldWriteHistory ? `기록 ${String(history.length)}번` : '기록 쓰지 않음';
 console.log(
-  `시나리오 케이스 보고서: ${outDir} (케이스 ${String(table.totals.cases)}, 통과 ${String(table.totals.passed)}, 실패 ${String(table.totals.failed)}, 기록 ${String(history.length)}번)`,
+  `시나리오 케이스 보고서: ${outDir} (케이스 ${String(table.totals.cases)}, 통과 ${String(table.totals.passed)}, 실패 ${String(table.totals.failed)}, ${historyNote})`,
 );

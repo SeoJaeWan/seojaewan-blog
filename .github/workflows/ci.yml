@@ -1,6 +1,11 @@
 # @codocs [[Git 작업 규칙:CI]]
 # @codocs [[배포 환경:CI]] GitHub 호스티드 러너(`ubuntu-latest`)에서 돈다. job마다 깨끗한 머신이라 pnpm은 기본 위치에 설치한다.
-# `Branch name` 작업은 PR 브랜치 이름을 검사한다([[Git 작업 규칙:브랜치]]). 늘 시작해 `main` push에서도 `main`을 검사한다.
+# `Scope`가 돌릴지 정하고(scripts/ci-scope.mjs), `Changeset`(PR만)이 통과하면 네 작업(`Static checks`, `Test`, `Build`, `E2E`)이
+# 나란히 돈다. 네 작업은 서로 기다리지 않고, 하나가 실패해도 나머지는 끝까지 돈다.
+# 브랜치 이름 검사는 `branch-name.yml`이 맡는다.
+#
+# 캐시: GitHub 캐시는 PR이 자기 것과 `main`의 것만 읽는다. `main` push 실행이 캐시(pnpm 저장소, Playwright 브라우저, turbo)를
+# 저장하고, 그 뒤에 열리거나 갱신된 PR이 그것을 받아 쓴다.
 name: CI
 
 on:
@@ -21,38 +26,69 @@ env:
   # @codocs [[콘텐츠 원천:읽는 곳]]
   # CI와 E2E는 Notion이 아니라 저장소의 fixture를 읽는다(빌드와 앱 실행 모두)
   CONTENT_SOURCE: fixture
+  # @codocs [[테스트 작성 규칙:E2E]]
+  # 시나리오 케이스 보고서 사이트(GitHub Pages, `gh-pages` 브랜치)
+  REPORT_SITE: https://scenario-cases.seojaewan.com
 
 jobs:
-  branch-name:
-    # ruleset의 필수 검사 이름과 같아야 한다
-    name: Branch name
+  # 버전 PR(`chore/release`), 문서 PR(`docs/*`), 글 동기화 PR(`chore/notion-content-sync`)과 그 PR을 병합한 `main` push에서는
+  # 아무 작업도 돌리지 않는다. push는 병합 커밋 제목에서 PR 브랜치를 읽고, 읽지 못하면 돈다.
+  scope:
+    name: Scope
     runs-on: ubuntu-latest
-    env:
-      # PR이면 PR 브랜치, `main` push면 `main`. 값을 스크립트 안에 풀어 쓰지 않고 환경 변수로 넘긴다.
-      BRANCH: ${{ github.head_ref || github.ref_name }}
+    outputs:
+      run: ${{ steps.scope.outputs.run }}
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          sparse-checkout: scripts
+
+      # 의존성 없는 스크립트라 러너에 깔린 Node로 바로 돌린다. 값은 스크립트 안에 풀어 쓰지 않고 환경 변수로 넘긴다.
+      - id: scope
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          HEAD_REF: ${{ github.head_ref }}
+          HEAD_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: node scripts/ci-scope.mjs
+
+  # @codocs [[Git 작업 규칙:Changesets]]
+  # 앱이나 패키지를 바꾼 PR에 changeset이 있는지 본다. PR에서만 돌고 `main` push에서는 건너뛴다.
+  # 실패하면 뒤 작업은 시작하지 않는다.
+  changeset:
+    name: Changeset
+    needs: scope
+    if: needs.scope.outputs.run == 'true' && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      BRANCH: ${{ github.head_ref }}
+    steps:
+      # `main`과 갈라진 지점을 찾아야 해서 전체 기록을 받는다
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v6.1.1
 
-      # 루트 의존성만 설치하므로 pnpm 캐시를 쓰지 않는다. 이 job이 일부만 담은 저장소를 같은 키로 먼저 저장하지 않게 하기 위해서다
+      # 루트 의존성만 설치하므로 pnpm 캐시를 쓰지 않는다. 일부만 담은 저장소를 같은 키로 먼저 저장하지 않게 하기 위해서다
       - uses: actions/setup-node@v7.1.0
         with:
           node-version-file: .nvmrc
 
-      # 종류 목록을 commitlint 설정에서 읽으므로 루트 의존성만 설치한다
+      # `changeset` 명령만 쓰므로 루트 의존성만 설치한다
       - run: pnpm install --frozen-lockfile --filter seojaewan-blog
 
-      - run: node scripts/check-branch-name.mjs "$BRANCH"
+      - run: |
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          node scripts/check-changeset.mjs "$BRANCH" origin/main
 
-  verify:
-    name: Lint, typecheck, test, build
+  static-checks:
+    name: Static checks
+    needs: [scope, changeset]
+    # `main` push에서는 `Changeset`이 건너뛰어지므로, 건너뜀도 통과로 보고 돈다
+    if: ${{ !cancelled() && needs.scope.outputs.run == 'true' && (needs.changeset.result == 'success' || needs.changeset.result == 'skipped') }}
     runs-on: ubuntu-latest
     steps:
-      # changeset 검사가 `main`과 갈라진 지점을 찾아야 해서 전체 기록을 받는다
       - uses: actions/checkout@v7.0.1
-        with:
-          fetch-depth: 0
 
       - uses: pnpm/action-setup@v6.1.1
 
@@ -63,16 +99,12 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # @codocs [[Git 작업 규칙:Changesets]]
-      # 앱이나 패키지를 바꾼 PR에 changeset이 있는지 본다. `main` push에서는 건너뛴다(버전 PR 병합 포함).
-      # 글 동기화·Renovate·버전 PR 브랜치와 문서만 바꾼 PR은 스크립트가 통과시킨다.
-      - name: Changeset check
-        if: github.event_name == 'pull_request'
-        env:
-          BRANCH: ${{ github.head_ref }}
-        run: |
-          git fetch --no-tags origin main:refs/remotes/origin/main
-          node scripts/check-changeset.mjs "$BRANCH" origin/main
+      # turbo 로컬 캐시(`.turbo/cache`). 커밋마다 새 키로 저장하고, 가장 가까운 앞 캐시를 받는다
+      - uses: actions/cache@v6.1.0
+        with:
+          path: .turbo/cache
+          key: turbo-${{ github.job }}-${{ github.sha }}
+          restore-keys: turbo-${{ github.job }}-
 
       - name: Format check
         run: pnpm format:check
@@ -86,27 +118,10 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      # 스토리 테스트(`storybook-*` project)가 Chromium에서 돈다
-      - name: Install Playwright browsers
-        run: pnpm --filter @seojaewan/web exec playwright install --with-deps chromium
-
-      - name: Unit and storybook tests
-        run: pnpm test
-
-      # @codocs [[콘텐츠 원천:읽는 곳]]
-      # 이 빌드는 fixture가 아니라 저장소에 커밋한 글 JSON(운영 글)으로 한다. 글 동기화 PR이 깨진 글을 병합하지 못하게 하려는 것이다.
-      # E2E는 fixture로 빌드한다(e2e 작업).
-      - name: Build
-        run: pnpm build
-        env:
-          CONTENT_SOURCE: notion
-
-      # 디자인 시스템 카탈로그와 앱 조립 스토리
-      - name: Build Storybook
-        run: pnpm build:storybook
-
-  e2e:
-    name: E2E
+  test:
+    name: Test
+    needs: [scope, changeset]
+    if: ${{ !cancelled() && needs.scope.outputs.run == 'true' && (needs.changeset.result == 'success' || needs.changeset.result == 'skipped') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
@@ -120,15 +135,239 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright browsers
-        run: pnpm --filter @seojaewan/web exec playwright install --with-deps chromium
+      # 스토리 테스트(`storybook-*` project)가 Chromium에서 돈다
+      - uses: ./.github/actions/setup-playwright
 
+      # 단위·스토리 테스트 전체. 조각으로 나누지 않는다
+      - name: Unit and storybook tests
+        run: pnpm test
+
+  build:
+    name: Build
+    needs: [scope, changeset]
+    if: ${{ !cancelled() && needs.scope.outputs.run == 'true' && (needs.changeset.result == 'success' || needs.changeset.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: pnpm/action-setup@v6.1.1
+
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - uses: actions/cache@v6.1.0
+        with:
+          path: .turbo/cache
+          key: turbo-${{ github.job }}-${{ github.sha }}
+          restore-keys: turbo-${{ github.job }}-
+
+      # @codocs [[콘텐츠 원천:읽는 곳]]
+      # 이 빌드는 fixture가 아니라 저장소에 커밋한 글 JSON(운영 글)으로 한다. 깨진 글이 병합되지 않게 하려는 것이다.
+      # E2E는 fixture로 빌드한다(`E2E` 작업).
+      - name: Build
+        run: pnpm build
+        env:
+          CONTENT_SOURCE: notion
+
+      # 디자인 시스템 카탈로그와 앱 조립 스토리
+      - name: Build Storybook
+        run: pnpm build:storybook
+
+  # @codocs [[테스트 작성 규칙:E2E]]
+  # E2E를 한 번 돌리고 그 결과로 시나리오 케이스 보고서를 만든다. 보고서를 만드는 데 E2E를 다시 돌리지 않는다.
+  # - `main` push: 모든 케이스의 trace를 남겨(`--trace on`) 전체 보고서를 만든다. 실행 기록은 사이트의 history.json에 이어 쌓는다.
+  # - PR: 실패하면 실패한 케이스만 담은 보고서를 만든다. 통과하면 만들지 않고, 그 PR의 이전 실패 보고서를 지우게 한다.
+  # E2E가 실패해도 보고서는 만들어 넘기고, 마지막에 이 작업을 실패로 끝낸다. 올리는 일은 `Publish report`가 한다.
+  e2e:
+    name: E2E
+    needs: [scope, changeset]
+    if: ${{ !cancelled() && needs.scope.outputs.run == 'true' && (needs.changeset.result == 'success' || needs.changeset.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    outputs:
+      # 게시할 일: `main`(전체 보고서), `failure`(PR 실패 보고서), `clear`(PR 통과, 실패 폴더 지우기), 빈 값(없음)
+      pages: ${{ steps.pages.outputs.pages }}
+    steps:
+      # E2E 결과(JSON)와 보고서는 저장소 밖 임시 폴더에 둔다. job의 env에서는 runner 문맥을 쓰지 못해 여기서 정한다
+      - name: Set report paths
+        run: |
+          echo "RESULTS=$RUNNER_TEMP/e2e-results.json" >> "$GITHUB_ENV"
+          echo "REPORT_DIR=$RUNNER_TEMP/scenario-cases-report" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v7.0.1
+
+      - uses: pnpm/action-setup@v6.1.1
+
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - uses: actions/cache@v6.1.0
+        with:
+          path: .turbo/cache
+          key: turbo-${{ github.job }}-${{ github.sha }}
+          restore-keys: turbo-${{ github.job }}-
+
+      - uses: ./.github/actions/setup-playwright
+
+      # fixture 빌드(turbo의 `test:e2e`가 `build`에 기댄다) 뒤 E2E. 리포터는 설정의 것(github, html)에 JSON을 더한다.
+      # 실패해도 보고서를 만들도록 다음 단계로 넘어간다.
       - name: E2E tests
-        run: pnpm test:e2e
+        id: cases
+        continue-on-error: true
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: ${{ env.RESULTS }}
+          PLAYWRIGHT_HTML_OPEN: never
+          TRACE_ARGS: ${{ github.event_name == 'push' && '--trace on' || '' }}
+        # TRACE_ARGS는 비었거나 두 단어라 따옴표 없이 넘긴다
+        run: pnpm test:e2e -- --reporter=github,html,json $TRACE_ARGS
+
+      # 실행 기록은 사이트(`gh-pages` 브랜치)의 history.json에서 읽는다. 처음이거나 읽지 못하면 이번 실행부터 쌓는다.
+      - name: Read report history
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! gh api -H 'Accept: application/vnd.github.raw' \
+            "repos/$GITHUB_REPOSITORY/contents/history.json?ref=gh-pages" > "$RUNNER_TEMP/history.json"; then
+            echo '지난 실행 기록이 없어 이번 실행부터 쌓는다.'
+            rm -f "$RUNNER_TEMP/history.json"
+          fi
+
+      - name: Build main report
+        id: main-report
+        if: github.event_name == 'push'
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ ! -f "$RESULTS" ]; then
+            echo 'E2E 결과(JSON)가 없어 보고서를 만들지 않는다. E2E 단계 기록을 본다.'
+            exit 0
+          fi
+          pnpm --filter @seojaewan/scenario-cases build:report --results "$RESULTS" \
+            --history "$RUNNER_TEMP/history.json" --run-url "$RUN_URL" --out "$REPORT_DIR"
+          echo 'built=true' >> "$GITHUB_OUTPUT"
+
+      # PR 실패 보고서는 `failures/pr-<번호>/`에 올라가 사이트 루트의 Trace Viewer를 함께 쓴다.
+      - name: Build PR failure report
+        id: failure-report
+        if: github.event_name == 'pull_request' && steps.cases.outcome != 'success'
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          if [ ! -f "$RESULTS" ]; then
+            echo 'E2E 결과(JSON)가 없어 보고서를 만들지 않는다. E2E 단계 기록을 본다.'
+            exit 0
+          fi
+          pnpm --filter @seojaewan/scenario-cases build:report --results "$RESULTS" \
+            --run-url "$RUN_URL" --out "$REPORT_DIR" \
+            --only-failed --pr "$PR_NUMBER" --no-history --trace-viewer ../../trace/
+          echo 'built=true' >> "$GITHUB_OUTPUT"
+
+      - name: Decide what to publish
+        id: pages
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          CASES: ${{ steps.cases.outcome }}
+          MAIN_BUILT: ${{ steps.main-report.outputs.built }}
+          FAILURE_BUILT: ${{ steps.failure-report.outputs.built }}
+        run: |
+          pages=''
+          if [ "$MAIN_BUILT" = true ]; then
+            pages=main
+          elif [ "$FAILURE_BUILT" = true ]; then
+            pages=failure
+          elif [ "$EVENT_NAME" = pull_request ] && [ "$CASES" = success ]; then
+            pages=clear
+          fi
+          echo "pages=$pages" >> "$GITHUB_OUTPUT"
 
       - uses: actions/upload-artifact@v7.0.2
-        if: failure()
+        if: steps.pages.outputs.pages == 'main' || steps.pages.outputs.pages == 'failure'
+        with:
+          name: scenario-cases-report
+          path: ${{ env.REPORT_DIR }}
+          retention-days: 1
+
+      - uses: actions/upload-artifact@v7.0.2
+        if: steps.cases.outcome != 'success'
         with:
           name: playwright-report
           path: apps/web/playwright-report/
           retention-days: 7
+
+      - name: Fail when E2E failed
+        if: steps.cases.outcome != 'success'
+        run: exit 1
+
+  # @codocs [[테스트 작성 규칙:E2E]]
+  # 시나리오 케이스 보고서를 GitHub Pages 브랜치(`gh-pages`)에 올린다(scripts/publish-scenario-pages.sh).
+  # 브랜치에 쓰는 이 작업만 한 번에 하나씩 돌게 줄을 세운다(E2E는 나란히 돈다). 진행 중인 게시는 끊지 않는다.
+  # 포크에서 온 PR은 쓰기 권한이 없어 건너뛴다.
+  publish-report:
+    name: Publish report
+    needs: e2e
+    if: ${{ !cancelled() && needs.e2e.outputs.pages != '' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: scenario-cases-pages
+      cancel-in-progress: false
+    env:
+      PAGES: ${{ needs.e2e.outputs.pages }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+      - name: Set report path
+        run: echo "REPORT_DIR=$RUNNER_TEMP/scenario-cases-report" >> "$GITHUB_ENV"
+
+      # 브랜치에 올릴 자격 증명이 checkout에 남는다
+      - uses: actions/checkout@v7.0.1
+        with:
+          sparse-checkout: scripts
+
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+
+      - uses: actions/download-artifact@v8.0.2
+        if: env.PAGES != 'clear'
+        with:
+          name: scenario-cases-report
+          path: ${{ env.REPORT_DIR }}
+
+      - name: Publish main report
+        if: env.PAGES == 'main'
+        env:
+          PAGES_MESSAGE: 'chore(pages): publish scenario cases report for ${{ github.sha }}'
+        run: |
+          bash scripts/publish-scenario-pages.sh main "$REPORT_DIR"
+          echo "시나리오 케이스 보고서: $REPORT_SITE/" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish PR failure report
+        if: env.PAGES == 'failure'
+        env:
+          PAGES_MESSAGE: 'chore(pages): publish failure report for PR #${{ github.event.pull_request.number }}'
+        run: |
+          bash scripts/publish-scenario-pages.sh failure "$REPORT_DIR" "$PR_NUMBER"
+          echo "시나리오 케이스 실패 보고서: $REPORT_SITE/failures/pr-$PR_NUMBER/" >> "$GITHUB_STEP_SUMMARY"
+
+      # 통과한 PR은 이전에 올린 실패 폴더가 있을 때만 브랜치를 받아 지운다
+      - name: Remove PR failure report
+        if: env.PAGES == 'clear'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAGES_MESSAGE: 'chore(pages): remove failure report for PR #${{ github.event.pull_request.number }}'
+        run: |
+          if ! gh api "repos/$GITHUB_REPOSITORY/contents/failures/pr-$PR_NUMBER?ref=gh-pages" --silent 2>/dev/null; then
+            echo "PR #$PR_NUMBER의 실패 보고서가 없다."
+            exit 0
+          fi
+          bash scripts/publish-scenario-pages.sh clear "$PR_NUMBER"

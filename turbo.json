@@ -16,7 +16,7 @@
     },
     "test:e2e": {
       "dependsOn": ["build"],
-      "passThroughEnv": ["CI", "PLAYWRIGHT_*", "E2E_PORT", "CONTENT_SOURCE"],
+      "passThroughEnv": ["CI", "PLAYWRIGHT_*", "CONTENT_SOURCE"],
       "cache": false
     },
     "dev": {
