@@ -33,7 +33,6 @@ export type MotionScope = {
 const DESIGN_SYSTEM = 'packages/design-system/';
 export const MOTION_CSS_FILE = `${DESIGN_SYSTEM}src/motion.css`;
 export const TOKENS_CSS_FILE = `${DESIGN_SYSTEM}src/tokens.css`;
-export const MOTION_CHECK_WORKFLOW_FILE = '.github/workflows/motion-check.yml';
 /** 모션 스토리와 그 도우미(`sample-*.tsx` 등)를 두는 폴더 */
 export const MOTION_STORY_DIR = `${DESIGN_SYSTEM}src/motion-story/`;
 const RELATIVE_IMPORT_PATTERN = /(?:from|import)\s+['"](\.{1,2}\/[^'"]+)['"]/gu;
@@ -44,7 +43,6 @@ const MOTION_STORY_TITLE_PATTERN = /\btitle:\s*['"`]Motion\/([^'"`]+)['"`]/gu;
 const NON_RENDERING_FILE_PATTERN = /\.(test|fixture)\.tsx?$/u;
 // 모션 검사 도구와 모든 모션 스토리가 쓰는 도우미다. 바뀌면 모든 견본을 검사한다.
 const WHOLE_SCOPE_FILES = [
-  MOTION_CHECK_WORKFLOW_FILE,
   'tools/figma-parity/playwright.motion.config.ts',
   'tools/figma-parity/src/run-motion-check.ts',
   'tools/figma-parity/src/static-server.ts',
@@ -67,7 +65,7 @@ const VARIABLE_REFERENCE_PATTERN = /var\(\s*(--[\w-]+)/gu;
  * - 바뀐 모션 스토리(제목 `Motion/<이름>`)
  * - 바뀐 모션 스토리 도우미(`src/motion-story/`의 스토리가 아닌 파일)를 import로 따라가 쓰는 모션 스토리. 쓰는 곳을
  *   정하지 못하면(지운 파일, 아무 스토리도 쓰지 않는 파일) 모든 견본
- * - 모션 검사 도구·워크플로·재생 도우미(motion-preview.tsx)가 바뀌면 모든 견본
+ * - 모션 검사 도구·재생 도우미(motion-preview.tsx)가 바뀌면 모든 견본
  * json이 없는 클래스는 고르지 않는다.
  * @codocs [[피그마 연동:모션]]
  * @param inputs 바뀐 파일과 저장소 상태

@@ -12,7 +12,8 @@ _codocs:
   - `tools/figma-parity`: 사전 조사에서 함께 쓴다고 본 `variant-name.ts`는 import를 확인하니 캡처 쪽 함수(`storyTarget`, `findStoryId`)만 쓰고 있어 죽은 코드가 되므로 파일째 지웠다. `story-target.ts`에는 모션 검사가 쓰는 `storyEntries`와 `IndexEntry`만 남기고, 테스트는 `storyEntries` 테스트로 바꿨다(`story-target.fixture.ts`는 지움).
   - `pr-comment.ts`: 캡처 표 댓글 코드와 `COMMENT_MARKER`(`figma-parity`)를 지우고 `paginate`·`marker`·`markerIndex`·`escapeMarkdown`만 남겼다. 기본 숨은 표시 이름이 캡처 댓글이어서 `marker`·`markerIndex`의 `name`은 필수 인자로 바꿨다. 테스트는 `paginate`와 숨은 표시 테스트로 바꿨다.
   - `paths.ts`: 캡처만 쓰던 상수를 지우고, 파일 안에서만 쓰는 상수는 `export`를 뺐다. `capture-viewport.ts`와 `defaultResultsDir`(`parity-results/`)는 모션 검사가 써서 남겼다. `.gitignore`·`.prettierignore`·`.dockerignore`의 `parity-results/`도 모션 결과가 쓰므로 그대로 두었다.
-  - `motion-scope.ts`의 `MOTION_CHECK_WORKFLOW_FILE`(`motion-check.yml`)은 워크플로를 지우는 다른 PR의 몫이라 손대지 않았다.
+  - `motion-scope.ts`의 `MOTION_CHECK_WORKFLOW_FILE`(`motion-check.yml`)과 "워크플로 파일이 바뀌면 전체 검사" 분기, 그 테스트 경우는 PR #936이 워크플로를 지워 죽은 코드가 되므로 지웠다. 나머지 범위 판정은 그대로다.
+  - `repository-structure`의 `.fixture` 규칙은 이유였던 캡처 범위가 없어졌지만, `.fixture` 파일을 모션 검사 범위가 그리지 않는 파일로 건너뛰는 이유가 코드(`motion-scope.ts`)에 있어 이유를 모션 검사 범위로 바꿨다.
   - `figma-sync`의 `CI` 섹션은 지시한 네 가지만 남겼다. 지우는 섹션에 있던 모션 검사 범위, 모션 검사 PR 댓글 설명, 모션 검사 화면 크기(1600×900)는 사실이 사라지지 않게 `모션` 섹션의 "모션 검사 범위"로 옮기고, 워크플로가 부른다는 문장은 "지금 부르는 워크플로가 없다"로 고쳤다.
   - `figma-sync`의 `스토리 규칙`: 도구가 하던 일(상태 재현, 적용된 args 확인, 웹 폰트 기다리기, 단독 캡처로 비교)을 적은 문장은 지웠다. `data-parity-target`·`data-parity-hover`와 지시 목록에 없는 `data-parity-box`도 같은 처리로 "지금 이 속성을 읽는 도구는 없다"를 적었다. 이 속성들과 `Figma` 스토리를 계속 둘지는 [[피그마 흐름 논의]]가 정한다.
   - `figma-sync`의 `검토한 대안`: 캡처를 지운 결정을 새 항목으로 더하고, 캡처 범위 전제였던 "라벨로 CI를 켜기"는 지웠다. 픽셀 비교 항목 끝 문장은 "사람이 보는 데만 쓰기로 했지만 그 캡처도 지웠다"로 고쳤다.
