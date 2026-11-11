@@ -1,5 +1,5 @@
 {
-  "description": "Chrome 주소창으로, BrowserToolbar와 주소창 추천 조립의 트리거에 쓴다.",
+  "description": "Chrome 주소창으로, BrowserToolbar와 Chrome 주소창 조립에 쓴다. Suggesting은 입력하는 중 추천 목록이 열린 모습이고, 카드 한 장이 입력 줄과 추천 줄 자리(Suggestions)를 함께 감싼다.",
   "name": "AddressBar",
   "nodeId": "36:582",
   "propertyDefinitions": {
@@ -28,6 +28,9 @@
         "Suggesting"
       ],
       "type": "VARIANT"
+    },
+    "Suggestions": {
+      "type": "SLOT"
     },
     "URL": {
       "default": "웹 주소",
@@ -884,10 +887,10 @@
     },
     "state=suggesting,filled=true": {
       "node": {
-        "height": 36,
+        "height": 84,
         "width": 640,
-        "x": 0,
-        "y": 0
+        "x": 16,
+        "y": 8
       },
       "nodeId": "36:532",
       "properties": {
@@ -969,16 +972,172 @@
               "v": "FIXED"
             },
             "type": "FRAME"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/file-document"
+                    },
+                    "component": "file/Document",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/sm",
+                    "name": "leading icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "color/black/89"
+                        ],
+                        "name": "title",
+                        "size": {
+                          "h": 20,
+                          "w": 572
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": 1,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "항목",
+                              "fill": "color/black/89",
+                              "textStyle": "Hangul/Body"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "color/black/89",
+                              "textStyle": "Body"
+                            },
+                            {
+                              "characters": "이름",
+                              "fill": "color/black/89",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "ENDING"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": 0,
+                      "mode": "VERTICAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "text",
+                    "size": {
+                      "h": 20,
+                      "w": 572
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "type": "FRAME"
+                  }
+                ],
+                "component": "ListItem",
+                "height": "size/list-item/compact-height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/md",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/xs",
+                    "spacing/md",
+                    "spacing/xs",
+                    "spacing/md"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "ListItem",
+                "properties": {
+                  "Has subtitle": true,
+                  "Has trailing": false,
+                  "Size": "Compact",
+                  "State": "Rest",
+                  "Subtitle": "보조 설명",
+                  "Title": "항목 이름",
+                  "Trailing": "부가 정보"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 36,
+                  "w": 624
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/2xs",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/2xs",
+                "spacing/sm",
+                "spacing/sm-nudge",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Suggestions",
+            "size": {
+              "h": 44,
+              "w": 640
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
           }
         ],
+        "effectStyle": "Elevation/Flyout",
+        "fillStyle": "Material/Fallback/Acrylic Default",
         "layout": {
           "counterAlign": "MIN",
           "gap": 0,
           "mode": "VERTICAL",
           "padding": [
+            "spacing/2xs",
             "spacing/none",
-            "spacing/none",
-            0,
+            "spacing/2xs",
             "spacing/none"
           ],
           "primaryAlign": "MIN"
@@ -994,13 +1153,23 @@
           "width"
         ],
         "size": {
-          "h": 36,
+          "h": 84,
           "w": 640
         },
         "sizing": {
           "h": "FIXED",
           "v": "HUG"
         },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "color/black/6"
+        ],
+        "strokesIncludedInLayout": false,
         "type": "COMPONENT"
       }
     }

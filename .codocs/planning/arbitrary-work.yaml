@@ -308,3 +308,7 @@ Chrome 세션: |
   - #885 AddressBar: 빈 주소창 동작 스토리 `Empty`는 아이콘을 viewBox(Material 20, Fluent 24)로 구분해 비었을 때 돋보기, 입력하면 사이트 정보 아이콘인지 확인한다.
   - #892 BrowserTabStrip: 탭 검색(⌄) 버튼은 모양과 자리만 그리고, 앱이 메뉴를 붙일 수 있게 BrowserToolbar의 `renderMenuButton`과 같은 방식으로 `renderTabSearchButton`(버튼 요소를 받아 감싸는 함수)과 `onTabSearch`를 열었다. 접근성 이름은 `tabSearchLabel`(기본 "탭 검색")이고, + 버튼 이름도 같은 꼴로 `newTabLabel`(기본 "새 탭")을 열었다. ⌄ 감싸기는 + 감싸기와 같은 `shrink-shrink-none items-start overflow-clip pb-spacing-2xs`다.
   - #893 BrowserToolbar: 아래 1px 안쪽 선은 이 저장소의 한 면 선 방식(`border-b-stroke-width-default border-color-black-22`, LayerSurface의 `border-t-*`와 같다)으로 그렸다. 박스 크기를 border-box로 두므로 높이 46은 그대로이고 선은 안쪽에 들어간다. 데스크톱·모바일 Chrome 창이 같은 `toolbar`를 쓰므로 둘 다에 들어간다.
+  - #917 AddressBar: Suggesting 카드의 바탕·그림자·둥글기·선 색과 두께는 Flyout `solid`와 같은 토큰이지만, 피그마에서 선이 레이아웃에 들어가지 않으므로(`strokesIncludedInLayout=false`) Flyout의 CSS border 대신 안쪽 선 고리(`inner-border-color-black-6 inner-border-w-stroke-width-default`)로 그렸다.
+  - #917 AddressBar: 쌓임은 Suggesting일 때만 바깥 상자에 `relative z-layer-popover`를 주어 카드가 아래 페이지 위에 뜨게 하고, 안에서는 카드를 먼저·입력 줄(`relative`, z 없음)을 나중에 두어 입력 줄이 카드 위 층에 그려지게 했다. 평소에는 z를 주지 않는다.
+  - #917 AddressBar: `Suggestions` 슬롯 자리는 `suggestions`가 비어 있어도 Suggesting이면 늘 그린다(피그마 슬롯 여백 그대로). 앱의 `ChromeAddressSuggestions`는 아직 Popover + Flyout을 쓰며 이 PR에서 바꾸지 않았다.
+  - #917 AddressBar: 입력해 Suggesting이 켜져도 입력칸이 같은 요소로 남아 포커스를 잃지 않는지 동작 스토리 `KeepsInputWhileSuggesting`으로 확인한다.
