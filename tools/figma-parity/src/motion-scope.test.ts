@@ -60,7 +60,7 @@ function scope(changedFiles: string[], changes: Record<string, FileChange> = {})
   }).motions;
 }
 
-// @codocs [[피그마 연동:CI]]
+// @codocs [[피그마 연동:모션]]
 describe('CI', () => {
   it('바뀐 figma/motions/<이름>.json의 견본을 검사한다', () => {
     expect(scope(['packages/design-system/figma/motions/motion-window-open.json'])).toEqual([

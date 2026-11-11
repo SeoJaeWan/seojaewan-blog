@@ -1,7 +1,7 @@
 /**
  * 피그마 플러그인이 쓴 `figma/motions/<이름>.json`에서 모션 시간 검사와 키프레임 값 검사에 필요한 값만 읽고 검증한다.
  * 형식은 플러그인(tools/figma-plugin/src/motion-file.ts)이 정하고, 패키지가 달라 타입을 가져오지 않고
- * 여기서는 읽는 값만 다시 확인한다(export.json을 읽는 variant-name.ts와 같은 방식).
+ * 여기서는 읽는 값만 다시 확인한다(플러그인과의 계약을 읽는 쪽에서 다시 확인하는 방식).
  */
 
 import type { ValueKeyframe, ValueTrack } from './motion-values.ts';

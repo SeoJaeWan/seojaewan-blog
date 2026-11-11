@@ -2,8 +2,7 @@ import { execFileSync } from 'node:child_process';
 
 import { markerIndex } from './pr-comment.ts';
 
-// 숨은 표시로 찾은 PR 댓글을 만들거나 고치고, 쓰지 않게 된 댓글은 지운다. 캡처 표 댓글(post-pr-comment.ts)과
-// 모션 검사 댓글(motion-post-comment.ts)이 함께 쓴다. gh CLI가 GH_TOKEN으로 GitHub API를 부른다.
+// 숨은 표시로 찾은 PR 댓글을 만들거나 고치고, 쓰지 않게 된 댓글은 지운다. 모션 검사 댓글(motion-post-comment.ts)이 쓴다. gh CLI가 GH_TOKEN으로 GitHub API를 부른다.
 
 /**
  * 댓글을 남기는 명령의 인자.
@@ -20,7 +19,7 @@ export type CommentArgs = {
 
 /**
  * 댓글 본문을 PR에 남긴다. 같은 숨은 표시·순서의 댓글이 있으면 고치고(새로 달지 않는다), 남는 댓글은 지운다.
- * @codocs [[피그마 연동:CI]]
+ * @codocs [[피그마 연동:모션]]
  * @param args 저장소와 PR 번호
  * @param bodies 댓글 본문(숨은 표시로 시작한다)
  * @param name 숨은 표시 이름

@@ -30,7 +30,7 @@ main();
 
 /**
  * 범위를 정하거나 모션 시간 검사를 실행한다.
- * @codocs [[피그마 연동:CI]]
+ * @codocs [[피그마 연동:모션]]
  */
 function main(): void {
   const argv = process.argv.slice(2);

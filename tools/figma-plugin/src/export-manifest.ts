@@ -2,9 +2,9 @@ import type { PatternReport } from './core/pattern-report';
 import { type JsonObject, type JsonValue, stableStringify } from './stable-json';
 
 // 대상(컴포넌트나 조립) 폴더마다 두는 export.json과 figma.json을 만들고 읽는다.
-// export.json은 캡처 도구가 변형을 스토리와 짝짓고 노드끼리 맞추는 데 필요한 것(이름, 변형 이름, 변형 속성,
-// PNG 안 노드 위치)과 구현 참고용 레이어 트리를 담는다. 레이어 트리는 판정에 쓰지 않는다.
-// 계약은 [[피그마 연동:스토리 규칙]], [[피그마 연동:캡처 표]], [[피그마 연동:피그마 플러그인]]에 있다.
+// export.json은 이름, 변형 이름, 변형 속성, PNG 안 노드 위치와 구현 참고용 레이어 트리를 담는다.
+// 레이어 트리는 판정에 쓰지 않는다.
+// 계약은 [[피그마 연동:스토리 규칙]], [[피그마 연동:피그마 플러그인]]에 있다.
 
 /** 변형 PNG 안에서 변형 노드가 놓인 자리(배율 1의 px) */
 export type NodeBox = { x: number; y: number; width: number; height: number };

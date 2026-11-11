@@ -69,7 +69,7 @@ const VARIABLE_REFERENCE_PATTERN = /var\(\s*(--[\w-]+)/gu;
  *   정하지 못하면(지운 파일, 아무 스토리도 쓰지 않는 파일) 모든 견본
  * - 모션 검사 도구·워크플로·재생 도우미(motion-preview.tsx)가 바뀌면 모든 견본
  * json이 없는 클래스는 고르지 않는다.
- * @codocs [[피그마 연동:CI]]
+ * @codocs [[피그마 연동:모션]]
  * @param inputs 바뀐 파일과 저장소 상태
  * @returns 검사할 견본과 이유
  */
@@ -148,9 +148,8 @@ export function selectMotions(inputs: MotionScopeInputs): MotionScope {
 }
 
 /**
- * 모션 스토리마다 상대 import를 따라가 쓰는 모션 스토리 폴더 안 파일을 모은다. 캡처 범위가 조립 스토리의 import를
- * 따라가는 것과 같은 방식이고, 모션 스토리 폴더 밖(컴포넌트 등)으로는 따라가지 않는다.
- * @codocs [[피그마 연동:CI]]
+ * 모션 스토리마다 상대 import를 따라가 쓰는 모션 스토리 폴더 안 파일을 모은다. 모션 스토리 폴더 밖(컴포넌트 등)으로는 따라가지 않는다.
+ * @codocs [[피그마 연동:모션]]
  * @param files 모션 스토리 폴더의 파일(저장소 기준 경로 → 내용)
  * @returns 견본 이름 → 그 모션 스토리가 쓰는 파일(스토리 자신 포함)
  */
