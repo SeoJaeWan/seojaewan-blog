@@ -10,8 +10,8 @@ import type {
   StartItem,
   StartItemGroup,
 } from '@/features/start-menu/utils/start-items/start-items';
-import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
+import { ContextMenuArea } from '@/shared/components/menu-popup/menu-popup';
 
 export type StartCategoryDevice = 'desktop' | 'mobile';
 
