@@ -58,7 +58,7 @@ const meta = {
   decorators: [figmaFrame(addressBarExport)],
   render: (args) => {
     const { onChange: handleChange } = args;
-    return (
+    const bar = (
       <AddressBar
         // 상태나 글자를 바꾸면 처음 값부터 다시 그리도록 key를 바꾼다.
         key={`${args.state}-${String(args.isFilled)}-${args.url}-${args.query}`}
@@ -70,6 +70,14 @@ const meta = {
         suggestions={defaultSuggestions}
         onChange={handleChange}
       />
+    );
+    // Suggesting은 카드가 입력 줄 위로 떠 있어 바깥 상자가 피그마 변형 노드(카드)와 다르다. 카드를 캡처 기준으로 지정한다([[피그마 연동:캡처 표]]).
+    return args.state === 'suggesting' ? (
+      <div data-parity-target data-parity-box='[data-slot="suggestions-card"]'>
+        {bar}
+      </div>
+    ) : (
+      bar
     );
   },
 } satisfies Meta<FigmaArgs>;

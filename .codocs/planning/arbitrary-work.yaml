@@ -312,3 +312,4 @@ Chrome 세션: |
   - #917 AddressBar: 쌓임은 Suggesting일 때만 바깥 상자에 `relative z-layer-popover`를 주어 카드가 아래 페이지 위에 뜨게 하고, 안에서는 카드를 먼저·입력 줄(`relative`, z 없음)을 나중에 두어 입력 줄이 카드 위 층에 그려지게 했다. 평소에는 z를 주지 않는다.
   - #917 AddressBar: `Suggestions` 슬롯 자리는 `suggestions`가 비어 있어도 Suggesting이면 늘 그린다(피그마 슬롯 여백 그대로). 앱의 `ChromeAddressSuggestions`는 아직 Popover + Flyout을 쓰며 이 PR에서 바꾸지 않았다.
   - #917 AddressBar: 입력해 Suggesting이 켜져도 입력칸이 같은 요소로 남아 포커스를 잃지 않는지 동작 스토리 `KeepsInputWhileSuggesting`으로 확인한다.
+  - AddressBar Suggesting 캡처: `data-parity-box`는 `StoryStage`에 옵션을 더하지 않고, `Figma` 스토리의 render가 Suggesting일 때만 `data-parity-target`을 단 `div`로 감싸 직접 단다(StoryStage는 무대 배치가 필요 없고 다른 변형의 대상은 그대로 두려고). 카드 이름표는 `data-slot="suggestions-card"`다. 도구는 `capture.ts`를 바꾸지 않고 `openStory`가 기준 요소를 골라 돌려주게 했다(이후 상자·그림자·넘침 재기가 모두 그 요소에 한다).
