@@ -10,6 +10,7 @@ import type {
 } from 'react';
 
 import {
+  Asset,
   BrowserTab,
   BrowserTabStrip,
   BrowserToolbar,
@@ -65,12 +66,19 @@ type ChromeWindowProps = WindowFrameControlProps &
     isMoreMenuOpen?: boolean;
     onMoreMenuOpenChange?: (isOpen: boolean) => void;
     moreMenuFinalFocus?: ComponentProps<typeof MenuButton>['finalFocus'];
+    tabSearchMenuItems?: readonly MenuPopupEntry[];
+    isTabSearchMenuOpen?: boolean;
+    onTabSearchMenuOpenChange?: (isOpen: boolean) => void;
     children?: ReactNode;
     className?: string;
   };
 
-// 탭 파비콘과 모바일 앱 아이콘은 피그마 Window/Chrome의 인스턴스(file/Document, app/Chrome) 그대로다.
-const tabFavicon = <ImageAsset name="images/file-document" />;
+// 탭 파비콘은 Chrome 창 안의 Material 글 아이콘(색은 도구 모음 아이콘과 같다), 모바일 앱 아이콘은 피그마 Window/Chrome의 인스턴스(app/Chrome) 그대로다.
+// @codocs [[Chrome:구성]]
+// @codocs [[디자인 기반:자산]]
+const tabFavicon = (
+  <Asset name="icons/ic_material_description_20_outlined.svg" className="text-color-gray-70" />
+);
 const chromeAppIcon = <ImageAsset name="images/app-chrome" />;
 
 // 가운데 버튼의 `button` 값이다.
@@ -107,6 +115,9 @@ const MIDDLE_BUTTON = 1;
  * @param props.isMoreMenuOpen ⋮ 메뉴가 열렸는지
  * @param props.onMoreMenuOpenChange ⋮ 메뉴를 열거나 닫으려 할 때
  * @param props.moreMenuFinalFocus ⋮ 메뉴가 닫힌 뒤 포커스가 갈 곳(Base UI `finalFocus`). 주지 않으면 ⋮ 버튼으로 돌아간다
+ * @param props.tabSearchMenuItems 탭 검색(⌄) 메뉴 항목(피그마 `Menu/ChromeTabSearch`, 열린 탭 목록). 주지 않으면 메뉴가 없다. 데스크톱만 쓴다(모바일은 탭 줄이 없다)
+ * @param props.isTabSearchMenuOpen 탭 검색 메뉴가 열렸는지
+ * @param props.onTabSearchMenuOpenChange 탭 검색 메뉴를 열거나 닫으려 할 때
  * @param props.children 탭 내용 자리. 고른 탭의 `ChromePage`(또는 그것을 담은 페이지 영역)를 넣는다. 이 자리가 도구 모음 아래 남는 자리를 채우게 한다
  * @param props.className 바깥 배치 클래스. 창 크기는 쓰는 곳이 정한다
  * @param props.onTitleBarPointerDown 제목 표시줄을 눌렀을 때(창 끌기 시작). 창 버튼 위에서 누른 것은 부르지 않는다
@@ -129,6 +140,9 @@ export function ChromeWindow({
   isMoreMenuOpen = false,
   onMoreMenuOpenChange: handleMoreMenuOpenChange,
   moreMenuFinalFocus,
+  tabSearchMenuItems,
+  isTabSearchMenuOpen = false,
+  onTabSearchMenuOpenChange: handleTabSearchMenuOpenChange,
   children,
   className,
   onTitleBarPointerDown: handleFrameTitleBarPointerDown,
@@ -168,6 +182,26 @@ export function ChromeWindow({
         onOpenChange={handleMoreMenuOpenChange}
         finalFocus={moreMenuFinalFocus}
         align="end"
+      />
+    );
+  }
+
+  /**
+   * 탭 검색(⌄) 버튼에 열린 탭 목록 메뉴를 붙인다. 메뉴는 버튼 아래 왼쪽 끝에 맞춰 연다.
+   * @codocs [[Chrome:구성]]
+   * @param button 탭 검색 버튼
+   * @returns 메뉴 트리거
+   */
+  function renderTabSearchButton(button: ReactElement): ReactNode {
+    if (tabSearchMenuItems === undefined) {
+      return button;
+    }
+    return (
+      <MenuButton
+        trigger={button}
+        items={tabSearchMenuItems}
+        isOpen={isTabSearchMenuOpen}
+        onOpenChange={handleTabSearchMenuOpenChange}
       />
     );
   }
@@ -255,18 +289,25 @@ export function ChromeWindow({
       titleBar="custom"
       material="chrome"
       titleBarContent={
-        <BrowserTabStrip onNewTab={handleNewTab} className="min-w-size-none">
+        <BrowserTabStrip
+          onNewTab={handleNewTab}
+          renderTabSearchButton={renderTabSearchButton}
+          className="min-w-size-none"
+        >
           {/* 탭 내용(`Tabs.Panel`)은 쓰지 않아 뿌리는 배치에 끼지 않는다 */}
           <Tabs.Root
             value={activeIndex === -1 ? null : activeIndex}
             onValueChange={handleValueChange}
             className="contents"
           >
+            {/* 탭 목록은 넘치면 가로로 스크롤하므로 밖으로 나온 것을 자른다. 활성 탭의 오목한 모서리 조각(탭 밖 양옆 8px)이
+                맨 왼쪽·맨 오른쪽 탭에서 잘리지 않게 양옆에 조각 크기만큼 안쪽 여백을 두고 같은 크기의 음수 바깥 여백으로 배치를 되돌린다.
+                늘어난 여백이 옆 ⌄·+ 버튼 끝을 덮어 누르기를 가로채지 않게, 목록은 누르기를 받지 않고 탭만 받는다. */}
             <Tabs.List
               ref={tabListRef}
               activateOnFocus
               aria-label="탭"
-              className="flex min-w-size-none overflow-x-auto"
+              className="pointer-events-none -mx-spacing-sm flex min-w-size-none overflow-x-auto px-spacing-sm [&>*]:pointer-events-auto"
               data-scrollbar-hidden
             >
               {tabs.map(
