@@ -40,6 +40,7 @@ export * from './components/list-block/list-block';
 export * from './components/list-group/list-group';
 export * from './components/list-item/list-item';
 export * from './components/menu/menu';
+export * from './components/menu-command-bar/menu-command-bar';
 export * from './components/menu-command-button/menu-command-button';
 export * from './components/menu-item/menu-item';
 export * from './components/menu-separator/menu-separator';
