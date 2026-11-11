@@ -355,3 +355,19 @@ Chrome 세션: |
   - #896 탭 검색 메뉴: 항목 함수 `getChromeTabSearchMenuEntries`(`features/chrome/tab-search-menu/`)를 ⋮ 메뉴처럼 실제 메뉴와 `Patterns/Menu/ChromeTabSearch` 스토리가 함께 쓴다. 열림 상태는 ⋮ 메뉴처럼 Chrome 창 층이 갖고 `ChromeWindow`가 `renderTabSearchButton`으로 `MenuButton`(아래 왼쪽 맞춤)을 붙인다. 닫힌 뒤 포커스는 ⌄ 버튼으로 돌아간다(기본값).
   - #896 Chrome 창 탭 목록: 맨 왼쪽·오른쪽 활성 탭의 모서리 조각이 `overflow-x-auto` 상자에 잘려(앱에서 확인) 탭 목록에 조각 크기만큼 안쪽 여백과 음수 바깥 여백(`px-spacing-sm -mx-spacing-sm`)을 두었다. 늘어난 여백이 ⌄ 버튼 끝을 덮어 누르기를 가로채지 않게 목록은 `pointer-events-none`, 탭은 `pointer-events-auto`다. 탭 줄이 넘쳐 스크롤할 때 고른 탭을 보이게 하는 `useTabStrip`은 목록의 안쪽 여백까지 보이게 바꿨다(탐색기 탭 목록은 여백이 없어 그대로다). 스크롤된 탭은 그 여백(8px)까지 보여 ⌄ 버튼 끝 4px과 겹칠 수 있다.
   - #896 Chrome 검수 문서는 피그마 작업 검수, 남은 작업, 이 문서가 가리키고 있어 지우지 않고, 피그마 세션처럼 1~8번을 "끝남(#PR)"과 한두 줄로 줄였다.
+
+바탕화면 세션: |
+  2026-11-10 바탕화면 검수 후속([[바탕화면 검수]])에서 사람에게 묻지 않고 정한 것이다. PR마다 이어서 적는다.
+  - 진행 방식: 메뉴 단추 줄(#876)과 FileItem(#881)이 병합되기 전에 앱 PR(#907)을 진행하려고, 두 컴포넌트 브랜치를 `feat/desktop-review`에 merge해 썼다. #876도 #875 브랜치를 merge해 썼다. 앞 PR이 `main`에 병합되면 뒤 PR의 diff에서 사라진다. 컴포넌트 PR 병합은 사람이 한다.
+  - #875 MenuCommandButton: 툴팁은 새 패키지 없이 Base UI `Tooltip`을 `Menu.Item`에 붙이고 모양은 디자인 시스템 `Tooltip`으로 그린다. 위치는 단추 아래 `spacing/xs`. 메뉴가 강조한 항목에 포커스를 옮길 때도 툴팁이 지연 없이 떠서, 피그마 설명("마우스를 올리면")대로 마우스를 올렸을 때만 띄운다(키보드로 닿으면 뜨지 않는다). `Figma` 스토리에서만 툴팁 지연을 크게 줘 Hover 캡처에 툴팁이 끼지 않게 했다.
+  - #875 MenuCommandButton: 피그마에 Disabled 변형이 없어 `isDisabled`를 두지 않았다. 쓸 수 없는 명령은 앱이 단추를 빼서 처리한다(휴지통으로 보낼 수 없는 항목의 삭제).
+  - #876 MenuCommandBar: 단추 사이 세로 구분선은 쓰는 곳이 넣지 않고 컴포넌트가 끼운다(구분선 모양이 고정이라). 단추는 남는 너비를 나눠 채운다.
+  - #881 FileItem: 끄는 복제본이 목록 밖에서도 파란 선택을 그리도록 `isListFocused` prop을 두었다. 바탕화면에서는 쓰지 않는다.
+  - #881 RenameField: 여러 줄 방식(`isMultiline`)은 Base UI `Input`에 `<textarea rows={1}>`를 render로 넘겨 그린다. 글자 단위 줄 바꿈은 `break-all`, 줄 바꿈 문자는 `beforeinput`(`insertLineBreak`·`insertParagraph`)에서 막는다(Shift·Ctrl+Enter, 가상 키보드까지). 앱 `use-folder-rename`의 글자 자리 보정은 textarea에서도 돌게 넓혔다.
+  - #881: `Selected, Current=True`·`Selected unfocused, Current=True` 변형의 캡처는 피그마 쪽 선 레이아웃 설정 때문에 2px 어긋났다. 피그마 세션이 피그마를 고쳤고, 다시 내보내기는 사람 허락을 기다린다.
+  - #907 7번: 보기 단축키는 Shift를 누르면 `key`가 기호로 바뀌므로 `event.code`(`Digit2` 등)로 판정하고, Ctrl 또는 Cmd에 Shift, Alt 없음일 때만 받는다. 탐색기 보기 단축키는 `ExplorerContent` 루트에서 받고(메뉴처럼 따로 그린 곳의 키는 받지 않는다), 보기가 바뀌면 같은 항목으로 포커스를 옮긴다. 모바일은 단축키 글자만 숨기고 외부 키보드 단축키는 동작한다. 메뉴 글자와 실제 단축키는 표 하나를 따른다.
+  - #907 9번: 하위 메뉴 항목을 `display: contents` 감싸개로 표시해 구분선·바탕 여백에서는 타이머를 바꾸지 않고, 메뉴 밖으로 나가면 기다리던 타이머를 멈춘다. Base UI가 보내는 마우스 열림 이유(`trigger-hover`, `sibling-open`)와 부모 메뉴 안을 누른 `outside-press`는 받지 않는다. 400ms 규칙은 [[디자인 시스템:팝업]]에 적었다.
+  - #907 1번: 붙여넣은 줄 바꿈은 제어 문자라 이미 쓸 수 없는 문자 빼기에서 빠지고 있었다. 그래서 줄 바꿈이 빠질 때도 "쓸 수 없는 문자" 말풍선이 뜬다.
+  - #907 5·10번: 단추 줄은 메뉴 데이터의 한 항목(`kind: 'command-bar'`)으로 두어 실제 메뉴와 조립 스토리가 같은 함수를 쓴다. 위·아래 자리는 Base UI 팝업 `state.side`로 정한다. 단추 아이콘은 피그마대로 20px Fluent 자산을 16px 칸에 그린다. 바탕화면 휴지통 메뉴의 열기에는 Enter를 붙이지 않았다(피그마 `Menu/RecycleBin` 그림). 탐색기에서 휴지통 항목을 우클릭하면 여러 개 선택 메뉴와 같은 모양이다. `열기 Enter` 글자는 모바일에서도 보인다(원래 항목 메뉴의 `Ctrl+X`도 보였다).
+  - #907 조립 스토리: 피그마 `Paste`(참/거짓) 속성은 스토리 규칙대로 `isPaste` arg다. 위로 열린 변형은 기준 자리를 화면 아래에 두어 그린다.
+  - #907 문서: 탐색기 우클릭 메뉴의 실행 취소 이유는 [[바탕화면 우클릭 메뉴:빈 곳]]에만 쓰고 탐색기 섹션은 링크만 걸었다. `바탕화면 검수`의 끝난 항목은 다른 문서와 코드가 섹션을 가리켜 지우지 않고 "끝남"으로 남겼다. [[항목 조작:잘라내기와 붙여넣기]]의 "붙여넣을 것이 없으면 비활성"은 10번 결정에 맞춰, 우클릭 메뉴는 단추 줄째 없고 탐색기 명령 모음은 비활성으로 나눠 적었다.

@@ -173,7 +173,7 @@ async function findSubmenuItem(
   user: StoryUser,
   submenu: string,
   role: MenuItemRole,
-  name: string,
+  name: string | RegExp,
 ): Promise<HTMLElement> {
   await openMenu(page().getByRole('listbox'));
   await user.click(page().getByRole('menuitem', { name: submenu }));
@@ -191,7 +191,7 @@ async function chooseSubmenuItem(
   user: StoryUser,
   submenu: string,
   role: MenuItemRole,
-  name: string,
+  name: string | RegExp,
 ): Promise<void> {
   await user.click(await findSubmenuItem(user, submenu, role, name));
   await waitForMenuClosed();
@@ -458,6 +458,24 @@ export const SelectIcons: Story = {
   },
 };
 
+// 보기 하위 메뉴에 보이는 단축키로 아이콘 크기를 바꾼다.
+// @codocs [[항목 조작:단축키]]
+export const ViewShortcuts: Story = {
+  play: async ({ step }) => {
+    const user = startUser();
+
+    await step('Ctrl + Shift + 2·3·4는 큰·보통·작은 아이콘으로 바꾼다', async () => {
+      await user.click(icon('Blog'));
+      await user.keyboard('{Control>}{Shift>}2{/Shift}{/Control}');
+      await expect(useWorkspaceStore.getState().desktop.iconSize).toBe('large');
+      await user.keyboard('{Control>}{Shift>}4{/Shift}{/Control}');
+      await expect(useWorkspaceStore.getState().desktop.iconSize).toBe('small');
+      await user.keyboard('{Control>}{Shift>}3{/Shift}{/Control}');
+      await expect(useWorkspaceStore.getState().desktop.iconSize).toBe('medium');
+    });
+  },
+};
+
 // 아이콘을 휴지통으로 보내고 다음 아이콘으로 선택과 포커스를 옮긴다.
 // @codocs [[항목 조작:단축키]]
 export const DeleteIcons: Story = {
@@ -541,12 +559,10 @@ export const CutAndPaste: Story = {
     });
 
     // @codocs [[바탕화면 우클릭 메뉴:빈 곳]]
-    await step('빈 곳 메뉴의 붙여넣기는 옮기고, 붙여넣을 것이 없으면 비활성이다', async () => {
+    await step('빈 곳 메뉴의 붙여넣기는 옮기고, 붙여넣을 것이 없으면 메뉴에 없다', async () => {
       await openMenu(page().getByRole('listbox'));
-      await expect(page().getByRole('menuitem', { name: /^붙여넣기/ })).toHaveAttribute(
-        'aria-disabled',
-        'true',
-      );
+      await expect(page().getByRole('menu')).toBeInTheDocument();
+      await expect(page().queryByRole('menuitem', { name: /^붙여넣기/ })).not.toBeInTheDocument();
       await closeMenu();
       useItemClipboardStore.getState().cut(['post:a']);
       await openMenu(page().getByRole('listbox'));
@@ -806,7 +822,8 @@ export const DesktopMenu: Story = {
     });
 
     await step('보기에서 아이콘 크기와 자동 정렬을, 정렬 기준에서 기준을 고른다', async () => {
-      await chooseSubmenuItem(user, '보기', 'menuitemradio', '큰 아이콘');
+      // 아이콘 크기 항목은 이름 뒤에 단축키 글자가 붙는다.
+      await chooseSubmenuItem(user, '보기', 'menuitemradio', /^큰 아이콘/u);
       await expect(useWorkspaceStore.getState().desktop.iconSize).toBe('large');
 
       await chooseSubmenuItem(user, '보기', 'menuitemcheckbox', '아이콘 자동 정렬');
@@ -840,37 +857,31 @@ export const ItemMenu: Story = {
 
     await step('우클릭한 항목의 종류와 고정 여부에 맞는 메뉴를 연다', async () => {
       await openMenu(icon('Blog'));
-      await expect(menuItemNames()).toContain('이름 바꾸기F2');
+      await expect(menuItemNames()).toContain('이름 바꾸기');
       await expect(menuItemNames()).toContain('시작 화면에서 고정 해제');
       await closeMenu();
       await openMenu(icon('가'));
-      await expect(menuItemNames()).not.toContain('이름 바꾸기F2');
+      await expect(menuItemNames()).not.toContain('이름 바꾸기');
       await expect(menuItemNames()).toContain('시작 화면에 고정');
       await closeMenu();
     });
 
     await step(
-      '여러 개를 고르면 열기·잘라내기·삭제이고, 휴지통이 있으면 삭제를 못 고른다',
+      '여러 개를 고르면 단추 줄 잘라내기·삭제와 열기이고, 휴지통이 있으면 삭제 단추가 없다',
       async () => {
         await user.click(icon('Blog'));
         await user.keyboard('{Control>}');
         await user.click(icon('GitHub'));
         await user.keyboard('{/Control}');
         await openMenu(icon('GitHub'));
-        await expect(menuItemNames()).toEqual(['열기', '잘라내기Ctrl+X', '삭제Delete']);
-        await expect(page().getByRole('menuitem', { name: /^삭제/ })).not.toHaveAttribute(
-          'aria-disabled',
-          'true',
-        );
+        // 메뉴가 아래로 열려 단추 줄이 맨 위에 있다.
+        await expect(menuItemNames()).toEqual(['잘라내기', '삭제', '열기Enter']);
         await closeMenu();
         await user.keyboard('{Control>}');
         await user.click(icon('휴지통'));
         await user.keyboard('{/Control}');
         await openMenu(icon('GitHub'));
-        await expect(page().getByRole('menuitem', { name: /^삭제/ })).toHaveAttribute(
-          'aria-disabled',
-          'true',
-        );
+        await expect(menuItemNames()).toEqual(['잘라내기', '열기Enter']);
         await closeMenu();
         await user.click(page().getByRole('listbox'));
       },
@@ -931,6 +942,35 @@ export const ItemMenu: Story = {
   },
 };
 
+// 화면 아래쪽에서 아이콘을 우클릭해 자리가 모자라면 메뉴가 위로 뒤집혀 열리고, 단추 줄이 메뉴 맨 아래로 내려간다.
+// @codocs [[바탕화면 우클릭 메뉴:아이콘]]
+export const ItemMenuFlipsUp: Story = {
+  play: async ({ step }) => {
+    await step('화면 아래쪽을 우클릭하면 메뉴가 위로 열리고 단추 줄이 맨 아래에 있다', async () => {
+      await fireEvent.contextMenu(icon('Blog'), {
+        clientX: 200,
+        clientY: window.innerHeight - 4,
+      });
+      const menu = await page().findByRole('menu');
+      await waitFor(async () => {
+        await expect(menu.getAnimations({ subtree: true }).filter(isRunning)).toHaveLength(0);
+      });
+      const names = menuItemNames();
+      await expect(names[0]).not.toBe('잘라내기');
+      await expect(names.slice(-3)).toEqual(['잘라내기', '이름 바꾸기', '삭제']);
+      // 메뉴는 누른 자리 위에 붙는다(아래로 넘치지 않는다).
+      await expect(menu.getBoundingClientRect().bottom).toBeLessThanOrEqual(window.innerHeight + 2);
+      await closeMenu();
+    });
+
+    await step('위쪽을 우클릭하면 아래로 열리고 단추 줄이 맨 위에 있다', async () => {
+      await openMenu(icon('Blog'));
+      await expect(menuItemNames().slice(0, 3)).toEqual(['잘라내기', '이름 바꾸기', '삭제']);
+      await closeMenu();
+    });
+  },
+};
+
 // 모바일 폭의 바탕화면이다. 뷰포트는 addon-vitest가 실제 브라우저 크기로 바꾼다.
 // @codocs [[바탕화면 아이콘:모바일]]
 // @codocs [[반응형:입력 차이]]
@@ -986,8 +1026,12 @@ export const Mobile: Story = {
       await expect(isAutoArrange).toHaveAttribute('aria-disabled', 'true');
       await user.click(isAutoArrange);
       await expect(useWorkspaceStore.getState().desktop.isAutoArrange).toBe(true);
+      // Esc는 하위 메뉴만 닫고 빈 곳 메뉴로 돌아간다. 한 번 더 누르면 빈 곳 메뉴도 닫힌다.
       await fireEvent.keyDown(isAutoArrange, { key: 'Escape' });
-      await waitForMenuClosed();
+      await waitFor(async () => {
+        await expect(page().queryAllByRole('menu')).toHaveLength(1);
+      });
+      await closeMenu();
     });
 
     open.mockRestore();

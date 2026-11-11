@@ -7,6 +7,7 @@ import { getEmptyMenuEntries } from './empty-menu-entries';
 
 const viewOptions = {
   view: DEFAULT_EXPLORER_VIEW,
+  isMobile: false,
   onViewChange: vi.fn(),
   onSortByChange: vi.fn(),
   onSortDirectionChange: vi.fn(),
@@ -29,21 +30,25 @@ const emptyOptions = {
  * @returns 이름
  */
 function labels(entries: readonly MenuPopupEntry[]): string[] {
-  return entries.map((entry) => ('label' in entry ? entry.label : '-'));
+  return entries.map((entry) => {
+    if (entry.kind === 'command-bar') {
+      return `[${entry.buttons.map((button) => button.label).join('|')}]`;
+    }
+    return 'label' in entry ? entry.label : '-';
+  });
 }
 
 // @codocs [[파일 탐색기:우클릭 메뉴]]
 describe('파일 탐색기:우클릭 메뉴', () => {
-  it('빈 곳 메뉴는 보기·정렬 기준·붙여넣기·새로 만들기다', () => {
+  it('붙여넣을 수 있으면 빈 곳 메뉴는 단추 줄 붙여넣기와 목록 보기·정렬 기준·새로 만들기다', () => {
     const entries = getEmptyMenuEntries(emptyOptions);
-    expect(labels(entries)).toEqual(['보기', '정렬 기준', '-', '붙여넣기', '새로 만들기']);
+    expect(labels(entries)).toEqual(['[붙여넣기]', '보기', '정렬 기준', '-', '새로 만들기']);
   });
 
-  it('붙여넣을 수 없으면 붙여넣기를 고를 수 없다', () => {
+  // @codocs [[항목 조작:잘라내기와 붙여넣기]]
+  it('붙여넣을 수 없으면 단추 줄이 없고 목록에도 붙여넣기가 없다', () => {
     const entries = getEmptyMenuEntries({ ...emptyOptions, canPaste: false });
-    expect(entries.find((entry) => 'label' in entry && entry.label === '붙여넣기')).toMatchObject({
-      isDisabled: true,
-    });
+    expect(labels(entries)).toEqual(['보기', '정렬 기준', '-', '새로 만들기']);
   });
 
   it('휴지통 빈 곳 메뉴는 정렬 기준·새로 고침·휴지통 비우기다', () => {

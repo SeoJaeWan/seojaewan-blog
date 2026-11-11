@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import {
   emptyRecycleBinMenuItem,
+  openItemMenuItem,
   singleChoiceEntry,
   startPinMenuItem,
   taskbarPinMenuItem,
@@ -12,6 +13,14 @@ describe('바탕화면 우클릭 메뉴:아이콘', () => {
   it('이미 Start에 고정된 항목은 시작 화면에 고정 대신 시작 화면에서 고정 해제를 보인다', () => {
     expect(startPinMenuItem(false, vi.fn()).label).toBe('시작 화면에 고정');
     expect(startPinMenuItem(true, vi.fn()).label).toBe('시작 화면에서 고정 해제');
+  });
+});
+
+// @codocs [[반응형:입력 차이]]
+describe('반응형:입력 차이', () => {
+  it('항목 메뉴의 열기는 데스크톱에서 Enter를 보이고 모바일에서는 단축키 글자가 없다', () => {
+    expect(openItemMenuItem(vi.fn(), false).shortcut).toBe('Enter');
+    expect(openItemMenuItem(vi.fn(), true).shortcut).toBeUndefined();
   });
 });
 

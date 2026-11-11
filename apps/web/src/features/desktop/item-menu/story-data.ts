@@ -17,6 +17,7 @@ export function itemMenuOptions(
 ): Parameters<typeof getItemMenuEntries>[0] {
   return {
     kind,
+    isMobile: false,
     isPinned: false,
     isFavorite: false,
     canTrash: true,
