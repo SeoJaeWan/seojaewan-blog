@@ -71,7 +71,7 @@ const meta = {
         onChange={handleChange}
       />
     );
-    // Suggesting은 카드가 입력 줄 위로 떠 있어 바깥 상자가 피그마 변형 노드(카드)와 다르다. 카드를 캡처 기준으로 지정한다([[피그마 연동:캡처 표]]).
+    // Suggesting은 카드가 입력 줄 위로 떠 있어 바깥 상자가 피그마 변형 노드(카드)와 다르다. 카드를 기준으로 지정한다([[피그마 연동:스토리 규칙]]).
     return args.state === 'suggesting' ? (
       <div data-parity-target data-parity-box='[data-slot="suggestions-card"]'>
         {bar}
@@ -87,7 +87,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 피그마 변형 하나를 args 하나로 고른다. Hover·Focused는 캡처 도구가 마우스·키보드로 재현한다.
+// 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
 // @codocs [[Chrome:주소창]]

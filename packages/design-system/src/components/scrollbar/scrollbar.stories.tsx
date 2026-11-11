@@ -5,7 +5,7 @@ import scrollbarExport from '../../../figma/components/scrollbar/export.json';
 import { figmaFrame } from '../../story/figma-frame';
 import { Scrollbar } from './scrollbar';
 
-// 피그마 Scrollbar의 변형 속성 값이다(정규화한 이름). 캡처 도구가 State를 state arg로 넘기면 render가 isExpanded로 바꿔 Scrollbar에 준다.
+// 피그마 Scrollbar의 변형 속성 값이다(정규화한 이름). State를 state arg로 넘기면 render가 isExpanded로 바꿔 Scrollbar에 준다.
 const STATES = ['rest', 'expanded'] as const;
 const MATERIALS = ['acrylic', 'solid'] as const;
 

@@ -35,7 +35,7 @@ type FigmaArgs = {
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 탭 내용 자리에는 피그마 조립처럼 글 화면(Chrome/Page `Page=Post`)을 넣는다.
-// 피그마에 있는 변형 조합(셋)만 캡처 도구가 짝짓는다. 창 크기는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 크기로 감싼다.
+// 피그마에 있는 변형 조합(셋)만 피그마와 짝이다. 창 크기는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 크기로 감싼다.
 const meta = {
   title: 'Patterns/Window/Chrome',
   args: { device: 'desktop', tabs: 'single' },

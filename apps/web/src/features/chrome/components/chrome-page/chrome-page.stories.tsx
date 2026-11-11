@@ -73,7 +73,7 @@ function renderPage(args: FigmaArgs): JSX.Element {
 }
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 제목은 Patterns/ + 피그마 조립 이름이다. 캡처 도구가 이 제목으로 피그마 조립과 짝짓는다.
+// 제목은 Patterns/ + 피그마 조립 이름이다. 이 제목이 피그마 조립과 짝이다.
 // 본문은 크기를 갖지 않고 창이 정하므로 FigmaFrame이 피그마 원본 크기(size/chrome-page/*)로 감싼다.
 const meta = {
   title: 'Patterns/Chrome/Page',

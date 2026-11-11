@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { type MotionResult, renderMotionComments } from './motion-report.ts';
 import type { ValueRow } from './motion-values.ts';
-import { COMMENT_MARKER, markerIndex } from './pr-comment.ts';
+import { markerIndex } from './pr-comment.ts';
 
 const RUN_URL = 'https://github.com/o/r/actions/runs/1';
 
@@ -40,7 +40,7 @@ function result(name: string, change: Partial<MotionResult> = {}): MotionResult 
   };
 }
 
-// @codocs [[피그마 연동:CI]]
+// @codocs [[피그마 연동:모션]]
 describe('CI', () => {
   it('모션 검사 결과를 견본마다 키프레임 | 속성 | 피그마 | 코드 | 결과 표로 쓴다', () => {
     const [body = ''] = renderMotionComments([result('motion-window-open')], RUN_URL);
@@ -102,10 +102,10 @@ describe('CI', () => {
     expect(body).not.toContain('키프레임 값 다름 0곳');
   });
 
-  it('모션 검사 댓글은 캡처 표 댓글과 다른 숨은 표시로 찾아 따로 고친다', () => {
+  it('모션 검사 댓글은 `motion-check` 숨은 표시로 찾는다', () => {
     const [body = ''] = renderMotionComments([result('motion-window-open')], RUN_URL);
     expect(markerIndex(body, 'motion-check')).toBe(1);
-    expect(markerIndex(body, COMMENT_MARKER)).toBeUndefined();
+    expect(markerIndex(body, 'other-check')).toBeUndefined();
   });
 
   it('결과가 없으면 이유를 적는다', () => {

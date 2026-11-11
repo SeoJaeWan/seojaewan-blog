@@ -17,7 +17,7 @@ function focusRow(row: HTMLDivElement | null): void {
   if (row !== null && !row.contains(document.activeElement)) row.focus();
 }
 
-// 피그마 FileRow의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로 재현한다.
+// 피그마 FileRow의 변형 속성 값이다(정규화한 이름).
 const VIEWS = ['default', 'recycle-bin'] as const;
 const STATES = [
   'rest',

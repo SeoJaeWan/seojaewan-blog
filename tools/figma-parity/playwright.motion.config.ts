@@ -15,7 +15,7 @@ export default defineConfig({
   outputDir: 'node_modules/.cache/playwright-motion-results',
   use: {
     ...devices['Desktop Chrome'],
-    // 모션 스토리도 PC 구간 크기로 고정한다([[피그마 연동:캡처 표]]).
+    // 모션 스토리도 PC 구간 크기로 고정한다([[피그마 연동:모션]]).
     viewport: { ...CAPTURE_VIEWPORT },
     reducedMotion: 'no-preference',
   },

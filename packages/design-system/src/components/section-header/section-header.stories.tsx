@@ -5,7 +5,7 @@ import sectionHeaderExport from '../../../figma/components/section-header/export
 import { figmaFrame } from '../../story/figma-frame';
 import { SectionHeader } from './section-header';
 
-// 피그마 SectionHeader의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로 재현한다.
+// 피그마 SectionHeader의 변형 속성 값이다(정규화한 이름).
 const STATES = ['rest', 'hover'] as const;
 
 type FigmaArgs = {

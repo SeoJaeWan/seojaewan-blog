@@ -6,7 +6,7 @@ import { figmaFrame } from '../../story/figma-frame';
 import { TocItem } from '../toc-item/toc-item';
 import { Toc } from './toc';
 
-// 피그마 Toc의 State 값이다. 캡처 도구가 State를 state arg로 넘기면 render가 isExpanded로 바꿔 Toc에 준다.
+// 피그마 Toc의 State 값이다. State를 state arg로 넘기면 render가 isExpanded로 바꿔 Toc에 준다.
 type FigmaArgs = {
   state: 'expanded' | 'collapsed';
 };

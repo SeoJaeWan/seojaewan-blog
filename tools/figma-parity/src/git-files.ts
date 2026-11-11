@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 
 import { repoRoot } from './paths.ts';
 
-// 캡처 범위와 모션 검사 범위가 함께 쓰는 git 읽기. 저장소를 바꾸지 않는다.
+// 모션 검사 범위를 정하는 git 읽기. 저장소를 바꾸지 않는다.
 
 /** 기준 브랜치를 주지 않았을 때 차례로 찾는 참조다 */
 export const DEFAULT_BASES = ['origin/main', 'main'] as const;

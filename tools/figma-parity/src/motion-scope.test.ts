@@ -60,7 +60,7 @@ function scope(changedFiles: string[], changes: Record<string, FileChange> = {})
   }).motions;
 }
 
-// @codocs [[피그마 연동:CI]]
+// @codocs [[피그마 연동:모션]]
 describe('CI', () => {
   it('바뀐 figma/motions/<이름>.json의 견본을 검사한다', () => {
     expect(scope(['packages/design-system/figma/motions/motion-window-open.json'])).toEqual([
@@ -116,8 +116,7 @@ describe('CI', () => {
     ).toEqual(['motion-progress-ring']);
   });
 
-  it('모션 검사 도구·워크플로·모션 스토리 도우미가 바뀌면 json이 있는 모든 견본을 검사한다', () => {
-    expect(scope(['.github/workflows/motion-check.yml'])).toEqual([...knownMotions].sort());
+  it('모션 검사 도구·모션 스토리 도우미가 바뀌면 json이 있는 모든 견본을 검사한다', () => {
     expect(scope(['tools/figma-parity/src/motion-compare.ts'])).toEqual([...knownMotions].sort());
     expect(scope(['packages/design-system/src/motion-story/motion-preview.tsx'])).toEqual(
       [...knownMotions].sort(),

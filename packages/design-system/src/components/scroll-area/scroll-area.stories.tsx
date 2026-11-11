@@ -41,7 +41,7 @@ const meta = {
     material: { control: 'inline-radio', options: MATERIALS },
   },
   // 크기는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 크기(size/list-item/width × size/scrollbar/length)로 감싼다.
-  // State=Hover는 캡처 도구가 마우스를 올려 재현한다. 가운데에 올리면 목록 항목이 Hover가 되므로 스크롤바([data-state])에 올린다.
+  // State=Hover는 마우스를 올려 재현한다. 가운데에 올리면 목록 항목이 Hover가 되므로 스크롤바([data-state])에 올린다.
   // 감싸는 요소 안의 ScrollArea가 캡처 대상이라 data-parity-target을 단다.
   decorators: [figmaFrame(scrollAreaExport)],
   render: (args) => (

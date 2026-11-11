@@ -5,7 +5,7 @@ import tocItemExport from '../../../figma/components/toc-item/export.json';
 import { figmaFrame } from '../../story/figma-frame';
 import { TocItem } from './toc-item';
 
-// 피그마 TocItem의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로 재현한다.
+// 피그마 TocItem의 변형 속성 값이다(정규화한 이름).
 const LEVELS = ['1', '2', '3'] as const;
 const STATES = ['rest', 'hover'] as const;
 
@@ -37,7 +37,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 피그마 변형 하나(Active, Level, State)를 args 하나로 고른다. Hover는 캡처 도구가 마우스로 재현한다.
+// 피그마 변형 하나(Active, Level, State)를 args 하나로 고른다.
 export const Figma: Story = {};
 
 // @codocs [[컴포넌트 목록:상태]]

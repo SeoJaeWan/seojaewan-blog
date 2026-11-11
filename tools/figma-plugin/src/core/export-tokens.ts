@@ -94,7 +94,7 @@ export function tokenNamesText(text: string): string {
 
 /**
  * tokens.json 내용으로 tokens.css 내용을 만든다. 변환 스크립트(`generate:tokens`)와 같은 함수를 써서,
- * 플러그인이 커밋한 tokens.css가 CI가 다시 만든 것과 같다.
+ * 플러그인이 커밋한 tokens.css가 변환 스크립트가 다시 만든 것과 같다.
  * @codocs [[피그마 연동:토큰 검사]]
  * @param text tokens.json 내용
  * @returns tokens.css 내용

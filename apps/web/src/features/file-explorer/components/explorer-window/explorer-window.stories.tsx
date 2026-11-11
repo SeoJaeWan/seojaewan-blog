@@ -39,7 +39,7 @@ type FigmaArgs = {
 };
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 제목은 Patterns/ + 피그마 조립 이름이다. 피그마에 있는 변형 조합(여섯)만 캡처 도구가 짝짓는다.
+// 제목은 Patterns/ + 피그마 조립 이름이다. 피그마에 있는 변형 조합(여섯)만 피그마와 짝이다.
 // 창 크기는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 크기로 감싼다. 바깥 요소는 창 층의 누르기 처리를 대신한다.
 const meta = {
   title: 'Patterns/Window/Explorer',

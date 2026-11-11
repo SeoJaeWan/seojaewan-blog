@@ -19,7 +19,7 @@ type TaskbarArgs = ComponentProps<typeof TaskbarDefault>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 피그마 조립처럼 고정 앱(File Explorer, Chrome) 버튼을 표시 없이 둔다.
 // 캡처 화면 너비(1280)가 미리보기 너비와 같아, 기본 여백을 두면 오른쪽 끝이 잘리므로 여백 없이(fullscreen) 그린다.
-// 같은 파일에 동작 스토리(`SearchBox`, `SearchButton`)를 함께 둔다. 캡처 도구는 제목이 같은 스토리가 여럿이면 `Figma`를 고른다.
+// 같은 파일에 동작 스토리(`SearchBox`, `SearchButton`)를 함께 둔다. 제목이 같은 스토리가 여럿이면 `Figma` 스토리가 피그마와 짝이다.
 // 너비는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 너비로 감싼다. 동작 스토리도 고른 검색 모양의 너비로 감싼다.
 const meta = {
   title: 'Patterns/Taskbar/Default',

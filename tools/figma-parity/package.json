@@ -4,7 +4,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "capture": "node src/run-capture.ts",
     "motion-check": "node src/run-motion-check.ts",
     "test": "vitest run",
     "test:unit": "vitest run",

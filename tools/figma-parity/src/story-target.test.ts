@@ -1,172 +1,43 @@
 import { describe, expect, it } from 'vitest';
 
-import { manifestFixture, storybookIndexFixture } from './story-target.fixture.ts';
-import { camelCase, findStoryId, storyArgsParam, storyTarget } from './story-target.ts';
-import { parseManifest, variantFileName } from './variant-name.ts';
+import { storyEntries } from './story-target.ts';
 
-// @codocs [[피그마 연동:스토리 규칙]]
-describe('스토리 규칙', () => {
-  it('피그마 속성 이름은 camelCase arg 이름이 된다', () => {
-    expect(camelCase('Style')).toBe('style');
-    expect(camelCase('Show Icon')).toBe('showIcon');
-  });
+// Storybook index.json의 모양을 본뜬 테스트 데이터다.
+const storybookIndex = {
+  v: 5,
+  entries: {
+    'motion-window-open--default': {
+      id: 'motion-window-open--default',
+      title: 'Motion/motion-window-open',
+      name: 'Default',
+      importPath: './src/motion-story/motion-window-open.stories.tsx',
+      type: 'story',
+    },
+    'motion-window-open--docs': {
+      id: 'motion-window-open--docs',
+      title: 'Motion/motion-window-open',
+      name: 'Docs',
+      importPath: './src/motion-story/motion-window-open.stories.tsx',
+      type: 'docs',
+    },
+    broken: { id: 'broken', type: 'story' },
+  },
+};
 
-  it('피그마 속성 값은 변형 파일 이름과 같은 규칙으로 정규화한 문자열이 된다', () => {
-    expect(storyTarget([['Device', 'Chrome more (Mobile)']]).args).toEqual({
-      device: 'chrome-more-mobile',
-    });
-  });
-
-  it('True·False 값은 boolean arg가 되고 이름에 is가 붙는다', () => {
-    expect(storyTarget([['Selected', 'True']]).args).toEqual({ isSelected: true });
-    expect(storyTarget([['Checked', 'False']]).args).toEqual({ isChecked: false });
-    expect(storyTarget([['Show Icon', 'True']]).args).toEqual({ isShowIcon: true });
-    expect(storyArgsParam({ isSelected: true, style: 'accent' })).toBe(
-      'isSelected:!true;style:accent',
-    );
-  });
-
-  it('이미 Has·Is·Can·Should로 시작하는 참/거짓 이름은 접두어를 더 붙이지 않는다', () => {
-    expect(storyTarget([['Has separator', 'True']]).args).toEqual({ hasSeparator: true });
-    expect(storyTarget([['Is open', 'False']]).args).toEqual({ isOpen: false });
-    expect(storyTarget([['Can close', 'True']]).args).toEqual({ canClose: true });
-    expect(storyTarget([['Should wrap', 'False']]).args).toEqual({ shouldWrap: false });
-  });
-
-  it('Has로 시작하는 낱말이 아닌 이름(Hash)에는 is를 붙이고, 참/거짓이 아닌 값은 이름을 그대로 쓴다', () => {
-    expect(storyTarget([['Hash', 'True']]).args).toEqual({ isHash: true });
-    expect(storyTarget([['Has icon', 'Left']]).args).toEqual({ hasIcon: 'left' });
-  });
-
-  it('State가 Hover·Pressed·Focused면 실제 마우스·키보드로 재현하고 state arg도 넘긴다', () => {
-    expect(storyTarget([['State', 'Hover']])).toEqual({
-      args: { state: 'hover' },
-      interaction: 'hover',
-    });
-    expect(storyTarget([['State', 'Pressed']]).interaction).toBe('pressed');
-    expect(storyTarget([['State', 'Focused']]).interaction).toBe('focus');
-  });
-
-  it('나머지 상태는 상호작용 없이 args로만 재현한다', () => {
-    expect(storyTarget([['State', 'Disabled']])).toEqual({
-      args: { state: 'disabled' },
-      interaction: 'none',
-    });
-  });
-
-  // @codocs [[컴포넌트 목록:상태]]
-  it('Active는 누르는 중이 아니라 활성 창·지금 고른 탭이라 args로만 재현한다', () => {
-    expect(storyTarget([['State', 'Active']])).toEqual({
-      args: { state: 'active' },
-      interaction: 'none',
-    });
-  });
-
-  it('컴포넌트는 그 컴포넌트 스토리 파일의 Figma 스토리와 짝짓는다', () => {
-    expect(
-      findStoryId(storybookIndexFixture, { id: 'button', kind: 'component', name: 'Button' }),
-    ).toEqual({ ok: true, id: 'components-button--figma' });
-    expect(
-      findStoryId(storybookIndexFixture, { id: 'menu-item', kind: 'component', name: 'MenuItem' }),
-    ).toMatchObject({ ok: false });
-  });
-
-  it('조립은 제목이 Patterns/ + 피그마 조립 이름인 스토리와 짝짓는다', () => {
-    expect(
-      findStoryId(storybookIndexFixture, {
-        id: 'patterns/menu/folder',
-        kind: 'pattern',
-        name: 'Menu/Folder',
-      }),
-    ).toEqual({ ok: true, id: 'patterns-menu-folder--default' });
-  });
-
-  it('조립 제목의 스토리가 여럿이면 Figma 스토리를 쓴다', () => {
-    expect(
-      findStoryId(storybookIndexFixture, {
-        id: 'patterns/start/power-button',
-        kind: 'pattern',
-        name: 'Start/PowerButton',
-      }),
-    ).toEqual({ ok: true, id: 'patterns-start-power-button--figma' });
-  });
-
-  it('짝 스토리가 없으면 만들 스토리를 알려 준다', () => {
-    expect(
-      findStoryId(storybookIndexFixture, {
-        id: 'patterns/menu/view',
-        kind: 'pattern',
-        name: 'Menu/View',
-      }),
-    ).toEqual({
-      ok: false,
-      message: '스토리가 없다: 앱 Storybook에 제목이 "Patterns/Menu/View"인 스토리를 만든다',
-    });
-  });
-});
-
-// @codocs [[피그마 연동:피그마 플러그인]]
-describe('export.json', () => {
-  it('변형 파일 이름은 피그마 순서의 prop=value를 쉼표로 잇고, 속성이 없으면 default다', () => {
-    expect(
-      variantFileName([
-        ['Style', 'Accent'],
-        ['State', 'Rest'],
-      ]),
-    ).toBe('style=accent,state=rest');
-    expect(variantFileName([])).toBe('default');
-  });
-
-  it('이름과 변형 목록(PNG 안 노드 위치 포함, 없으면 null)을 읽고, 이름순으로 정렬된 속성도 변형 파일 이름 순서로 읽는다', () => {
-    const sorted = structuredClone(manifestFixture);
-    sorted.variants['style=accent,state=rest'].properties = { State: 'Rest', Style: 'Accent' };
-    const manifest = parseManifest(sorted, 'export.json');
-    expect(manifest.name).toBe('Button');
-    expect(manifest.variants).toEqual([
+describe('Storybook index.json', () => {
+  it('스토리 항목만 꺼내고 문서 항목과 칸이 빠진 항목은 뺀다', () => {
+    expect(storyEntries(storybookIndex)).toEqual([
       {
-        variant: 'style=accent,state=hover',
-        properties: [
-          ['Style', 'Accent'],
-          ['State', 'Hover'],
-        ],
-        node: null,
-      },
-      {
-        variant: 'style=accent,state=rest',
-        properties: [
-          ['Style', 'Accent'],
-          ['State', 'Rest'],
-        ],
-        node: { x: 8, y: 4, width: 120, height: 32 },
+        id: 'motion-window-open--default',
+        title: 'Motion/motion-window-open',
+        name: 'Default',
+        importPath: './src/motion-story/motion-window-open.stories.tsx',
       },
     ]);
   });
 
-  it('예전 내보내기에 남은 emptyHugSlot 표시는 읽지 않는다', () => {
-    const marked = structuredClone(manifestFixture) as Record<string, unknown> & {
-      variants: Record<string, Record<string, unknown>>;
-    };
-    marked.variants['style=accent,state=hover'] = {
-      ...marked.variants['style=accent,state=hover'],
-      emptyHugSlot: true,
-    };
-    const manifest = parseManifest(marked, 'export.json');
-    expect(manifest.variants.map((item) => item.variant)).toEqual([
-      'style=accent,state=hover',
-      'style=accent,state=rest',
-    ]);
-    expect(manifest.variants.every((item) => !('emptyHugSlot' in item))).toBe(true);
-  });
-
-  it('PNG 안 노드 위치가 숫자가 아니거나 크기가 0이면 실패한다', () => {
-    const broken = structuredClone(manifestFixture);
-    broken.variants['style=accent,state=rest'].node.width = 0;
-    expect(() => parseManifest(broken, 'export.json')).toThrow(/node: 크기/u);
-  });
-
-  it('속성과 변형 파일 이름이 어긋나면 실패한다', () => {
-    const broken = structuredClone(manifestFixture);
-    broken.variants['style=accent,state=rest'].properties.State = 'Hover';
-    expect(() => parseManifest(broken, 'export.json')).toThrow(/state=hover/u);
+  it('entries가 없으면 빈 목록이다', () => {
+    expect(storyEntries({})).toEqual([]);
+    expect(storyEntries(null)).toEqual([]);
   });
 });

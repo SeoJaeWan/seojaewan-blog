@@ -222,7 +222,8 @@ describe('PR 본문의 피그마 미리보기', () => {
     expect(body).toContain('- Button 사라진 변형: `style=old`');
     expect(body).toContain('- 이름이 바뀌어 이전 폴더 삭제:');
     expect(body).toContain('\n## Button\n\n<table>');
-    expect(body).toContain('CI 댓글의 `피그마 | 코드 | 차이`');
+    expect(body).toContain('모습 비교를 자동으로 확인하는 장치는 지금 없다');
+    expect(body).not.toContain('캡처 표');
     expect(body.split('style=accent,state=rest')).toHaveLength(3);
     expect(body).not.toContain('현재 구현');
     expect(body).not.toContain('parity-captures');
@@ -336,6 +337,6 @@ describe('PR 본문의 피그마 미리보기', () => {
     expect(body).not.toContain('  - row30: 간격 9');
     expect(body).toContain('  - 외 2줄(export.json의 report에서 본다)');
     expect(patternPullRequestBody('b', 'menu', [button], [], [])).toContain('보고할 조립이 없다.');
-    expect(body).toContain('`피그마 | 코드 | 차이`로 나란히 보여 준다. 조립은 참고용');
+    expect(body).toContain('모습 비교를 자동으로 확인하는 장치는 지금 없다. 조립은 참고용');
   });
 });

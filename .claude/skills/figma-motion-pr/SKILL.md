@@ -54,13 +54,13 @@ description: 피그마 플러그인이 연 애니메이션 PR(`feat/figma-motion
    - 반복은 json `iterations`대로 `animation-iteration-count`에 쓴다.
    - 동작 줄이기: Accessibility 주석(`notes`)이 없는 움직임은 `motion.css`의 `prefers-reduced-motion` 블록에 넣어 바로 바뀌게 한다. Accessibility 주석이 있는 움직임만 그 블록의 예외로 남긴다(@codocs [[디자인 기반:동작 줄이기]]).
 5. 모션 스토리를 만든다. `packages/design-system/src/motion-story/<이름>.stories.tsx`에 제목이 `Motion/<이름>`인 스토리를 두고, `motion-preview.tsx`의 `MotionPreview`로 견본과 같은 컴포넌트에 클래스를 걸어 재생한다. 실행 중 값은 `runtimeValues`에 견본의 대표값을 넣는다.
-6. 컴포넌트에 늘 붙는 움직임(예: 링 회전)이면 같은 PR에서 그 컴포넌트에 클래스를 붙인다(@codocs [[피그마 연동:PR 흐름]]). 붙인 컴포넌트는 캡처 표를 받으므로 `pnpm --filter @seojaewan/figma-parity capture --target <컴포넌트 폴더>`로 정지 모습이 그대로인지 본다.
+6. 컴포넌트에 늘 붙는 움직임(예: 링 회전)이면 같은 PR에서 그 컴포넌트에 클래스를 붙인다(@codocs [[피그마 연동:PR 흐름]]).
 7. 모션 시간 검사를 로컬에서 돌린다: `pnpm --filter @seojaewan/figma-parity motion-check --motion <이름>`. 디자인 시스템 Storybook을 빌드하고 모션 스토리에서 시간·이징·지연을 읽어 json의 토큰 짝과 비교한다. Chromium이 없으면 `pnpm --filter @seojaewan/figma-parity exec playwright install chromium`을 먼저 실행한다. 실패하면 4·5로 돌아가 고친다. 로그의 반복 횟수가 json `iterations`와 같은지도 본다.
 8. Storybook에서 모션 스토리를 느리게 보기로 재생하며 피그마 견본과 키프레임 모양을 나란히 본다.
 9. `pnpm lint`, `pnpm typecheck`, `pnpm test`를 통과시킨다.
 10. 커밋하고 푸시한다. 커밋 규칙은 @codocs [[Git 작업 규칙:커밋]]을 따른다. PR 브랜치에 이어서 커밋하고 병합하지 않는다.
 11. 보고한다.
     - 만든 클래스와 키프레임, 토큰 짝을 `var()`로 쓴 곳, 실행 중 값 CSS 변수
-    - 클래스를 붙인 컴포넌트(있으면)와 캡처 표에서 볼 곳
+    - 클래스를 붙인 컴포넌트(있으면)
     - 모션 시간 검사 결과와 반복 횟수
     - 리뷰어가 피그마 견본과 모션 스토리를 나란히 볼 때 볼 곳(키프레임 모양은 사람이 본다)
