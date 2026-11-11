@@ -6,7 +6,7 @@
   "variants": {
     "default": {
       "node": {
-        "height": 408,
+        "height": 399,
         "width": 294,
         "x": 16,
         "y": 8
@@ -113,16 +113,6 @@
             }
           },
           {
-            "component": "Separator",
-            "paths": [
-              "Menu/Flyout/Content/separator/Separator",
-              "Menu/Flyout/Content/separator/Separator"
-            ],
-            "properties": {
-              "Orientation": "Horizontal"
-            }
-          },
-          {
             "component": "MenuItem",
             "paths": [
               "Menu/Flyout/Content/item 새 창"
@@ -135,6 +125,15 @@
               "State": "Rest",
               "Value": "100%",
               "Variant": "Default"
+            }
+          },
+          {
+            "component": "Separator",
+            "paths": [
+              "Menu/Flyout/Content/separator/Separator"
+            ],
+            "properties": {
+              "Orientation": "Horizontal"
             }
           },
           {
@@ -202,7 +201,7 @@
       "tree": {
         "name": "Menu/TaskbarJumpListChrome",
         "size": {
-          "h": 408,
+          "h": 399,
           "w": 294
         },
         "sizing": {
