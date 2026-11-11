@@ -144,9 +144,9 @@
               {
                 "asset": {
                   "color": "color/black/89",
-                  "path": "icons/ic_fluent_text_bullet_list_ltr_20_regular"
+                  "path": "icons/ic_fluent_line_horizontal_4_20_regular"
                 },
-                "component": "ic_fluent_text_bullet_list_ltr_20_regular",
+                "component": "ic_fluent_line_horizontal_4_20_regular",
                 "height": "size/icon/sm",
                 "name": "icon",
                 "size": {
@@ -179,6 +179,7 @@
             },
             "name": "details view",
             "properties": {
+              "Checked": "False",
               "State": "Rest",
               "Variant": "Subtle"
             },
@@ -203,9 +204,9 @@
               {
                 "asset": {
                   "color": "color/black/89",
-                  "path": "icons/ic_fluent_grid_20_regular"
+                  "path": "icons/ic_fluent_laptop_20_regular"
                 },
-                "component": "ic_fluent_grid_20_regular",
+                "component": "ic_fluent_laptop_20_regular",
                 "height": "size/icon/sm",
                 "name": "icon",
                 "size": {
@@ -238,6 +239,7 @@
             },
             "name": "large icons view",
             "properties": {
+              "Checked": "False",
               "State": "Rest",
               "Variant": "Subtle"
             },

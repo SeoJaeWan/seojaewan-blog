@@ -17,20 +17,25 @@ import {
   canGoBack,
   canGoForward,
   closeTab,
+  getActiveTab,
   getCurrentLocation,
+  getFavoriteRows,
   getFocusableTreeKey,
   getNavigationRows,
   getParentLocation,
+  getTabSelection,
   getTreeMoveTarget,
   goBack,
   goForward,
   goUp,
   isTreeNodeExpanded,
+  mergeNavigationRows,
   moveTab,
   navigateTo,
   type NavigationRow,
   openNewTab,
   resolveExplorerContent,
+  saveActiveSelection,
   selectTab,
   setTreeNodeExpanded,
 } from './explorer-navigation';
@@ -122,6 +127,38 @@ describe('파일 탐색기:탭', () => {
     expect(canGoBack(selectTab(content, workspace, 0))).toBe(true);
   });
 
+  it('뒤로·앞으로 가면 그 기록 칸을 떠날 때의 선택을 되살린다', () => {
+    const blogSelection = { ids: [NEXT], focusId: NEXT };
+    const reactSelection = { ids: [HOOKS], focusId: HOOKS };
+    const atReact = navigateTo(visit(BLOG_FOLDER_ID), workspace, REACT, blogSelection);
+    expect(getTabSelection(getActiveTab(atReact))).toBeUndefined();
+    const back = goBack(atReact, workspace, reactSelection);
+    expect(getTabSelection(getActiveTab(back))).toEqual(blogSelection);
+    const forward = goForward(back, workspace, { ids: [], focusId: null });
+    expect(getTabSelection(getActiveTab(forward))).toEqual(reactSelection);
+  });
+
+  it('새로 간 칸은 선택 없이 보인다', () => {
+    const content = navigateTo(visit(BLOG_FOLDER_ID), workspace, REACT, {
+      ids: [NEXT],
+      focusId: NEXT,
+    });
+    expect(getTabSelection(getActiveTab(content))).toBeUndefined();
+  });
+
+  it('위로 간 칸은 방금 있던 폴더를 고르고 현재 항목으로 둔다', () => {
+    expect(getTabSelection(getActiveTab(goUp(visit(HOOKS), workspace)))).toEqual({
+      ids: [HOOKS],
+      focusId: HOOKS,
+    });
+  });
+
+  it('탭을 바꾸기 전에 적은 선택은 그 탭으로 돌아오면 되살린다', () => {
+    const selection = { ids: [REACT], focusId: REACT };
+    const content = openNewTab(saveActiveSelection(visit(BLOG_FOLDER_ID), selection), workspace);
+    expect(getTabSelection(getActiveTab(selectTab(content, workspace, 0)))).toEqual(selection);
+  });
+
   it('위로는 상위 폴더로 간다', () => {
     expect(getCurrentLocation(goUp(visit(HOOKS), workspace))).toBe(REACT);
   });
@@ -208,13 +245,13 @@ describe('파일 탐색기:탭', () => {
 
   it('상위 폴더로 옮기면서 바로 앞 기록과 같아지면 그 기록과 합친다', () => {
     const content = resolveExplorerContent(visit(BLOG_FOLDER_ID, REACT), trash([REACT]));
-    expect(content.tabs[0]?.history).toEqual([BLOG_FOLDER_ID]);
+    expect(content.tabs[0]?.history).toEqual([{ location: BLOG_FOLDER_ID }]);
   });
 
   it('고르지 않은 탭이 보는 폴더도 휴지통에 넣으면 상위 폴더로 이동한다', () => {
     const content = openNewTab(visit(REACT), workspace);
     const resolved = resolveExplorerContent(content, trash([REACT]));
-    expect(resolved.tabs[0]?.history).toEqual([BLOG_FOLDER_ID]);
+    expect(resolved.tabs[0]?.history).toEqual([{ location: BLOG_FOLDER_ID }]);
   });
 
   it('보는 폴더가 휴지통에 없으면 그대로 둔다', () => {
@@ -225,6 +262,44 @@ describe('파일 탐색기:탭', () => {
   it('뒤로 간 위치가 그새 휴지통에 들어갔으면 그 상위 폴더로 간다', () => {
     const content = visit(BLOG_FOLDER_ID, REACT, HOOKS, NEXT);
     expect(getCurrentLocation(goBack(content, trash([REACT])))).toBe(BLOG_FOLDER_ID);
+  });
+});
+
+// @codocs [[파일 탐색기:탐색 창]]
+describe('파일 탐색기:탐색 창', () => {
+  const folders = [REACT, NEXT].flatMap((id) => {
+    const item = workspace.items[id];
+    return item?.kind === 'folder' ? [item] : [];
+  });
+
+  it('즐겨찾기 칸은 고정한 차례로 트리 앞에 둔다', () => {
+    const rows = mergeNavigationRows(
+      getNavigationRows(visit(BLOG_FOLDER_ID), workspace),
+      getFavoriteRows(folders, BLOG_FOLDER_ID, null),
+    );
+    expect(rows.slice(0, 3).map((row) => row.key)).toEqual([
+      `favorite:${REACT}`,
+      `favorite:${NEXT}`,
+      'desktop',
+    ]);
+  });
+
+  it('즐겨찾기 칸을 눌러 간 폴더는 즐겨찾기 칸이 선택된 칸이고 트리 칸은 고르지 않는다', () => {
+    const rows = mergeNavigationRows(
+      getNavigationRows(visit(REACT), workspace),
+      getFavoriteRows(folders, REACT, REACT),
+    );
+    expect(rows.filter((row) => row.isSelected).map((row) => row.key)).toEqual([
+      `favorite:${REACT}`,
+    ]);
+  });
+
+  it('다른 방법으로 간 폴더는 트리 칸이 선택된 칸이다', () => {
+    const rows = mergeNavigationRows(
+      getNavigationRows(visit(REACT), workspace),
+      getFavoriteRows(folders, REACT, null),
+    );
+    expect(rows.filter((row) => row.isSelected).map((row) => row.key)).toEqual([REACT]);
   });
 });
 
@@ -324,7 +399,6 @@ describe('파일 탐색기:탐색 창 키보드', () => {
     location: row.key,
     label: row.key,
     isSelected: false,
-    icon: 'folder',
   })) as NavigationRow[];
 
   it('↑↓는 보이는 앞뒤 칸으로 옮기고 끝에서는 멈춘다', () => {

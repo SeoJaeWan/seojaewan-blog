@@ -1,6 +1,7 @@
+import { Menu } from '@base-ui/react/menu';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { ComponentProps } from 'react';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { type ComponentProps, useState } from 'react';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { BreadcrumbItem } from './breadcrumb-item';
 
@@ -94,6 +95,58 @@ export const Truncated: Story = {
     await step('이름이 최대 너비를 넘으면 끝을 …로 줄인다', async () => {
       await expect(text.scrollWidth).toBeGreaterThan(text.clientWidth);
       await expect(getComputedStyle(text).textOverflow).toBe('ellipsis');
+    });
+  },
+};
+
+/**
+ * 꺾쇠 구분자를 Base UI 메뉴 트리거로 감싸고 열림 상태를 isSeparatorOpen으로 넘긴 모습이다.
+ * @returns 꺾쇠가 메뉴를 여는 경로 칸
+ */
+function SeparatorMenuExample() {
+  const [isOpen, setIsOpen] = useState(false);
+  /**
+   * 메뉴가 열고 닫히려 할 때 열림 상태를 바꾼다.
+   * @param isNextOpen 바뀔 열림 상태
+   */
+  function handleOpenChange(isNextOpen: boolean) {
+    setIsOpen(isNextOpen);
+  }
+  return (
+    <BreadcrumbItem
+      label="문서"
+      separatorLabel="문서 하위 폴더"
+      isSeparatorOpen={isOpen}
+      renderSeparator={(separator) => (
+        <Menu.Root open={isOpen} modal={false} onOpenChange={handleOpenChange}>
+          <Menu.Trigger render={separator} />
+          <Menu.Portal>
+            <Menu.Positioner>
+              <Menu.Popup>
+                <Menu.Item>하위 폴더 이름</Menu.Item>
+              </Menu.Popup>
+            </Menu.Positioner>
+          </Menu.Portal>
+        </Menu.Root>
+      )}
+    />
+  );
+}
+
+// @codocs [[컴포넌트 목록:상태]]
+/** 꺾쇠 구분자는 renderSeparator로 메뉴 트리거가 되고, 열린 동안 아래 꺾쇠 모양이다 */
+export const SeparatorMenu: Story = {
+  render: () => <SeparatorMenuExample />,
+  // Base UI 포커스 가드는 aria-hidden이면서 tabindex=0인 span이라 aria-hidden-focus에 걸린다. 외부 라이브러리 구조라 이 규칙만 끈다.
+  parameters: { a11y: { config: { rules: [{ id: 'aria-hidden-focus', enabled: false }] } } },
+  play: async ({ canvasElement, step }) => {
+    const chevron = within(canvasElement).getByRole('button', { name: '문서 하위 폴더' });
+
+    await step('꺾쇠를 누르면 메뉴가 열리고 열림 모양이 된다', async () => {
+      await expect(chevron).toHaveAttribute('data-open', 'false');
+      await userEvent.click(chevron);
+      await waitFor(() => expect(chevron).toHaveAttribute('aria-expanded', 'true'));
+      await expect(chevron).toHaveAttribute('data-open', 'true');
     });
   },
 };

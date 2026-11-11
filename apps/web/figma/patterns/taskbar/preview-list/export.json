@@ -17,7 +17,7 @@
     "count=1": {
       "node": {
         "height": 166,
-        "width": 210,
+        "width": 190.8,
         "x": 18,
         "y": 9
       },
@@ -72,6 +72,7 @@
               "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/title bar/Title bar content/new tab"
             ],
             "properties": {
+              "Checked": "False",
               "State": "Rest",
               "Variant": "Subtle"
             }
@@ -131,7 +132,9 @@
               "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/바탕 화면"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "Expanded",
+              "Has pin": false,
               "Label": "바탕 화면",
               "Level": "0",
               "State": "Rest"
@@ -143,7 +146,9 @@
               "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/Blog"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "Expanded",
+              "Has pin": false,
               "Label": "Blog",
               "Level": "1",
               "State": "Selected"
@@ -155,7 +160,9 @@
               "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/React"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "Collapsed",
+              "Has pin": false,
               "Label": "React",
               "Level": "2",
               "State": "Rest"
@@ -167,7 +174,9 @@
               "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/Next.js"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "None",
+              "Has pin": false,
               "Label": "Next.js",
               "Level": "2",
               "State": "Rest"
@@ -179,7 +188,9 @@
               "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/TypeScript"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "None",
+              "Has pin": false,
               "Label": "TypeScript",
               "Level": "2",
               "State": "Rest"
@@ -191,7 +202,9 @@
               "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/휴지통"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "None",
+              "Has pin": false,
               "Label": "휴지통",
               "Level": "0",
               "State": "Rest"
@@ -203,6 +216,7 @@
               "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items/item/React"
             ],
             "properties": {
+              "Current": "False",
               "Name": "React",
               "Size": "Medium",
               "State": "Selected",
@@ -215,6 +229,7 @@
               "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items/item/Next.js"
             ],
             "properties": {
+              "Current": "False",
               "Name": "Next.js",
               "Size": "Medium",
               "State": "Rest",
@@ -227,6 +242,7 @@
               "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items/item/TypeScript"
             ],
             "properties": {
+              "Current": "False",
               "Name": "TypeScript",
               "Size": "Medium",
               "State": "Rest",
@@ -239,6 +255,7 @@
               "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items/item/Notion 블로그 이전기"
             ],
             "properties": {
+              "Current": "False",
               "Name": "Notion 블로그 이전기",
               "Size": "Medium",
               "State": "Rest",
@@ -251,6 +268,7 @@
               "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items/item/2026 상반기 회고"
             ],
             "properties": {
+              "Current": "False",
               "Name": "2026 상반기 회고",
               "Size": "Medium",
               "State": "Rest",
@@ -267,13 +285,44 @@
           }
         ],
         "motion": [],
-        "offToken": []
+        "offToken": [
+          {
+            "nodeId": "I564:7316;564:2197;564:7327;70:1413;844:5580;564:6683;18:288;844:5416;3419:12899;3419:13270",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(top) 10.29 → 가까운 토큰 `spacing/md-nudge`(10)"
+          },
+          {
+            "nodeId": "I564:7316;564:2197;564:7327;70:1413;844:5580;564:6683;18:288;844:5416;3419:12899;3419:13270",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(right) 15.43 → 가까운 토큰 `spacing/lg`(16)"
+          },
+          {
+            "nodeId": "I564:7316;564:2197;564:7327;70:1413;844:5580;564:6683;18:288;844:5416;3419:12899;3419:13270",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(bottom) 10.29 → 가까운 토큰 `spacing/md-nudge`(10)"
+          },
+          {
+            "nodeId": "I564:7316;564:2197;564:7327;70:1413;844:5580;564:6683;18:288;844:5416;3419:12899;3419:13270",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(left) 15.43 → 가까운 토큰 `spacing/lg`(16)"
+          },
+          {
+            "nodeId": "I564:7316;564:2197;564:7327;70:1413;844:5580;564:6683;18:288;844:5416;3419:12899;3419:13270",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "간격 5.14 → 가까운 토큰 `spacing/sm-nudge`(6)"
+          },
+          {
+            "nodeId": "I564:7316;564:2197;564:7327;70:1413;844:5580;564:6683;18:288;844:5416;3419:12899;3419:13270",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "줄 간격 5.14 → 가까운 토큰 `spacing/sm-nudge`(6)"
+          }
+        ]
       },
       "tree": {
         "name": "Count=1",
         "size": {
           "h": 166,
-          "w": 210
+          "w": 190.8
         },
         "sizing": {
           "h": "HUG",
@@ -284,7 +333,7 @@
     "count=2": {
       "node": {
         "height": 166,
-        "width": 418,
+        "width": 379.6,
         "x": 18,
         "y": 9
       },
@@ -342,6 +391,7 @@
               "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/title bar/Title bar content/new tab"
             ],
             "properties": {
+              "Checked": "False",
               "State": "Rest",
               "Variant": "Subtle"
             }
@@ -407,7 +457,9 @@
               "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/바탕 화면"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "Expanded",
+              "Has pin": false,
               "Label": "바탕 화면",
               "Level": "0",
               "State": "Rest"
@@ -420,7 +472,9 @@
               "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/Blog"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "Expanded",
+              "Has pin": false,
               "Label": "Blog",
               "Level": "1",
               "State": "Selected"
@@ -433,7 +487,9 @@
               "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/React"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "Collapsed",
+              "Has pin": false,
               "Label": "React",
               "Level": "2",
               "State": "Rest"
@@ -446,7 +502,9 @@
               "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/Next.js"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "None",
+              "Has pin": false,
               "Label": "Next.js",
               "Level": "2",
               "State": "Rest"
@@ -459,7 +517,9 @@
               "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/TypeScript"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "None",
+              "Has pin": false,
               "Label": "TypeScript",
               "Level": "2",
               "State": "Rest"
@@ -472,7 +532,9 @@
               "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/휴지통"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "None",
+              "Has pin": false,
               "Label": "휴지통",
               "Level": "0",
               "State": "Rest"
@@ -485,6 +547,7 @@
               "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items/item/React"
             ],
             "properties": {
+              "Current": "False",
               "Name": "React",
               "Size": "Medium",
               "State": "Selected",
@@ -498,6 +561,7 @@
               "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items/item/Next.js"
             ],
             "properties": {
+              "Current": "False",
               "Name": "Next.js",
               "Size": "Medium",
               "State": "Rest",
@@ -511,6 +575,7 @@
               "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items/item/TypeScript"
             ],
             "properties": {
+              "Current": "False",
               "Name": "TypeScript",
               "Size": "Medium",
               "State": "Rest",
@@ -524,6 +589,7 @@
               "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items/item/Notion 블로그 이전기"
             ],
             "properties": {
+              "Current": "False",
               "Name": "Notion 블로그 이전기",
               "Size": "Medium",
               "State": "Rest",
@@ -537,6 +603,7 @@
               "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items/item/2026 상반기 회고"
             ],
             "properties": {
+              "Current": "False",
               "Name": "2026 상반기 회고",
               "Size": "Medium",
               "State": "Rest",
@@ -569,13 +636,74 @@
           }
         ],
         "motion": [],
-        "offToken": []
+        "offToken": [
+          {
+            "nodeId": "I564:7630;564:2197;564:7641;70:1413;566:6872;564:6683;18:288;566:7020;3419:12899;3419:13310",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(top) 10.29 → 가까운 토큰 `spacing/md-nudge`(10)"
+          },
+          {
+            "nodeId": "I564:7630;564:2197;564:7641;70:1413;566:6872;564:6683;18:288;566:7020;3419:12899;3419:13310",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(right) 15.43 → 가까운 토큰 `spacing/lg`(16)"
+          },
+          {
+            "nodeId": "I564:7630;564:2197;564:7641;70:1413;566:6872;564:6683;18:288;566:7020;3419:12899;3419:13310",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(bottom) 10.29 → 가까운 토큰 `spacing/md-nudge`(10)"
+          },
+          {
+            "nodeId": "I564:7630;564:2197;564:7641;70:1413;566:6872;564:6683;18:288;566:7020;3419:12899;3419:13310",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(left) 15.43 → 가까운 토큰 `spacing/lg`(16)"
+          },
+          {
+            "nodeId": "I564:7630;564:2197;564:7641;70:1413;566:6872;564:6683;18:288;566:7020;3419:12899;3419:13310",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "간격 5.14 → 가까운 토큰 `spacing/sm-nudge`(6)"
+          },
+          {
+            "nodeId": "I564:7630;564:2197;564:7641;70:1413;566:6872;564:6683;18:288;566:7020;3419:12899;3419:13310",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "줄 간격 5.14 → 가까운 토큰 `spacing/sm-nudge`(6)"
+          },
+          {
+            "nodeId": "I564:7630;564:2197;564:7951;70:1413;566:7556;564:6683;18:288;566:7708;3419:12899;3419:13350",
+            "path": "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(top) 10.29 → 가까운 토큰 `spacing/md-nudge`(10)"
+          },
+          {
+            "nodeId": "I564:7630;564:2197;564:7951;70:1413;566:7556;564:6683;18:288;566:7708;3419:12899;3419:13350",
+            "path": "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(right) 15.43 → 가까운 토큰 `spacing/lg`(16)"
+          },
+          {
+            "nodeId": "I564:7630;564:2197;564:7951;70:1413;566:7556;564:6683;18:288;566:7708;3419:12899;3419:13350",
+            "path": "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(bottom) 10.29 → 가까운 토큰 `spacing/md-nudge`(10)"
+          },
+          {
+            "nodeId": "I564:7630;564:2197;564:7951;70:1413;566:7556;564:6683;18:288;566:7708;3419:12899;3419:13350",
+            "path": "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(left) 15.43 → 가까운 토큰 `spacing/lg`(16)"
+          },
+          {
+            "nodeId": "I564:7630;564:2197;564:7951;70:1413;566:7556;564:6683;18:288;566:7708;3419:12899;3419:13350",
+            "path": "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "간격 5.14 → 가까운 토큰 `spacing/sm-nudge`(6)"
+          },
+          {
+            "nodeId": "I564:7630;564:2197;564:7951;70:1413;566:7556;564:6683;18:288;566:7708;3419:12899;3419:13350",
+            "path": "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "줄 간격 5.14 → 가까운 토큰 `spacing/sm-nudge`(6)"
+          }
+        ]
       },
       "tree": {
         "name": "Count=2",
         "size": {
           "h": 166,
-          "w": 418
+          "w": 379.6
         },
         "sizing": {
           "h": "HUG",
@@ -586,7 +714,7 @@
     "count=3": {
       "node": {
         "height": 166,
-        "width": 626,
+        "width": 568.4,
         "x": 18,
         "y": 9
       },
@@ -647,6 +775,7 @@
               "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/title bar/Title bar content/new tab"
             ],
             "properties": {
+              "Checked": "False",
               "State": "Rest",
               "Variant": "Subtle"
             }
@@ -718,7 +847,9 @@
               "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/바탕 화면"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "Expanded",
+              "Has pin": false,
               "Label": "바탕 화면",
               "Level": "0",
               "State": "Rest"
@@ -732,7 +863,9 @@
               "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/Blog"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "Expanded",
+              "Has pin": false,
               "Label": "Blog",
               "Level": "1",
               "State": "Selected"
@@ -746,7 +879,9 @@
               "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/React"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "Collapsed",
+              "Has pin": false,
               "Label": "React",
               "Level": "2",
               "State": "Rest"
@@ -760,7 +895,9 @@
               "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/Next.js"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "None",
+              "Has pin": false,
               "Label": "Next.js",
               "Level": "2",
               "State": "Rest"
@@ -774,7 +911,9 @@
               "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/TypeScript"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "None",
+              "Has pin": false,
               "Label": "TypeScript",
               "Level": "2",
               "State": "Rest"
@@ -788,7 +927,9 @@
               "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/휴지통"
             ],
             "properties": {
+              "Current": "False",
               "Expand": "None",
+              "Has pin": false,
               "Label": "휴지통",
               "Level": "0",
               "State": "Rest"
@@ -802,6 +943,7 @@
               "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items/item/React"
             ],
             "properties": {
+              "Current": "False",
               "Name": "React",
               "Size": "Medium",
               "State": "Selected",
@@ -816,6 +958,7 @@
               "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items/item/Next.js"
             ],
             "properties": {
+              "Current": "False",
               "Name": "Next.js",
               "Size": "Medium",
               "State": "Rest",
@@ -830,6 +973,7 @@
               "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items/item/TypeScript"
             ],
             "properties": {
+              "Current": "False",
               "Name": "TypeScript",
               "Size": "Medium",
               "State": "Rest",
@@ -844,6 +988,7 @@
               "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items/item/Notion 블로그 이전기"
             ],
             "properties": {
+              "Current": "False",
               "Name": "Notion 블로그 이전기",
               "Size": "Medium",
               "State": "Rest",
@@ -858,6 +1003,7 @@
               "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items/item/2026 상반기 회고"
             ],
             "properties": {
+              "Current": "False",
               "Name": "2026 상반기 회고",
               "Size": "Medium",
               "State": "Rest",
@@ -906,13 +1052,104 @@
           }
         ],
         "motion": [],
-        "offToken": []
+        "offToken": [
+          {
+            "nodeId": "I564:8258;564:2197;564:8269;70:1413;566:8240;564:6683;18:288;566:8388;3419:12899;3419:13390",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(top) 10.29 → 가까운 토큰 `spacing/md-nudge`(10)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8269;70:1413;566:8240;564:6683;18:288;566:8388;3419:12899;3419:13390",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(right) 15.43 → 가까운 토큰 `spacing/lg`(16)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8269;70:1413;566:8240;564:6683;18:288;566:8388;3419:12899;3419:13390",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(bottom) 10.29 → 가까운 토큰 `spacing/md-nudge`(10)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8269;70:1413;566:8240;564:6683;18:288;566:8388;3419:12899;3419:13390",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(left) 15.43 → 가까운 토큰 `spacing/lg`(16)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8269;70:1413;566:8240;564:6683;18:288;566:8388;3419:12899;3419:13390",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "간격 5.14 → 가까운 토큰 `spacing/sm-nudge`(6)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8269;70:1413;566:8240;564:6683;18:288;566:8388;3419:12899;3419:13390",
+            "path": "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "줄 간격 5.14 → 가까운 토큰 `spacing/sm-nudge`(6)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8579;70:1413;566:8924;564:6683;18:288;566:9076;3419:12899;3419:13430",
+            "path": "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(top) 10.29 → 가까운 토큰 `spacing/md-nudge`(10)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8579;70:1413;566:8924;564:6683;18:288;566:9076;3419:12899;3419:13430",
+            "path": "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(right) 15.43 → 가까운 토큰 `spacing/lg`(16)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8579;70:1413;566:8924;564:6683;18:288;566:9076;3419:12899;3419:13430",
+            "path": "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(bottom) 10.29 → 가까운 토큰 `spacing/md-nudge`(10)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8579;70:1413;566:8924;564:6683;18:288;566:9076;3419:12899;3419:13430",
+            "path": "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(left) 15.43 → 가까운 토큰 `spacing/lg`(16)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8579;70:1413;566:8924;564:6683;18:288;566:9076;3419:12899;3419:13430",
+            "path": "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "간격 5.14 → 가까운 토큰 `spacing/sm-nudge`(6)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8579;70:1413;566:8924;564:6683;18:288;566:9076;3419:12899;3419:13430",
+            "path": "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "줄 간격 5.14 → 가까운 토큰 `spacing/sm-nudge`(6)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8893;70:1413;566:9612;564:6683;18:288;566:9764;3419:12899;3419:13470",
+            "path": "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(top) 10.29 → 가까운 토큰 `spacing/md-nudge`(10)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8893;70:1413;566:9612;564:6683;18:288;566:9764;3419:12899;3419:13470",
+            "path": "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(right) 15.43 → 가까운 토큰 `spacing/lg`(16)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8893;70:1413;566:9612;564:6683;18:288;566:9764;3419:12899;3419:13470",
+            "path": "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(bottom) 10.29 → 가까운 토큰 `spacing/md-nudge`(10)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8893;70:1413;566:9612;564:6683;18:288;566:9764;3419:12899;3419:13470",
+            "path": "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "여백(left) 15.43 → 가까운 토큰 `spacing/lg`(16)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8893;70:1413;566:9612;564:6683;18:288;566:9764;3419:12899;3419:13470",
+            "path": "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "간격 5.14 → 가까운 토큰 `spacing/sm-nudge`(6)"
+          },
+          {
+            "nodeId": "I564:8258;564:2197;564:8893;70:1413;566:9612;564:6683;18:288;566:9764;3419:12899;3419:13470",
+            "path": "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/items",
+            "text": "줄 간격 5.14 → 가까운 토큰 `spacing/sm-nudge`(6)"
+          }
+        ]
       },
       "tree": {
         "name": "Count=3",
         "size": {
           "h": 166,
-          "w": 626
+          "w": 568.4
         },
         "sizing": {
           "h": "HUG",

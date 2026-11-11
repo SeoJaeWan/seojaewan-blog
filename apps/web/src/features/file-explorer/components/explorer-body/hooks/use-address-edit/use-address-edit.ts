@@ -43,6 +43,7 @@ type TrashedTarget = {
  * 주소창 편집 상태와 동작
  * - isEditing: 경로를 입력칸으로 바꿨는지(Breadcrumb `isEditing`)
  * - editFieldProps: 입력칸에 넘길 값·동작·접근성 속성
+ * - handleClear: 입력칸의 지우기 버튼(×)을 눌렀을 때. 입력을 비운다
  * - handleRowClick: 주소 줄을 눌렀을 때. 경로의 빈 곳이면 편집을 시작한다
  * - notFoundText: 찾지 못한 입력. null이 아니면 메시지 상자를 띄운다
  * - handleNotFoundOpenChange: 메시지 상자가 닫힐 때
@@ -55,6 +56,7 @@ type TrashedTarget = {
 type AddressEdit = {
   isEditing: boolean;
   editFieldProps: EditFieldProps | undefined;
+  handleClear: () => void;
   handleRowClick: (event: MouseEvent<HTMLDivElement>) => void;
   notFoundText: string | null;
   handleNotFoundOpenChange: (isOpen: boolean) => void;
@@ -76,6 +78,7 @@ type AddressEdit = {
  * - 찾지 못하면 메시지 상자를 띄우고 입력칸은 그대로 둔다. 메시지 상자가 포커스를 가져가 생기는 포커스 잃음은 무시하고,
  *   닫히면 포커스가 입력칸으로 돌아온다.
  * - Esc를 누르거나 포커스를 잃으면 입력을 버리고 마디 모양으로 돌아간다. 다른 위치로 가도 끝난다.
+ * - 지우기 버튼(×)은 입력을 비운다. 포커스는 입력칸에 남고(Breadcrumb이 맡는다), 비면 버튼이 사라진다.
  * @codocs [[파일 탐색기:주소창 편집]]
  * @codocs [[파일 탐색기:모바일]]
  * @param options 작업 공간, 위치, 화면 방식, 이동 함수, 항목 열기 함수, 휴지통 항목 복원 함수
@@ -147,6 +150,11 @@ export function useAddressEdit(options: AddressEditOptions): AddressEdit {
     setEdit({ location, text });
   }
 
+  /** 지우기 버튼(×): 입력을 비운다. 편집은 그대로다. */
+  function handleClear(): void {
+    setEdit({ location, text: '' });
+  }
+
   /** 포커스를 잃으면 입력을 버린다. 메시지 상자를 띄운 동안은 그대로 둔다. */
   function handleBlur(): void {
     if (!isAlertingRef.current) {
@@ -156,12 +164,17 @@ export function useAddressEdit(options: AddressEditOptions): AddressEdit {
 
   /**
    * 주소 줄을 누르면, 경로의 빈 곳(버튼·입력칸이 아닌 곳)이면 편집을 시작한다. 모바일은 현재 위치 한 칸도 받는다.
-   * 줄 자체의 여백과 이동·검색 버튼은 넘긴다.
+   * 줄 자체의 여백과 이동·검색 버튼은 넘긴다. 꺾쇠 목록처럼 포털로 그린 요소의 누르기도 React 트리로 올라오므로 줄 DOM 밖이면 넘긴다.
    * @param event 누르기 이벤트
    */
   function handleRowClick(event: MouseEvent<HTMLDivElement>): void {
     const target = event.target;
-    if (isEditing || !(target instanceof Element) || target === event.currentTarget) {
+    if (
+      isEditing ||
+      !(target instanceof Element) ||
+      target === event.currentTarget ||
+      !event.currentTarget.contains(target)
+    ) {
       return;
     }
     const isMobileCurrent =
@@ -221,6 +234,7 @@ export function useAddressEdit(options: AddressEditOptions): AddressEdit {
           'aria-label': '주소',
         }
       : undefined,
+    handleClear,
     handleRowClick,
     notFoundText,
     handleNotFoundOpenChange,

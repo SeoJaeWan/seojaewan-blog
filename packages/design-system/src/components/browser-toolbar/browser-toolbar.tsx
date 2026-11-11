@@ -78,7 +78,7 @@ export function BrowserToolbar({
     <IconButton
       variant="chrome"
       label={menuLabel}
-      icon="icons/ic_fluent_more_vertical_20_regular.svg"
+      icon="icons/ic_material_more_vert_20_outlined.svg"
       onClick={handleMenu}
       className="shrink-shrink-none"
     />
@@ -87,14 +87,14 @@ export function BrowserToolbar({
     <div
       {...divProps}
       className={cn(
-        'flex h-size-browser-toolbar-height items-center gap-spacing-xs bg-color-white px-spacing-sm',
+        'flex h-size-browser-toolbar-height items-center gap-spacing-xs border-b-stroke-width-default border-color-black-22 bg-color-white px-spacing-sm',
         className,
       )}
     >
       <IconButton
         variant="chrome"
         label={backLabel}
-        icon="icons/ic_fluent_arrow_left_20_regular.svg"
+        icon="icons/ic_material_arrow_back_20_outlined.svg"
         disabled={!canGoBack}
         onClick={handleBack}
         className="shrink-shrink-none"
@@ -103,7 +103,7 @@ export function BrowserToolbar({
         <IconButton
           variant="chrome"
           label={forwardLabel}
-          icon="icons/ic_fluent_arrow_right_20_regular.svg"
+          icon="icons/ic_material_arrow_forward_20_outlined.svg"
           disabled={!canGoForward}
           onClick={handleForward}
           className="shrink-shrink-none"
@@ -113,7 +113,7 @@ export function BrowserToolbar({
         <IconButton
           variant="chrome"
           label={refreshLabel}
-          icon="icons/ic_fluent_arrow_clockwise_20_regular.svg"
+          icon="icons/ic_material_refresh_20_outlined.svg"
           onClick={handleRefresh}
           className="shrink-shrink-none"
         />

@@ -1,8 +1,20 @@
 {
-  "description": "Chrome 주소창으로, BrowserToolbar와 주소창 추천 조립의 트리거에 쓴다.",
+  "description": "Chrome 주소창으로, BrowserToolbar와 Chrome 주소창 조립에 쓴다. Suggesting은 입력하는 중 추천 목록이 열린 모습이고, 카드 한 장이 입력 줄과 추천 줄 자리(Suggestions)를 함께 감싼다.",
   "name": "AddressBar",
   "nodeId": "36:582",
   "propertyDefinitions": {
+    "Filled": {
+      "default": "True",
+      "options": [
+        "False",
+        "True"
+      ],
+      "type": "VARIANT"
+    },
+    "Placeholder": {
+      "default": "글 검색 또는 URL 입력",
+      "type": "TEXT"
+    },
     "Query": {
       "default": "검색어",
       "type": "TEXT"
@@ -17,13 +29,151 @@
       ],
       "type": "VARIANT"
     },
+    "Suggestions": {
+      "type": "SLOT"
+    },
     "URL": {
       "default": "웹 주소",
       "type": "TEXT"
     }
   },
   "variants": {
-    "state=focused": {
+    "state=focused,filled=false": {
+      "node": {
+        "height": 40,
+        "width": 640,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:15075",
+      "properties": {
+        "Filled": "False",
+        "State": "Focused"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/gray/70",
+                  "path": "icons/ic_material_search_20_outlined"
+                },
+                "component": "ic_material_search_20_outlined",
+                "height": "size/icon/sm",
+                "name": "leading icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "placeholder",
+                "size": {
+                  "h": 20,
+                  "w": 576
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "글 검색 또는 URL 입력",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Body"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "height": "size/address-bar/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/md",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/lg",
+                "spacing/none",
+                "spacing/lg"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "input row",
+            "size": {
+              "h": 36,
+              "w": 636
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "fills": [
+          "color/white"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Focused, Filled=False",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "sampleSize": [
+          "width"
+        ],
+        "size": {
+          "h": 40,
+          "w": 640
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer"
+        ],
+        "strokes": [
+          "color/blue/60"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT"
+      }
+    },
+    "state=focused,filled=true": {
       "node": {
         "height": 40,
         "width": 640,
@@ -32,6 +182,7 @@
       },
       "nodeId": "36:526",
       "properties": {
+        "Filled": "True",
         "State": "Focused"
       },
       "tree": {
@@ -165,7 +316,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "State=Focused",
+        "name": "State=Focused, Filled=True",
         "radius": [
           "radius/circular",
           "radius/circular",
@@ -196,7 +347,132 @@
         "type": "COMPONENT"
       }
     },
-    "state=hover": {
+    "state=hover,filled=false": {
+      "node": {
+        "height": 36,
+        "width": 640,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:15069",
+      "properties": {
+        "Filled": "False",
+        "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/gray/70",
+                  "path": "icons/ic_material_search_20_outlined"
+                },
+                "component": "ic_material_search_20_outlined",
+                "height": "size/icon/sm",
+                "name": "leading icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "placeholder",
+                "size": {
+                  "h": 20,
+                  "w": 580
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "글 검색 또는 URL 입력",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Body"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "height": "size/address-bar/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/md",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/lg",
+                "spacing/none",
+                "spacing/lg"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "input row",
+            "size": {
+              "h": 36,
+              "w": 640
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "fills": [
+          "color/gray/9"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Hover, Filled=False",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "sampleSize": [
+          "width"
+        ],
+        "size": {
+          "h": 36,
+          "w": 640
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "state=hover,filled=true": {
       "node": {
         "height": 36,
         "width": 640,
@@ -205,6 +481,7 @@
       },
       "nodeId": "36:521",
       "properties": {
+        "Filled": "True",
         "State": "Hover"
       },
       "tree": {
@@ -309,7 +586,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "State=Hover",
+        "name": "State=Hover, Filled=True",
         "radius": [
           "radius/circular",
           "radius/circular",
@@ -330,7 +607,132 @@
         "type": "COMPONENT"
       }
     },
-    "state=rest": {
+    "state=rest,filled=false": {
+      "node": {
+        "height": 36,
+        "width": 640,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:15063",
+      "properties": {
+        "Filled": "False",
+        "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "color/gray/70",
+                  "path": "icons/ic_material_search_20_outlined"
+                },
+                "component": "ic_material_search_20_outlined",
+                "height": "size/icon/sm",
+                "name": "leading icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "placeholder",
+                "size": {
+                  "h": 20,
+                  "w": 580
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "글 검색 또는 URL 입력",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Body"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "height": "size/address-bar/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/md",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/lg",
+                "spacing/none",
+                "spacing/lg"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "input row",
+            "size": {
+              "h": 36,
+              "w": 640
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "fills": [
+          "color/blue/5"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Rest, Filled=False",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "sampleSize": [
+          "width"
+        ],
+        "size": {
+          "h": 36,
+          "w": 640
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "state=rest,filled=true": {
       "node": {
         "height": 36,
         "width": 640,
@@ -339,6 +741,7 @@
       },
       "nodeId": "36:516",
       "properties": {
+        "Filled": "True",
         "State": "Rest"
       },
       "tree": {
@@ -443,7 +846,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "State=Rest",
+        "name": "State=Rest, Filled=True",
         "radius": [
           "radius/circular",
           "radius/circular",
@@ -452,7 +855,7 @@
         ],
         "reactions": [
           {
-            "destination": "State=Hover",
+            "destination": "State=Hover, Filled=True",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -482,15 +885,16 @@
         "type": "COMPONENT"
       }
     },
-    "state=suggesting": {
+    "state=suggesting,filled=true": {
       "node": {
-        "height": 36,
+        "height": 84,
         "width": 640,
         "x": 16,
         "y": 8
       },
       "nodeId": "36:532",
       "properties": {
+        "Filled": "True",
         "State": "Suggesting"
       },
       "tree": {
@@ -500,9 +904,9 @@
               {
                 "asset": {
                   "color": "color/gray/70",
-                  "path": "icons/ic_fluent_search_16_regular"
+                  "path": "icons/ic_material_search_20_outlined"
                 },
-                "component": "ic_fluent_search_16_regular",
+                "component": "ic_material_search_20_outlined",
                 "height": "size/icon/sm",
                 "name": "leading icon",
                 "size": {
@@ -568,25 +972,177 @@
               "v": "FIXED"
             },
             "type": "FRAME"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/file-document"
+                    },
+                    "component": "file/Document",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/sm",
+                    "name": "leading icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "color/black/89"
+                        ],
+                        "name": "title",
+                        "size": {
+                          "h": 20,
+                          "w": 572
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": 1,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "항목",
+                              "fill": "color/black/89",
+                              "textStyle": "Hangul/Body"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "color/black/89",
+                              "textStyle": "Body"
+                            },
+                            {
+                              "characters": "이름",
+                              "fill": "color/black/89",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "ENDING"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": 0,
+                      "mode": "VERTICAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "text",
+                    "size": {
+                      "h": 20,
+                      "w": 572
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "type": "FRAME"
+                  }
+                ],
+                "component": "ListItem",
+                "height": "size/list-item/compact-height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/md",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/xs",
+                    "spacing/md",
+                    "spacing/xs",
+                    "spacing/md"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "ListItem",
+                "properties": {
+                  "Has subtitle": true,
+                  "Has trailing": false,
+                  "Size": "Compact",
+                  "State": "Rest",
+                  "Subtitle": "보조 설명",
+                  "Title": "항목 이름",
+                  "Trailing": "부가 정보"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 36,
+                  "w": 624
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/2xs",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/2xs",
+                "spacing/sm",
+                "spacing/sm-nudge",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Suggestions",
+            "size": {
+              "h": 44,
+              "w": 640
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
           }
         ],
         "effectStyle": "Elevation/Flyout",
-        "fills": [
-          "color/white"
-        ],
+        "fillStyle": "Material/Fallback/Acrylic Default",
         "layout": {
           "counterAlign": "MIN",
           "gap": 0,
           "mode": "VERTICAL",
           "padding": [
+            "spacing/2xs",
             "spacing/none",
-            "spacing/none",
-            0,
+            "spacing/2xs",
             "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
-        "name": "State=Suggesting",
+        "name": "State=Suggesting, Filled=True",
         "radius": [
           "radius/overlay",
           "radius/overlay",
@@ -597,13 +1153,23 @@
           "width"
         ],
         "size": {
-          "h": 36,
+          "h": 84,
           "w": 640
         },
         "sizing": {
           "h": "FIXED",
           "v": "HUG"
         },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "color/black/6"
+        ],
+        "strokesIncludedInLayout": false,
         "type": "COMPONENT"
       }
     }

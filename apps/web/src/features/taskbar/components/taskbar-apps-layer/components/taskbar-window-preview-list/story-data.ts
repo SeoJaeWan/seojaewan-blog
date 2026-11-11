@@ -13,7 +13,13 @@ export const PREVIEW_WINDOWS = [
 ] as const;
 
 /**
- * 피그마 Taskbar/PreviewList 축소 화면: Window/Explorer(1024×640)를 WindowPreview 축소 화면 자리(192×108) 안에
- * 줄여 넣은 것이다(84 / 640). 실제 비율은 창 크기에 따라 실행 중에 정해지고, 스토리는 피그마 값을 쓴다.
+ * 피그마 Taskbar/PreviewList 축소 화면: Window/Explorer(1024×640)를 축소 화면 높이(108)에 맞춰 줄인 것이다(108 / 640).
+ * 카드 너비는 창 비율(1024 ÷ 640 = 1.6)을 따라 108 × 1.6 + 16 = 188.8이고, 축소 화면이 자리를 꽉 채운다.
+ * 실제 비율은 창 크기에 따라 실행 중에 정해지고, 스토리는 피그마 값을 쓴다.
  */
-export const PREVIEW_THUMBNAIL = { width: 1024, height: 640, scale: 0.13125 } as const;
+export const PREVIEW_THUMBNAIL = {
+  width: 1024,
+  height: 640,
+  scale: 0.16875,
+  aspectRatio: 1.6,
+} as const;

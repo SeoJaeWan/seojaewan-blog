@@ -18,6 +18,7 @@ type BrowserTabProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
 /**
  * Chrome 탭 하나(피그마 BrowserTab)를 그린다. 크기는 Windows가 정한 240×34로 고정한다.
  * Rest·Hover·Active 모양은 선택 여부(isActive)와 CSS hover로 바꾼다. 닫기 아이콘 자리는 같은 크기의 버튼이다.
+ * Active는 아래 양옆 탭 밖에 오목한 모서리 조각(피그마 Shapes `browser-tab/Corner left`·`Corner right`)을 그려 탭을 아래 도구 모음과 잇는다.
  * 탭 묶음(바깥 상자) 안에 Base UI `Tabs.Tab`(파비콘과 제목)과 닫기 버튼을 형제로 둔다. 탭 안에 버튼을 넣으면 대화형 요소가
  * 겹치기 때문이다. 바깥 상자가 생김새와 누르기 동작(`onClick` 등)을 갖는다. 그래서 탭 줄(`Tabs.List`) 안에서만 쓴다.
  * 닫기 버튼은 마우스 전용이다(`tablist`에는 탭만 있어야 한다). 키보드는 탭에서 Delete로 닫는다(쓰는 곳이 `onKeyDown`으로 받는다).
@@ -40,7 +41,7 @@ export function BrowserTab({
   isActive = false,
   favicon,
   title = '페이지 제목',
-  closeIcon = <Asset name="icons/ic_fluent_dismiss_20_regular.svg" />,
+  closeIcon = <Asset name="icons/ic_material_close_20_outlined.svg" />,
   hasSeparator = true,
   closeLabel = '탭 닫기',
   onClose,
@@ -95,6 +96,20 @@ export function BrowserTab({
       >
         {closeIcon}
       </button>
+      {isActive && (
+        <>
+          {/* 활성 탭 아래 양옆, 탭 밖의 오목한 모서리(피그마 Shapes browser-tab/Corner left·right)다.
+              칠은 탭 바탕과 같고, 탭을 아래 도구 모음과 잇는다. */}
+          <Asset
+            name="shapes/browser-tab-corner-left.svg"
+            className="pointer-events-none absolute right-position-full bottom-spacing-none size-spacing-sm text-color-white"
+          />
+          <Asset
+            name="shapes/browser-tab-corner-right.svg"
+            className="pointer-events-none absolute bottom-spacing-none left-position-full size-spacing-sm text-color-white"
+          />
+        </>
+      )}
       {!isActive && hasSeparator && (
         <span
           aria-hidden

@@ -155,7 +155,7 @@ export async function watchBootScreen(page: Page): Promise<void> {
         entryWindowCount: document.querySelectorAll('[data-window-entry]').length,
         chromeIndicator:
           document
-            .querySelector('[aria-label="Chrome"][data-indicator]')
+            .querySelector('[aria-label="Google Chrome"][data-indicator]')
             ?.getAttribute('data-indicator') ?? null,
       };
     }

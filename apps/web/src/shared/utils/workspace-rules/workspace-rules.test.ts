@@ -4,12 +4,14 @@ import {
   ABOUT_FOLDER_ID,
   APP_ITEM_IDS,
   BLOG_FOLDER_ID,
+  canPlaceFavoritePins,
   createFolder,
   createInitialWorkspace,
   filterFolderNameInput,
   getChildItems,
   getDesktopItems,
   getExplorerView,
+  getFavoriteFolders,
   getFolderNameToCommit,
   getFolderPath,
   getFolderTree,
@@ -21,12 +23,15 @@ import {
   getVisibleStartPins,
   isItemInTrash,
   isRecycleBinFull,
+  moveFavoritePin,
   moveItems,
   moveStartPin,
   moveTaskbarPin,
+  pinToFavorites,
   pinToStart,
   pinToTaskbar,
   type PlacedItem,
+  placeFavoritePins,
   PROJECT_FOLDER_ID,
   reconcileWorkspace,
   recordRecentItem,
@@ -38,8 +43,10 @@ import {
   setDesktopIconPositions,
   setExplorerView,
   swapStartPin,
+  toggleFavoritePin,
   toSavedWorkspace,
   trashItems,
+  unpinFromFavorites,
   unpinFromStart,
   unpinFromTaskbar,
   validateFolderName,
@@ -224,6 +231,117 @@ describe('고정:작업 표시줄 고정', () => {
       'file-explorer',
     ]);
     expect(moveTaskbarPin(initial, 'chrome', 0).taskbarPins).toEqual(['chrome', 'file-explorer']);
+  });
+});
+
+// @codocs [[고정:즐겨찾기 고정]]
+describe('고정:즐겨찾기 고정', () => {
+  /**
+   * 보이는 즐겨찾기 폴더의 이름을 돌려준다.
+   * @param state 작업 공간 상태
+   * @returns 이름들
+   */
+  function favoriteNames(state: WorkspaceState): string[] {
+    return getFavoriteFolders(state).map((folder) => folder.name);
+  }
+
+  it('처음에는 Project, Blog, About 폴더가 이 순서로 고정돼 있다', () => {
+    expect(initial.favoritePins).toEqual([PROJECT_FOLDER_ID, BLOG_FOLDER_ID, ABOUT_FOLDER_ID]);
+    expect(favoriteNames(initial)).toEqual(['Project', 'Blog', 'About']);
+  });
+
+  it('폴더만 고정할 수 있고, 새로 고정한 폴더는 맨 뒤에 추가하며 이미 있으면 그대로다', () => {
+    const state = pinToFavorites(initial, 'folder:React');
+    expect(state.favoritePins.at(-1)).toBe('folder:React');
+    expect(pinToFavorites(state, 'folder:React')).toBe(state);
+    for (const id of ['post:react-19-hooks', 'link:github', RECYCLE_BIN_ID, 'folder:없음']) {
+      expect(pinToFavorites(initial, id)).toBe(initial);
+    }
+  });
+
+  it('고정을 해제하고 순서를 바꿀 수 있다', () => {
+    expect(unpinFromFavorites(initial, BLOG_FOLDER_ID).favoritePins).toEqual([
+      PROJECT_FOLDER_ID,
+      ABOUT_FOLDER_ID,
+    ]);
+    expect(moveFavoritePin(initial, ABOUT_FOLDER_ID, 0).favoritePins).toEqual([
+      ABOUT_FOLDER_ID,
+      PROJECT_FOLDER_ID,
+      BLOG_FOLDER_ID,
+    ]);
+    expect(moveFavoritePin(initial, 'folder:React', 0)).toBe(initial);
+  });
+
+  it('폴더를 id로 따라가 이름을 바꾸면 바뀐 이름으로 보이고, 다른 곳으로 옮겨도 남는다', () => {
+    const pinned = pinToFavorites(initial, 'folder:React');
+    const renamed = expectOk(renameFolder(pinned, 'folder:React', '리액트'));
+    const moved = expectOk(moveItems(renamed, ['folder:React'], PROJECT_FOLDER_ID, NOW));
+    expect(favoriteNames(moved)).toEqual(['Project', 'Blog', 'About', '리액트']);
+  });
+
+  it('휴지통에 들어간 폴더와 그 안의 폴더는 보이지 않고, 복원하면 다시 보인다', () => {
+    const pinned = pinToFavorites(initial, 'folder:React/Hooks');
+    const trashed = expectOk(trashItems(pinned, ['folder:React', ABOUT_FOLDER_ID], NOW));
+    expect(favoriteNames(trashed)).toEqual(['Project', 'Blog']);
+    expect(trashed.favoritePins).toContain('folder:React/Hooks');
+    const restored = expectOk(restoreItems(trashed, ['folder:React', ABOUT_FOLDER_ID]));
+    expect(favoriteNames(restored)).toEqual(['Project', 'Blog', 'About', 'Hooks']);
+  });
+
+  it('우클릭 메뉴는 있으면 빼고 없으면 맨 뒤에 고정한다', () => {
+    expect(toggleFavoritePin(initial, BLOG_FOLDER_ID).favoritePins).toEqual([
+      PROJECT_FOLDER_ID,
+      ABOUT_FOLDER_ID,
+    ]);
+    expect(toggleFavoritePin(initial, 'folder:React').favoritePins.at(-1)).toBe('folder:React');
+  });
+
+  // @codocs [[파일 탐색기:탐색 창]]
+  it('끌어 놓은 자리에 고정하고, 이미 있는 폴더는 그 자리로 순서를 바꾼다', () => {
+    expect(placeFavoritePins(initial, ['folder:React'], 1).favoritePins).toEqual([
+      PROJECT_FOLDER_ID,
+      'folder:React',
+      BLOG_FOLDER_ID,
+      ABOUT_FOLDER_ID,
+    ]);
+    expect(placeFavoritePins(initial, [PROJECT_FOLDER_ID], 3).favoritePins).toEqual([
+      BLOG_FOLDER_ID,
+      ABOUT_FOLDER_ID,
+      PROJECT_FOLDER_ID,
+    ]);
+    expect(placeFavoritePins(initial, [ABOUT_FOLDER_ID], 0).favoritePins).toEqual([
+      ABOUT_FOLDER_ID,
+      PROJECT_FOLDER_ID,
+      BLOG_FOLDER_ID,
+    ]);
+  });
+
+  it('자리는 보이는 즐겨찾기의 차례라 휴지통에 든 폴더는 세지 않는다', () => {
+    const trashed = expectOk(trashItems(initial, [BLOG_FOLDER_ID], NOW));
+    // 보이는 목록은 Project, About이고 그 사이(1)는 About 바로 앞이다.
+    expect(placeFavoritePins(trashed, ['folder:React'], 1).favoritePins).toEqual([
+      PROJECT_FOLDER_ID,
+      BLOG_FOLDER_ID,
+      'folder:React',
+      ABOUT_FOLDER_ID,
+    ]);
+  });
+
+  it('글이나 외부 링크가 섞이면 놓을 수 없다', () => {
+    expect(canPlaceFavoritePins(initial, ['folder:React', 'post:react-19-hooks'])).toBe(false);
+    expect(placeFavoritePins(initial, ['link:github'], 0)).toBe(initial);
+    expect(canPlaceFavoritePins(initial, ['folder:React'])).toBe(true);
+  });
+
+  // @codocs [[방문자 저장:저장하는 것]]
+  it('목록과 순서를 저장하고, 다시 들어오면 없어진 폴더만 뺀다', () => {
+    const created = expectOk(createFolder(initial, null, { id: 'v1', createdAt: NOW }));
+    const state = moveFavoritePin(pinToFavorites(created, 'v1'), 'v1', 0);
+    const saved = toSavedWorkspace(state);
+    expect(saved.favoritePins).toEqual(['v1', PROJECT_FOLDER_ID, BLOG_FOLDER_ID, ABOUT_FOLDER_ID]);
+    const items = Object.fromEntries(Object.entries(saved.items).filter(([id]) => id !== 'v1'));
+    const reconciled = reconcileWorkspace({ ...saved, items }, testCatalog);
+    expect(reconciled.favoritePins).toEqual([PROJECT_FOLDER_ID, BLOG_FOLDER_ID, ABOUT_FOLDER_ID]);
   });
 });
 
