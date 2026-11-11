@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 
 import { SelectionMarquee, Tooltip } from '@seojaewan/design-system';
 
-import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
 import {
   ItemDragGhost,
   type ItemDragGhostItem,
 } from '@/shared/components/item-drag-ghost/item-drag-ghost';
+import { ContextMenuArea } from '@/shared/components/menu-popup/menu-popup';
 import { MessageBoxDialog } from '@/shared/components/message-box-dialog/message-box-dialog';
 import { EMPTY_RECYCLE_BIN_MESSAGE } from '@/shared/components/message-box-empty-recycle-bin/message-box-empty-recycle-bin';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
