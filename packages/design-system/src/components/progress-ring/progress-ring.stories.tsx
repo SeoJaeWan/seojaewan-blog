@@ -14,8 +14,7 @@ type FigmaArgs = {
 };
 
 /**
- * on-dark 링은 흰 호라 기본(흰) 화면 위에서는 피그마 그림과 코드 그림이 모두 보이지 않는다.
- * 캡처 도구가 화면(body)의 배경색을 읽어 두 그림을 같은 색 위에 놓으므로, 쓰는 곳인 재부팅 화면의 바탕색을 화면에 깐다.
+ * on-dark 링은 흰 호라 기본(흰) 화면 위에서는 보이지 않으므로, 쓰는 곳인 재부팅 화면의 바탕색을 화면에 깐다.
  * @param props
  * @param props.variant 피그마 Variant
  * @param props.children 그릴 링

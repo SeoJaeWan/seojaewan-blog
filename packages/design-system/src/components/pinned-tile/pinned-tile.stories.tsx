@@ -5,7 +5,7 @@ import { PinnedTile } from './pinned-tile';
 // 앱 아이콘 이미지 자산이다. 피그마 Item icon의 기본 인스턴스를 Figma 스토리에서만 넣는다.
 const appIcon = new URL('../../assets/images/app-file-explorer.webp', import.meta.url).href;
 
-// 피그마 PinnedTile의 변형 속성 값이다(정규화한 이름). Hover·Pressed는 캡처 도구가 마우스로 재현한다.
+// 피그마 PinnedTile의 변형 속성 값이다(정규화한 이름).
 const STATES = ['rest', 'hover', 'pressed'] as const;
 
 type FigmaArgs = {
@@ -30,5 +30,5 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 피그마 변형 하나를 args 하나로 고른다. Hover·Pressed는 캡처 도구가 마우스로 재현한다.
+// 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};

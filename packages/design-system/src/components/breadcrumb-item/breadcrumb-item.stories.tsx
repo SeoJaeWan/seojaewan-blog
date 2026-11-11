@@ -43,7 +43,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 피그마 변형 하나를 args 하나로 고른다. Hover·Pressed는 캡처 도구가 마우스로 재현한다.
+// 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
 // @codocs [[컴포넌트 목록:상태]]

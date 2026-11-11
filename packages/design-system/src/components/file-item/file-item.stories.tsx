@@ -7,7 +7,7 @@ import { FileItem } from './file-item';
 // 피그마 FileItem 기본 인스턴스(폴더 이미지)다. Vite와 Next.js가 모두 파일 주소로 바꿔 준다.
 const folderIcon = new URL('../../assets/images/file-folder.webp', import.meta.url).href;
 
-// 피그마 FileItem의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로, Focused는 Tab 키로 재현한다.
+// 피그마 FileItem의 변형 속성 값이다(정규화한 이름).
 const SURFACES = ['desktop', 'explorer'] as const;
 const SIZES = ['large', 'medium', 'small'] as const;
 const STATES = [
@@ -34,8 +34,7 @@ type FigmaArgs = {
 };
 
 /**
- * 바탕화면 항목은 흰 글자라 기본(흰) 화면 위에서는 피그마 그림과 코드 그림이 모두 보이지 않는다.
- * 캡처 도구가 화면(body)의 배경색을 읽어 두 그림을 같은 색 위에 놓으므로, 어두운 바탕을 화면에 깐다.
+ * 바탕화면 항목은 흰 글자라 기본(흰) 화면 위에서는 보이지 않으므로, 어두운 바탕을 화면에 깐다.
  * @param props
  * @param props.surface 피그마 Surface
  * @param props.children 그릴 항목
@@ -77,7 +76,7 @@ const meta = {
   },
   // 탐색기 항목의 선택 바탕과 현재 항목 선의 색은 목록(role="listbox") 포커스로 고른다. 피그마 Selected unfocused만 포커스가
   // 목록 밖에 있는 모습이고, 나머지 탐색기 변형은 포커스가 목록 안에 있는 모습이라 ref 콜백으로 항목에 포커스를 둔다.
-  // 바탕화면 항목은 목록 포커스를 보지 않고, Focused는 캡처 도구가 Tab으로 포커스를 옮겨 :focus-visible 선을 그린다.
+  // 바탕화면 항목은 목록 포커스를 보지 않고, Focused는 Tab으로 포커스를 옮기면 :focus-visible 선이 그려진다.
   // 목록 요소가 화면 너비로 늘어나므로 캡처 대상은 항목이다(data-parity-target).
   render: (args) => (
     <Backdrop surface={args.surface}>

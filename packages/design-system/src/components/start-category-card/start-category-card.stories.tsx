@@ -7,7 +7,7 @@ import { Asset } from '../asset/asset';
 import { ImageAsset } from '../image-asset/image-asset';
 import { StartCategoryCard } from './start-category-card';
 
-// 피그마 StartCategoryCard의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로 재현한다.
+// 피그마 StartCategoryCard의 변형 속성 값이다(정규화한 이름).
 const ITEMS = ['full', '3', '2', '1'] as const;
 const STATES = ['rest', 'hover'] as const;
 const DEVICES = ['desktop', 'mobile'] as const;
@@ -58,7 +58,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 피그마 변형 하나(Items, State, Device)를 args 하나로 고른다. Hover는 캡처 도구가 마우스로 재현한다.
+// 피그마 변형 하나(Items, State, Device)를 args 하나로 고른다.
 export const Figma: Story = {};
 
 // @codocs [[Start 메뉴:모두]]

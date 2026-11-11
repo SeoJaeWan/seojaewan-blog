@@ -5,7 +5,7 @@ import columnHeaderExport from '../../../figma/components/column-header/export.j
 import { figmaFrame } from '../../story/figma-frame';
 import { ColumnHeader } from './column-header';
 
-// 피그마 ColumnHeader의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로 재현한다.
+// 피그마 ColumnHeader의 변형 속성 값이다(정규화한 이름).
 const STATES = ['rest', 'hover'] as const;
 const SORTS = ['none', 'ascending', 'descending'] as const;
 

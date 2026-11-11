@@ -9,7 +9,7 @@ import { NavigationItem } from './navigation-item';
 // 피그마 Item icon 속성의 기본 인스턴스(폴더 아이콘)다. Vite와 Next.js가 모두 파일 주소로 바꿔 준다.
 const folderIcon = new URL('../../assets/images/file-folder.webp', import.meta.url).href;
 
-// 피그마 NavigationItem의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로 재현한다.
+// 피그마 NavigationItem의 변형 속성 값이다(정규화한 이름).
 // Selected(파랑)와 Selected unfocused(회색)는 prop이 아니라 트리 포커스로 갈리므로, Figma 스토리는 Selected일 때만 그리면서 칸에 포커스를 준다.
 const EXPANDS = ['none', 'collapsed', 'expanded'] as const;
 const STATES = ['rest', 'hover', 'selected', 'selected-unfocused'] as const;

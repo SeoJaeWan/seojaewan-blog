@@ -9,7 +9,7 @@ import menuCommandButtonExport from '../../../figma/components/menu-command-butt
 import { FigmaFrame } from '../../story/figma-frame';
 import { MenuCommandButton } from './menu-command-button';
 
-// 피그마 MenuCommandButton의 변형 속성 값이다(정규화한 이름). Hover·Pressed는 캡처 도구가 마우스로 재현한다.
+// 피그마 MenuCommandButton의 변형 속성 값이다(정규화한 이름).
 const STATES = ['rest', 'hover', 'pressed'] as const;
 
 type FigmaArgs = {
@@ -55,7 +55,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 피그마 변형 하나를 args 하나로 고른다. Hover·Pressed는 캡처 도구가 마우스로 재현한다.
+// 피그마 변형 하나를 args 하나로 고른다.
 // MenuCommandButton은 열린 Base UI 메뉴 안에서만 동작하므로, 메뉴를 스토리 루트 안에 열고 단추 하나만 담는다.
 export const Figma: Story = { parameters: baseUiFocusGuardParameters };
 
