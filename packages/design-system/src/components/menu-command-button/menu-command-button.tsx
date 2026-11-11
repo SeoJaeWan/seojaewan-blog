@@ -17,7 +17,7 @@ type MenuCommandButtonProps = {
 
 // 마우스·키보드로 강조된 항목은 Base UI가 data-highlighted를 단다. 누르는 중에는 글자만 흐려지고 아이콘 색은 그대로다.
 const buttonClassName = cn(
-  'group flex flex-col items-center justify-center gap-spacing-xs rounded-radius-control px-spacing-xs py-spacing-sm-nudge',
+  'group flex h-size-menu-command-button-height w-size-menu-command-button-width shrink-shrink-none flex-col items-center justify-center gap-spacing-xs rounded-radius-control px-spacing-xs py-spacing-sm-nudge',
   'bg-color-white-0 text-color-black-89 outline-none select-none cursor-default motion-control-state',
   'data-highlighted:bg-color-black-4 active:data-highlighted:bg-color-black-2',
 );
@@ -29,7 +29,7 @@ const TOOLTIP_OFFSET = 4;
  * 메뉴 위·아래 단추 줄에 놓는 명령 단추(피그마 MenuCommandButton)를 그린다. 아이콘 아래에 글자를 둔다.
  * Base UI Menu의 Popup 안에 두며, `Menu.Item`이 키보드 조작·접근성·누르면 메뉴 닫기를 맡는다.
  * 마우스를 올리면 호버 지연 뒤에, 키보드(방향키)로 닿으면 바로 Base UI Tooltip이 `이름 (단축키)` 말풍선(Tooltip)을 띄운다.
- * 너비는 쓰는 곳(MenuCommandBar)이 정한다.
+ * 크기는 너비 64px·높이 48px로 고정이다(토큰 `size/menu-command-button/width`·`height`). 줄(MenuCommandBar)이 넓어져도 단추는 늘어나지 않는다.
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
  * @codocs [[디자인 시스템:팝업]]
  * @param props 컴포넌트 속성
