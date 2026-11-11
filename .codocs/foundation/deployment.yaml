@@ -8,7 +8,7 @@ _codocs:
   이 문서는 AI 에이전트가 이 문서만 보고 인프라 작업을 이어갈 수 있게, 무엇을 어디서 하고 무엇은 사람이 직접 하는지도 적는다.
 결정: |
   Vercel이 아니라 집의 리눅스 미니 PC에 직접 배포한다. 미니 PC는 AMD 미니 PC(7845 계열)에 RAM 32GB다.
-  [[콘텐츠 원천]]에서 글을 저장소 JSON으로 커밋해 완전한 SSG로 내기로 했다. 블로그는 빌드 때 만든 페이지만 내주고 모르는 주소는 미리 만든 404로 보낸다. 글이 바뀌면 다시 배포하므로 ISR과 웹훅 갱신은 쓰지 않는다. 블로그는 지금처럼 Next.js standalone 출력을 Docker 컨테이너로 돌린다.
+  [[콘텐츠 원천]]에서 글을 저장소 JSON으로 커밋해 완전한 SSG로 내기로 했다. 블로그는 빌드 때 만든 페이지만 내주고 모르는 주소는 미리 만든 404로 보낸다. 글이 바뀌면 다시 배포하므로 ISR과 웹훅으로 사이트를 다시 그리는 갱신은 쓰지 않는다. Notion 웹훅은 글 동기화 워크플로를 시작시키는 신호로만 쓰고, 받는 곳은 Cloudflare Worker다(2026-11-11, [[콘텐츠 원천:갱신 방식]]). 블로그는 지금처럼 Next.js standalone 출력을 Docker 컨테이너로 돌린다.
 
   배포 흐름과 구성 요소는 아래 섹션에서 정한다. 블로그(`apps/web`)와 이미지 서버(`apps/images`, [[Notion 이미지 제공]])가 앱마다 Dockerfile을 갖고, 저장소 루트에 Jenkinsfile과 Docker Compose 설정을 둔다([[저장소 구성:구성]]). 배포는 local-server가 운영하는 공용 젠킨스가 한다.
 검토한 대안: |
@@ -17,7 +17,8 @@ _codocs:
   - 배포한 버전을 파일(`/srv/seojaewan-blog/deployed/<앱>`)에 적기: 고르지 않았다. 컨테이너를 지우거나 되돌리면 파일과 실제가 어긋난다. 실행 중인 컨테이너의 이미지 라벨을 읽는다([[배포 환경:배포(CD)]]).
   - 버전 브랜치를 local-server처럼 `changeset-release/main`으로 하기: 이 저장소의 브랜치 이름 검사(`종류/설명`)에 맞지 않아 예외를 더해야 한다. 형식에 맞는 `chore/release`로 정했다.
   - 실패했을 때 옛 컨테이너를 그대로 두는 무중단 교체(새 컨테이너를 옆에 띄워 확인한 뒤 바꾸기): 포트가 고정이라 compose만으로는 어렵다. 바꾼 뒤 health check가 실패하면 `previous` 이미지로 되돌린다. 바꾸는 동안 몇 초 끊긴다.
-  - 글 반영을 Notion 웹훅과 ISR 즉시 갱신으로 하기: 버렸다. 글을 저장소 JSON으로 커밋해 바뀔 때마다 다시 배포한다([[콘텐츠 원천:결정]]).
+  - 글 반영을 Notion 웹훅과 ISR 즉시 갱신으로 하기: 버렸다. 글을 저장소 JSON으로 커밋해 바뀔 때마다 다시 배포한다([[콘텐츠 원천:결정]]). 웹훅 자체는 2026-11-11에 동기화를 시작시키는 신호로 되살렸다([[콘텐츠 원천:검토한 대안]]).
+  - Notion 웹훅을 미니 PC의 서비스(터널 뒤)로 받기: 고르지 않았다. 돌볼 서버와 인터넷에서 들어오는 길이 늘기 때문이다. Cloudflare Worker가 받아 GitHub로 중계한다.
   - 서버에서 이미지를 GHCR에 올렸다 받기: 서버에서 직접 빌드하므로 레지스트리를 두지 않는다.
   - 블로그 저장소가 젠킨스를 설치·운영하기: 원래 계획이었다. 2026-11-06에 local-server가 공용 젠킨스를 두기로 해 바꿨다. 서버에서 도는 서비스가 늘어 실행 계정·권한·GitHub 연결을 한 곳에서 관리하는 편이 낫기 때문이다.
   - 공개 전에 Cloudflare Access로 사이트를 막아 두기: 준비 전에는 `seojaewan.com`을 터널에 연결하지 않으면 되어 필요 없다([[배포 환경:공개 절차]]).
@@ -25,7 +26,7 @@ _codocs:
   공용 젠킨스(local-server가 운영)가 배포한다. 젠킨스 작업 `seojaewan-blog-release`가 2분마다 GitHub에 물어 `refs/heads/main`이 바뀐 것을 알아내고(웹훅은 쓰지 않는다), 실행 계정(라벨 `seojaewan-blog`)에서 이 저장소 루트의 `Jenkinsfile`을 실행한다. 실행 계정·비밀값·포트·데이터 위치·실패 알림 같은 공통 규칙은 local-server 저장소의 `.codocs/foundation/project-deploy.yaml`(프로젝트 배포)을 따르며, 여기에 옮겨 적지 않는다. 포트·데이터·비밀값 이름·notify 클라이언트는 local-server의 `registry/seojaewan-blog.yaml` `deploy` 절에 있고, 바꿀 때는 이 저장소가 그 파일을 PR로 바꾼다. 이 저장소 쪽 파일은 2026-11-06 구현 순서 9단계 7번 PR에서 만들었다.
 
   배포 경로는 둘이다(2026-11-06 결정).
-  - 글 배포 경로: 동기화 작업이 만든 글 PR이 병합되면([[콘텐츠 원천:갱신 방식]]), 글 JSON만 바뀐 병합이므로 Changesets 버전 PR 없이 바로 블로그를 다시 배포한다.
+  - 글 배포 경로: 동기화 작업이 만든 글 PR을 같은 실행에서 병합하면([[콘텐츠 원천:갱신 방식]]), 글 JSON만 바뀐 병합이므로 Changesets 버전 PR 없이 바로 블로그를 다시 배포한다. 이 병합 뒤 main push에서 `ci.yml`은 돌지 않고, 젠킨스가 main을 2분마다 확인해 배포한다.
   - 코드 배포 경로: 코드 변경은 Changesets로 모았다가 버전 PR을 머지할 때 배포한다. 버전 PR은 누가 병합해도 된다. 앱이나 패키지를 바꾼 PR에는 changeset을 넣고, CI가 `changeset status`로 빠뜨린 것을 잡는다. Renovate PR은 changeset 없이 머지되고, 다음 배포 때 함께 나간다.
   - 두 경로 모두 바뀐 앱(`apps/web`, `apps/images`)만 배포한다. 글 JSON만 바뀌면 블로그만 배포한다.
   - Changesets 설정(2026-11-06 도입): `.changeset/config.json`에서 `apps/web`, `apps/images`, `packages/design-system`의 버전을 관리하고(`privatePackages: { version: true, tag: false }`, npm publish 없음), `tools/*`는 `ignore`로 뺀다. 내부 의존 갱신은 `patch`라 `packages/design-system`이 바뀌면 `apps/web`도 함께 오른다. PR 검사와 예외는 [[Git 작업 규칙:Changesets]]에서 정한다.
@@ -101,14 +102,16 @@ CI: |
 
   | 대상 | 변수 |
   |---|---|
-  | 블로그 | `CONTENT_SOURCE`(`notion` 또는 `fixture`, 기본 `notion`) 하나다. 블로그는 Notion을 부르지 않고 알림도 보내지 않으므로 `NOTION_TOKEN`·`NOTION_WEBHOOK_SECRET`·`ALERT_URL`·`ALERT_SECRET`은 필요 없다 |
-  | GitHub Actions 비밀값 | `NOTION_TOKEN`(`seojaewan-blog` 연동 토큰, 동기화 작업이 Notion을 읽는다), `CONTENT_SYNC_TOKEN`(글 PR을 만드는 Fine-grained PAT, `seojaewan-blog`만, Contents·Pull requests 쓰기), `ALERT_SECRET`(notify 클라이언트 `blog`의 비밀값, 동기화 실패와 동기화 PR 검사 실패 알림용) |
+  | 블로그 | `CONTENT_SOURCE`(`notion` 또는 `fixture`, 기본 `notion`) 하나다. 블로그는 Notion을 부르지 않고 알림도 보내지 않으므로 `NOTION_TOKEN`·`NOTION_WEBHOOK_SECRET`·`ALERT_URL`·`ALERT_SECRET`은 필요 없다(웹훅 서명 확인은 블로그가 아니라 Cloudflare Worker가 한다) |
+  | GitHub Actions 비밀값 | `NOTION_TOKEN`(`seojaewan-blog` 연동 토큰, 동기화 작업이 Notion을 읽는다), `ALERT_SECRET`(notify 클라이언트 `blog`의 비밀값, 동기화 실패 알림용). 글 PR의 push·PR 만들기·병합은 워크플로의 기본 `GITHUB_TOKEN`으로 하므로 PAT(`CONTENT_SYNC_TOKEN`)는 쓰지 않는다([[콘텐츠 원천:갱신 방식]]) |
+  | GitHub Actions 변수 | `ALERT_URL`(notify에 바깥에서 닿는 주소. 호스티드 러너는 미니 PC 안쪽 주소에 닿지 않는다. 바깥 주소는 아직 정해지지 않았고 사람이 정한다. 비어 있으면 알림만 건너뛴다) |
+  | Cloudflare Worker(`tools/notion-webhook`) | 비밀 값 `NOTION_VERIFICATION_TOKEN`(Notion 웹훅 구독의 `verification_token`), `GITHUB_DISPATCH_TOKEN`(`repository_dispatch` 권한만 있는 Fine-grained PAT, `seojaewan-blog`만). 변수 `GITHUB_REPO`, `DISPATCH_EVENT_TYPE`은 `wrangler.toml`에 있다. Worker에 두고 저장소에는 두지 않는다 |
   | 이미지 서버(`apps/images`) | `NOTION_TOKEN`(`seojaewan-images` 연동 토큰), `IMAGE_STORE_DIR`(기본 `/srv/seojaewan-blog/images`), `HOST`(기본 `127.0.0.1`, 컨테이너는 `0.0.0.0`), `PORT`(기본 3100), `ALERT_URL`·`ALERT_SECRET`(둘은 함께 있어야 하고, 둘 다 없으면 로그만 남긴다) |
 
-  이미지 서버의 운영 값은 배포 스크립트가 컨테이너에 넣는다([[배포 환경:배포(CD)]]). `NOTION_TOKEN`은 owner가 local-server의 infra 화면에서 프로젝트 비밀값 `images-notion-token`으로 넣는 값이다. `ALERT_SECRET`은 notify 클라이언트 `images`의 비밀값으로, owner가 local-server에서 발급하고 실행 계정에 들어온다. `HOST`·`PORT`·`IMAGE_STORE_DIR`는 이미지에, `ALERT_URL`은 `compose.yaml`에 적는다. notify 서비스 이름은 이미지 서버 `images`다. `blog`는 컨테이너가 아니라 Actions 비밀값 `ALERT_SECRET`으로 쓴다. 젠킨스 `jenkins`는 local-server의 젠킨스가 쓴다([[알림 프로세스]]). 사람이 넣는 값은 Notion 토큰과 `CONTENT_SYNC_TOKEN`, Actions의 `ALERT_SECRET`이다.
+  이미지 서버의 운영 값은 배포 스크립트가 컨테이너에 넣는다([[배포 환경:배포(CD)]]). `NOTION_TOKEN`은 owner가 local-server의 infra 화면에서 프로젝트 비밀값 `images-notion-token`으로 넣는 값이다. `ALERT_SECRET`은 notify 클라이언트 `images`의 비밀값으로, owner가 local-server에서 발급하고 실행 계정에 들어온다. `HOST`·`PORT`·`IMAGE_STORE_DIR`는 이미지에, `ALERT_URL`은 `compose.yaml`에 적는다. notify 서비스 이름은 이미지 서버 `images`다. `blog`는 컨테이너가 아니라 Actions 비밀값 `ALERT_SECRET`으로 쓴다. 젠킨스 `jenkins`는 local-server의 젠킨스가 쓴다([[알림 프로세스]]). 사람이 넣는 값은 Notion 토큰, Actions의 `ALERT_SECRET`과 변수 `ALERT_URL`, Worker의 비밀 값 둘이다. 사람이 켤 저장소 설정도 하나 있다. 글 PR을 기본 `GITHUB_TOKEN`으로 만들려면 Settings > Actions > General > Workflow permissions의 "Allow GitHub Actions to create and approve pull requests"를 켠다([[콘텐츠 원천:갱신 방식]]).
 
   - 블로그는 환경 변수를 `src/env.ts`의 Zod 스키마로 검증한다. 환경 변수는 검증 모듈 하나에서만 읽는다([[코드 작성 규칙:React와 Next.js]]). 이미지 서버 주소와 Notion 데이터베이스 ID 세 개는 환경 변수가 아니라 코드 상수다.
-  - turbo가 strict env 모드라, 작업에 넘길 변수를 `turbo.json`에 적어야 한다. `build`와 `dev`에는 `CONTENT_SOURCE`만, `test:e2e`에는 `CONTENT_SOURCE`·`E2E_PORT`를 넘긴다.
+  - turbo가 strict env 모드라, 작업에 넘길 변수를 `turbo.json`에 적어야 한다. `build`와 `dev`에는 `CONTENT_SOURCE`만, `test:e2e`에는 `CONTENT_SOURCE`를 넘긴다(E2E 서버 포트는 나누지 않는다. 모든 워크플로가 호스티드 러너라 job마다 머신이 따로다).
   - 미니 PC: 비밀값은 owner가 local-server의 infra 화면에서 넣어 실행 계정의 `/run/secrets`에 들어오고, 배포 스크립트가 권한 600 env 파일로 컨테이너에 넣은 뒤 지운다([[배포 환경:배포(CD)]]). 이것이 운영의 기준이다.
   - 로컬: `apps/web/.env.local`에 직접 둔다(Vercel이 없으므로 `vercel env pull`은 없다).
   - Actions 비밀값은 저장소 Settings의 Secrets에 사람이 넣는다.
@@ -138,7 +141,7 @@ CI: |
 
   공개는 `seojaewan.com`을 처음 터널에 연결하는 일이다.
   1. 터널에 연결한다.
-  2. 확인한다: 사이트 접속, 글 동기화 작업(글을 고치거나 `공개`를 체크하면 PR이 만들어지고, CI를 통과해 워크플로가 병합하고, 다시 배포되는지. 초안만 고친 경우 PR이 없는지), 동기화 실패와 글 PR CI 실패 때 카카오톡 알림(notify는 준비됐다, [[알림 프로세스:선행 조건]]), 카카오톡으로 링크를 공유했을 때의 미리보기([[SEO와 공유 미리보기:공유 미리보기 이미지]]).
+  2. 확인한다: 사이트 접속, 글 동기화 작업(글을 고치거나 `공개`를 체크하면 웹훅으로 시작해 운영 글 빌드를 통과한 PR이 만들어지고 바로 병합되어 다시 배포되는지. 초안만 고친 경우 PR이 없는지), 동기화 실패와 글 빌드 실패 때 카카오톡 알림(notify는 준비됐다, [[알림 프로세스:선행 조건]]), 카카오톡으로 링크를 공유했을 때의 미리보기([[SEO와 공유 미리보기:공유 미리보기 이미지]]).
   3. 문제가 있으면 고치거나 터널 연결을 끊는다.
   4. 확인되면 Google Search Console과 네이버 서치어드바이저에 등록한다(아직 하지 않았다, 사람이 한다. [[SEO와 공유 미리보기:검색 엔진 등록]]).
 

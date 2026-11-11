@@ -7,6 +7,11 @@
   "access": "restricted",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@seojaewan/figma-parity", "@seojaewan/figma-plugin", "@seojaewan/scenario-cases"],
+  "ignore": [
+    "@seojaewan/figma-parity",
+    "@seojaewan/figma-plugin",
+    "@seojaewan/scenario-cases",
+    "@seojaewan/notion-webhook"
+  ],
   "privatePackages": { "version": true, "tag": false }
 }
