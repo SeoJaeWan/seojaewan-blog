@@ -12,6 +12,7 @@ export const desktopMenuOptions = {
   iconSize: 'medium',
   isAutoArrange: true,
   isAutoArrangeLocked: false,
+  isMobile: false,
   sortBy: 'name',
   canPaste: true,
   onIconSizeChange: ignoreMenuAction,
@@ -25,5 +26,11 @@ export const desktopMenuOptions = {
 /** 실제 바탕화면 빈 곳 메뉴 항목. 하위 메뉴가 열리는 `play` 스토리가 쓴다 */
 export const menuDesktopLive = getDesktopMenuEntries(desktopMenuOptions);
 
-/** 피그마 Menu/Desktop: 바탕화면 빈 곳 우클릭. 하위 메뉴는 닫은 모양이다 */
-export const menuDesktop: readonly MenuPopupEntry[] = previewMenu(menuDesktopLive);
+/**
+ * 피그마 Menu/Desktop: 바탕화면 빈 곳 우클릭. 하위 메뉴는 닫은 모양이다.
+ * @param canPaste 붙여넣을 것이 있는지(피그마 `Paste`). 있으면 단추 줄에 붙여넣기가 있다
+ * @returns 스토리에 그릴 항목
+ */
+export function menuDesktop(canPaste: boolean): readonly MenuPopupEntry[] {
+  return previewMenu(getDesktopMenuEntries({ ...desktopMenuOptions, canPaste }));
+}

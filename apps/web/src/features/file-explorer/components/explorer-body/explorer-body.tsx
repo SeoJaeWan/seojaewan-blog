@@ -36,12 +36,12 @@ import {
   getSortColumn,
   sortExplorerItems,
 } from '@/features/file-explorer/utils/explorer-sort/explorer-sort';
-import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
 import {
   ItemDragGhost,
   type ItemDragGhostItem,
 } from '@/shared/components/item-drag-ghost/item-drag-ghost';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
+import { ContextMenuArea } from '@/shared/components/menu-popup/menu-popup';
 import { MessageBoxDialog } from '@/shared/components/message-box-dialog/message-box-dialog';
 import { EMPTY_RECYCLE_BIN_MESSAGE } from '@/shared/components/message-box-empty-recycle-bin/message-box-empty-recycle-bin';
 import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
@@ -97,7 +97,10 @@ import { getItemMenuEntries } from './item-menu/item-menu-entries';
 import { getRecycleBinSortMenuEntries } from './recycle-bin-sort-submenu/recycle-bin-sort-submenu-entries';
 import { getSortMenuEntries } from './sort-submenu/sort-submenu-entries';
 import { getItemLocationLabel, searchItems } from './utils/explorer-search/explorer-search';
-import { getViewMenuEntries } from './view-submenu/view-submenu-entries';
+import {
+  getExplorerViewForShortcut,
+  getViewMenuEntries,
+} from './view-submenu/view-submenu-entries';
 
 type ExplorerContentProps = ComponentProps<typeof ExplorerContent>;
 
@@ -277,6 +280,9 @@ export function ExplorerBody({
     selection.setSelection(toSelection(restoredSelection));
   }
   const selectedIds = selection.selection.ids;
+  // 목록의 현재 항목이다. Tab으로 목록에 들어오면 이 항목에 포커스가 가고, 포커스가 목록을 떠나도 1px 선이 남는다.
+  // 고른 적이 없으면 첫 항목이다.
+  // @codocs [[파일 탐색기:조작]]
   const currentId = selection.selection.focusId ?? orderedIds[0];
   const [onlySelectedId] = selectedIds;
   const onlySelected =
@@ -602,11 +608,30 @@ export function ExplorerBody({
   }
 
   /**
-   * 본문에서 누른 키를 처리한다. 모바일 검색 줄의 검색 상자에서 누른 Esc는 검색 줄을 닫고, 나머지는 이동 단축키로 넘긴다.
+   * 본문에서 누른 키를 처리한다. 모바일 검색 줄의 검색 상자에서 누른 Esc는 검색 줄을 닫고, Ctrl + Shift + 2·3·6은 보기를 바꾸고,
+   * 나머지는 이동 단축키로 넘긴다. 본문은 창의 주소 줄·명령 모음·탐색 창·항목 자리를 모두 담아, 보기 단축키는 이 창에 포커스가 있을 때만 동작한다.
+   * 휴지통은 늘 자세히 보기라 보기를 바꾸지 않는다.
    * @codocs [[파일 탐색기:폴더 안 검색]]
+   * @codocs [[파일 탐색기:보기와 정렬]]
    * @param event 키 이벤트
    */
   function handleContentKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
+    const shortcutView = getExplorerViewForShortcut(event);
+    // 포털로 그린 메뉴(우클릭·정렬·보기)의 키도 React 트리로 올라오므로, 본문 DOM 안에서 누른 키만 받는다.
+    if (
+      shortcutView !== undefined &&
+      event.target instanceof Element &&
+      event.currentTarget.contains(event.target)
+    ) {
+      event.preventDefault();
+      changeIconView(shortcutView);
+      // 보기가 바뀌면 항목을 새로 그리므로, 항목에 있던 포커스를 새로 그린 같은 항목으로 옮겨 창 안에 남긴다.
+      const focusedId = event.target.closest(`[${ITEM_ATTRIBUTE}]`)?.getAttribute(ITEM_ATTRIBUTE);
+      if (focusedId !== undefined && focusedId !== null) {
+        focusItemAfterRender(focusedId);
+      }
+      return;
+    }
     if (
       isMobileSearchOpen &&
       event.key === 'Escape' &&
@@ -887,6 +912,7 @@ export function ExplorerBody({
   }
 
   const viewMenuOptions = {
+    isMobile,
     view,
     onViewChange: (next: ExplorerFolderView['view']) => {
       changeView({ view: next });
@@ -917,7 +943,7 @@ export function ExplorerBody({
     }
     // 이름을 바꾸는 항목은 말풍선을 그 바로 아래에 띄우도록 위치 기준 상자로 감싼다.
     return (
-      <div key={item.id} className={isDetails ? 'relative w-full' : 'relative'}>
+      <div key={item.id} className="relative">
         {element}
         {rename.errorMessage !== null && (
           // 항목 바로 아래에 두고, 말풍선 꼬리가 Tooltip 위로 나온 만큼(spacing/sm) 띄운다.
@@ -945,6 +971,8 @@ export function ExplorerBody({
       name: item.name,
       isSelected: isSelected || item.id === dragTargetId,
       isCut: cutSet.has(item.id),
+      // 현재 항목은 포커스와 상관없이 1px 선을 그린다. 선과 선택 바탕의 색은 목록(listbox)의 포커스로 FileItem·FileRow가 고른다.
+      isCurrent: item.id === currentId,
       // 끄는 항목이 놓일 폴더를 스토리 테스트가 상태로 확인하도록 속성으로 알린다. 잘라냄은 FileItem이 `data-cut`으로 알린다.
       'data-drop-active': item.id === dragTargetId ? 'true' : undefined,
       isRenaming,
@@ -971,7 +999,6 @@ export function ExplorerBody({
           hasLocation
           location={getItemLocationLabel(workspace, item.parentId)}
           icon={renderItemIcon(item)}
-          isCurrent={item.id === currentId}
         />
       );
     }
@@ -984,7 +1011,6 @@ export function ExplorerBody({
           originalLocation={getOriginalLocation(workspace, item)}
           deletedDate={formatDeletedDate(item.trash?.deletedAt ?? '')}
           icon={renderItemIcon(item)}
-          isCurrent={item.id === currentId}
         />
       );
     }
@@ -995,7 +1021,6 @@ export function ExplorerBody({
         date={formatModifiedDate(item.date)}
         type={getItemTypeLabel(item.kind)}
         icon={renderItemIcon(item)}
-        isCurrent={item.id === currentId}
       />
     );
   }

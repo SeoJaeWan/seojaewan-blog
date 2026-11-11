@@ -38,28 +38,32 @@ function renderOpenMenu(separator: ReactElement): JSX.Element {
 
 /**
  * 경로 꺾쇠 목록(피그마 Explorer/BreadcrumbMenu)을 그린다. 주소 줄의 마지막 마디(Blog) 뒤 꺾쇠가 열려 하위 폴더 목록을 보인다.
+ * 주소 줄은 피그마처럼 프레임 위에 제 높이로 놓는다. 프레임(FigmaFrame)의 격자 칸에 바로 넣으면 프레임 높이(150)로
+ * 늘어나 주소 줄이 세로 가운데로 내려가므로, 늘어나는 칸은 감싸는 div가 받는다.
  * @returns 주소 줄과 열린 목록
  */
 function StoryBreadcrumbMenu(): JSX.Element {
   return (
-    <ExplorerAddressRow
-      device="desktop"
-      locationIcon={<ImageAsset name="images/file-folder" />}
-      canGoUp
-    >
-      {BREADCRUMB_MENU_TRAIL.map((label, index) => {
-        const isLast = index === BREADCRUMB_MENU_TRAIL.length - 1;
-        return (
-          <BreadcrumbItem
-            key={label}
-            label={label}
-            isCurrent={isLast}
-            isSeparatorOpen={isLast}
-            renderSeparator={isLast ? renderOpenMenu : undefined}
-          />
-        );
-      })}
-    </ExplorerAddressRow>
+    <div>
+      <ExplorerAddressRow
+        device="desktop"
+        locationIcon={<ImageAsset name="images/file-folder" />}
+        canGoUp
+      >
+        {BREADCRUMB_MENU_TRAIL.map((label, index) => {
+          const isLast = index === BREADCRUMB_MENU_TRAIL.length - 1;
+          return (
+            <BreadcrumbItem
+              key={label}
+              label={label}
+              isCurrent={isLast}
+              isSeparatorOpen={isLast}
+              renderSeparator={isLast ? renderOpenMenu : undefined}
+            />
+          );
+        })}
+      </ExplorerAddressRow>
+    </div>
   );
 }
 

@@ -21,6 +21,7 @@ type MenuItemProps = MenuItemCommonProps &
         variant?: 'default';
         isStandalone?: boolean;
         onClick?: () => void;
+        render?: Menu.Item.Props['render'];
       }
     | {
         variant: 'submenu';
@@ -90,6 +91,7 @@ const SECONDARY_TEXT_CLASS_NAME = 'text-color-black-61 group-data-disabled:text-
  * @param props.isStandalone (`default`) 메뉴 밖에 홀로 둔다. 검색 최고 일치 카드(BestMatchCard)의 동작 목록처럼
  *   Base UI 메뉴가 없는 곳에서 같은 모양의 버튼으로 그리고, 강조는 hover·focus-visible로 한다
  * @param props.onClick (`default`) 항목을 골랐을 때 호출
+ * @param props.render (`default`) 항목 요소를 대신 그린다(Base UI `render`). 항목 속성은 그대로 받고 다른 동작을 덧붙일 때 쓴다(예: 항목 우클릭 메뉴 영역)
  * @param props.isChecked (`checkbox`) 켜짐 여부(제어)
  * @param props.isDefaultChecked (`checkbox`) 처음 켜짐 여부(비제어)
  * @param props.onCheckedChange (`checkbox`) 켜짐 여부가 바뀔 때 호출
@@ -177,7 +179,7 @@ export function MenuItem({
       );
     case 'default':
     case undefined: {
-      const { isStandalone = false, onClick: handleClick } = variantProps;
+      const { isStandalone = false, onClick: handleClick, render } = variantProps;
       if (isStandalone) {
         return (
           <button
@@ -203,6 +205,7 @@ export function MenuItem({
           disabled={isDisabled}
           label={label}
           onClick={handleClick}
+          render={render}
         >
           <MenuItemContent
             label={label}

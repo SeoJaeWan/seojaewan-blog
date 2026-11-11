@@ -40,7 +40,8 @@
               "TaskbarPreviewList/Previews/preview 1"
             ],
             "properties": {
-              "State": "Rest"
+              "State": "Rest",
+              "Variant": "Default"
             }
           },
           {
@@ -104,7 +105,7 @@
               "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/address row/breadcrumb/Items/crumb/Blog"
             ],
             "properties": {
-              "Has separator": false,
+              "Has separator": true,
               "Label": "Blog",
               "State": "Rest"
             }
@@ -146,12 +147,12 @@
               "TaskbarPreviewList/Previews/preview 1/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/Blog"
             ],
             "properties": {
-              "Current": "False",
+              "Current": "True",
               "Expand": "Expanded",
               "Has pin": false,
               "Label": "Blog",
               "Level": "1",
-              "State": "Selected"
+              "State": "Selected unfocused"
             }
           },
           {
@@ -357,7 +358,8 @@
               "TaskbarPreviewList/Previews/preview 2"
             ],
             "properties": {
-              "State": "Rest"
+              "State": "Rest",
+              "Variant": "Default"
             }
           },
           {
@@ -426,7 +428,7 @@
               "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/address row/breadcrumb/Items/crumb/Blog"
             ],
             "properties": {
-              "Has separator": false,
+              "Has separator": true,
               "Label": "Blog",
               "State": "Rest"
             }
@@ -472,12 +474,12 @@
               "TaskbarPreviewList/Previews/preview 2/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/Blog"
             ],
             "properties": {
-              "Current": "False",
+              "Current": "True",
               "Expand": "Expanded",
               "Has pin": false,
               "Label": "Blog",
               "Level": "1",
-              "State": "Selected"
+              "State": "Selected unfocused"
             }
           },
           {
@@ -739,7 +741,8 @@
               "TaskbarPreviewList/Previews/preview 3"
             ],
             "properties": {
-              "State": "Rest"
+              "State": "Rest",
+              "Variant": "Default"
             }
           },
           {
@@ -813,7 +816,7 @@
               "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/address row/breadcrumb/Items/crumb/Blog"
             ],
             "properties": {
-              "Has separator": false,
+              "Has separator": true,
               "Label": "Blog",
               "State": "Rest"
             }
@@ -863,12 +866,12 @@
               "TaskbarPreviewList/Previews/preview 3/thumbnail frame/Thumbnail/Window/Explorer/window/Content/Explorer/Content/body/Content/navigation pane/Items/nav/Blog"
             ],
             "properties": {
-              "Current": "False",
+              "Current": "True",
               "Expand": "Expanded",
               "Has pin": false,
               "Label": "Blog",
               "Level": "1",
-              "State": "Selected"
+              "State": "Selected unfocused"
             }
           },
           {

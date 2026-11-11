@@ -1,15 +1,15 @@
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import {
   copyLinkMenuItem,
-  cutMenuItem,
+  cutCommandButton,
   favoritePinMenuItem,
   MENU_ICONS,
-  MENU_SEPARATOR,
+  menuCommandBar,
   openInNewWindowMenuItem,
-  openMenuItem,
-  renameMenuItem,
+  openItemMenuItem,
+  renameCommandButton,
   startPinMenuItem,
-  trashMenuItem,
+  trashCommandButtons,
 } from '@/shared/utils/menu-items/menu-items';
 import type { WorkspaceItemKind } from '@/shared/utils/workspace-rules/workspace-rules';
 
@@ -36,7 +36,8 @@ type ItemMenuOptions = {
 /**
  * 항목 우클릭 메뉴(피그마 Menu/ExplorerFolder·ExplorerPost)의 항목을 만든다. 외부 링크와 여러 개는 바탕화면 메뉴(Menu/Link·Multiple)와
  * 같고, 휴지통 안의 항목은 복원만 있다(Menu/RecycleItem). 모바일은 새 탭에서 열기가 없다.
- * 이미 Start에 고정된 항목은 `시작 화면에서 고정 해제`다. 휴지통으로 보낼 수 없는 항목은 삭제를 고를 수 없다.
+ * 잘라내기·이름 바꾸기·삭제는 단추 줄에 두고, 목록의 열기에 `Enter`를 보인다(모바일은 보이지 않는다. [[바탕화면 우클릭 메뉴:아이콘]]과 같다).
+ * 이미 Start에 고정된 항목은 `시작 화면에서 고정 해제`다. 단추에는 비활성 모양이 없어 휴지통으로 보낼 수 없으면 삭제 단추를 뺀다.
  * 실제 메뉴와 메뉴 조립 스토리가 함께 쓴다.
  * @codocs [[파일 탐색기:우클릭 메뉴]]
  * @codocs [[창 동작:모바일]]
@@ -49,7 +50,7 @@ export function getItemMenuEntries(options: ItemMenuOptions): MenuPopupEntry[] {
   if (options.isInRecycleBin) {
     return [{ label: '복원', icon: MENU_ICONS.restore, onClick: options.onRestore }];
   }
-  const open = openMenuItem(options.onOpen);
+  const open = openItemMenuItem(options.onOpen, options.isMobile);
   const openInNewTab = {
     label: '새 탭에서 열기',
     icon: MENU_ICONS.add,
@@ -58,27 +59,24 @@ export function getItemMenuEntries(options: ItemMenuOptions): MenuPopupEntry[] {
   const openInNewWindow = openInNewWindowMenuItem(options.onOpenInNewWindow);
   const copyLink = copyLinkMenuItem(options.onCopyLink);
   const pin = startPinMenuItem(options.isPinned, options.onTogglePin);
-  const cut = cutMenuItem(options.onCut);
-  const trash = trashMenuItem(options.canTrash, options.onTrash);
+  const cut = cutCommandButton(options.onCut);
+  const trash = trashCommandButtons(options.canTrash, options.onTrash);
   switch (options.kind) {
     case 'folder':
       return [
+        ...menuCommandBar([cut, renameCommandButton(options.onRename), ...trash]),
         open,
         ...(options.isMobile ? [] : [openInNewTab]),
         openInNewWindow,
         favoritePinMenuItem(options.isFavorite, options.onToggleFavorite),
         pin,
-        MENU_SEPARATOR,
-        cut,
-        renameMenuItem(options.onRename),
-        trash,
       ];
     case 'post':
-      return [open, openInNewWindow, copyLink, pin, MENU_SEPARATOR, cut, trash];
+      return [...menuCommandBar([cut, ...trash]), open, openInNewWindow, copyLink, pin];
     case 'link':
-      return [open, copyLink, pin, MENU_SEPARATOR, cut, trash];
+      return [...menuCommandBar([cut, ...trash]), open, copyLink, pin];
     case 'recycle-bin':
     case null:
-      return [open, MENU_SEPARATOR, cut, trash];
+      return [...menuCommandBar([cut, ...trash]), open];
   }
 }

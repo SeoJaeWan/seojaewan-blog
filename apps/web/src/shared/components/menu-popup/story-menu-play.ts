@@ -8,7 +8,7 @@ import { expect, screen, waitFor } from 'storybook/test';
 type StoryUser = ReturnType<typeof userEvent.setup>;
 
 /**
- * 하위 메뉴 항목에 마우스를 올리면 하위 메뉴가 열리고, 그 항목이 조립 설명의 `@runtime` 줄과 같은지 확인한다.
+ * 하위 메뉴 항목에 마우스를 올려 머물면(`SUBMENU_HOVER_DELAY`) 하위 메뉴가 열리고, 그 항목이 조립 설명의 `@runtime` 줄과 같은지 확인한다.
  * @param user 사용자 입력기
  * @param trigger 하위 메뉴를 여는 항목 이름
  * @param expectedLabels 열린 하위 메뉴의 항목 이름(위에서부터)
@@ -33,7 +33,19 @@ export async function expectSubmenuOnHover(
          */
         (item) => item.textContent.trim(),
       );
-      await expect(labels).toEqual(expectedLabels);
+      // 항목 글자는 이름 뒤에 단축키 글자(예: `Ctrl+Shift+2`)가 붙을 수 있어 이름으로 시작하는지 본다.
+      await expect(labels).toHaveLength(expectedLabels.length);
+      await expect(
+        labels.every(
+          /**
+           * 항목 글자가 같은 자리의 이름으로 시작하는지 본다.
+           * @param label 항목 글자
+           * @param index 자리
+           * @returns 이름으로 시작하면 true
+           */
+          (label, index) => label.startsWith(expectedLabels[index] ?? ''),
+        ),
+      ).toBe(true);
     },
   );
 }

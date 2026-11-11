@@ -67,6 +67,8 @@ export const TOKEN_NAMES = {
     'size-jump-list-letter-box',
     'size-list-item-compact-height',
     'size-list-item-two-line-height',
+    'size-menu-command-button-height',
+    'size-menu-command-button-width',
     'size-menu-item-bullet',
     'size-menu-item-value-width',
     'size-menu-taskbar-width',

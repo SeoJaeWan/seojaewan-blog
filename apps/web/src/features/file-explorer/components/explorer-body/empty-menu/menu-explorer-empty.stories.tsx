@@ -1,19 +1,34 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { userEvent } from 'storybook/test';
 
-import { MenuStory, menuStoryA11y } from '@/shared/components/menu-popup/story-menu';
+import {
+  MENU_PLACEMENT_ARG_TYPES,
+  MenuStory,
+  menuStoryA11y,
+  type MenuStoryPlacement,
+} from '@/shared/components/menu-popup/story-menu';
 import { expectSubmenuOnHover } from '@/shared/components/menu-popup/story-menu-play';
 
 import { menuExplorerEmpty, menuExplorerEmptyLive } from './story-data';
 
+type FigmaArgs = {
+  isPaste: boolean;
+  placement: MenuStoryPlacement;
+};
+
 // @codocs [[피그마 연동:스토리 규칙]]
-// 제목은 Patterns/ + 피그마 조립 이름이다. 변형이 없는 조립이라 args가 없고, 하위 메뉴는 닫은 모양이다.
+// 제목은 Patterns/ + 피그마 조립 이름이다. 피그마 `Paste` 변형은 `isPaste` arg로 붙여넣을 것이 있는지(단추 줄의 붙여넣기)를,
+// `Placement` 변형은 `placement` arg로 메뉴를 여는 쪽을 고른다. 하위 메뉴는 닫은 모양이다.
+// 무대가 여백을 두므로 여백 없이(fullscreen) 그린다.
 const meta = {
   title: 'Patterns/Menu/ExplorerEmpty',
-  // 가운데 놓으면 소수 px 위치에 놓여 캡처가 1px 밀리므로 정수 위치(padded)에 둔다.
-  parameters: { layout: 'padded', a11y: menuStoryA11y },
-  render: () => <MenuStory items={menuExplorerEmpty} />,
-} satisfies Meta;
+  parameters: { layout: 'fullscreen', a11y: menuStoryA11y },
+  args: { isPaste: false, placement: 'below' },
+  argTypes: { isPaste: { control: 'boolean' }, ...MENU_PLACEMENT_ARG_TYPES },
+  render: (args) => (
+    <MenuStory items={menuExplorerEmpty(args.isPaste)} placement={args.placement} />
+  ),
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -24,7 +39,7 @@ export const Figma: Story = {};
 // 피그마 조립 설명의 `@runtime 보기에/정렬 기준에 마우스를 올리면 Menu가 열린다` 줄을 실제 메뉴로 확인한다.
 // @codocs [[파일 탐색기:우클릭 메뉴]]
 export const OpenSubmenus: Story = {
-  render: () => <MenuStory items={menuExplorerEmptyLive} />,
+  render: () => <MenuStory items={menuExplorerEmptyLive} placement="below" />,
   play: async ({ step }) => {
     const user = userEvent.setup();
 

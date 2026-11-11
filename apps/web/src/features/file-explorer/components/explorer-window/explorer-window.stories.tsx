@@ -7,6 +7,7 @@ import { FigmaFrame } from '@seojaewan/design-system/story';
 
 import { ExplorerCommands } from '@/features/file-explorer/components/explorer-body/components/explorer-commands/explorer-commands';
 import { ExplorerContent } from '@/features/file-explorer/components/explorer-body/components/explorer-content/explorer-content';
+import { NavigationFavorites } from '@/features/file-explorer/components/navigation-favorites/navigation-favorites';
 import {
   getStoryCenter,
   holdStoryDrag,
@@ -80,7 +81,13 @@ const meta = {
               searchPlaceholder={parts.searchPlaceholder}
               path={parts.path}
               commands={<ExplorerCommands device={args.device} location={parts.commandsLocation} />}
-              navigation={parts.navigation}
+              navigation={
+                <>
+                  <NavigationFavorites areaId="story" items={parts.favorites} dropSlot={null} />
+                  {parts.navigation}
+                </>
+              }
+              view={parts.view}
               itemCount={parts.itemCount}
               selection={parts.selection}
               hasSelection={parts.hasSelection}

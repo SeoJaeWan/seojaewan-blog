@@ -109,7 +109,7 @@ export function AddressBar({
       )}
     >
       {isSuggesting && (
-        <div className={cn(SUGGESTING_CARD_CLASS_NAMES)}>
+        <div data-slot="suggestions-card" className={cn(SUGGESTING_CARD_CLASS_NAMES)}>
           {/* 입력 줄이 위 층에 겹치는 빈 자리다 */}
           <div className="h-size-address-bar-height shrink-shrink-none" />
           {/* 피그마 Suggestions 슬롯이다 */}

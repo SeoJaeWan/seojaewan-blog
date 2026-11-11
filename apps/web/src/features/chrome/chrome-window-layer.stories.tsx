@@ -408,6 +408,13 @@ export const NewTabSearch: Story = {
     }
     await screen.findByRole('combobox', { name: '글 검색 또는 URL 입력' });
 
+    // @codocs [[Chrome:주소창]]
+    await step('새 탭 페이지의 주소창은 비어 있고 안내 문구를 보인다', async () => {
+      await expect(addressBar()).toHaveValue('');
+      await expect(addressBar()).toHaveAttribute('placeholder', '글 검색 또는 URL 입력');
+      await expect(addressBar().matches(':placeholder-shown')).toBe(true);
+    });
+
     await step('검색창에 주소를 입력하면 주소창과 같이 그 글로 간다', async () => {
       await userEvent.type(getSearch(), '/posts/rsc{Enter}');
       await expect(currentPage()).toEqual({ kind: 'post', collection: 'blog', slug: 'rsc' });
@@ -560,6 +567,38 @@ export const MoreMenu: Story = {
         'aria-disabled',
         'true',
       );
+    });
+  },
+};
+
+// @codocs [[Chrome:구성]]
+/** 탭 검색(⌄) 메뉴: 열린 탭 목록을 보이고, 탭을 누르면 그 탭으로 옮긴다 */
+export const TabSearchMenu: Story = {
+  beforeEach: async () => {
+    await hydratePosts();
+    openChromeWindow({ kind: 'post', collection: 'blog', slug: 'rsc' });
+    return mockPostBodies({});
+  },
+  play: async ({ step }) => {
+    await screen.findByRole('tab', { name: /리액트 서버 컴포넌트/ });
+    await userEvent.click(screen.getByRole('button', { name: '새 탭' }));
+    await expectTabTitles(['리액트 서버 컴포넌트', '새 탭']);
+
+    await step('⌄ 버튼은 열린 탭을 탭 줄 순서대로 보이는 메뉴를 연다', async () => {
+      await userEvent.click(screen.getByRole('button', { name: '탭 검색' }));
+      const items = await screen.findAllByRole('menuitem');
+      await expect(items.map((item) => item.textContent)).toEqual([
+        '리액트 서버 컴포넌트',
+        '새 탭',
+      ]);
+    });
+
+    await step('탭을 누르면 그 탭으로 옮기고 메뉴를 닫는다', async () => {
+      await userEvent.click(screen.getByRole('menuitem', { name: '리액트 서버 컴포넌트' }));
+      await expect(currentPage()).toEqual({ kind: 'post', collection: 'blog', slug: 'rsc' });
+      await waitFor(async () => {
+        await expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+      });
     });
   },
 };
