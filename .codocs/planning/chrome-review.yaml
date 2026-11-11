@@ -27,7 +27,7 @@ _codocs:
 4. 도구 모음 아래 구분선: |
   끝남(#893). `BrowserToolbar` 아래에 1px 안쪽 선을 넣었다(데스크톱·모바일 모두).
 5. 주소창 추천 목록 모양: |
-  끝남(#885, #896). `AddressBar` `Suggesting`은 투명한 입력 줄이고, 조립 `Chrome/AddressSuggestions`는 Flyout 한 장이 입력 줄까지 감싼다. 고른 줄은 `ListItem` Selected(회색 바탕)이고 왼쪽 막대는 두지 않는다.
+  끝남(#885, #896). `AddressBar` `Suggesting`은 카드 한 장으로 입력 줄과 추천 줄을 함께 감싸 주소창이 펼쳐진 모습이고(팝업이 아니다), 조립 `Chrome/AddressSuggestions`는 그 Suggesting 인스턴스 하나에 추천 줄 셋을 채운 것이다. 고른 줄은 `ListItem` Selected(회색 바탕)이고 왼쪽 막대는 두지 않는다.
 6. 새 탭에서 빈 주소창: |
   끝남(#885, #896). 빈 주소창은 돋보기와 안내 문구를 보인다([[Chrome:주소창]]).
 7. 탭 검색(⌄) 버튼: |
