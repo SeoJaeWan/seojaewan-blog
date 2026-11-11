@@ -27,11 +27,16 @@ import {
 } from '@/shared/utils/window-rules/window-rules';
 import {
   CHROME_LATEST_POST_COUNT,
+  getFavoriteFolders,
   getLatestPosts,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
 import type { TaskbarAppMenuAction } from './app-menu/app-menu-entries';
-import { getAppMenuEntries, getChromeJumpListEntries } from './app-menu/app-menu-entries';
+import {
+  getAppMenuEntries,
+  getChromeJumpListEntries,
+  getExplorerJumpListEntries,
+} from './app-menu/app-menu-entries';
 import { TaskbarAppItem } from './components/app-item/app-item';
 import { TaskbarWindowPreviewList } from './components/taskbar-window-preview-list/taskbar-window-preview-list';
 import { useHoverPreview } from './hooks/use-hover-preview/use-hover-preview';
@@ -59,7 +64,7 @@ export type TaskbarAppsLayerProps = {
  *   마우스를 올려 연 목록을 누르면 닫지 않고 그대로 둔다(누른 뜻은 목록을 보는 것이라 이미 이뤄졌다).
  * - 그리는 앱은 고정한 앱(작업 공간 저장소의 고정 순서)과 창이 열린 앱이다. 고정하지 않은 실행 중인 앱은 뒤에 붙고, 창을 모두 닫으면 사라진다.
  * - 버튼을 우클릭(모바일은 길게 누르기)하면 버튼 위 가운데에 우클릭 메뉴를 연다. 앱 이름(새 창), 고정·제거, 창 닫기·모든 창 닫기다.
- *   점프 목록이 있는 앱(Chrome)은 그 위에 점프 목록을 붙인다(`getAppJumpList`).
+ *   점프 목록이 있는 앱(Chrome, 탐색기)은 그 위에 점프 목록을 붙인다(`getAppJumpList`).
  *   메뉴가 열리면 미리보기는 닫는다.
  * - 데스크톱에서 고정한 앱 버튼을 끌어 다른 고정 앱 버튼 자리에 놓으면 순서가 바뀐다. 끌기 뒤에 따라오는 클릭은 버튼 동작을 하지 않는다. 모바일은 끌기가 없다.
  *   끄는 버튼은 커진 채 포인터를 가로로 따라오고, 밀려나는 버튼은 새 자리로 미끄러지고, 놓으면 새 자리로 들어간다(`useReorderMotion`).
@@ -94,6 +99,8 @@ export function TaskbarAppsLayer({
   const pinToTaskbar = useWorkspaceStore((state) => state.pinToTaskbar);
   const unpinFromTaskbar = useWorkspaceStore((state) => state.unpinFromTaskbar);
   const workspaceItems = useWorkspaceStore((state) => state.items);
+  const favoritePins = useWorkspaceStore((state) => state.favoritePins);
+  const unpinFromFavorites = useWorkspaceStore((state) => state.unpinFromFavorites);
   const openItem = useOpenItem();
   const startPointerDrag = usePointerDrag();
   const openApp = useOpenApp();
@@ -289,6 +296,7 @@ export function TaskbarAppsLayer({
   /**
    * 앱 우클릭 메뉴의 앱 묶음 위에 붙일 점프 목록을 만든다. 점프 목록이 없는 앱은 undefined다.
    * Chrome은 새 탭 페이지와 같은 Blog 최신 글("자주 방문")과 "새 창"("작업")이다. 글을 고르면 그 글을 Chrome 맨 앞 창의 새 탭으로(없으면 새 창으로) 연다.
+   * 탐색기는 즐겨찾기 폴더("고정됨")다. 폴더를 고르면 그 폴더를 연 새 탐색기 창을 띄우고, 압정 해제 버튼이나 항목 메뉴로 즐겨찾기에서 뺀다(점프 목록은 열어 둔다).
    * @codocs [[작업 표시줄:우클릭 메뉴]]
    * @param app 메뉴가 달린 버튼의 앱
    * @returns 점프 목록 항목
@@ -314,7 +322,21 @@ export function TaskbarAppsLayer({
           },
         });
       case 'file-explorer':
-        return undefined;
+        return getExplorerJumpListEntries({
+          folders: getFavoriteFolders({ items: workspaceItems, favoritePins }).map(
+            /**
+             * 폴더를 점프 목록 폴더로 바꾼다.
+             * @param folder 폴더
+             * @returns 점프 목록 폴더
+             */
+            (folder) => ({ id: folder.id, name: folder.name }),
+          ),
+          onOpenFolder: (id) => {
+            setMenuApp(null);
+            openItem(id);
+          },
+          onUnpin: unpinFromFavorites,
+        });
     }
   }
 

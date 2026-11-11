@@ -1,7 +1,16 @@
-import { type JSX, type KeyboardEvent, type ReactNode, useEffect, useRef, useState } from 'react';
+import {
+  type JSX,
+  type KeyboardEvent,
+  type ReactElement,
+  type ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { Asset, BreadcrumbItem, ImageAsset, NavigationItem } from '@seojaewan/design-system';
 
+import { MenuButton } from '@/shared/components/menu-button/menu-button';
 import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
 import {
   DESKTOP_DROP_TARGET,
@@ -22,15 +31,22 @@ import {
   DEFAULT_EXPLORER_VIEW,
   DESKTOP_LOCATION_KEY,
   getFavoriteFolders,
-  isRecycleBinFull,
-  RECYCLE_BIN_ID,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
+import {
+  BREADCRUMB_MENU_ALIGN_OFFSET,
+  BREADCRUMB_MENU_SIDE_OFFSET,
+  type BreadcrumbMenuTarget,
+  getBreadcrumbMenuEntries,
+  getSubfolderTargets,
+} from './breadcrumb-menu/breadcrumb-menu-entries';
 import { ExplorerBody } from './components/explorer-body/explorer-body';
 import { ExplorerWindow } from './components/explorer-window/explorer-window';
 import { NavigationFavorites } from './components/navigation-favorites/navigation-favorites';
 import {
+  DESKTOP_LOCATION_ICON,
   type ExplorerWorkspace,
+  getExplorerLocationIcon,
   getExplorerLocationName,
   getExplorerLocationTrail,
 } from './utils/explorer-location/explorer-location';
@@ -70,6 +86,9 @@ type ExplorerWindowLayerProps = {
   device: DeviceVariant;
 };
 
+// 맨 앞 위치 아이콘 뒤 꺾쇠의 열쇠다. 마디 뒤 꺾쇠는 마디 차례를 열쇠로 쓴다.
+const ROOT_SEPARATOR_KEY = 'root';
+
 // 탐색 창 칸마다 다는 트리 칸 열쇠 속성. 방향키로 옮겨 갈 칸을 찾는다(즐겨찾기 칸과 트리 칸은 같은 폴더라도 열쇠가 다르다).
 const TREE_KEY_ATTRIBUTE = 'data-tree-key';
 
@@ -80,7 +99,8 @@ const TREE_KEY_ATTRIBUTE = 'data-tree-key';
  * 폴더 열기·위치 칸·탐색 창·뒤로·앞으로·위로·Backspace·Alt + ← / →로 같은 탭에서 위치를 옮긴다.
  * 위치를 떠날 때 본문의 지금 선택을 그 기록 칸에 적어, 뒤로·앞으로로 돌아오면 되살린다. 위로 간 칸은 방금 있던 폴더를 고른다.
  * 항목과 항목 조작은 본문(`ExplorerBody`)이 맡는다. 탐색 창의 하위 폴더는 그 위치에 기억한 정렬을 따른다.
- * 탭·위치 칸·탐색 창의 위치 아이콘은 한 함수(`renderLocationIcon`)로 고른다.
+ * 위치 칸의 꺾쇠는 목록 버튼이다. 마디 뒤 꺾쇠는 그 위치의 하위 폴더, 맨 앞 꺾쇠는 탐색 창의 최상위 칸을 보이고, 고르면 같은 탭에서 간다.
+ * 탭·위치 칸·탐색 창·꺾쇠 목록의 위치 아이콘은 한 함수(`getExplorerLocationIcon`)로 고른다.
  * 모바일은 탭 하나만 쓴다(탭 줄이 없다).
  * @codocs [[파일 탐색기:보기와 정렬]]
  * @codocs [[파일 탐색기:구성]]
@@ -119,9 +139,15 @@ export function ExplorerWindowLayer({
     location: ExplorerLocation;
     key: string;
   } | null>(null);
+  // 열린 경로 꺾쇠 목록. key는 꺾쇠 자리(맨 앞이면 `root`, 마디 뒤면 마디 차례)이고 location은 열 때의 위치다. 위치가 바뀌면 닫힌다.
+  const [openSeparator, setOpenSeparator] = useState<{
+    location: ExplorerLocation;
+    key: string;
+  } | null>(null);
+  const isDesktop = device === 'desktop';
   const locationName = getExplorerLocationName(workspace, location);
   const trail = getExplorerLocationTrail(workspace, location);
-  const visibleTrail = device === 'mobile' ? trail.slice(-1) : trail;
+  const visibleTrail = isDesktop ? trail : trail.slice(-1);
   const activeTab = getActiveTab(content);
   const favoriteRows = getFavoriteRows(
     getFavoriteFolders({ items, favoritePins }),
@@ -177,6 +203,73 @@ export function ExplorerWindowLayer({
     );
     return sorted.flatMap((folder) => nodes.filter((node) => node.folder === folder));
   }
+
+  /**
+   * 경로 꺾쇠의 목록이 열려 있는지.
+   * @param key 꺾쇠 자리
+   * @returns 열려 있으면 true
+   */
+  function isSeparatorOpen(key: string): boolean {
+    return openSeparator?.location === location && openSeparator.key === key;
+  }
+
+  /**
+   * 경로 꺾쇠를 목록 버튼(MenuButton)으로 감싸는 함수를 만든다. 목록에서 고르면 같은 탭에서 그 위치로 간다(기록에 남는다).
+   * 열린 동안 꺾쇠는 아래 꺾쇠(⌄)다. 모바일은 경로를 한 칸으로만 보이므로 목록이 없다.
+   * @codocs [[파일 탐색기:구성]]
+   * @codocs [[파일 탐색기:모바일]]
+   * @param key 꺾쇠 자리
+   * @param targets 목록에 보일 위치
+   * @returns 꺾쇠를 감싸는 함수. 모바일이면 undefined
+   */
+  function getSeparatorMenu(
+    key: string,
+    targets: readonly BreadcrumbMenuTarget[],
+  ): ((separator: ReactElement) => ReactNode) | undefined {
+    if (!isDesktop) {
+      return undefined;
+    }
+    return (separator) => (
+      <BreadcrumbSeparatorMenu
+        separator={separator}
+        targets={targets}
+        isOpen={isSeparatorOpen(key)}
+        onOpenChange={(isOpen: boolean) => {
+          setOpenSeparator(isOpen ? { location, key } : null);
+        }}
+        onNavigate={handleNavigate}
+      />
+    );
+  }
+
+  /**
+   * 마디 위치의 하위 폴더. 그 위치에 기억한 정렬로 늘어놓는다.
+   * @param target 마디 위치
+   * @returns 하위 폴더
+   */
+  function getSubfolders(target: ExplorerLocation): BreadcrumbMenuTarget[] {
+    return getSubfolderTargets(
+      workspace,
+      target,
+      explorerViews[target ?? DESKTOP_LOCATION_KEY] ?? DEFAULT_EXPLORER_VIEW,
+    );
+  }
+
+  /**
+   * 탐색 창 최상위 칸을 꺾쇠 목록 줄로 바꾼다.
+   * @param row 최상위 칸
+   * @returns 목록 줄
+   */
+  function toRootTarget(row: NavigationRow): BreadcrumbMenuTarget {
+    return {
+      location: row.location,
+      name: row.label,
+      icon: getExplorerLocationIcon(workspace, row.location),
+    };
+  }
+
+  // 맨 앞 위치 아이콘 뒤 꺾쇠의 목록은 탐색 창의 최상위 칸(바탕 화면, 휴지통)이다.
+  const rootTargets = treeRows.filter((row) => row.level === 0).map(toRootTarget);
 
   /**
    * 창 내용을 바꾼다.
@@ -398,23 +491,31 @@ export function ExplorerWindowLayer({
         onNavigate={handleNavigate}
         onOpenInNewTab={handleOpenInNewTab}
         locationIcon={renderLocationIcon(workspace, location)}
+        isBreadcrumbSeparatorOpen={isSeparatorOpen(ROOT_SEPARATOR_KEY)}
+        renderBreadcrumbSeparator={getSeparatorMenu(ROOT_SEPARATOR_KEY, rootTargets)}
         searchPlaceholder={`${locationName} 검색`}
         path={visibleTrail.map(
           /**
            * 위치 칸 하나를 그린다. 마지막 칸이 현재 위치이고, 누르면 그 위치로 간다.
+           * 뒤의 꺾쇠는 그 위치의 하위 폴더 목록을 연다. 마지막 칸 뒤 꺾쇠는 하위 폴더가 있을 때만 그린다(데스크톱).
+           * @codocs [[파일 탐색기:구성]]
            * @param entry 위치와 이름
            * @param index 차례
            * @returns BreadcrumbItem
            */
           (entry, index) => {
             const isCurrent = index === visibleTrail.length - 1;
+            const separatorKey = String(index);
+            const subfolders = isDesktop ? getSubfolders(entry.location) : [];
             return (
               <BreadcrumbItem
                 // 위치 이름은 겹칠 수 있어(다른 위치의 같은 이름 폴더) 차례를 함께 쓴다.
                 key={`${String(index)}-${entry.location ?? 'desktop'}`}
                 label={entry.name}
                 isCurrent={isCurrent}
-                hasSeparator={!isCurrent}
+                hasSeparator={!isCurrent || subfolders.length > 0}
+                isSeparatorOpen={isSeparatorOpen(separatorKey)}
+                renderSeparator={getSeparatorMenu(separatorKey, subfolders)}
                 onLabelClick={() => {
                   handleNavigate(entry.location);
                 }}
@@ -445,6 +546,44 @@ export function ExplorerWindowLayer({
         onKeyDown={handleKeyDown}
       />
     </ExplorerWindow>
+  );
+}
+
+type BreadcrumbSeparatorMenuProps = {
+  separator: ReactElement;
+  targets: readonly BreadcrumbMenuTarget[];
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
+  onNavigate: (location: ExplorerLocation) => void;
+};
+
+/**
+ * 경로 꺾쇠와 그 꺾쇠가 여는 목록(피그마 Explorer/BreadcrumbMenu). 꺾쇠를 목록 버튼(MenuButton)의 트리거로 쓰고,
+ * 목록은 꺾쇠 왼쪽 끝에 맞춰 아래에 연다.
+ * @codocs [[파일 탐색기:구성]]
+ * @param props 컴포넌트 속성
+ * @param props.separator 꺾쇠 버튼(BreadcrumbChevron)
+ * @param props.targets 목록에 보일 위치
+ * @param props.isOpen 목록이 열려 있는지
+ * @param props.onOpenChange 목록을 열거나 닫으려 할 때
+ * @param props.onNavigate 목록에서 고른 위치로 같은 탭에서 간다
+ */
+function BreadcrumbSeparatorMenu({
+  separator,
+  targets,
+  isOpen,
+  onOpenChange: handleOpenChange,
+  onNavigate,
+}: BreadcrumbSeparatorMenuProps): JSX.Element {
+  return (
+    <MenuButton
+      trigger={separator}
+      items={getBreadcrumbMenuEntries(targets, onNavigate)}
+      isOpen={isOpen}
+      sideOffset={BREADCRUMB_MENU_SIDE_OFFSET}
+      alignOffset={BREADCRUMB_MENU_ALIGN_OFFSET}
+      onOpenChange={handleOpenChange}
+    />
   );
 }
 
@@ -565,7 +704,7 @@ function NavigationTreeItem({
 }
 
 /**
- * 위치 아이콘. 탭·위치 칸·탐색 창이 함께 쓴다. 바탕화면은 바탕 화면 아이콘, 휴지통은 찬·빈 모양, 그 밖(폴더)은 폴더다.
+ * 위치 아이콘. 탭·위치 칸·탐색 창이 함께 쓴다. 자산은 `getExplorerLocationIcon`이 고르고(경로 꺾쇠 목록도 같은 함수를 쓴다), 여기서 그린다.
  * @codocs [[파일 탐색기:탭]]
  * @codocs [[파일 탐색기:탐색 창]]
  * @param workspace 작업 공간
@@ -573,20 +712,10 @@ function NavigationTreeItem({
  * @returns 아이콘
  */
 function renderLocationIcon(workspace: ExplorerWorkspace, location: ExplorerLocation): ReactNode {
-  if (location === null) {
+  const name = getExplorerLocationIcon(workspace, location);
+  if (name === DESKTOP_LOCATION_ICON) {
     // 한 가지 색 아이콘이라 글자 색으로 칠한다(피그마 데스크톱 아이콘).
-    return <Asset name="icons/ic_fluent_desktop_20_regular.svg" className="text-color-black-89" />;
+    return <Asset name={name} className="text-color-black-89" />;
   }
-  if (location === RECYCLE_BIN_ID) {
-    return (
-      <ImageAsset
-        name={
-          isRecycleBinFull(workspace)
-            ? 'images/file-recycle-bin-full'
-            : 'images/file-recycle-bin-empty'
-        }
-      />
-    );
-  }
-  return <ImageAsset name="images/file-folder" />;
+  return <ImageAsset name={name} />;
 }

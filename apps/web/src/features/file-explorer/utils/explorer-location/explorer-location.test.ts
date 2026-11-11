@@ -12,9 +12,11 @@ import {
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
 import {
+  DESKTOP_LOCATION_ICON,
   findExplorerAddressTarget,
   formatDeletedDate,
   getExplorerAddressText,
+  getExplorerLocationIcon,
   getExplorerLocationName,
   getExplorerLocationPath,
   getExplorerWindowTitle,
@@ -207,6 +209,24 @@ describe('파일 탐색기:주소창 편집', () => {
     }
     expect(findExplorerAddressTarget(renamed.state, joinPath('Blog', 'React'))).toEqual(
       location('folder:new'),
+    );
+  });
+});
+
+// @codocs [[파일 탐색기:탐색 창]]
+describe('getExplorerLocationIcon', () => {
+  it('바탕화면은 바탕 화면 아이콘, 폴더는 폴더, 휴지통은 빈·찬 모양이다', () => {
+    expect(getExplorerLocationIcon(workspace, null)).toBe(DESKTOP_LOCATION_ICON);
+    expect(getExplorerLocationIcon(workspace, 'folder:React')).toBe('images/file-folder');
+    expect(getExplorerLocationIcon(workspace, RECYCLE_BIN_ID)).toBe(
+      'images/file-recycle-bin-empty',
+    );
+    const trashed = trashItems(workspace, ['post:a'], '2026-10-28T09:00:00.000Z');
+    if (!trashed.ok) {
+      throw new Error(trashed.reason);
+    }
+    expect(getExplorerLocationIcon(trashed.state, RECYCLE_BIN_ID)).toBe(
+      'images/file-recycle-bin-full',
     );
   });
 });

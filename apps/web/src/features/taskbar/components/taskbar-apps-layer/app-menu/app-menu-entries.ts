@@ -3,6 +3,7 @@ import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import {
   MENU_ICONS,
   MENU_SEPARATOR,
+  openMenuItem,
   taskbarPinMenuItem,
 } from '@/shared/utils/menu-items/menu-items';
 import type { WindowApp } from '@/shared/utils/window-rules/window-rules';
@@ -111,4 +112,75 @@ export function getChromeJumpListEntries(options: ChromeJumpListOptions): MenuPo
     entries: [{ label: '새 창', icon: taskbarApps.chrome.icon, onClick: onNewWindow }],
   });
   return entries;
+}
+
+// 폴더 아이콘은 탐색기·바탕화면 폴더와 같은 래스터 자산(피그마 file/Folder)이다.
+const FOLDER_ICON = 'images/file-folder';
+
+// 고정을 해제하는 문구다. 압정 해제 버튼의 이름과 항목 메뉴의 항목에 함께 쓴다.
+const UNPIN_LABEL = '이 목록에서 고정 해제';
+
+/** "고정됨"에 보일 폴더 하나. id는 작업 공간 폴더 id, name은 지금 이름이다. */
+export type ExplorerJumpListFolder = {
+  id: string;
+  name: string;
+};
+
+/** 탐색기 점프 목록이 보이는 폴더와 동작. onOpenFolder는 폴더를 열 때(항목, 항목 메뉴의 열기), onUnpin은 목록에서 뺄 때 부른다. */
+type ExplorerJumpListOptions = {
+  folders: readonly ExplorerJumpListFolder[];
+  onOpenFolder: (id: string) => void;
+  onUnpin: (id: string) => void;
+};
+
+/**
+ * 작업 표시줄 탐색기 버튼 점프 목록(피그마 `Menu/TaskbarJumpListExplorer`의 앱 묶음 위 칸)의 항목을 만든다.
+ * 머리글 "고정됨" 아래 탐색기 즐겨찾기 폴더를 고정한 차례로 둔다. 항목마다 압정 해제 버튼과 항목 메뉴(열기 / 구분선 / 이 목록에서 고정 해제)가 붙는다.
+ * 폴더가 없으면 빈 목록이라 `getAppMenuEntries`가 머리글과 구분선을 함께 숨긴다.
+ * @codocs [[작업 표시줄:우클릭 메뉴]]
+ * @param options 보일 폴더와 동작
+ * @returns 점프 목록 항목
+ */
+export function getExplorerJumpListEntries(options: ExplorerJumpListOptions): MenuPopupEntry[] {
+  const { folders, onOpenFolder, onUnpin } = options;
+  if (folders.length === 0) {
+    return [];
+  }
+  return [
+    {
+      kind: 'group',
+      label: '고정됨',
+      entries: folders.map(
+        /**
+         * 폴더 하나를 고정 항목으로 만든다.
+         * @param folder 폴더
+         * @returns 메뉴 항목
+         */
+        (folder): MenuPopupEntry => {
+          /** 폴더를 연다. */
+          function open(): void {
+            onOpenFolder(folder.id);
+          }
+          /** 폴더를 목록에서 뺀다. */
+          function unpin(): void {
+            onUnpin(folder.id);
+          }
+          return {
+            kind: 'pinned',
+            id: folder.id,
+            label: folder.name,
+            icon: FOLDER_ICON,
+            unpinLabel: UNPIN_LABEL,
+            onClick: open,
+            onUnpin: unpin,
+            entries: [
+              openMenuItem(open),
+              MENU_SEPARATOR,
+              { label: UNPIN_LABEL, icon: MENU_ICONS.pinOff, onClick: unpin },
+            ],
+          };
+        },
+      ),
+    },
+  ];
 }
