@@ -14,6 +14,16 @@ export const LOCATION_NAMES = {
   'recycle-bin': '휴지통',
 } as const;
 
+/**
+ * 위치에 하위 폴더가 있는지. 있으면 데스크톱 경로의 마지막 칸 뒤에도 꺾쇠를 그린다(피그마 Window/Explorer 마지막 BreadcrumbItem
+ * `Has separator`). Blog는 React·Next.js·TypeScript, React는 Hooks를 담고 휴지통은 하위 폴더가 없다.
+ */
+export const WINDOW_HAS_SUBFOLDERS = {
+  blog: true,
+  react: true,
+  'recycle-bin': false,
+} as const;
+
 /** 피그마 Window/Explorer 주소 줄 검색 상자의 안내 글자. 현재 위치 이름 + "검색"이다 */
 export const WINDOW_SEARCH_PLACEHOLDERS = {
   blog: 'Blog 검색',
@@ -22,7 +32,7 @@ export const WINDOW_SEARCH_PLACEHOLDERS = {
 } as const;
 
 /**
- * 피그마 Window/Explorer 탐색 창의 폴더 트리. 현재 위치를 고르고(selected), React 폴더에 있으면 React를 펼친다.
+ * 피그마 Window/Explorer 탐색 창의 폴더 트리. 현재 위치를 고르고(isSelected, 피그마 Selected unfocused·Current=True), React 폴더에 있으면 React를 펼친다.
  * icon은 아이콘(데스크톱 아이콘, file/Folder, file/Recycle Bin Full)을 고른다.
  */
 export const WINDOW_NAVIGATION = {
