@@ -63,21 +63,18 @@ _codocs:
   - 데이터 위치: 이미지 서버 저장본은 호스트 `/srv/seojaewan-blog/images`를 컨테이너의 같은 경로에 bind로 둔다. 이 폴더는 local-server가 `deploy.data`에 따라 Firebat에 만든다. compose의 bind 경로는 실행 계정이 아니라 Firebat 기준으로 풀리므로 호스트 경로로 적는다. 배포 스크립트가 올리기 전에 이 폴더의 주인을 `10001:10001`로 맞춘다(실행 계정 안에서 하면 호스트에 반영되지 않으므로 Docker 엔진에서 `docker run --user 0`으로 한다). 확인용으로만 `IMAGE_DATA_DIR`로 바꾼다. 블로그는 남길 데이터가 없다.
   - 비밀값: 이미지 서버의 `NOTION_TOKEN`은 프로젝트 비밀값 `images-notion-token`, `ALERT_SECRET`은 notify 클라이언트 `images`의 비밀값이다. 프로젝트 비밀값은 owner가 local-server의 infra 화면에서 금고 항목을 골라 넣고, notify 비밀값은 발급 뒤 자동으로 복사된다. 배포 스크립트가 실행 계정의 `/run/secrets/project/images-notion-token`, `/run/secrets/notify/images`를 읽어 `.deploy-secrets/images.env`(권한 600)로 쓰고, compose `env_file`로 넣은 뒤 지운다. `env_file`은 실행 계정 안의 compose CLI가 읽으므로 실행 계정 경로로 적는다. 값은 명령 인자와 로그에 넣지 않는다. compose `secrets`(파일 bind)는 쓰지 않는다. 그 경로는 Firebat 기준(`/var/lib/local-server-projects/seojaewan-blog/...`)으로 풀려야 하고, 두 파일을 한 env 파일로 합쳐 넣는 편이 단순하기 때문이다. `ALERT_URL`(`http://10.88.0.1:8790/notify`)은 비밀값이 아니라 compose에 적는다. 이미지 서버 컨테이너에서 notify(`10.88.0.1:8790/healthz`)에 닿는 것을 2026-11-06에 확인했다.
 CI: |
-  CI는 GitHub Actions 그대로다. PR 검사이고 병합 전에 통과해야 하는 조건도 같다([[Git 작업 규칙:CI]]).
+  CI는 GitHub Actions다. 워크플로, 도는 조건, 작업 구조, 캐시, 병합 기준은 [[Git 작업 규칙:CI]]에서 정한다.
 
-  - 저장소를 비공개로 전환한다. 그 뒤에 미니 PC에 GitHub Actions self-hosted runner를 2~3개 단다. 반드시 비공개로 바꾼 뒤에 단다.
-  - PR 검사 워크플로(`ci.yml`, `motion-check.yml`, `figma-generated.yml`, `figma-parity.yml`, `parity-report-cleanup.yml`)는 GitHub 호스티드 러너(`runs-on: ubuntu-latest`)에서 돈다. 미니 PC가 필요한 세 워크플로만 self-hosted runner(`runs-on: [self-hosted, linux]`)에 남는다. `scenario-cases.yml`은 보고서를 미니 PC 디스크에 복사하고, `content-sync.yml`·`content-sync-merge.yml`은 notify(`10.88.0.1:8790`)로 알린다. 워크플로, PR 검사 이름, 병합 조건은 바뀌지 않는다.
-  - 2026-11-10에 PR 검사를 호스티드 러너로 옮겼다. 한 머신에서 runner 셋이 동시에 `pnpm test`(vitest)를 돌려 CPU를 다투어 시간 초과가 자주 났기 때문이다. 이미지 아티팩트 문제는 그 전에 정리됐다. 저장소가 비공개라 호스티드 러너는 계정의 월 무료 시간을 쓴다. 그 안에서 충분한지 보는 시험 중이고, 되돌릴 때는 `runs-on`과 아래 self-hosted 전용 처리를 되살린다.
-  - 비공개 저장소에서는 시나리오 케이스 보고서를 GitHub Pages로 올리지 못한다(무료 계정). 보고서는 미니 PC로 옮겨 Cloudflare 터널과 Access 뒤에서 연다([[테스트 작성 규칙:E2E]]). 캡처 표 댓글의 그림(`parity-report` 브랜치)은 비공개 전환 뒤 로그인 없이는 404다. GitHub에 로그인한 브라우저에서는 보인다(그림이 많으면 느리게 뜬다). 2026-11-06에 PR #654로 확인했다([[피그마 연동:CI]]).
-  - self-hosted에서는 한 머신에서 runner 셋이 동시에 job을 돌린다. 그래서 self-hosted에서 앱을 띄우는 `scenario-cases.yml`은 E2E 서버 포트를 runner 번호로 나눈다(`4100 + n`, `scripts/runner-port.mjs`). 3000번은 블로그 컨테이너 자리라 쓰지 않는다. 호스티드 러너의 `E2E` 작업은 job마다 머신이 따로라 기본 포트(3000)로 돈다.
-  - 시험용 데이터는 E2E만 `CONTENT_SOURCE=fixture`로 쓰고, 검사 작업의 빌드는 커밋한 글 JSON으로 한다([[콘텐츠 원천:읽는 곳]]).
+  - 모든 워크플로(`ci.yml`, `branch-name.yml`, `content-sync.yml`)가 GitHub 호스티드 러너(`runs-on: ubuntu-latest`)에서 돈다. self-hosted runner를 쓰는 워크플로는 없다. job마다 깨끗한 머신이라 pnpm은 기본 위치에 설치하고, 앱 서버는 기본 포트(3000)로 띄운다.
+  - 저장소를 공개(public)로 바꾼다. 공개 저장소에서는 GitHub 호스티드 표준 러너가 무료·무제한이고 4 vCPU다. 비공개 저장소에서는 계정의 월 무료 시간을 쓴다.
+  - 공개 전에 미니 PC의 self-hosted runner(`minipc-1`~`minipc-3`)를 저장소에서 뗀다. 공개 저장소에는 self-hosted runner를 두지 않는다.
+  - 공개 전환과 runner 떼기는 사람이 한다. 아직 하지 않았다. 2026-11-11의 CI 구조 개편 PR들이 병합된 뒤에 한다. 그때까지 저장소는 비공개이고 runner는 저장소에 달려 있지만, 어느 워크플로도 runner를 쓰지 않는다.
+  - 시나리오 케이스 보고서는 GitHub Pages(`gh-pages` 브랜치, 커스텀 도메인 `scenario-cases.seojaewan.com`)로 간다([[테스트 작성 규칙:E2E]]). 무료 계정의 비공개 저장소는 Pages를 쓰지 못하므로 사이트는 공개 전환 뒤에 열린다. 미니 PC의 보고서 폴더, 보고서 서버(8470), Cloudflare 터널의 보고서 호스트, 보고서의 Access는 더 쓰지 않는다(서버 쪽 정리는 사람이 한다, [[배포 환경:인프라 설정의 위치]]).
+  - 게시 브랜치 `gh-pages`에는 늘 부모 없는 커밋 하나만 남긴다. `main` 보고서가 약 113MB라 병합마다 기록이 쌓이면 안 되기 때문이다. 사이트 루트는 `main` 보고서이고, PR 실패 보고서는 `failures/pr-<번호>/`에 둔다. 올릴 때마다 브랜치를 받아 자기 자리만 고치고 다른 폴더는 지우지 않으며, 받은 뒤 다른 실행이 먼저 올렸으면(`--force-with-lease` 거절) 다시 받아 처음부터 한다(`scripts/publish-scenario-pages.sh`, `scripts/scenario-pages.mjs`). 사이트 루트에는 `CNAME`과 `.nojekyll`을 둔다. Pages 사이트 한도는 1GB다.
+  - 시험용 데이터는 E2E만 `CONTENT_SOURCE=fixture`로 쓰고, `Build` 작업의 빌드는 커밋한 글 JSON으로 한다([[콘텐츠 원천:읽는 곳]]).
   - 앱이나 패키지를 바꾼 PR에는 changeset이 있어야 하고, CI가 `changeset status`로 빠뜨린 것을 잡는다([[배포 환경:배포(CD)]]).
-  - 글 PR은 위 필수 검사를 모두 통과해야 `Content sync merge` 워크플로가 병합한다([[콘텐츠 원천:갱신 방식]]).
-  - 글 동기화 작업(`Content sync`, `.github/workflows/content-sync.yml`)은 이 self-hosted runner에서 매시 17분(UTC)에 돈다.
-  - 저장소는 GitHub Free 비공개라 ruleset과 auto-merge가 동작하지 않는다. 이것을 그대로 두기로 했다. GitHub Pro(월 4달러)로 올리면 ruleset이 다시 병합을 막지만, 올리지 않는다([[Git 작업 규칙:CI]]).
-  - 이전에는 `E2E_PORT`가 turbo에서 걸러져 runner별 포트가 실제로 적용되지 않았다. PR #659부터 적용된다.
-  - self-hosted 워크플로는 pnpm을 job마다 `runner.temp`에 설치한다. 기본 위치를 runner끼리 함께 쓰면 서로 덮어쓰기 때문이다. Actions의 pnpm 캐시는 쓰지 않는다. 저장소가 머신에 남아 있기 때문이다.
-  - 호스티드 러너는 job마다 깨끗한 머신이라 pnpm을 기본 위치에 설치하고, `actions/setup-node`의 `cache: pnpm`으로 pnpm 저장소를 캐시한다. 루트 의존성만 설치하는 `Branch name` 작업은 캐시를 쓰지 않는다. Playwright 브라우저와 OS 의존성은 `playwright install --with-deps chromium`으로 job마다 설치하고, 브라우저 캐시는 두지 않는다.
+  - 글 동기화: 다른 PR이 구현 중이다. `content-sync.yml` 하나가 GitHub 호스티드 러너에서 `repository_dispatch`(Cloudflare Worker가 Notion 통합 웹훅을 받아 보낸다, 코드는 `tools/notion-webhook/`), 하루 한 번 예약, 수동 실행으로 시작한다. 한 실행 안에서 Notion 내보내기, 운영 글 빌드, PR 열기와 바로 병합(merge commit)을 한다. 글 동기화 PR(`chore/notion-content-sync`)에서는 `ci.yml`이 돌지 않는다. `content-sync-merge.yml`과 병합 스크립트는 없어진다. 실패 알림 주소는 저장소 변수로 읽고, 아직 바깥에서 닿는 주소가 없어 정해지지 않았다.
+  - ruleset의 필수 검사와 auto-merge는 쓰지 않는다([[Git 작업 규칙:CI]]).
 도메인과 캐시: |
   - Cloudflare 터널은 Cloudflare DNS를 쓰는 도메인에서만 쓸 수 있으므로 `seojaewan.com`은 Cloudflare DNS에 둔다.
   - `seojaewan.com`은 터널을 거쳐 블로그 컨테이너(`127.0.0.1:3000`)로 간다(프록시 켬). `www`는 터널 hostname과 Cloudflare Redirect Rule("Redirect from WWW to root" 템플릿, 301, query string 유지)로 `seojaewan.com`에 영구 이동한다. 2026-11-08에 공개했다([[배포 환경:공개 절차]]).
@@ -90,8 +87,8 @@ CI: |
   블로그는 local-server 저장소에 `registry/seojaewan-blog.yaml`을 PR로 올려 등록한다. 등록할 대상은 다음과 같다.
   - 블로그 컨테이너(`127.0.0.1` 포트 HTTP)와 `https://seojaewan.com/`(공개 HTTPS)
   - `apps/images` 컨테이너와 `https://images.seojaewan.com`
-  - runner 서비스 3개
-  - 시나리오 케이스 보고서 서버
+
+  self-hosted runner 서비스와 시나리오 케이스 보고서 서버는 더 쓰지 않으므로 감시하지 않는다([[배포 환경:CI]]). 시나리오 케이스 보고서는 GitHub Pages가 내주므로 이 감시에 넣지 않는다.
 
   2026-11-08에 `registry/seojaewan-blog.yaml`에서 `blog-web`과 `blog-images`를 `active`로 등록했다(local-server PR #99, #101). 이미지 서버는 `/healthz`(http)로 검사하고 공개 검사는 `https://images.seojaewan.com/healthz`다. 등록 파일의 필드 형식은 local-server 저장소가 정한다. infra는 local-server의 자동 배포가 배포하므로 이 저장소에서 따로 배포하지 않는다.
 감시의 검토한 대안: |
@@ -114,23 +111,31 @@ CI: |
   - Actions 비밀값은 저장소 Settings의 Secrets에 사람이 넣는다.
   - 토큰의 종류와 권한은 [[콘텐츠 원천:연동 토큰]]에서 정한다.
 접근 제한: |
-  Cloudflare Access(로그인으로 막는 기능)는 이 저장소 쪽에서는 시나리오 케이스 보고서에만 쓴다. 젠킨스 관리 화면(`jenkins.seojaewan.com`)의 Access는 local-server가 맡고 예외를 두지 않는다. 블로그 `seojaewan.com`에는 Access를 쓰지 않는다.
+  Cloudflare Access(로그인으로 막는 기능)는 이 저장소 쪽에서 쓰지 않는다. 젠킨스 관리 화면(`jenkins.seojaewan.com`)의 Access는 local-server가 맡고 예외를 두지 않는다. 블로그 `seojaewan.com`에는 Access를 쓰지 않는다.
 
-  `/github-webhook/` 경로 공개와 `jenkins-webhook` Access 앱(Bypass)은 2026-11-06에 만들었지만, 웹훅을 쓰지 않게 되어 지운다. Notion 웹훅도 쓰지 않는다.
+  시나리오 케이스 보고서는 GitHub Pages로 옮기면서 Access가 없어진다. 공개 저장소의 Pages라 누구나 볼 수 있다([[배포 환경:CI]]). 미니 PC 보고서에 걸던 Access 앱은 지울 대상이다(사람이 Cloudflare에서 지운다, [[배포 환경:인프라 설정의 위치]]).
+
+  `/github-webhook/` 경로 공개와 `jenkins-webhook` Access 앱(Bypass)은 2026-11-06에 만들었지만, 웹훅을 쓰지 않게 되어 지운다. Notion 통합 웹훅은 터널이 아니라 Cloudflare Worker(`tools/notion-webhook/`)가 받아 글 동기화를 시작한다([[배포 환경:CI]]).
 인프라 설정의 위치: |
-  터널, Access, self-hosted runner와 같은 인프라 설정은 코드가 아니라 서버와 Cloudflare·GitHub 설정이다. 그 절차와 결과(주소, 서비스 이름, 설정 파일 위치)는 이 문서에 적는다. 값(토큰, 비밀번호)은 적지 않는다. 설정이 끝나면 적을 자리가 이 섹션이다.
+  터널, Access, GitHub Pages와 같은 인프라 설정은 코드가 아니라 서버와 Cloudflare·GitHub 설정이다. 그 절차와 결과(주소, 서비스 이름, 설정 파일 위치)는 이 문서에 적는다. 값(토큰, 비밀번호)은 적지 않는다. 설정이 끝나면 적을 자리가 이 섹션이다.
 
-  - self-hosted runner: `minipc-1`~`minipc-3`, 라벨 `self-hosted, Linux, X64`, 버전 v2.338.2. 폴더는 `~/actions-runners/runner-1`~`3`, systemd 서비스는 `actions.runner.SeoJaeWan-seojaewan-blog.minipc-<n>.service`(사용자 `seojaewan`)다.
-  - 시나리오 케이스 보고서 폴더: `/home/seojaewan/scenario-cases-report`는 가장 최근 실행을 가리키는 심볼릭 링크다. 실행별 사본은 `/home/seojaewan/scenario-cases-report-builds/`에 두고 최근 두 개만 남긴다.
+  - 시나리오 케이스 보고서 사이트(GitHub Pages): 저장소 Settings > Pages에서 `gh-pages` 브랜치 루트를 내주고, 커스텀 도메인은 `scenario-cases.seojaewan.com`이다(브랜치 루트의 `CNAME`은 CI가 넣는다). DNS는 Cloudflare DNS의 `scenario-cases` 레코드를 GitHub Pages로 돌린다. 저장소 공개 전환 뒤에 사람이 설정한다. 아직 하지 않았다.
+
+  더 쓰지 않는 설정(2026-11-11 CI 구조 개편으로 쓰지 않게 됐다). 아래는 정리하기 전의 상태이고, 정리는 사람이 한다. 아직 하지 않았다.
+  - self-hosted runner: `minipc-1`~`minipc-3`, 라벨 `self-hosted, Linux, X64`, 버전 v2.338.2. 폴더는 `~/actions-runners/runner-1`~`3`, systemd 서비스는 `actions.runner.SeoJaeWan-seojaewan-blog.minipc-<n>.service`(사용자 `seojaewan`)다. 저장소 공개 전환 전에 저장소에서 뗀다([[배포 환경:CI]]).
+  - 시나리오 케이스 보고서 폴더: `/home/seojaewan/scenario-cases-report`는 가장 최근 실행을 가리키는 심볼릭 링크다. 실행별 사본은 `/home/seojaewan/scenario-cases-report-builds/`에 있다.
   - 시나리오 케이스 보고서 서버: `scenario-cases-report.service`(유닛 파일은 `~/scenario-cases-report-server/`)가 `python3 -m http.server`로 `127.0.0.1:8470`을 연다. 부팅 시 자동으로 시작한다.
-  - 시나리오 케이스 보고서 공개 주소: Cloudflare 터널(local-server 터널, 대시보드에서 관리)의 공개 호스트 이름 `scenario-cases.seojaewan.com`이 `http://127.0.0.1:8470`으로 간다. Service Type은 HTTP다(HTTPS로 두면 502). Cloudflare Access 애플리케이션으로 소유자 이메일만 허용한다.
+  - 시나리오 케이스 보고서 공개 주소: Cloudflare 터널(local-server 터널, 대시보드에서 관리)의 공개 호스트 이름 `scenario-cases.seojaewan.com`이 `http://127.0.0.1:8470`으로 간다. Service Type은 HTTP다(HTTPS로 두면 502). Cloudflare Access 애플리케이션으로 소유자 이메일만 허용한다. 같은 이름을 GitHub Pages로 돌리려면 이 공개 호스트 이름과 Access 앱을 먼저 지운다.
+  - 머신 준비(runner용): Playwright Chromium 시스템 라이브러리 설치(`playwright install-deps chromium`), `corepack enable`. runner를 떼면 이 준비는 필요 없다.
+
+  계속 쓰는 설정:
   - 포트(2026-11-06 정함): 블로그 컨테이너 `127.0.0.1:3000`, 이미지 서버 컨테이너 `127.0.0.1:3100`, 젠킨스(local-server 소유) `127.0.0.1:8090`이다. 8080은 local-server의 Caddy가 `10.88.0.2:8080`에서 쓰고 있어 피했다.
   - 이미지 서버 공개 주소: 같은 터널의 공개 호스트 이름 `images.seojaewan.com`이 `http://127.0.0.1:3100`으로 간다. Access는 걸지 않는다. 방문자와 카카오 미리보기 봇이 받아야 하기 때문이다([[Notion 이미지 제공]]).
   - 젠킨스 공개 주소(local-server 소유): 같은 터널의 `jenkins.seojaewan.com`이 `http://127.0.0.1:8090`으로 간다.
   - 젠킨스의 Cloudflare Access: `jenkins` 앱(local-server 소유)이 `jenkins.seojaewan.com` 전체를 owner 이메일만 허용한다. `jenkins-webhook` 앱(`/github-webhook` Bypass)은 웹훅을 쓰지 않게 되어 지울 대상이다(owner가 Cloudflare에서 지운다).
   - Access 앱을 만들 때 만난 문제: 브라우저 격리 옵션을 켜면 공개 주소에 저장이 안 된다. 같은 주소를 쓰는 앱이 이미 있으면 "destination belongs to another application" 오류가 난다.
   - 2026-11-06에 확인한 상태: `jenkins.seojaewan.com/`은 Access로 302, `images.seojaewan.com`은 서버가 없어 502였다. 2026-11-08에 이미지 서버를 배포해 `images.seojaewan.com/healthz`가 200이다.
-  - 머신 준비: Playwright Chromium 시스템 라이브러리 설치(`playwright install-deps chromium`), `corepack enable`, 사용자 `seojaewan`을 docker 그룹에 추가.
+  - 머신 준비: 사용자 `seojaewan`을 docker 그룹에 추가.
 공개 절차: |
   준비되기 전에는 `seojaewan.com`을 터널에 연결하지 않았다. 연결하지 않으면 접속 자체가 되지 않아 막아 둘 필요가 없다. 공개 전에는 사람이 사이트를 미리 보지 않고, health check와 서버 안의 `curl`로만 확인했다.
 
