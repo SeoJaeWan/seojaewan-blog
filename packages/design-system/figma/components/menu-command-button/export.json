@@ -1,0 +1,313 @@
+{
+  "description": "메뉴 위·아래의 단추 줄에 놓는 명령 단추로, 아이콘 아래 글자를 둔다. 마우스를 올리면 Tooltip으로 이름과 단축키를 보인다.",
+  "name": "MenuCommandButton",
+  "nodeId": "3477:15829",
+  "propertyDefinitions": {
+    "Icon": {
+      "type": "INSTANCE_SWAP"
+    },
+    "Label": {
+      "default": "명령",
+      "type": "TEXT"
+    },
+    "State": {
+      "default": "Rest",
+      "options": [
+        "Rest",
+        "Hover",
+        "Pressed"
+      ],
+      "type": "VARIANT"
+    }
+  },
+  "variants": {
+    "state=hover": {
+      "node": {
+        "height": 48,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:15821",
+      "properties": {
+        "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "color/black/89",
+              "path": "icons/ic_fluent_open_20_regular"
+            },
+            "component": "ic_fluent_open_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "color/black/89"
+            ],
+            "name": "label",
+            "size": {
+              "h": 16,
+              "w": 21
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "명령",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/black/4"
+        ],
+        "height": "size/menu-command-button/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/xs",
+            "spacing/sm-nudge",
+            "spacing/xs"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 48,
+          "w": 64
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/menu-command-button/width"
+      }
+    },
+    "state=pressed": {
+      "node": {
+        "height": 48,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:15825",
+      "properties": {
+        "State": "Pressed"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "color/black/89",
+              "path": "icons/ic_fluent_open_20_regular"
+            },
+            "component": "ic_fluent_open_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "color/black/61"
+            ],
+            "name": "label",
+            "size": {
+              "h": 16,
+              "w": 21
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "명령",
+                  "fill": "color/black/61",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/black/2"
+        ],
+        "height": "size/menu-command-button/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/xs",
+            "spacing/sm-nudge",
+            "spacing/xs"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "State=Pressed",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 48,
+          "w": 64
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/menu-command-button/width"
+      }
+    },
+    "state=rest": {
+      "node": {
+        "height": 48,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "3477:15817",
+      "properties": {
+        "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "color/black/89",
+              "path": "icons/ic_fluent_open_20_regular"
+            },
+            "component": "ic_fluent_open_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "color/black/89"
+            ],
+            "name": "label",
+            "size": {
+              "h": 16,
+              "w": 21
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "명령",
+                  "fill": "color/black/89",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "color/white/0"
+        ],
+        "height": "size/menu-command-button/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/xs",
+            "spacing/sm-nudge",
+            "spacing/xs"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 48,
+          "w": 64
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/menu-command-button/width"
+      }
+    }
+  }
+}

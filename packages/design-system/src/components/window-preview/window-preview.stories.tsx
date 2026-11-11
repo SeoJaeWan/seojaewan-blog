@@ -65,23 +65,23 @@ export const AspectRatio: Story = {
   },
 };
 
-type CloseArgs = { onClose: () => void; onClick: () => void };
+type CloseArgs = { onClose: () => void; onSelect: () => void };
 type CloseStory = StoryObj<CloseArgs>;
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 // @codocs [[디자인 시스템:아이콘 자리]]
-/** 머리글에 앱 아이콘과 제목을, thumbnail 자리에 축소 화면을 그린다. 닫기 버튼은 카드의 onClick을 부르지 않는다 */
+/** 머리글에 앱 아이콘과 제목을, thumbnail 자리에 축소 화면을 그린다. 닫기 버튼은 누르는 영역 밖의 형제라 onSelect를 부르지 않는다 */
 export const Default: CloseStory = {
-  args: { onClose: fn(), onClick: fn() },
+  args: { onClose: fn(), onSelect: fn() },
   render: (args) => {
-    const { onClose: handleClose, onClick: handleClick } = args;
+    const { onClose: handleClose, onSelect: handleSelect } = args;
     return (
       <WindowPreview
         appIcon={<span>앱</span>}
         title="문서"
         thumbnail={<p>축소 화면</p>}
         onClose={handleClose}
-        onClick={handleClick}
+        onSelect={handleSelect}
       />
     );
   },
@@ -105,11 +105,20 @@ export const Default: CloseStory = {
       await expect(canvas.getByLabelText('창 닫기')).toHaveAttribute('aria-hidden', 'true');
     });
 
-    await step('닫기 버튼은 onClose만 부르고 카드의 onClick은 부르지 않는다', async () => {
+    await step('닫기 버튼은 onClose만 부르고 카드의 onSelect는 부르지 않는다', async () => {
       // 닫기 버튼은 마우스 전용이라 보조 기술에 숨겨져 역할 이름이 비므로 aria-label로 찾는다.
       await userEvent.click(canvas.getByLabelText('창 닫기'));
       await expect(args.onClose).toHaveBeenCalledTimes(1);
-      await expect(args.onClick).not.toHaveBeenCalled();
+      await expect(args.onSelect).not.toHaveBeenCalled();
+    });
+
+    // @codocs [[접근성:역할]]
+    await step('누르는 영역만 버튼이고 닫기 버튼은 그 형제다(버튼 안에 버튼이 없다)', async () => {
+      const pressArea = canvas.getByRole('button', { name: '앱 문서' });
+      await expect(pressArea).toHaveAttribute('aria-keyshortcuts', 'Delete');
+      await expect(pressArea).not.toContainElement(canvas.getByLabelText('창 닫기'));
+      await userEvent.click(pressArea);
+      await expect(args.onSelect).toHaveBeenCalledTimes(1);
     });
   },
 };
@@ -117,17 +126,16 @@ export const Default: CloseStory = {
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 /** Title은 축소 화면 없이 제목 줄만 그리고, 터치로 쓰므로 닫기 버튼이 마우스를 올리지 않아도 보인다 */
 export const Title: CloseStory = {
-  args: { onClose: fn(), onClick: fn() },
+  args: { onClose: fn(), onSelect: fn() },
   render: (args) => {
-    const { onClose: handleClose, onClick: handleClick } = args;
+    const { onClose: handleClose, onSelect: handleSelect } = args;
     return (
       <WindowPreview
         variant="title"
-        data-testid="row"
         appIcon={<span>앱</span>}
         title="문서"
         onClose={handleClose}
-        onClick={handleClick}
+        onSelect={handleSelect}
       />
     );
   },
@@ -139,13 +147,21 @@ export const Title: CloseStory = {
     });
 
     await step('축소 화면 자리 없이 제목 줄 하나만 그린다', async () => {
-      await expect(canvas.getByTestId('row').children).toHaveLength(1);
+      await expect(canvas.getByRole('button', { name: '앱 문서' }).children).toHaveLength(1);
     });
 
-    await step('닫기 버튼은 onClose만 부르고 줄의 onClick은 부르지 않는다', async () => {
+    await step('닫기 버튼은 onClose만 부르고 줄의 onSelect는 부르지 않는다', async () => {
       await userEvent.click(canvas.getByLabelText('창 닫기'));
       await expect(args.onClose).toHaveBeenCalledTimes(1);
-      await expect(args.onClick).not.toHaveBeenCalled();
+      await expect(args.onSelect).not.toHaveBeenCalled();
+    });
+
+    // @codocs [[접근성:역할]]
+    await step('누르는 영역만 버튼이고 닫기 버튼은 그 형제다(버튼 안에 버튼이 없다)', async () => {
+      const pressArea = canvas.getByRole('button', { name: '앱 문서' });
+      await expect(pressArea).not.toContainElement(canvas.getByLabelText('창 닫기'));
+      await userEvent.click(pressArea);
+      await expect(args.onSelect).toHaveBeenCalledTimes(1);
     });
   },
 };
