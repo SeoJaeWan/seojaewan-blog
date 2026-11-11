@@ -86,3 +86,46 @@ export const Controlled: Story = {
     await expect(args.onKeyDown).toHaveBeenCalledWith(expect.objectContaining({ key: 'Enter' }));
   },
 };
+
+// @codocs [[바탕화면 검수:1. 이름 바꾸기 입력창의 줄 바꿈]]
+/**
+ * isMultiline이면 textarea다. 한 줄 이름은 한 줄 입력창과 크기가 같다. Enter·Shift + Enter는 줄 바꿈 문자를 넣지 않고
+ * onKeyDown으로 넘어간다. 부모 너비 안에서 줄을 바꾸는 모습은 FileItem 스토리(RenamingLongName)가 확인한다
+ */
+export const Multiline: Story = {
+  args: { onKeyDown: fn() },
+  render: ({ onKeyDown: handleKeyDown }) => (
+    <>
+      <RenameField aria-label="한 줄" />
+      <RenameField aria-label="여러 줄" isMultiline onKeyDown={handleKeyDown} />
+    </>
+  ),
+  play: async ({ args, canvas, userEvent, step }) => {
+    const single = canvas.getByRole('textbox', { name: '한 줄' });
+    const multi = canvas.getByRole<HTMLTextAreaElement>('textbox', { name: '여러 줄' });
+
+    await step(
+      '여러 줄 입력창(textarea)으로 그리고 한 줄 이름이면 한 줄 입력창과 크기가 같다',
+      async () => {
+        await expect(multi.tagName).toBe('TEXTAREA');
+        await expect([multi.offsetWidth, multi.offsetHeight]).toEqual([
+          single.offsetWidth,
+          single.offsetHeight,
+        ]);
+      },
+    );
+
+    await step(
+      'Enter와 Shift + Enter는 줄 바꿈 문자를 넣지 않고 onKeyDown으로 넘긴다',
+      async () => {
+        multi.focus();
+        const before = multi.value;
+        await userEvent.keyboard('{Enter}{Shift>}{Enter}{/Shift}');
+        await expect(multi.value).toBe(before);
+        await expect(args.onKeyDown).toHaveBeenCalledWith(
+          expect.objectContaining({ key: 'Enter' }),
+        );
+      },
+    );
+  },
+};
