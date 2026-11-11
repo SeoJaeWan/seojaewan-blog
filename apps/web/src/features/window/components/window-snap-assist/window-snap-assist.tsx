@@ -72,9 +72,11 @@ export function WindowSnapAssist({
   );
 
   useEffect(
-    /** 뜨면 첫 카드로 포커스를 옮긴다. */
+    /** 뜨면 첫 카드로 포커스를 옮긴다. 포커스는 카드 안 누르는 영역(버튼 역할)이 받는다. */
     () => {
-      assistRef.current?.querySelector<HTMLElement>('[data-snap-assist-suggestion]')?.focus();
+      assistRef.current
+        ?.querySelector<HTMLElement>('[data-snap-assist-suggestion] [role="button"]')
+        ?.focus();
     },
     [],
   );

@@ -166,7 +166,9 @@ export const WithWindows: Story = {
 
     // @codocs [[작업 표시줄:창 미리보기]]
     await step('카드 폭은 창 비율을 따르고 축소 화면이 카드의 자리를 채운다', async () => {
-      for (const card of body.getAllByRole('button', { name: PREVIEW_CARD_NAME })) {
+      // 버튼 역할은 카드 안 누르는 영역이 가지므로 그 부모(카드)를 본다.
+      for (const pressArea of body.getAllByRole('button', { name: PREVIEW_CARD_NAME })) {
+        const card = pressArea.parentElement as HTMLElement;
         const thumbnail = card.querySelector('[inert]');
         const cardRect = card.getBoundingClientRect();
         const thumbnailRect = thumbnail?.getBoundingClientRect();
@@ -704,9 +706,10 @@ export const HoverLastWindowClosed: Story = {
           await fireEvent.pointerOver(button, { pointerType: 'mouse' });
           clock.tick(HOVER_PREVIEW_OPEN_DELAY);
           await waitFor(() => expect(button).toHaveAttribute('aria-expanded', 'true'));
-          // 닫기 버튼은 카드에 마우스를 올려야 보이는 CSS hover라, 보이지 않는 채로 이름을 못 찾으므로 카드 안에서 속성으로 찾는다.
+          // 닫기 버튼은 카드에 마우스를 올려야 보이는 CSS hover라, 보이지 않는 채로 이름을 못 찾으므로 카드(누르는 영역의 부모) 안에서 속성으로 찾는다.
           const card = await body.findByRole('button', { name: PREVIEW_CARD_NAME });
-          const closeButton = card.querySelector('button[aria-label="창 닫기"]');
+          const closeButton =
+            card.parentElement?.querySelector('button[aria-label="창 닫기"]') ?? null;
           await expect(closeButton).not.toBeNull();
           await fireEvent.click(closeButton as Element);
           await waitFor(() =>
@@ -898,7 +901,10 @@ export const Mobile: Story = {
       '카드를 창 비율 폭으로 놓아 넘치면 목록을 화면 폭에서 좌우 12px 여백을 뺀 폭에 맞추고 카드를 같은 너비로 줄인다',
       async () => {
         await userEvent.click(body.getByRole('button', { name: 'Google Chrome' }));
-        const cards = await body.findAllByRole('button', { name: PREVIEW_CARD_NAME });
+        // 버튼 역할은 카드 안 누르는 영역이 가지므로 그 부모(카드)의 크기를 본다.
+        const cards = (await body.findAllByRole('button', { name: PREVIEW_CARD_NAME })).map(
+          (pressArea) => pressArea.parentElement as HTMLElement,
+        );
         await expect(cards).toHaveLength(4);
         // 실제 브라우저라 여는 애니메이션의 scale이 getBoundingClientRect에 들어가므로 배치 크기를 본다.
         const listWidth = window.innerWidth - 12 * 2;
@@ -917,7 +923,10 @@ export const Mobile: Story = {
       await waitFor(async () =>
         expect(await body.findAllByRole('button', { name: PREVIEW_CARD_NAME })).toHaveLength(3),
       );
-      const cards = body.getAllByRole('button', { name: PREVIEW_CARD_NAME });
+      // 버튼 역할은 카드 안 누르는 영역이 가지므로 그 부모(카드)를 본다.
+      const cards = body
+        .getAllByRole('button', { name: PREVIEW_CARD_NAME })
+        .map((pressArea) => pressArea.parentElement as HTMLElement);
       const workArea = getWorkArea(window.innerWidth, window.innerHeight);
       // 축소 화면 높이 108 × 작업 영역 비율 + 좌우 여백 16 (예: 320×520이면 82.5)
       const cardWidth = 108 * (workArea.width / workArea.height) + 16;

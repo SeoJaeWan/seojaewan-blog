@@ -1,4 +1,3 @@
-import { Button } from '@base-ui/react/button';
 import { type JSX, type KeyboardEvent, type ReactNode, useRef } from 'react';
 
 import { TaskbarPreviewList, WindowPreview } from '@seojaewan/design-system';
@@ -33,7 +32,7 @@ type TaskbarWindowPreviewListProps = {
  * 너비는 카드들에 맞춘다(피그마 HUG). TaskbarPreviewList 판에 창마다 WindowPreview 카드(앱 아이콘, 제목, 축소 화면)를 가로로 늘어놓고, 카드 너비는 창 비율(`aspectRatio`)을 따른다.
  * 모바일은 `listWidth`·`cardWidth`로 목록을 화면 폭에 맞추고 카드를 줄인다(너비는 실행 중에 정해지는 값이라 인라인 스타일이다).
  * 미리보기를 누르면(`onSelect`) 그 창을 맨 앞으로 가져오고, 닫기 버튼이나 Delete로(`onClose`) 그 창을 닫는다. 동작은 쓰는 곳이 넣는다.
- * 카드는 Base UI Button이고 목록은 Tab 한 번에 닿으며 안에서 ←/→로 옮긴다.
+ * 카드의 누르는 영역(닫기 버튼과 형제)이 버튼 역할이고 목록은 Tab 한 번에 닿으며 안에서 ←/→로 옮긴다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[작업 표시줄:창 미리보기]]
  * @codocs [[접근성:Tab]]
@@ -73,7 +72,7 @@ export function TaskbarWindowPreviewList({
          */
         (item) => {
           /** 미리보기를 누르면 쓰는 곳에 알린다. */
-          function handleClick(): void {
+          function handleSelect(): void {
             onSelect?.(item.id);
           }
           /**
@@ -90,9 +89,13 @@ export function TaskbarWindowPreviewList({
           function handleClose(): void {
             onClose?.(item.id);
           }
-          const card = (
+          // onSelect를 받았을 때만 카드의 누르는 영역이 버튼이 되고 Delete를 받는다.
+          const selectProps =
+            onSelect === undefined ? {} : { onSelect: handleSelect, onKeyDown: handleKeyDown };
+          return (
             <WindowPreview
               key={item.id}
+              {...selectProps}
               onClose={handleClose}
               appIcon={<TaskbarAppIcon app={app} />}
               title={item.title}
@@ -100,19 +103,6 @@ export function TaskbarWindowPreviewList({
               aspectRatio={item.aspectRatio}
               style={cardWidth === undefined ? undefined : { width: cardWidth }}
               className="shrink-shrink-none"
-            />
-          );
-          return onSelect === undefined ? (
-            card
-          ) : (
-            <Button
-              key={item.id}
-              nativeButton={false}
-              onClick={handleClick}
-              onKeyDown={handleKeyDown}
-              // @codocs [[접근성:역할]]
-              aria-keyshortcuts="Delete"
-              render={card}
             />
           );
         },

@@ -1,4 +1,3 @@
-import { Button } from '@base-ui/react/button';
 import { type JSX, type KeyboardEvent, type ReactNode, useRef } from 'react';
 
 import { cn, SnapPreview, WindowPreview } from '@seojaewan/design-system';
@@ -28,7 +27,7 @@ type SnapAssistProps = {
  * 창 하나를 스냅한 뒤 남은 칸에 열린 다른 창을 제안하는 Snap Assist(피그마 조립 `Window/SnapAssist`)를 그린다.
  * 남은 칸 전체를 SnapPreview로 덮고, 그 가운데에 제안 창마다 WindowPreview 카드를 가로로 늘어놓는다.
  * 카드를 누르면(`onSelect`) 그 창이 남은 칸을 채운다. Esc나 빈 곳으로 닫는 동작은 쓰는 곳(창 층)이 맡는다.
- * 카드는 Base UI Button이고 목록은 Tab 한 번에 닿으며 안에서 ←/→로 옮긴다. Delete는 그 창을 닫는다.
+ * 카드의 누르는 영역(닫기 버튼과 형제)이 버튼 역할이고 목록은 Tab 한 번에 닿으며 안에서 ←/→로 옮긴다. Delete는 그 창을 닫는다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[스냅:Snap Assist]]
  * @codocs [[접근성:Tab]]
@@ -64,7 +63,7 @@ export function SnapAssist({
            */
           (suggestion) => {
             /** 카드를 누르면 쓰는 곳에 알린다. */
-            function handleClick(): void {
+            function handleSelect(): void {
               onSelect?.(suggestion.id);
             }
             /**
@@ -81,29 +80,20 @@ export function SnapAssist({
             function handleClose(): void {
               onClose?.(suggestion.id);
             }
-            const card = (
+            // onSelect를 받았을 때만 카드의 누르는 영역이 버튼이 되고 Delete를 받는다.
+            const selectProps =
+              onSelect === undefined ? {} : { onSelect: handleSelect, onKeyDown: handleKeyDown };
+            return (
               <WindowPreview
                 key={suggestion.id}
                 data-snap-assist-suggestion
+                {...selectProps}
                 onClose={handleClose}
                 appIcon={suggestion.appIcon}
                 title={suggestion.title}
                 thumbnail={suggestion.thumbnail}
                 aspectRatio={suggestion.aspectRatio}
                 className="shrink-shrink-none"
-              />
-            );
-            return onSelect === undefined ? (
-              card
-            ) : (
-              <Button
-                key={suggestion.id}
-                nativeButton={false}
-                onClick={handleClick}
-                onKeyDown={handleKeyDown}
-                // @codocs [[접근성:역할]]
-                aria-keyshortcuts="Delete"
-                render={card}
               />
             );
           },
