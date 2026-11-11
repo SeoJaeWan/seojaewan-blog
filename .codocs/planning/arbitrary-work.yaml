@@ -293,6 +293,11 @@ Notion 열 나누기: |
   - 동작 스토리는 흉내 낸 포인터 이벤트로 CSS `:hover`가 걸리지 않아, 압정 해제 버튼이 보이는 것은 포커스(키보드 강조)로 확인한다. 실제 마우스 호버·버튼 누르기·우클릭은 빌드한 Storybook에서 Playwright로 한 번 확인했다.
   - 지운 작업 표시줄 검수를 가리키던 링크는 [[작업 표시줄:우클릭 메뉴]]로 바꾸거나 링크 없는 글로 바꿨다. 파일 탐색기 검수 14번의 영상 설명은 지운 문서의 비교 방법에 있던 ②·③의 뜻을 괄호로 옮겨 남겼다. 코드에는 작업 표시줄 검수를 가리키는 `@codocs` 연결이 없어 바꿀 것이 없었다.
 
+  고정 메뉴 문구 정리 PR(`docs/pinning-menu-labels`)에서 정한 것이다.
+  - 메뉴 문구는 [[고정:시작 화면 고정]]·[[고정:작업 표시줄 고정]]·[[고정:즐겨찾기 고정]]에만 두고, 메뉴를 나열하는 문서는 `시작 화면 고정 항목`처럼 항목 이름으로 부르고 링크로 참고하게 했다. 바탕화면·탐색기 우클릭 표도 같은 이름으로 바꿨다.
+  - 즐겨찾기로 끌 때의 `즐겨찾기에 고정` 툴팁([[파일 탐색기:탐색 창]])은 메뉴 항목이 아니라 끌기 안내 문구라 그대로 뒀다.
+  - 탐색기 점프 목록 항목 메뉴의 `이 목록에서 고정 해제`는 점프 목록 전용 문구라 그대로 뒀다.
+
 Chrome 세션: |
   2026-11-10 Chrome 검수 후속([[Chrome 검수]])에서 사람에게 묻지 않고 정한 것이다.
   - #884 BrowserTab: 활성 탭 오목 모서리는 검수 문서의 가상 요소 원형 그라디언트 대신 export.json대로 Shapes 자산(`shapes/browser-tab-corner-left·right`)을 `Asset`으로 탭 밖 아래 양옆에 그렸다. 크기는 견본 크기(8, 변수 없음)라 같은 값의 `size-spacing-sm`으로, 위치는 `right-position-full`·`left-position-full`과 `bottom-spacing-none`으로 두었다. 칠은 탭 바탕과 같은 `text-color-white`다.
@@ -312,3 +317,4 @@ Chrome 세션: |
   - #917 AddressBar: 쌓임은 Suggesting일 때만 바깥 상자에 `relative z-layer-popover`를 주어 카드가 아래 페이지 위에 뜨게 하고, 안에서는 카드를 먼저·입력 줄(`relative`, z 없음)을 나중에 두어 입력 줄이 카드 위 층에 그려지게 했다. 평소에는 z를 주지 않는다.
   - #917 AddressBar: `Suggestions` 슬롯 자리는 `suggestions`가 비어 있어도 Suggesting이면 늘 그린다(피그마 슬롯 여백 그대로).
   - #917 AddressBar: 입력해 Suggesting이 켜져도 입력칸이 같은 요소로 남아 포커스를 잃지 않는지 동작 스토리 `KeepsInputWhileSuggesting`으로 확인한다.
+  - AddressBar Suggesting 캡처: `data-parity-box`는 `StoryStage`에 옵션을 더하지 않고, `Figma` 스토리의 render가 Suggesting일 때만 `data-parity-target`을 단 `div`로 감싸 직접 단다(StoryStage는 무대 배치가 필요 없고 다른 변형의 대상은 그대로 두려고). 카드 이름표는 `data-slot="suggestions-card"`다. 도구는 `capture.ts`를 바꾸지 않고 `openStory`가 기준 요소를 골라 돌려주게 했다(이후 상자·그림자·넘침 재기가 모두 그 요소에 한다).
