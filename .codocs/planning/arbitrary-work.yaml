@@ -325,6 +325,13 @@ Notion 열 나누기: |
   - Title의 닫기 버튼은 늘 보이지만 접근성 처리는 Default와 같게 두었다(`aria-hidden`, `tabIndex=-1`, 누를 때 포커스를 옮기지 않음). 줄 자체가 버튼으로 쓰이고 키보드는 Delete로 닫는 규칙([[작업 표시줄:창 미리보기]])이 같기 때문이다.
   - 동작 스토리 `Title`로 닫기 버튼이 호버 없이 보이는 것, 축소 화면 자리가 없는 것, 닫기가 줄의 onClick을 부르지 않는 것을 확인한다.
 
+  TaskbarPreviewList 컴포넌트 PR(#928, `feat/figma-taskbar-preview-list`)에서 `Device=Mobile`을 더하며 정한 것이다.
+  - #927의 `WindowPreview` `variant="title"`을 쓰므로 이 브랜치에 `feat/figma-window-preview`를 병합했다. #927을 먼저 병합해야 한다.
+  - prop은 `device?: 'desktop' | 'mobile'`(기본 `desktop`)이다. Mobile은 `flex-col items-stretch`로 줄을 세로로 쌓고 판 너비를 채운다. 피그마에서 줄은 슬롯 안 교차축 채움(FILL)이라 자식 채움 클래스(`[&>*]:…`) 대신 교차축 늘이기로 충분했다.
+  - Mobile 판 너비는 견본 크기(366, 변수 없음)라 코드에 두지 않았다(쓰는 곳이 정한다). `Figma` 스토리를 `FigmaFrame`으로 감쌌고, Previews 슬롯에는 Desktop은 `WindowPreview` Default 둘, Mobile은 Title 둘을 넣었다.
+  - 동작 스토리 `Mobile`로 줄이 세로로 쌓이고 판 안쪽 너비를 채우는 것을 확인한다.
+  - 앱(작업 표시줄)이 모바일에서 이 변형을 쓰게 하는 것은 조립 PR(#930)에서 한다.
+
 Chrome 세션: |
   2026-11-10 Chrome 검수 후속([[Chrome 검수]])에서 사람에게 묻지 않고 정한 것이다.
   - #884 BrowserTab: 활성 탭 오목 모서리는 검수 문서의 가상 요소 원형 그라디언트 대신 export.json대로 Shapes 자산(`shapes/browser-tab-corner-left·right`)을 `Asset`으로 탭 밖 아래 양옆에 그렸다. 크기는 견본 크기(8, 변수 없음)라 같은 값의 `size-spacing-sm`으로, 위치는 `right-position-full`·`left-position-full`과 `bottom-spacing-none`으로 두었다. 칠은 탭 바탕과 같은 `text-color-white`다.
