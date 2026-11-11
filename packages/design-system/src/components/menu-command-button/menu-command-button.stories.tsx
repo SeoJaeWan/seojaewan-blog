@@ -30,6 +30,9 @@ const noInitialFocus: Record<string, unknown> = { initialFocus: false };
 // 캡처하는 동안 툴팁이 뜨지 않게 하는 지연(ms)이다.
 const FIGMA_TOOLTIP_DELAY = 600_000;
 
+// 호버 지연(Base UI 기본 600ms)보다 짧게 잡아, 이 시간 안에 뜬 툴팁은 포커스로 뜬 것으로 본다.
+const HOVER_CHECK_MS = 300;
+
 const meta = {
   title: 'Components/MenuCommandButton',
   args: { state: 'rest' },
@@ -74,8 +77,12 @@ export const Default: Story = {
   play: async ({ args, canvas, userEvent, step }) => {
     const button = await canvas.findByRole('menuitem', { name: '잘라내기' });
 
-    await step('마우스를 올리면 이름과 단축키를 툴팁으로 보인다', async () => {
+    await step('마우스를 올리면 호버 지연 뒤에 이름과 단축키를 툴팁으로 보인다', async () => {
       await userEvent.hover(button);
+      // 마우스로 강조해도 메뉴가 포커스를 옮기지만, 그 포커스로는 툴팁이 뜨지 않고 지연을 기다린다.
+      await waitAbout(HOVER_CHECK_MS);
+      await expect(button).toHaveFocus();
+      await expect(document.body.querySelector('[role="tooltip"]')).toBeNull();
       await waitFor(
         async () => expect(document.body.querySelector('[role="tooltip"]')).not.toBeNull(),
         { timeout: 3000 },
@@ -113,6 +120,48 @@ export const WithoutShortcut: Story = {
     );
   },
 };
+
+// @codocs [[디자인 시스템:팝업]]
+/** 키보드(방향키)로 단추에 닿으면 호버 지연 없이 바로 툴팁을 보인다 */
+export const KeyboardFocus: Story = {
+  parameters: baseUiFocusGuardParameters,
+  render: () => (
+    <OpenMenu>
+      <MenuCommandButton label="복사" icon="icons/ic_fluent_open_20_regular.svg" />
+      <MenuCommandButton
+        label="잘라내기"
+        icon="icons/ic_fluent_open_20_regular.svg"
+        shortcut="Ctrl+X"
+      />
+    </OpenMenu>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    const copy = await canvas.findByRole('menuitem', { name: '복사' });
+    copy.focus();
+
+    await userEvent.keyboard('{ArrowDown}');
+
+    await expect(canvas.getByRole('menuitem', { name: '잘라내기' })).toHaveFocus();
+    // 호버 지연(Base UI 기본 600ms)보다 짧은 시간 안에 떠야 포커스로 뜬 것이다.
+    await waitFor(
+      async () =>
+        expect(document.body.querySelector('[role="tooltip"]')).toHaveTextContent(
+          '잘라내기 (Ctrl+X)',
+        ),
+      { timeout: HOVER_CHECK_MS },
+    );
+  },
+};
+
+/**
+ * 주어진 시간만큼 기다린다.
+ * @param ms 기다릴 시간(ms)
+ */
+async function waitAbout(ms: number): Promise<void> {
+  await new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 /**
  * 스토리 루트 안에 열린 메뉴를 그린다. 단추 크기는 피그마 MenuCommandButton 원본의 크기(견본 크기)로 FigmaFrame이 준다.
