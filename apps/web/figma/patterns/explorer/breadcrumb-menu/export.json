@@ -60,7 +60,7 @@
               "subfolder menu/Flyout/Content/item React"
             ],
             "properties": {
-              "Has icon": false,
+              "Has icon": true,
               "Has shortcut": false,
               "Label": "React",
               "Shortcut": "단축키",
@@ -75,7 +75,7 @@
               "subfolder menu/Flyout/Content/item Next.js"
             ],
             "properties": {
-              "Has icon": false,
+              "Has icon": true,
               "Has shortcut": false,
               "Label": "Next.js",
               "Shortcut": "단축키",
@@ -90,7 +90,7 @@
               "subfolder menu/Flyout/Content/item TypeScript"
             ],
             "properties": {
-              "Has icon": false,
+              "Has icon": true,
               "Has shortcut": false,
               "Label": "TypeScript",
               "Shortcut": "단축키",
