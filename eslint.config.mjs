@@ -247,6 +247,8 @@ const defaultExportFiles = [
   '**/.storybook/{main,preview,next-image}.{ts,tsx}',
   // Storybook CSF는 meta를 default export로 요구한다
   '**/*.stories.{ts,tsx}',
+  // Cloudflare Worker는 `{ fetch }`를 default export로 요구한다
+  'tools/notion-webhook/src/worker.ts',
 ];
 
 // @codocs [[피그마 연동:토큰 사용 강제]]
