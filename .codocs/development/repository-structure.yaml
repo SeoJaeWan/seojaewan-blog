@@ -14,7 +14,7 @@ _codocs:
   - `packages/design-system`: 피그마 디자인 시스템과 대응하는 토큰과 컴포넌트. 공개 이름은 `@seojaewan/design-system`이다. 내부 구조는 [[저장소 구성:디자인 시스템 패키지 구조]]에서 정한다.
   - `contracts/`: 서로 import하지 않는 앱(블로그와 이미지 서버) 사이의 계약(이미지 주소와 버전)을 두 앱을 함께 불러 확인하는 시험이다. vitest project는 `unit-repo-contracts`다.
   - `tools/figma-plugin`: 구조를 검사하고 변형 그림·자산·토큰·애니메이션을 내보내는 피그마 개발용 플러그인([[피그마 연동:피그마 플러그인]]).
-  - `tools/figma-parity`: 피그마 그림과 Storybook 스토리를 캡처해 캡처 표와 PR 댓글을 만드는 도구([[피그마 연동:CI]]). 디자인 시스템과 앱의 Storybook을 함께 다루므로 어느 한 패키지에 두지 않는다.
+  - `tools/figma-parity`: 모션 스토리의 시간·이징·지연·반복 횟수와 키프레임 값을 피그마에서 내보낸 값과 비교하는 모션 검사 도구와 그 PR 댓글 코드([[피그마 연동:모션]]). 어느 한 패키지에 두지 않는다.
   - `tools/scenario-cases`: E2E 행위 정의에서 시나리오 케이스 화면을 만들어 띄우고, 케이스를 실행해 Trace Viewer로 여는 도구([[테스트 작성 규칙:E2E]]).
   - `apps/`는 서버에 배포하는 것(`apps/web`, `apps/images`)이고, `tools/`는 다른 패키지가 가져다 쓰지 않는 개발 도구라 `apps/`·`packages/`와 나눈다. `tools/`의 도구는 배포 대상이 아니므로 `apps/`로 옮기지 않는다.
   - `.codocs`: 기획·정책·컨벤션 문서
