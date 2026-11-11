@@ -310,6 +310,15 @@ Notion 열 나누기: |
   - 즐겨찾기로 끌 때의 `즐겨찾기에 고정` 툴팁([[파일 탐색기:탐색 창]])은 메뉴 항목이 아니라 끌기 안내 문구라 그대로 뒀다.
   - 탐색기 점프 목록 항목 메뉴의 `이 목록에서 고정 해제`는 점프 목록 전용 문구라 그대로 뒀다.
 
+  점프 목록 항목 메뉴 PR(`fix/jump-list-item-menu`)에서 정한 것이다. 위의 "항목 메뉴"·"모바일 길게 누르기" 두 줄은 이 PR로 바뀌었다(줄 옆 `Menu.Root`와 좌표 0이면 줄 왼쪽 아래에 여는 처리를 지웠다).
+  - 항목 메뉴는 다른 우클릭 메뉴와 같은 공용 `ContextMenuArea`(Base UI ContextMenu)로 연다. 줄을 감싸지 않고 점프 목록의 `MenuItem`이 `render`로 `ContextMenuArea`를 그려, 항목의 훅은 점프 목록에 붙고 항목 메뉴는 항목 요소 안쪽에만 생긴다. 그래서 디자인 시스템 `MenuItem`(default)에 `render`를 더했다. 모바일 길게 누르기도 Base UI가 열고, 키보드(Shift+F10·메뉴 키)로 연 자리도 다른 우클릭 메뉴와 같은 규칙이다.
+  - 자리: `ContextMenuArea`를 `context-menu-area/context-menu-area.tsx`에서 `shared/components/menu-popup/menu-popup.tsx`로 옮기고 그 폴더를 지웠다. `MenuPopup`(고정 항목)이 `ContextMenuArea`를 그리고 `ContextMenuArea`가 `MenuPopup`을 그려 두 파일이면 서로 import한다(`import-x/no-cycle`). [[저장소 구성:앱 폴더 구조]]의 "대상 하나마다 폴더" 규칙에서 벗어나지만, 둘은 서로를 그리는 한 쌍이라 한 대상으로 보았다. 쓰는 곳은 `@/shared/components/menu-popup/menu-popup`에서 바로 가져온다. 주입(고정 항목에 그리는 함수를 넘김)으로 끊는 방법은 메뉴 항목 데이터가 화면 부품을 알게 돼 고르지 않았다.
+  - 길게 눌러 연 경우 그 손가락의 touchend에서 `preventDefault()`로 따라오는 클릭을 막는다. 막지 않으면 그 클릭이 바깥 누르기로 잡혀 점프 목록이 닫히거나 누른 폴더가 열린다. 이 처리는 모든 `ContextMenuArea`에 적용된다([[반응형:입력 차이]]의 "따라오는 클릭은 무시한다").
+  - 항목 메뉴 안에서 뗀 mouseup(터치로 고정 해제를 탭하면 브라우저가 이어 보냄)이 Base UI의 여는 동작 취소(`cancel-open`)로 바깥 메뉴(점프 목록)를 닫으려 하면 막는다. 터치로 고정 해제를 탭하면 점프 목록까지 닫히던 것을 이것으로 고쳤다.
+  - 포커스: 닫기가 끝난 때 포커스가 곧 사라질 팝업 안에 남아 있으면(Esc) 잃은 것으로 보고 메뉴를 열 때 포커스가 있던 요소(트리거)로 돌린다. 그 요소가 사라졌으면(고정 해제로 줄이 사라짐) 영역을 담은 가장 가까운 `tabindex` 요소(점프 목록 팝업)로 돌린다. 영역 자체가 먼저 사라져 닫힘 완료가 돌지 않는 경우를 위해, 사라질 때 한 틱 뒤 포커스를 잃었으면 같은 요소로 돌린다.
+  - 항목 메뉴가 열린 동안 점프 목록은 다른 우클릭 메뉴처럼 막힌다(모달, 보조 기술에서 숨음). 사람이 받아들였다. 동작 스토리 `ExplorerJumpList`·`ExplorerJumpListFolders`는 숨은 메뉴도 세도록 고쳤다.
+  - E2E 행위 `taskbar-jump-list`(조건: 조작·입력 방식·화면 크기)를 새로 두었다. 노트북은 PC와 입력·모양이 같아 케이스를 두지 않았고, 모바일은 터치 케이스가 의존(`requires`)으로 채운다.
+
   WindowPreview 컴포넌트 PR(#927, `feat/figma-window-preview`)에서 `Variant=Title`을 더하며 정한 것이다.
   - prop은 `variant?: 'default' | 'title'`(기본 `default`)이고, `title`일 때 `thumbnail`·`aspectRatio`를 넘길 수 없게 타입을 나눴다. 제목 줄에는 축소 화면 자리와 창 비율 너비가 없기 때문이다.
   - Title은 피그마 루트 너비가 견본 크기(366, 변수 없음)라 코드에 너비를 두지 않았다(쓰는 곳이 채운다). `Figma` 스토리를 `FigmaFrame`으로 감쌌고, 데코레이터는 `Figma` 스토리에만 달아 `AspectRatio`·`Default` 동작 스토리의 크기는 그대로 두었다.
