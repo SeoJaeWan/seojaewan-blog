@@ -7,6 +7,7 @@ import type {
   CodeRef,
   DocRef,
   DocSection,
+  ReportOptions,
   ResultStatus,
   RowGroup,
   RunSummary,
@@ -58,6 +59,7 @@ export type TableInputs = {
   results?: ReadonlyMap<string, CaseResult>;
   mode: TableData['mode'];
   run?: TableData['run'];
+  report?: ReportOptions;
   repoUrl: string;
   generatedAt: string;
 };
@@ -521,5 +523,6 @@ export function buildTable(behaviors: readonly BehaviorSource[], inputs: TableIn
       missing: sum((table) => table.counts.missing),
     },
     run: inputs.run ?? null,
+    report: inputs.report ?? null,
   };
 }

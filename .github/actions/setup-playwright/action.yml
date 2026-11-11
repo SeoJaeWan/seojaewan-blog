@@ -1,0 +1,30 @@
+# @codocs [[Git 작업 규칙:CI]]
+# Playwright Chromium을 준비한다. CI의 `Test`(스토리 테스트)와 `E2E` 작업이 쓴다. 의존성 설치(`pnpm install`) 뒤에 부른다.
+# 브라우저 폴더는 Playwright 버전을 키로 캐시한다. 캐시는 브라우저 파일만 담고 시스템 라이브러리는 담지 않으므로,
+# 캐시가 맞으면 시스템 라이브러리만 설치하고(`install-deps`), 아니면 브라우저와 함께 설치한다(`install --with-deps`).
+# 캐시가 맞을 때 시스템 라이브러리 설치를 건너뛰어도 되는지는 아직 재지 않았다. 공개 전환 뒤 시간 측정.
+name: Setup Playwright
+description: Playwright Chromium 브라우저와 시스템 라이브러리를 준비한다.
+runs:
+  using: composite
+  steps:
+    - name: Read Playwright version
+      id: version
+      shell: bash
+      run: echo "version=$(pnpm --filter @seojaewan/web exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+
+    - uses: actions/cache@v6.1.0
+      id: cache
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-${{ runner.os }}-${{ steps.version.outputs.version }}
+
+    - name: Install Playwright browsers
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: pnpm --filter @seojaewan/web exec playwright install --with-deps chromium
+
+    - name: Install Playwright system dependencies
+      if: steps.cache.outputs.cache-hit == 'true'
+      shell: bash
+      run: pnpm --filter @seojaewan/web exec playwright install-deps chromium

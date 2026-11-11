@@ -1,0 +1,14 @@
+# @codocs [[콘텐츠 원천:갱신 방식]]
+# Notion 웹훅을 받아 GitHub repository_dispatch로 넘기는 Cloudflare Worker. 배포 절차는 README.md에 있다.
+# 비밀 값(GITHUB_DISPATCH_TOKEN, NOTION_VERIFICATION_TOKEN)은 여기에 적지 않고 `wrangler secret put`으로 넣는다.
+name = "seojaewan-notion-webhook"
+main = "src/worker.ts"
+compatibility_date = "2026-11-01"
+
+[vars]
+GITHUB_REPO = "SeoJaeWan/seojaewan-blog"
+# .github/workflows/content-sync.yml의 repository_dispatch types와 같아야 한다
+DISPATCH_EVENT_TYPE = "notion-content-changed"
+
+[observability]
+enabled = true

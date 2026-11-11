@@ -152,6 +152,7 @@ export type RunSummary = {
  * - repoUrl: GitHub 저장소 주소(문서·코드 링크)
  * - areas: 영역 이름(늘어놓는 차례)
  * - run: 마지막 실행. 로컬은 null
+ * - report: 보고서 설정. 로컬은 null
  */
 export type TableData = {
   generatedAt: string;
@@ -172,4 +173,13 @@ export type TableData = {
     missing: number;
   };
   run: RunSummary | null;
+  report: ReportOptions | null;
 };
+
+/**
+ * 보고서 화면이 읽는 보고서 설정.
+ * - traceViewer: 실행해보기가 여는 Trace Viewer 주소(보고서 기준 상대 주소, `/`로 끝난다)
+ * - isFailedOnly: 실패한 케이스의 trace만 담았다. 화면은 "실패만" 거르기를 켜고 연다
+ * - pr: PR 실패 보고서면 PR 번호, `main` 보고서면 null
+ */
+export type ReportOptions = { traceViewer: string; isFailedOnly: boolean; pr: number | null };

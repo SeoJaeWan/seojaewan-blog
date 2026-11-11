@@ -16,6 +16,7 @@ _codocs:
   - `tools/figma-plugin`: 구조를 검사하고 변형 그림·자산·토큰·애니메이션을 내보내는 피그마 개발용 플러그인([[피그마 연동:피그마 플러그인]]).
   - `tools/figma-parity`: 모션 스토리의 시간·이징·지연·반복 횟수와 키프레임 값을 피그마에서 내보낸 값과 비교하는 모션 검사 도구와 그 PR 댓글 코드([[피그마 연동:모션]]). 어느 한 패키지에 두지 않는다.
   - `tools/scenario-cases`: E2E 행위 정의에서 시나리오 케이스 화면을 만들어 띄우고, 케이스를 실행해 Trace Viewer로 여는 도구([[테스트 작성 규칙:E2E]]).
+  - `tools/notion-webhook`: Notion 웹훅을 받아 서명을 확인하고 GitHub `repository_dispatch`로 글 동기화를 시작시키는 Cloudflare Worker([[콘텐츠 원천:갱신 방식]]). 서버에 배포하는 앱이 아니라 사람이 Cloudflare에 올리는 도구라 `tools/`에 둔다.
   - `apps/`는 서버에 배포하는 것(`apps/web`, `apps/images`)이고, `tools/`는 다른 패키지가 가져다 쓰지 않는 개발 도구라 `apps/`·`packages/`와 나눈다. `tools/`의 도구는 배포 대상이 아니므로 `apps/`로 옮기지 않는다.
   - `.codocs`: 기획·정책·컨벤션 문서
   - `.claude/skills`: 피그마 플러그인 PR을 처리하는 스킬처럼 반복 작업의 절차. 규칙은 옮겨 적지 않고 `.codocs`를 가리킨다([[피그마 연동:스킬]]).
