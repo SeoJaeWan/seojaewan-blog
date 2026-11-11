@@ -86,7 +86,7 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // @codocs [[디자인 시스템:아이콘 자리]]
-// @codocs [[파일 탐색기 검수:4. 탐색 창의 선택과 포커스]]
+// @codocs [[파일 탐색기:탐색 창]]
 // 피그마 변형 하나를 args 하나로 고른다. Selected는 트리에 포커스가 있는 모습이라 칸에 포커스를 준다.
 export const Figma: Story = {};
 
@@ -183,7 +183,7 @@ export const ChevronClick: Story = {
   },
 };
 
-// @codocs [[파일 탐색기 검수:4. 탐색 창의 선택과 포커스]]
+// @codocs [[파일 탐색기:탐색 창]]
 /** 선택 바탕과 현재 칸 선은 트리에 포커스가 있을 때와 없을 때 색이 다르고, 포커스를 받아도 브라우저 기본 외곽선을 그리지 않는다 */
 export const SelectionFollowsTreeFocus: Story = {
   render: () => (
@@ -214,7 +214,7 @@ export const SelectionFollowsTreeFocus: Story = {
   },
 };
 
-// @codocs [[파일 탐색기 검수:14. 즐겨찾기]]
+// @codocs [[고정:즐겨찾기 고정]]
 /** hasPin이면 이름 뒤에 압정 아이콘 자리를 하나 더 그린다 */
 export const Pinned: Story = {
   render: () => (

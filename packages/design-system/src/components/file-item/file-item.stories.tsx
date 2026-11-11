@@ -191,14 +191,14 @@ export const Renaming: Story = {
       await expect(canvas.getByRole('textbox', { name: '새 이름' })).toHaveValue('문서');
     });
 
-    // @codocs [[바탕화면 검수:1. 이름 바꾸기 입력창의 줄 바꿈]]
+    // @codocs [[항목과 폴더:폴더 이름]]
     await step('아이콘 보기의 입력창은 여러 줄 입력창이다', async () => {
       await expect(canvas.getByRole('textbox').tagName).toBe('TEXTAREA');
     });
   },
 };
 
-// @codocs [[바탕화면 검수:1. 이름 바꾸기 입력창의 줄 바꿈]]
+// @codocs [[항목과 폴더:폴더 이름]]
 /** 긴 이름의 입력창은 항목 너비 안에서 글자 단위로 줄을 바꾸며 아래로 길어지고 스크롤하지 않는다 */
 export const RenamingLongName: Story = {
   // 목록 항목(option) 안에 입력창이 들어가 nested-interactive에 걸린다. 앱의 바탕화면·탐색기 목록도 같은 구조다.
@@ -220,7 +220,7 @@ export const RenamingLongName: Story = {
   },
 };
 
-// @codocs [[바탕화면 검수:2. 이름 바꾸는 동안의 선택 바탕]]
+// @codocs [[항목과 폴더:폴더 이름]]
 /** 바탕화면에서 이름을 바꾸는 중이면 선택돼 있어도 바탕이 없다 */
 export const DesktopRenaming: Story = {
   render: () => (
@@ -242,8 +242,8 @@ export const DesktopRenaming: Story = {
   },
 };
 
-// @codocs [[바탕화면 검수:12. 탐색기 항목의 포커스 테두리]]
-// @codocs [[바탕화면 검수:13. 포커스가 없는 선택은 회색]]
+// @codocs [[파일 탐색기:조작]]
+// @codocs [[컴포넌트 목록:상태]]
 /**
  * 탐색기 항목의 선택 바탕과 현재 항목 선의 색은 목록(role="listbox")에 포커스가 있는지로 바뀐다.
  * 현재 항목 선은 포커스가 목록을 떠나도 남고, 현재 항목이 아닌 항목에는 없다. 선은 크기에 넣지 않는다
@@ -306,7 +306,7 @@ export const ListFocus: Story = {
   },
 };
 
-// @codocs [[바탕화면 검수:3. 끄는 복제본의 선택 바탕]]
+// @codocs [[항목 조작:끌기]]
 /** 목록 밖에 그리는 항목(끄는 복제본)은 isListFocused면 목록에 포커스가 있는 항목과 같은 파란 바탕·검은 선이다 */
 export const ListFocusedOutsideList: Story = {
   render: () => (

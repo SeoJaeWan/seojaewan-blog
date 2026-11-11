@@ -87,7 +87,7 @@ export const Controlled: Story = {
   },
 };
 
-// @codocs [[바탕화면 검수:1. 이름 바꾸기 입력창의 줄 바꿈]]
+// @codocs [[항목과 폴더:폴더 이름]]
 /**
  * isMultiline이면 textarea다. 한 줄 이름은 한 줄 입력창과 크기가 같다. Enter·Shift + Enter는 줄 바꿈 문자를 넣지 않고
  * onKeyDown으로 넘어간다. 부모 너비 안에서 줄을 바꾸는 모습은 FileItem 스토리(RenamingLongName)가 확인한다
