@@ -14,7 +14,7 @@
   "variants": {
     "placement=above": {
       "node": {
-        "height": 195,
+        "height": 227,
         "width": 250,
         "x": 16,
         "y": 8
@@ -71,6 +71,21 @@
               "Has icon": true,
               "Has shortcut": false,
               "Label": "새 창에서 열기",
+              "Shortcut": "Ctrl+O",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
+              "Menu/Flyout/Content/item 새 창에서 열기"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "즐겨찾기에 고정",
               "Shortcut": "Ctrl+O",
               "State": "Rest",
               "Value": "100%",
@@ -157,7 +172,7 @@
       "tree": {
         "name": "Placement=Above",
         "size": {
-          "h": 195,
+          "h": 227,
           "w": 250
         },
         "sizing": {
@@ -168,7 +183,7 @@
     },
     "placement=below": {
       "node": {
-        "height": 195,
+        "height": 227,
         "width": 250,
         "x": 16,
         "y": 8
@@ -290,6 +305,21 @@
           {
             "component": "MenuItem",
             "paths": [
+              "Menu/Flyout/Content/item 새 창에서 열기"
+            ],
+            "properties": {
+              "Has icon": true,
+              "Has shortcut": false,
+              "Label": "즐겨찾기에 고정",
+              "Shortcut": "Ctrl+O",
+              "State": "Rest",
+              "Value": "100%",
+              "Variant": "Default"
+            }
+          },
+          {
+            "component": "MenuItem",
+            "paths": [
               "Menu/Flyout/Content/item 시작 화면에 고정"
             ],
             "properties": {
@@ -311,7 +341,7 @@
       "tree": {
         "name": "Placement=Below",
         "size": {
-          "h": 195,
+          "h": 227,
           "w": 250
         },
         "sizing": {
