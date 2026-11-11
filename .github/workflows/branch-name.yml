@@ -1,0 +1,45 @@
+# @codocs [[Git 작업 규칙:브랜치]]
+# @codocs [[배포 환경:CI]]
+# 모든 PR(버전 PR 포함)에서 브랜치 이름을 검사한다. `docs/` 브랜치면 PR이 문서만 바꿨는지도 본다(scripts/check-docs-branch.mjs).
+# `docs/` PR에서는 CI(`ci.yml`)가 돌지 않아, 문서가 아닌 파일이 검사 없이 병합되지 않게 막는다. `main` push에서는 돌지 않는다.
+name: Branch name
+
+on:
+  pull_request:
+
+concurrency:
+  group: branch-name-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  branch-name:
+    name: Branch name
+    runs-on: ubuntu-latest
+    env:
+      # 값을 스크립트 안에 풀어 쓰지 않고 환경 변수로 넘긴다
+      BRANCH: ${{ github.head_ref }}
+    steps:
+      # PR의 병합 커밋과 그 첫 부모(기준 브랜치)를 비교하므로 두 커밋을 받는다
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v6.1.1
+
+      # 루트 의존성만 설치하므로 pnpm 캐시를 쓰지 않는다. 일부만 담은 저장소를 같은 키로 먼저 저장하지 않게 하기 위해서다
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+
+      # 종류 목록을 commitlint 설정에서 읽으므로 루트 의존성만 설치한다
+      - run: pnpm install --frozen-lockfile --filter seojaewan-blog
+
+      - name: Branch name
+        run: node scripts/check-branch-name.mjs "$BRANCH"
+
+      # 문서 브랜치가 아니면 스크립트가 건너뛴다. 이름 변경은 옛 경로와 새 경로를 모두 본다
+      - name: Docs branch files
+        run: node scripts/check-docs-branch.mjs "$BRANCH" HEAD^1 HEAD

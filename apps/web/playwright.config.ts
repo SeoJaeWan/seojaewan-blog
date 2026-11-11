@@ -4,7 +4,8 @@ import { BREAKPOINTS } from '@seojaewan/design-system';
 
 import type { BehaviorOptions } from './e2e/behaviors/behavior-test.ts';
 
-// CI는 runner마다 다른 포트를 준다(`E2E_PORT`, scripts/runner-port.mjs). 로컬은 Next.js 기본 포트다.
+// 앱 서버 포트. 기본은 Next.js 기본 포트(3000)이고 CI도 이 포트로 돈다. 3000번이 쓰이고 있으면 로컬에서
+// Playwright를 바로 실행할 때 `E2E_PORT`로 바꾼다(`pnpm test:e2e`는 turbo가 이 변수를 넘기지 않는다).
 const port = Number(process.env.E2E_PORT ?? 3000);
 const BASE_URL = `http://localhost:${String(port)}`;
 const isCi = Boolean(process.env.CI);
@@ -49,7 +50,7 @@ export default defineConfig<BehaviorOptions>({
   webServer: {
     command: `pnpm start --port ${String(port)}`,
     url: BASE_URL,
-    // CI는 같은 머신의 다른 job이 띄운 서버를 쓰지 않도록, 포트가 이미 쓰이고 있으면 실패한다.
+    // CI는 이번 빌드가 아닌 다른 서버로 시험하지 않도록, 포트가 이미 쓰이고 있으면 실패한다.
     reuseExistingServer: !isCi,
     timeout: 120_000,
   },
