@@ -47,7 +47,7 @@ function preventLineBreak(event: Event): void {
  * 줄을 바꾸며 아래로 길어진다. 짧은 이름이면 글자 너비만 차지하고 높이는 제한하지 않는다. 줄 바꿈 문자는 입력되지 않는다.
  * Enter 확정·Esc 취소 같은 동작은 쓰는 곳이 `onKeyDown` 등으로 붙인다.
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
- * @codocs [[바탕화면 검수:1. 이름 바꾸기 입력창의 줄 바꿈]]
+ * @codocs [[항목과 폴더:폴더 이름]]
  * @param props 컴포넌트 속성
  * @param props.text 피그마 TEXT 속성 text. 입력창의 처음 값이다(`value`를 주면 쓰지 않는다)
  * @param props.value 입력창 값(제어). 주면 text를 처음 값으로 쓰지 않는다

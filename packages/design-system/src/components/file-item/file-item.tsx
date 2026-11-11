@@ -37,7 +37,7 @@ const ICON_SIZE_CLASS_NAMES = {
 
 /**
  * 바탕화면 항목의 바탕 클래스를 고른다. 이름을 바꾸는 중이면 선택돼 있어도 바탕 없이 입력창만 보인다(피그마 State=Rename).
- * @codocs [[바탕화면 검수:2. 이름 바꾸는 동안의 선택 바탕]]
+ * @codocs [[항목과 폴더:폴더 이름]]
  * @param isSelected 선택 여부
  * @param isRenaming 이름 바꾸기 여부
  * @returns 바탕 클래스
@@ -51,7 +51,7 @@ function desktopBackgroundClassName(isSelected: boolean, isRenaming: boolean): s
 /**
  * 탐색기 항목의 바탕 클래스를 고른다. 선택 바탕(이름 바꾸는 중 포함)은 항목을 담은 목록(`role="listbox"`)에 포커스가 있으면
  * 파랑(피그마 State=Selected), 없으면 회색(State=Selected unfocused)이다. 목록 밖에 그리는 항목은 `isListFocused`로 파랑을 고른다.
- * @codocs [[바탕화면 검수:13. 포커스가 없는 선택은 회색]]
+ * @codocs [[컴포넌트 목록:상태]]
  * @param hasSelectionBackground 선택 바탕을 깔지 여부
  * @param isListFocused 목록에 포커스가 있는 모습으로 그릴지 여부
  * @returns 바탕 클래스
@@ -67,7 +67,7 @@ function explorerBackgroundClassName(
 
 /**
  * 탐색기 현재 항목의 1px 안쪽 선 클래스를 고른다. 색은 선택 바탕과 같이 목록 포커스로 고른다(검정·회색).
- * @codocs [[바탕화면 검수:12. 탐색기 항목의 포커스 테두리]]
+ * @codocs [[파일 탐색기:조작]]
  * @param isListFocused 목록에 포커스가 있는 모습으로 그릴지 여부
  * @returns 선 클래스
  */
@@ -90,8 +90,8 @@ function explorerCurrentLineClassName(isListFocused: boolean): string {
  * @codocs [[컴포넌트 목록:상태]]
  * @codocs [[피그마 연동:컨트롤 테두리 구현]]
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
- * @codocs [[바탕화면 검수:1. 이름 바꾸기 입력창의 줄 바꿈]]
- * @codocs [[바탕화면 검수:3. 끄는 복제본의 선택 바탕]]
+ * @codocs [[항목과 폴더:폴더 이름]]
+ * @codocs [[항목 조작:끌기]]
  * @param props 컴포넌트 속성
  * @param props.surface 피그마 Surface. 바탕화면(기본)이나 탐색기
  * @param props.size 피그마 Size. 탐색기에는 작은 아이콘(small) 보기가 없다

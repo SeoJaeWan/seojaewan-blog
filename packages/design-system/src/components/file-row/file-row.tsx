@@ -57,9 +57,8 @@ function fileRowState({
  * 선택 바탕과 현재 항목 선의 색은 prop이 아니라 목록 포커스로 고른다. 줄을 담은 목록(`role="listbox"`)을 기준으로
  * (`in-[[role=listbox]:focus-within]:`) 포커스가 목록 안에 있을 때 파란 바탕·검은 선(피그마 State=Selected), 아닐 때 회색 바탕·회색 선(State=Selected unfocused)이다.
  * 현재 항목 선은 1px 안쪽 선으로 겹쳐 그려 크기를 바꾸지 않는다.
- * @codocs [[피그마 작업 검수:5. FileRow]]
- * @codocs [[바탕화면 검수:12. 탐색기 항목의 포커스 테두리]]
- * @codocs [[바탕화면 검수:13. 포커스가 없는 선택은 회색]]
+ * @codocs [[파일 탐색기:보기와 정렬]]
+ * @codocs [[파일 탐색기:조작]]
  * @codocs [[컴포넌트 목록:상태]]
  * @codocs [[피그마 연동:컨트롤 테두리 구현]]
  * @codocs [[디자인 시스템:아이콘 자리]]

@@ -24,8 +24,8 @@ type NavigationItemProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
  * 선택 바탕과 현재 칸 선의 색은 prop이 아니라 트리 포커스로 고른다. 칸을 담은 트리(`role="tree"`)
  * 트리 안에 포커스가 있을 때 파랑(피그마 State=Selected), 없을 때 회색(State=Selected unfocused)이다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
- * @codocs [[파일 탐색기 검수:4. 탐색 창의 선택과 포커스]]
- * @codocs [[파일 탐색기 검수:14. 즐겨찾기]]
+ * @codocs [[파일 탐색기:탐색 창]]
+ * @codocs [[고정:즐겨찾기 고정]]
  * @codocs [[디자인 시스템:아이콘 자리]]
  * @param props 컴포넌트 속성
  * @param props.level 피그마 Level. 폴더 트리 깊이(0~3)이며 깊을수록 들여 쓴다
