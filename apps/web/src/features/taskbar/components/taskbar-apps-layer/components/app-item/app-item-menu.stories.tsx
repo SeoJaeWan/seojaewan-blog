@@ -68,9 +68,15 @@ export const OpensMenu: Story = {
       await body.findByRole('menu');
       await expect(body.getAllByRole('menuitem').map((item) => item.textContent)).toEqual([
         '파일 탐색기',
-        '작업 표시줄에서 고정 해제',
+        '작업 표시줄에서 제거',
         '창 닫기',
       ]);
+    });
+
+    // @codocs [[작업 표시줄:우클릭 메뉴]]
+    await step('메뉴 너비는 작업 표시줄 메뉴 너비(size/menu/taskbar-width, 294)다', async () => {
+      const panel = body.getByRole('menu').firstElementChild;
+      await expect(panel?.getBoundingClientRect().width).toBe(294);
     });
 
     // @codocs [[작업 표시줄:우클릭 메뉴]]

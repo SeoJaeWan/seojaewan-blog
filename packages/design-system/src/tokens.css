@@ -91,7 +91,7 @@
 
 :root {
   --blur-acrylic: 60px;
-  --blur-mica: 20px;
+  --blur-mica: 30px;
   --border-spacing-none: 0px;
   --breakpoint-chrome-page-width: 1020px;
   --breakpoint-laptop-height: 900px;
@@ -117,6 +117,7 @@
   --color-blue-18: #99d1ff;
   --color-blue-50: #0078d4;
   --color-blue-50-25: #0078d440;
+  --color-blue-55: #3e6f94;
   --color-blue-58: #0853e0;
   --color-blue-59: #005fb8;
   --color-blue-59-80: #005fb8cc;
@@ -129,11 +130,11 @@
   --color-gray-2-30: #f9f9f94d;
   --color-gray-3-50: #f6f6f680;
   --color-gray-4: #f3f3f3;
-  --color-gray-4-90: #f3f3f3e5;
   --color-gray-4-95: #f3f3f3f2;
   --color-gray-9: #e0e5ed;
-  --color-gray-9-60: #e6e6e699;
+  --color-gray-12-85: #d8dddfd9;
   --color-gray-13: #dadada;
+  --color-gray-39: #949494;
   --color-gray-51-40: #75757566;
   --color-gray-70: #474747;
   --color-gray-88: #1f1f1f;
@@ -147,8 +148,8 @@
   --color-white-25: #ffffff40;
   --color-white-30: #ffffff4d;
   --color-white-50: #ffffff80;
-  --color-white-60: #ffffff99;
   --color-white-70: #ffffffb2;
+  --color-white-75: #ffffffbf;
   --color-yellow-3: #ffff00;
   --color-yellow-54: #9d5d00;
   --flex-fill: 1;
@@ -222,8 +223,8 @@
   --size-best-match-card-width: 258px;
   --size-boot-screen-gap: 160px;
   --size-boot-screen-height: 720px;
-  --size-boot-screen-logo: 120px;
-  --size-boot-screen-logo-mobile: 96px;
+  --size-boot-screen-logo: 100px;
+  --size-boot-screen-logo-mobile: 80px;
   --size-boot-screen-mobile-gap: 120px;
   --size-boot-screen-width: 1280px;
   --size-breadcrumb-item-max-width: 200px;
@@ -245,10 +246,8 @@
   --size-file-item-desktop-width: 76px;
   --size-file-item-explorer-width: 88px;
   --size-file-item-large-width: 112px;
+  --size-file-row-height: 28px;
   --size-file-row-name-height: 20px;
-  --size-file-row-name-width: 300px;
-  --size-file-row-narrow-cell-width: 140px;
-  --size-file-row-wide-cell-width: 180px;
   --size-find-bar-width: 400px;
   --size-icon-2xl: 48px;
   --size-icon-2xs: 8px;
@@ -263,8 +262,11 @@
   --size-jump-list-letter-box: 40px;
   --size-list-item-compact-height: 36px;
   --size-list-item-two-line-height: 52px;
+  --size-menu-command-button-height: 48px;
+  --size-menu-command-button-width: 64px;
   --size-menu-item-bullet: 6px;
   --size-menu-item-value-width: 40px;
+  --size-menu-taskbar-width: 294px;
   --size-menu-view-options-width: 104px;
   --size-menu-width: 250px;
   --size-message-box-width: 448px;
@@ -385,6 +387,7 @@
   --color-color-blue-18: var(--color-blue-18);
   --color-color-blue-50: var(--color-blue-50);
   --color-color-blue-50-25: var(--color-blue-50-25);
+  --color-color-blue-55: var(--color-blue-55);
   --color-color-blue-58: var(--color-blue-58);
   --color-color-blue-59: var(--color-blue-59);
   --color-color-blue-59-80: var(--color-blue-59-80);
@@ -397,11 +400,11 @@
   --color-color-gray-2-30: var(--color-gray-2-30);
   --color-color-gray-3-50: var(--color-gray-3-50);
   --color-color-gray-4: var(--color-gray-4);
-  --color-color-gray-4-90: var(--color-gray-4-90);
   --color-color-gray-4-95: var(--color-gray-4-95);
   --color-color-gray-9: var(--color-gray-9);
-  --color-color-gray-9-60: var(--color-gray-9-60);
+  --color-color-gray-12-85: var(--color-gray-12-85);
   --color-color-gray-13: var(--color-gray-13);
+  --color-color-gray-39: var(--color-gray-39);
   --color-color-gray-51-40: var(--color-gray-51-40);
   --color-color-gray-70: var(--color-gray-70);
   --color-color-gray-88: var(--color-gray-88);
@@ -415,8 +418,8 @@
   --color-color-white-25: var(--color-white-25);
   --color-color-white-30: var(--color-white-30);
   --color-color-white-50: var(--color-white-50);
-  --color-color-white-60: var(--color-white-60);
   --color-color-white-70: var(--color-white-70);
+  --color-color-white-75: var(--color-white-75);
   --color-color-yellow-3: var(--color-yellow-3);
   --color-color-yellow-54: var(--color-yellow-54);
   --elevation-accent-control-border: linear-gradient(to bottom, var(--color-white-8) 90.67%, #cccccc24 92.536%, #99999935 94.402%, #66666645 96.268%, #33333356 98.134%, var(--color-black-40) 100%);
@@ -437,10 +440,10 @@
   --inset-position-full: var(--position-full);
   --inset-position-half: var(--position-half);
   --line-clamp-line-clamp-two: var(--line-clamp-two);
-  --material-acrylic-base: rgb(from var(--color-white-60) r g b / 0.6);
-  --material-acrylic-default: rgb(from var(--color-white-50) r g b / 0.5);
+  --material-acrylic-base: rgb(from var(--color-white-75) r g b / 0.75);
+  --material-acrylic-default: rgb(from var(--color-gray-1-85) r g b / 0.85);
   --material-fallback-acrylic-default: var(--color-gray-2);
-  --material-mica-base: rgb(from var(--color-gray-9-60) r g b / 0.6);
+  --material-mica-base: rgb(from var(--color-gray-12-85) r g b / 0.85);
   --opacity-opacity-cut: var(--opacity-cut);
   --radius-radius-circular: var(--radius-circular);
   --radius-radius-control: var(--radius-control);
@@ -484,10 +487,8 @@
   --size-size-file-item-desktop-width: var(--size-file-item-desktop-width);
   --size-size-file-item-explorer-width: var(--size-file-item-explorer-width);
   --size-size-file-item-large-width: var(--size-file-item-large-width);
+  --size-size-file-row-height: var(--size-file-row-height);
   --size-size-file-row-name-height: var(--size-file-row-name-height);
-  --size-size-file-row-name-width: var(--size-file-row-name-width);
-  --size-size-file-row-narrow-cell-width: var(--size-file-row-narrow-cell-width);
-  --size-size-file-row-wide-cell-width: var(--size-file-row-wide-cell-width);
   --size-size-find-bar-width: var(--size-find-bar-width);
   --size-size-icon-2xl: var(--size-icon-2xl);
   --size-size-icon-2xs: var(--size-icon-2xs);
@@ -502,8 +503,11 @@
   --size-size-jump-list-letter-box: var(--size-jump-list-letter-box);
   --size-size-list-item-compact-height: var(--size-list-item-compact-height);
   --size-size-list-item-two-line-height: var(--size-list-item-two-line-height);
+  --size-size-menu-command-button-height: var(--size-menu-command-button-height);
+  --size-size-menu-command-button-width: var(--size-menu-command-button-width);
   --size-size-menu-item-bullet: var(--size-menu-item-bullet);
   --size-size-menu-item-value-width: var(--size-menu-item-value-width);
+  --size-size-menu-taskbar-width: var(--size-menu-taskbar-width);
   --size-size-menu-view-options-width: var(--size-menu-view-options-width);
   --size-size-menu-width: var(--size-menu-width);
   --size-size-message-box-width: var(--size-message-box-width);

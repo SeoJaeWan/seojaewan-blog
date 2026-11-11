@@ -113,6 +113,7 @@ function ExplorerBodyHost(props: ExplorerBodyHostProps): JSX.Element {
           key={current ?? 'desktop'}
           device={device}
           location={current}
+          selectionKey={current ?? 'desktop'}
           locationIcon={null}
           onNavigate={handleNavigate}
           onOpenInNewTab={handleOpenInNewTab}
@@ -296,7 +297,7 @@ export const Select: Story = {
 
     // @codocs [[파일 탐색기:조작]]
     await step('상태 줄에 항목 수를 보인다', async () => {
-      await expect(canvas.getByText('항목 3개')).toBeInTheDocument();
+      await expect(canvas.getByText('3개 항목')).toBeInTheDocument();
     });
 
     await step('항목을 클릭하면 그 항목만 고르고 상태 줄에 고른 항목 수를 보인다', async () => {
@@ -820,7 +821,7 @@ export const Search: Story = {
 
     await step('검색어를 지우면 원래 보기로 돌아간다', async () => {
       await user.clear(getSearchBox());
-      await expect(canvas.getByText('항목 3개')).toBeInTheDocument();
+      await expect(canvas.getByText('3개 항목')).toBeInTheDocument();
     });
 
     await step('다른 위치로 가면 검색어를 비운다', async () => {
@@ -867,7 +868,7 @@ export const Mobile: Story = {
     );
 
     await step('입력이 비어 있으면 원래 폴더 내용을, 입력하면 검색 결과를 보여 준다', async () => {
-      await expect(canvas.getByText('항목 3개')).toBeInTheDocument();
+      await expect(canvas.getByText('3개 항목')).toBeInTheDocument();
       await user.keyboard('훅');
       await expect(getOptionTexts(canvasElement)).toEqual([expect.stringMatching(/^훅 정리/)]);
     });
@@ -876,7 +877,7 @@ export const Mobile: Story = {
       await user.click(canvas.getByRole('button', { name: '검색 닫기' }));
       await expect(canvas.getByRole('button', { name: '뒤로' })).toBeInTheDocument();
       await expect(canvas.queryByRole('searchbox', { name: '검색' })).not.toBeInTheDocument();
-      await expect(canvas.getByText('항목 3개')).toBeInTheDocument();
+      await expect(canvas.getByText('3개 항목')).toBeInTheDocument();
     });
 
     await step('검색 상자에서 Esc를 누르면 검색어를 지우고 원래 주소 줄로 돌아간다', async () => {
@@ -884,7 +885,7 @@ export const Mobile: Story = {
       await user.keyboard('훅');
       await user.keyboard('{Escape}');
       await expect(canvas.queryByRole('searchbox', { name: '검색' })).not.toBeInTheDocument();
-      await expect(canvas.getByText('항목 3개')).toBeInTheDocument();
+      await expect(canvas.getByText('3개 항목')).toBeInTheDocument();
       await user.click(canvas.getByRole('button', { name: '검색' }));
       await expect(canvas.getByRole('searchbox', { name: '검색' })).toHaveValue('');
     });

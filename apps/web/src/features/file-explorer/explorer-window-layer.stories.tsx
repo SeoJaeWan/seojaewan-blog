@@ -121,16 +121,69 @@ function getFolderContent(canvasElement: HTMLElement): HTMLElement {
 }
 
 /**
- * 탐색 창의 트리 칸 하나.
+ * 탐색 창의 칸들. 즐겨찾기 칸(`favorite:`로 시작하는 열쇠)이나 폴더 트리 칸만 고른다.
+ * @param canvasElement 캔버스
+ * @param isFavorite 즐겨찾기 칸을 고를지
+ * @returns 칸
+ */
+function getNavigationItems(canvasElement: HTMLElement, isFavorite: boolean): HTMLElement[] {
+  return within(within(canvasElement).getByRole('tree'))
+    .getAllByRole('treeitem')
+    .filter(
+      (entry) =>
+        (entry.getAttribute('data-tree-key')?.startsWith('favorite:') ?? false) === isFavorite,
+    );
+}
+
+/**
+ * 탐색 창 즐겨찾기 칸 이름들.
+ * @param canvasElement 캔버스
+ * @returns 이름
+ */
+function getFavoriteLabels(canvasElement: HTMLElement): string[] {
+  return getNavigationItems(canvasElement, true).map((entry) => entry.textContent);
+}
+
+/**
+ * 탐색 창의 즐겨찾기 칸 하나.
+ * @param canvasElement 캔버스
+ * @param label 칸 이름
+ * @returns 즐겨찾기 칸
+ */
+function getFavoriteItem(canvasElement: HTMLElement, label: string): HTMLElement {
+  const item = getNavigationItems(canvasElement, true).find((entry) => entry.textContent === label);
+  if (item === undefined) {
+    throw new Error(`즐겨찾기 칸이 없다: ${label}`);
+  }
+  return item;
+}
+
+/**
+ * 폴더 내용의 항목 하나.
+ * @param canvasElement 캔버스
+ * @param name 항목 이름
+ * @returns 항목
+ */
+function getContentItem(canvasElement: HTMLElement, name: string): HTMLElement {
+  const item = within(getFolderContent(canvasElement))
+    .getAllByRole('option')
+    .find((entry) => entry.textContent.includes(name));
+  if (item === undefined) {
+    throw new Error(`항목이 없다: ${name}`);
+  }
+  return item;
+}
+
+/**
+ * 탐색 창의 폴더 트리 칸 하나(즐겨찾기 칸은 빼고 찾는다).
  * @param canvas 캔버스
  * @param label 칸 이름
  * @returns 트리 칸
  */
 function getTreeItem(canvasElement: HTMLElement, label: string): HTMLElement {
-  const canvas = within(canvasElement);
-  const item = within(canvas.getByRole('tree'))
-    .getAllByRole('treeitem')
-    .find((entry) => entry.textContent === label);
+  const item = getNavigationItems(canvasElement, false).find(
+    (entry) => entry.textContent === label,
+  );
   if (item === undefined) {
     throw new Error(`트리 칸이 없다: ${label}`);
   }
@@ -262,6 +315,147 @@ export const Navigation: Story = {
       await user.click(canvas.getByRole('button', { name: '위로' }));
       await expect(getTabTitles(canvasElement)).toEqual(['Blog']);
     });
+
+    // @codocs [[파일 탐색기:탭]]
+    await step('위로 간 폴더는 방금 있던 폴더가 선택되고 현재 항목이다', async () => {
+      const react = getContentItem(canvasElement, 'React');
+      await expect(react).toHaveAttribute('aria-selected', 'true');
+      await expect(react).toHaveAttribute('tabindex', '0');
+    });
+
+    await step('뒤로·앞으로 돌아오면 그 칸을 떠날 때의 선택을 되살린다', async () => {
+      await user.click(canvas.getByRole('button', { name: '뒤로' }));
+      await expect(getTabTitles(canvasElement)).toEqual(['React']);
+      await user.click(getContentItem(canvasElement, '훅 정리'));
+      await user.click(canvas.getByRole('button', { name: '앞으로' }));
+      await expect(getTabTitles(canvasElement)).toEqual(['Blog']);
+      await expect(getContentItem(canvasElement, 'React')).toHaveAttribute('aria-selected', 'true');
+      await user.click(canvas.getByRole('button', { name: '뒤로' }));
+      await expect(getContentItem(canvasElement, '훅 정리')).toHaveAttribute(
+        'aria-selected',
+        'true',
+      );
+    });
+
+    // @codocs [[파일 탐색기:조작]]
+    await step('새로 간 폴더는 선택 없이 보인다', async () => {
+      await user.dblClick(getContentItem(canvasElement, 'Hooks'));
+      await expect(getTabTitles(canvasElement)).toEqual(['Hooks']);
+      await expect(
+        within(getFolderContent(canvasElement))
+          .getAllByRole('option')
+          .filter((entry) => entry.getAttribute('aria-selected') === 'true'),
+      ).toHaveLength(0);
+    });
+  },
+};
+
+/** 탐색 창 맨 위의 즐겨찾기를 누르고, 폴더 메뉴와 끌기로 고정하고 뺀다 */
+export const Favorites: Story = {
+  play: async ({ canvasElement, step }) => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+
+    // @codocs [[파일 탐색기:탐색 창]]
+    await step('탐색 창 맨 위에 압정이 붙은 즐겨찾기가 고정한 차례로 있다', async () => {
+      await expect(getFavoriteLabels(canvasElement)).toEqual(['Project', 'Blog', 'About']);
+      const [firstFavorite] = getNavigationItems(canvasElement, true);
+      await expect(firstFavorite?.querySelectorAll('svg').length).toBeGreaterThan(0);
+    });
+
+    await step('즐겨찾기 칸을 누르면 그 폴더로 가고 그 칸이 선택된 칸이다', async () => {
+      await user.click(getFavoriteItem(canvasElement, 'About'));
+      await expect(getTabTitles(canvasElement)).toEqual(['About']);
+      await expect(getFavoriteItem(canvasElement, 'About')).toHaveAttribute(
+        'aria-selected',
+        'true',
+      );
+      await expect(getTreeItem(canvasElement, 'About')).toHaveAttribute('aria-selected', 'false');
+      await user.click(getTreeItem(canvasElement, 'Blog'));
+      await expect(getTreeItem(canvasElement, 'Blog')).toHaveAttribute('aria-selected', 'true');
+      await expect(getFavoriteItem(canvasElement, 'Blog')).toHaveAttribute(
+        'aria-selected',
+        'false',
+      );
+    });
+
+    // @codocs [[파일 탐색기:우클릭 메뉴]]
+    await step('폴더 메뉴의 즐겨찾기에 고정은 맨 뒤에 넣고, 즐겨찾기에서 제거는 뺀다', async () => {
+      await userEvent.pointer({
+        keys: '[MouseRight]',
+        target: getContentItem(canvasElement, 'React'),
+      });
+      await user.click(await screen.findByRole('menuitem', { name: '즐겨찾기에 고정' }));
+      await waitForMenuGone();
+      await expect(getFavoriteLabels(canvasElement)).toEqual(['Project', 'Blog', 'About', 'React']);
+      await userEvent.pointer({
+        keys: '[MouseRight]',
+        target: getContentItem(canvasElement, 'React'),
+      });
+      await user.click(await screen.findByRole('menuitem', { name: '즐겨찾기에서 제거' }));
+      await waitForMenuGone();
+      await expect(getFavoriteLabels(canvasElement)).toEqual(['Project', 'Blog', 'About']);
+    });
+
+    // @codocs [[파일 탐색기:탐색 창]]
+    await step(
+      '폴더를 즐겨찾기 칸 사이로 끌면 가로선과 툴팁을 보이고, 놓으면 그 자리에 고정한다',
+      async () => {
+        const react = getContentItem(canvasElement, 'React');
+        const blog = getFavoriteItem(canvasElement, 'Blog');
+        const box = blog.getBoundingClientRect();
+        const gap = { x: box.x + box.width / 2, y: box.y + 1 };
+        const held = await holdStoryDrag(react, [
+          getStoryCenter(react),
+          { x: gap.x, y: gap.y + 20 },
+          gap,
+        ]);
+        await expect(canvasElement.querySelector('[data-favorites-drop-line]')).not.toBeNull();
+        await expect(await screen.findByText('즐겨찾기에 고정')).toBeInTheDocument();
+        await held.release();
+        await expect(getFavoriteLabels(canvasElement)).toEqual([
+          'Project',
+          'React',
+          'Blog',
+          'About',
+        ]);
+        await expect(getTabTitles(canvasElement)).toEqual(['Blog']);
+      },
+    );
+
+    await step(
+      '글은 즐겨찾기 칸 사이에 놓을 수 없어 not-allowed 커서이고 놓아도 그대로다',
+      async () => {
+        await user.dblClick(getContentItem(canvasElement, 'React'));
+        const post = getContentItem(canvasElement, '훅 정리');
+        const about = getFavoriteItem(canvasElement, 'About');
+        const box = about.getBoundingClientRect();
+        const gap = { x: box.x + box.width / 2, y: box.y + 1 };
+        const held = await holdStoryDrag(post, [
+          getStoryCenter(post),
+          { x: gap.x, y: gap.y + 20 },
+          gap,
+        ]);
+        await expect(document.documentElement).toHaveAttribute('data-item-drag-rejected');
+        await expect(canvasElement.querySelector('[data-favorites-drop-line]')).toBeNull();
+        await held.release();
+        await expect(getFavoriteLabels(canvasElement)).toEqual([
+          'Project',
+          'React',
+          'Blog',
+          'About',
+        ]);
+      },
+    );
+
+    await step('즐겨찾기가 비면 칸과 구분선을 숨긴다', async () => {
+      for (const id of [...useWorkspaceStore.getState().favoritePins]) {
+        useWorkspaceStore.getState().unpinFromFavorites(id);
+      }
+      await waitFor(async () => {
+        await expect(getNavigationItems(canvasElement, true)).toHaveLength(0);
+      });
+      await expect(canvasElement.querySelector('[data-favorites-end]')).toBeNull();
+    });
   },
 };
 
@@ -333,6 +527,20 @@ export const AddressEdit: Story = {
 
     // @codocs [[파일 탐색기:주소창 편집]]
     await step(
+      '지우기 버튼(×)은 입력을 비우고 포커스를 입력칸에 남기며, 비면 버튼이 사라진다',
+      async () => {
+        const field = await startEditing();
+        await user.click(canvas.getByRole('button', { name: '지우기' }));
+        await expect(field).toHaveValue('');
+        await expect(field).toHaveFocus();
+        await expect(canvas.queryByRole('button', { name: '지우기' })).not.toBeInTheDocument();
+        await user.keyboard('{Escape}');
+        await expect(canvas.queryByRole('textbox', { name: '주소' })).not.toBeInTheDocument();
+      },
+    );
+
+    // @codocs [[파일 탐색기:주소창 편집]]
+    await step(
       'Enter를 누르면 대소문자를 가리지 않고 경로의 폴더로 가고 뒤로 기록에 남는다',
       async () => {
         const field = await startEditing();
@@ -375,6 +583,97 @@ export const AddressEdit: Story = {
       await user.type(field, '휴지통');
       await user.keyboard('{Enter}');
       await expect(getTabTitles(canvasElement)).toEqual(['휴지통']);
+    });
+  },
+};
+
+/**
+ * 경로 꺾쇠 버튼들의 열림 상태. 맨 앞 꺾쇠(최상위 항목)는 빼고 마디 뒤 꺾쇠만 차례대로 본다.
+ * @param canvasElement 캔버스
+ * @returns 꺾쇠마다 열렸는지(`data-open`)
+ */
+function getSeparatorStates(canvasElement: HTMLElement): (string | null)[] {
+  return within(canvasElement)
+    .queryAllByRole('button', { name: '하위 폴더' })
+    .map((separator) => separator.getAttribute('data-open'));
+}
+
+/**
+ * 열린 목록의 줄 이름들.
+ * @returns 줄 이름
+ */
+async function getMenuLabels(): Promise<string[]> {
+  return (await screen.findAllByRole('menuitem')).map((item) => item.textContent);
+}
+
+/** 경로 꺾쇠 목록. 꺾쇠를 누르면 그 마디의 하위 폴더(맨 앞은 최상위 칸)를 보이고, 고르면 같은 탭에서 간다 */
+export const BreadcrumbMenu: Story = {
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+
+    // @codocs [[파일 탐색기:구성]]
+    await step('마지막 마디 뒤 꺾쇠는 하위 폴더가 있을 때만 그린다', async () => {
+      // Blog 안에는 React 폴더가 있어 바탕 화면·Blog 뒤에 꺾쇠가 있다.
+      await expect(getSeparatorStates(canvasElement)).toEqual(['false', 'false']);
+    });
+
+    // @codocs [[파일 탐색기:구성]]
+    await step('꺾쇠를 누르면 ⌄로 바뀌고 그 마디 폴더의 하위 폴더를 보인다', async () => {
+      const [, blogSeparator] = canvas.getAllByRole('button', { name: '하위 폴더' });
+      if (blogSeparator === undefined) {
+        throw new Error('Blog 뒤 꺾쇠가 없다');
+      }
+      await user.click(blogSeparator);
+      await expect(await getMenuLabels()).toEqual(['React']);
+      await expect(getSeparatorStates(canvasElement)).toEqual(['false', 'true']);
+    });
+
+    // @codocs [[파일 탐색기:구성]]
+    // @codocs [[파일 탐색기:탭]]
+    await step('목록에서 고르면 같은 탭에서 그 폴더로 가고 기록에 남는다', async () => {
+      await user.click(screen.getByRole('menuitem', { name: 'React' }));
+      await expect(getTabTitles(canvasElement)).toEqual(['React']);
+      await waitForMenuGone();
+      await expect(canvas.getByRole('button', { name: '뒤로' })).toBeEnabled();
+    });
+
+    // @codocs [[파일 탐색기:구성]]
+    await step('하위 폴더가 없는 마지막 마디 뒤에는 꺾쇠가 없다', async () => {
+      const [, , reactSeparator] = canvas.getAllByRole('button', { name: '하위 폴더' });
+      if (reactSeparator === undefined) {
+        throw new Error('React 뒤 꺾쇠가 없다');
+      }
+      await user.click(reactSeparator);
+      await user.click(await screen.findByRole('menuitem', { name: 'Hooks' }));
+      await expect(getTabTitles(canvasElement)).toEqual(['Hooks']);
+      await waitForMenuGone();
+      await expect(getSeparatorStates(canvasElement)).toEqual(['false', 'false', 'false']);
+      await expect(
+        canvas.getByRole('button', { current: 'page' }).closest('[data-separator]'),
+      ).toHaveAttribute('data-separator', 'false');
+    });
+
+    // @codocs [[파일 탐색기:구성]]
+    await step('Esc를 누르면 목록이 닫히고 꺾쇠가 >로 돌아간다', async () => {
+      const [desktopSeparator] = canvas.getAllByRole('button', { name: '하위 폴더' });
+      if (desktopSeparator === undefined) {
+        throw new Error('바탕 화면 뒤 꺾쇠가 없다');
+      }
+      await user.click(desktopSeparator);
+      await expect(await getMenuLabels()).toContain('Blog');
+      await user.keyboard('{Escape}');
+      await waitForMenuGone();
+      await expect(getSeparatorStates(canvasElement)).toEqual(['false', 'false', 'false']);
+    });
+
+    // @codocs [[파일 탐색기:구성]]
+    await step('맨 앞 꺾쇠는 탐색 창의 최상위 칸(바탕 화면, 휴지통)을 보인다', async () => {
+      await user.click(canvas.getByRole('button', { name: '최상위 항목' }));
+      await expect(await getMenuLabels()).toEqual(['바탕 화면', '휴지통']);
+      await user.click(screen.getByRole('menuitem', { name: '휴지통' }));
+      await expect(getTabTitles(canvasElement)).toEqual(['휴지통']);
+      await waitForMenuGone();
     });
   },
 };
@@ -656,6 +955,11 @@ export const Mobile: Story = {
     await step('모바일은 탭 하나만 써서 탭 줄과 새 탭 버튼이 없다', async () => {
       await expect(canvas.queryByRole('tab')).not.toBeInTheDocument();
       await expect(canvas.queryByRole('button', { name: '새 탭' })).not.toBeInTheDocument();
+    });
+
+    // @codocs [[파일 탐색기:모바일]]
+    await step('모바일은 경로를 한 칸으로만 보여 마디 뒤 꺾쇠 목록이 없다', async () => {
+      await expect(canvas.queryByRole('button', { name: '하위 폴더' })).not.toBeInTheDocument();
     });
 
     // @codocs [[파일 탐색기:조작]]

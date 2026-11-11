@@ -77,7 +77,7 @@ const SECONDARY_TEXT_CLASS_NAME = 'text-color-black-61 group-data-disabled:text-
  * @param props 컴포넌트 속성
  * @param props.label 항목 이름. 길면 한 줄로 말줄임한다
  * @param props.icon 이름 앞 16px 아이콘(피그마 Has icon). SVG 아이콘이나 앱 로고 같은 래스터 자산(`images/*`)을 넣는다.
- *   확인·라디오 항목은 아이콘 자리에 선택 표시를 그린다
+ *   확인·라디오 항목은 선택 표시 칸 다음에 아이콘을 그린다(표시, 아이콘, 이름, 단축키 순서)
  * @param props.shortcut 오른쪽에 보이는 단축키(예: `Ctrl+O`, 피그마 Has shortcut)
  * @param props.isDisabled 고를 수 없게 한다
  * @param props.className 덧붙이거나 덮어쓸 클래스
@@ -140,6 +140,7 @@ export function MenuItem({
             label={label}
             shortcut={shortcut}
             variant="checkbox"
+            icon={leading}
             leading={
               <Menu.CheckboxItemIndicator className="flex">
                 {/* 선택 표시는 16px 자리 가운데의 12px 연한 회색 글리프다. 누름 상태에도 색이 그대로다. */}
@@ -165,6 +166,7 @@ export function MenuItem({
             label={label}
             shortcut={shortcut}
             variant="radio"
+            icon={leading}
             leading={
               <Menu.RadioItemIndicator className="flex">
                 <span className="size-size-menu-item-bullet rounded-full bg-color-black-89 motion-control-state group-data-disabled:bg-color-black-36 group-active:group-data-highlighted:bg-color-black-61" />
@@ -318,6 +320,7 @@ function isImageAssetName(name: SvgAssetName | ImageAssetName): name is ImageAss
 
 type MenuItemContentProps = Pick<MenuItemCommonProps, 'label' | 'shortcut'> & {
   leading: ReactNode;
+  icon?: ReactNode;
   variant?: 'default' | 'submenu' | 'checkbox' | 'radio';
   stateClassName?: string;
 };
@@ -328,6 +331,7 @@ type MenuItemContentProps = Pick<MenuItemCommonProps, 'label' | 'shortcut'> & {
  * @param props.label 항목 이름. 길면 한 줄로 말줄임한다
  * @param props.shortcut 오른쪽에 보이는 단축키
  * @param props.leading 이름 앞 16px 자리(피그마 base/leading)에 그릴 내용. 확인·라디오 항목은 항상 자리를 둔다
+ * @param props.icon 선택 표시 칸 다음의 16px 아이콘 칸(피그마 base/icon slot). 확인·라디오 항목에서만 쓰며 순서는 표시, 아이콘, 이름, 단축키다
  * @param props.variant 항목 종류. `submenu`이면 오른쪽에 꺾쇠를 그린다
  * @param props.stateClassName 강조 영역에 덧붙일 상태 클래스
  */
@@ -335,6 +339,7 @@ function MenuItemContent({
   label,
   shortcut,
   leading,
+  icon,
   variant,
   stateClassName,
 }: MenuItemContentProps): JSX.Element {
@@ -343,6 +348,11 @@ function MenuItemContent({
       {leading !== undefined && (
         <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center overflow-hidden p-spacing-none">
           {leading}
+        </span>
+      )}
+      {icon !== undefined && (
+        <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center overflow-hidden p-spacing-none">
+          {icon}
         </span>
       )}
       <span className="min-w-size-none flex-flex-fill truncate type-body">{label}</span>

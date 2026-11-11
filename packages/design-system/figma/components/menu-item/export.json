@@ -778,13 +778,60 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/icon/sm",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon slot",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/icon/sm"
+              },
+              {
                 "fills": [
                   "color/black/36"
                 ],
                 "name": "label",
                 "size": {
                   "h": 20,
-                  "w": 190
+                  "w": 162
                 },
                 "sizing": {
                   "h": "FILL",
@@ -919,13 +966,60 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/icon/sm",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon slot",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/icon/sm"
+              },
+              {
                 "fills": [
                   "color/black/89"
                 ],
                 "name": "label",
                 "size": {
                   "h": 20,
-                  "w": 190
+                  "w": 162
                 },
                 "sizing": {
                   "h": "FILL",
@@ -1060,13 +1154,60 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/icon/sm",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon slot",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/icon/sm"
+              },
+              {
                 "fills": [
                   "color/black/61"
                 ],
                 "name": "label",
                 "size": {
                   "h": 20,
-                  "w": 190
+                  "w": 162
                 },
                 "sizing": {
                   "h": "FILL",
@@ -1201,13 +1342,60 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/icon/sm",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon slot",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/icon/sm"
+              },
+              {
                 "fills": [
                   "color/black/89"
                 ],
                 "name": "label",
                 "size": {
                   "h": 20,
-                  "w": 190
+                  "w": 162
                 },
                 "sizing": {
                   "h": "FILL",
@@ -1361,13 +1549,60 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/icon/sm",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon slot",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/icon/sm"
+              },
+              {
                 "fills": [
                   "color/black/36"
                 ],
                 "name": "label",
                 "size": {
                   "h": 20,
-                  "w": 190
+                  "w": 162
                 },
                 "sizing": {
                   "h": "FILL",
@@ -1521,13 +1756,60 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/icon/sm",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon slot",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/icon/sm"
+              },
+              {
                 "fills": [
                   "color/black/89"
                 ],
                 "name": "label",
                 "size": {
                   "h": 20,
-                  "w": 190
+                  "w": 162
                 },
                 "sizing": {
                   "h": "FILL",
@@ -1699,13 +1981,60 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/icon/sm",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon slot",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/icon/sm"
+              },
+              {
                 "fills": [
                   "color/black/61"
                 ],
                 "name": "label",
                 "size": {
                   "h": 20,
-                  "w": 190
+                  "w": 162
                 },
                 "sizing": {
                   "h": "FILL",
@@ -1859,13 +2188,60 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/icon/sm",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon slot",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/icon/sm"
+              },
+              {
                 "fills": [
                   "color/black/89"
                 ],
                 "name": "label",
                 "size": {
                   "h": 20,
-                  "w": 190
+                  "w": 162
                 },
                 "sizing": {
                   "h": "FILL",
@@ -2778,13 +3154,60 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/icon/sm",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon slot",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/icon/sm"
+              },
+              {
                 "fills": [
                   "color/black/36"
                 ],
                 "name": "label",
                 "size": {
                   "h": 20,
-                  "w": 190
+                  "w": 162
                 },
                 "sizing": {
                   "h": "FILL",
@@ -2919,13 +3342,60 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/icon/sm",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon slot",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/icon/sm"
+              },
+              {
                 "fills": [
                   "color/black/89"
                 ],
                 "name": "label",
                 "size": {
                   "h": 20,
-                  "w": 190
+                  "w": 162
                 },
                 "sizing": {
                   "h": "FILL",
@@ -3078,13 +3548,60 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/icon/sm",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon slot",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/icon/sm"
+              },
+              {
                 "fills": [
                   "color/black/61"
                 ],
                 "name": "label",
                 "size": {
                   "h": 20,
-                  "w": 190
+                  "w": 162
                 },
                 "sizing": {
                   "h": "FILL",
@@ -3219,13 +3736,60 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/icon/sm",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon slot",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/icon/sm"
+              },
+              {
                 "fills": [
                   "color/black/89"
                 ],
                 "name": "label",
                 "size": {
                   "h": 20,
-                  "w": 190
+                  "w": 162
                 },
                 "sizing": {
                   "h": "FILL",
@@ -3399,13 +3963,60 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/icon/sm",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon slot",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/icon/sm"
+              },
+              {
                 "fills": [
                   "color/black/36"
                 ],
                 "name": "label",
                 "size": {
                   "h": 20,
-                  "w": 190
+                  "w": 162
                 },
                 "sizing": {
                   "h": "FILL",
@@ -3561,13 +4172,60 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/icon/sm",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon slot",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/icon/sm"
+              },
+              {
                 "fills": [
                   "color/black/89"
                 ],
                 "name": "label",
                 "size": {
                   "h": 20,
-                  "w": 190
+                  "w": 162
                 },
                 "sizing": {
                   "h": "FILL",
@@ -3741,13 +4399,60 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/icon/sm",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon slot",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/icon/sm"
+              },
+              {
                 "fills": [
                   "color/black/61"
                 ],
                 "name": "label",
                 "size": {
                   "h": 20,
-                  "w": 190
+                  "w": 162
                 },
                 "sizing": {
                   "h": "FILL",
@@ -3903,13 +4608,60 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "color/black/89",
+                      "path": "icons/ic_fluent_open_20_regular"
+                    },
+                    "component": "ic_fluent_open_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/icon/sm",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon slot",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/icon/sm"
+              },
+              {
                 "fills": [
                   "color/black/89"
                 ],
                 "name": "label",
                 "size": {
                   "h": 20,
-                  "w": 190
+                  "w": 162
                 },
                 "sizing": {
                   "h": "FILL",
@@ -4162,6 +4914,7 @@
                     },
                     "name": "zoom out button",
                     "properties": {
+                      "Checked": "False",
                       "State": "Rest",
                       "Variant": "Subtle"
                     },
@@ -4250,6 +5003,7 @@
                     },
                     "name": "zoom in button",
                     "properties": {
+                      "Checked": "False",
                       "State": "Rest",
                       "Variant": "Subtle"
                     },

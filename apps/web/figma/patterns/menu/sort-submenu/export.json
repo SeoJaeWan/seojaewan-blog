@@ -28,7 +28,7 @@
               "Menu/Flyout/Content/radio 이름"
             ],
             "properties": {
-              "Has icon": true,
+              "Has icon": false,
               "Has shortcut": false,
               "Label": "이름",
               "Shortcut": "Ctrl+O",

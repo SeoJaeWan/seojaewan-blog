@@ -15,6 +15,7 @@ import {
   LayerSurface,
   NavigationPane,
   ScrollArea,
+  Separator,
 } from '@seojaewan/design-system';
 
 import {
@@ -51,10 +52,13 @@ type ExplorerContentProps = Pick<
   | 'onSearchClose'
   | 'isBreadcrumbEditing'
   | 'breadcrumbEditFieldProps'
+  | 'onBreadcrumbClear'
+  | 'isBreadcrumbSeparatorOpen'
+  | 'renderBreadcrumbSeparator'
 > &
   Pick<
     StatusBarProps,
-    'itemCount' | 'selection' | 'hasSelection' | 'onDetailsView' | 'onLargeIconsView'
+    'view' | 'itemCount' | 'selection' | 'hasSelection' | 'onDetailsView' | 'onLargeIconsView'
   > & {
     device?: ExplorerContentDevice;
     path?: ReactNode;
@@ -71,7 +75,7 @@ type ExplorerContentProps = Pick<
 
 /**
  * 탐색기 창의 본문(피그마 조립 `Explorer/Content`)을 그린다. 주소 줄, 명령 막대, 탐색 창·나눔선·항목 자리, 상태 줄을
- * 위에서부터 놓는다. 탐색 창·나눔선·항목 자리는 카드 바탕(LayerSurface) 위에 가로로 놓는다. 자리마다 들어갈 내용은 쓰는 쪽(`Window/Explorer`)이 넣고, 크기도 쓰는 쪽이 정한다.
+ * 위에서부터 놓고, 주소 줄과 명령 막대 사이에 1px 구분선을 긋는다. 탐색 창·나눔선·항목 자리는 카드 바탕(LayerSurface) 위에 가로로 놓는다. 자리마다 들어갈 내용은 쓰는 쪽(`Window/Explorer`)이 넣고, 크기도 쓰는 쪽이 정한다.
  * @codocs [[디자인 시스템:조립]]
  * @param props 컴포넌트 속성
  * @param props.device 피그마 Device. mobile은 탐색 창과 나눔선 없이 항목만 보인다
@@ -81,9 +85,13 @@ type ExplorerContentProps = Pick<
  * @param props.path 주소 줄 Breadcrumb의 Items 자리. 경로 칸(BreadcrumbItem)을 넣는다
  * @param props.isBreadcrumbEditing 피그마 Address=Editing. 주소 줄 Breadcrumb이 경로 칸 대신 경로 글자 입력칸을 그린다
  * @param props.breadcrumbEditFieldProps 주소 줄 Breadcrumb 편집 입력칸에 넘길 값·동작·접근성 속성. `isBreadcrumbEditing`일 때만 쓴다
+ * @param props.onBreadcrumbClear 주소 줄 편집 입력칸의 지우기 버튼(×)을 눌렀을 때. 입력값을 비운다
+ * @param props.isBreadcrumbSeparatorOpen 주소 줄 맨 앞 꺾쇠가 연 목록이 열려 있는지. 열린 동안 아래 꺾쇠(⌄)다
+ * @param props.renderBreadcrumbSeparator 주소 줄 맨 앞 꺾쇠를 목록 버튼으로 감싸 그린다
  * @param props.commands 명령 막대의 Commands 자리. `ExplorerCommands`를 넣는다
  * @param props.navigation 본문 바탕(LayerSurface) 안 탐색 창(NavigationPane)의 Items 자리. 폴더 트리의 NavigationItem을 넣는다. desktop만 보인다
  * @param props.children 본문 바탕(LayerSurface) 안 `items` 영역의 내용. 현재 폴더의 항목(FileItem, 또는 DetailsHeader와 FileRow)을 넣는다. 피그마는 슬롯 안에 슬롯 속성을 둘 수 없어 이 영역을 `Window/Explorer`가 LayerSurface 슬롯을 통해 직접 채운다
+ * @param props.view 상태 줄의 지금 보기. details면 자세히 버튼, large면 큰 아이콘 버튼을 켜짐으로 그린다
  * @param props.itemCount 피그마 TEXT 속성 Item count. 항목 수 글자다
  * @param props.selection 피그마 TEXT 속성 Selection. 선택 정보 글자다
  * @param props.hasSelection 피그마 BOOLEAN 속성 Has selection. 선택 정보를 보일지 정한다
@@ -115,9 +123,13 @@ export function ExplorerContent({
   path,
   isBreadcrumbEditing,
   breadcrumbEditFieldProps,
+  onBreadcrumbClear: handleBreadcrumbClear,
+  isBreadcrumbSeparatorOpen,
+  renderBreadcrumbSeparator,
   commands,
   navigation,
   children,
+  view,
   itemCount,
   selection,
   hasSelection: isSelectionShown,
@@ -160,6 +172,9 @@ export function ExplorerContent({
         locationIcon={locationIcon}
         isBreadcrumbEditing={isBreadcrumbEditing}
         breadcrumbEditFieldProps={breadcrumbEditFieldProps}
+        onBreadcrumbClear={handleBreadcrumbClear}
+        isBreadcrumbSeparatorOpen={isBreadcrumbSeparatorOpen}
+        renderBreadcrumbSeparator={renderBreadcrumbSeparator}
         searchPlaceholder={searchPlaceholder}
         searchValue={searchValue}
         onBack={handleBack}
@@ -177,6 +192,8 @@ export function ExplorerContent({
       >
         {path}
       </ExplorerAddressRow>
+      {/* 실제 Windows처럼 주소 줄과 명령 막대 사이에 1px 구분선이 있다. */}
+      <Separator />
       <ExplorerCommandBar>{commands}</ExplorerCommandBar>
       <LayerSurface className="min-h-size-none flex-flex-fill">
         {isDesktop && (
@@ -209,6 +226,7 @@ export function ExplorerContent({
       </LayerSurface>
       <ExplorerStatusBar
         device={device}
+        view={view}
         itemCount={itemCount}
         selection={selection}
         hasSelection={isSelectionShown}

@@ -1,7 +1,14 @@
 import { Menu as BaseMenu } from '@base-ui/react/menu';
-import { type AnimationEvent, type ComponentProps, type JSX, useState } from 'react';
+import {
+  type AnimationEvent,
+  type ComponentProps,
+  type JSX,
+  type MouseEvent,
+  useRef,
+  useState,
+} from 'react';
 
-import { Menu, MenuItem, MenuSeparator } from '@seojaewan/design-system';
+import { IconButton, Menu, MenuItem, MenuSeparator } from '@seojaewan/design-system';
 
 type MenuItemIcon = ComponentProps<typeof MenuItem>['icon'];
 
@@ -28,6 +35,8 @@ export type MenuPopupSubmenu = {
 export type MenuPopupCheckbox = {
   kind: 'checkbox';
   label: string;
+  icon?: MenuItemIcon;
+  shortcut?: string;
   isChecked: boolean;
   isDisabled?: boolean;
   onCheckedChange?: (checked: boolean) => void;
@@ -37,6 +46,8 @@ export type MenuPopupCheckbox = {
 export type MenuPopupRadioOption = {
   value: string;
   label: string;
+  icon?: MenuItemIcon;
+  shortcut?: string;
 };
 
 /**
@@ -63,22 +74,52 @@ export type MenuPopupZoom = {
 /** 항목 사이 구분선(피그마 MenuSeparator) */
 export type MenuPopupSeparator = { kind: 'separator' };
 
+/**
+ * 머리글이 붙은 항목 묶음(작업 표시줄 점프 목록의 "자주 방문"·"작업" 칸). 피그마 메뉴 조립이 Content 안에 직접 그린 머리글(`header <이름>`)
+ * 아래에 항목을 둔다. 보조 기술에는 머리글이 이름인 메뉴 묶음으로 알린다.
+ */
+export type MenuPopupGroup = {
+  kind: 'group';
+  label: string;
+  entries: readonly MenuPopupEntry[];
+};
+
+/**
+ * 고정한 항목 한 줄(작업 표시줄 탐색기 점프 목록 "고정됨"의 폴더). 모양은 `Variant=Default` 항목이고, 피그마 조립 `hover · Menu/TaskbarJumpListExplorer`처럼
+ * 마우스를 올리면 오른쪽 끝에 압정 해제 버튼(`unpinLabel`)이 따로 나온다. 버튼을 누르면 `onUnpin`을 부르고 메뉴는 열어 둔다.
+ * id는 같은 이름의 항목끼리 가르는 열쇠다(폴더 id). 줄을 우클릭(길게 누르기, Shift+F10·메뉴 키)하면 그 자리에 `entries`(항목 메뉴)를 띄우고 이 메뉴는 닫지 않는다.
+ */
+export type MenuPopupPinned = {
+  kind: 'pinned';
+  id: string;
+  label: string;
+  icon?: MenuItemIcon;
+  unpinLabel: string;
+  onClick: () => void;
+  onUnpin: () => void;
+  entries: readonly MenuPopupEntry[];
+};
+
 /** 메뉴 한 줄 */
 export type MenuPopupEntry =
+  | MenuPopupPinned
   | MenuPopupCommand
   | MenuPopupSubmenu
   | MenuPopupCheckbox
   | MenuPopupRadioGroup
   | MenuPopupZoom
-  | MenuPopupSeparator;
+  | MenuPopupSeparator
+  | MenuPopupGroup;
 
-export type MenuPopupWidth = 'default' | 'view-options';
+export type MenuPopupWidth = 'default' | 'view-options' | 'taskbar';
 
 // 메뉴 바탕(Menu) 너비다. 피그마 메뉴 조립이 Menu 인스턴스에 연결한 너비 변수로, 기본은 Menu 자신의 너비(size/menu/width)이고
-// `Menu/ViewOptions`만 size/menu/view-options-width다. 항목(MenuItem)은 늘 바탕 너비를 채운다.
+// `Menu/ViewOptions`만 size/menu/view-options-width, 작업 표시줄 앱 메뉴·점프 목록(`Menu/TaskbarApp`, `Menu/TaskbarJumpList*`)은
+// size/menu/taskbar-width다. 항목(MenuItem)은 늘 바탕 너비를 채운다.
 const menuWidthClassNames = {
   default: undefined,
   'view-options': 'w-size-menu-view-options-width',
+  taskbar: 'w-size-menu-taskbar-width',
 } as const satisfies Record<MenuPopupWidth, string | undefined>;
 const DEFAULT_MENU_WIDTH: MenuPopupWidth = 'default';
 
@@ -192,6 +233,10 @@ function entryKey(entry: MenuPopupEntry, index: number): string {
       return 'zoom';
     case 'radio-group':
       return `radio-group-${entry.options[0]?.value ?? String(index)}`;
+    case 'group':
+      return `group-${entry.label}`;
+    case 'pinned':
+      return `pinned-${entry.id}`;
     default:
       return entry.label;
   }
@@ -209,6 +254,29 @@ function MenuEntry({ entry }: { entry: MenuPopupEntry }): JSX.Element {
       return <MenuSeparator />;
     case 'submenu':
       return <SubmenuEntry entry={entry} />;
+    case 'pinned':
+      return <PinnedEntry entry={entry} />;
+    case 'group':
+      return (
+        // 피그마 `header <이름>` 프레임: 높이 32(글자 16 + 위아래 spacing/sm), 왼쪽 spacing/lg, Caption 글자 color/black/61이다.
+        // 묶음은 항목을 바로 담아 메뉴 바탕의 세로 배치를 그대로 잇는다(`contents`).
+        <BaseMenu.Group className="contents">
+          <BaseMenu.GroupLabel className="self-stretch truncate px-spacing-lg py-spacing-sm type-caption text-color-black-61 select-none">
+            {entry.label}
+          </BaseMenu.GroupLabel>
+          {entry.entries.map(
+            /**
+             * 묶음 안의 한 줄을 그린다.
+             * @param child 메뉴 한 줄
+             * @param index 순서
+             * @returns 메뉴 요소
+             */
+            (child, index) => (
+              <MenuEntry key={entryKey(child, index)} entry={child} />
+            ),
+          )}
+        </BaseMenu.Group>
+      );
     case 'zoom': {
       const { onZoomOut: handleZoomOut, onZoomIn: handleZoomIn } = entry;
       return (
@@ -229,6 +297,8 @@ function MenuEntry({ entry }: { entry: MenuPopupEntry }): JSX.Element {
         <MenuItem
           variant="checkbox"
           label={entry.label}
+          icon={entry.icon}
+          shortcut={entry.shortcut}
           isChecked={entry.isChecked}
           isDisabled={entry.isDisabled}
           onCheckedChange={handleCheckedChange}
@@ -251,6 +321,8 @@ function MenuEntry({ entry }: { entry: MenuPopupEntry }): JSX.Element {
                 key={option.value}
                 variant="radio"
                 label={option.label}
+                icon={option.icon}
+                shortcut={option.shortcut}
                 value={option.value}
               />
             ),
@@ -272,6 +344,127 @@ function MenuEntry({ entry }: { entry: MenuPopupEntry }): JSX.Element {
       );
     }
   }
+}
+
+// 고정 항목 줄. 마우스가 줄(압정 해제 버튼 포함) 위에 있는 동안 줄 전체를 강조 바탕(MenuItem Hover와 같은 color/black/4)으로 칠한다.
+// 버튼은 Base UI 메뉴 항목 밖이라 포인터가 버튼으로 가면 Base UI 강조가 풀리므로, 바탕을 묶음 호버로도 칠한다.
+const PINNED_ROW_CLASS_NAME = 'group-hover/pinned:[&>span]:bg-color-black-4';
+
+// 압정 해제 버튼. 피그마 `unpin`(IconButton subtle, 줄 오른쪽 끝에서 spacing/xs)이다. 줄과 높이가 같아 위 끝에 맞춘다.
+// 마우스를 올렸거나 키보드로 강조한 줄에만 보인다.
+const UNPIN_BUTTON_CLASS_NAME =
+  'absolute top-spacing-none right-spacing-xs hidden group-hover/pinned:inline-flex group-has-data-highlighted/pinned:inline-flex';
+
+/**
+ * 고정 항목 한 줄을 그린다. 누르면 `onClick`을 부르고 메뉴를 닫는 `Variant=Default` 항목에, 마우스 전용 압정 해제 버튼과 항목 메뉴를 붙인다.
+ * - 압정 해제 버튼은 창 미리보기 닫기 버튼처럼 마우스 전용이다(`aria-hidden`, Tab·방향키로 닿지 않음). 메뉴 항목 밖에 있어 눌러도 메뉴가 닫히지 않고,
+ *   눌러도 포커스를 옮기지 않는다. 키보드는 항목 메뉴의 고정 해제를 쓴다.
+ * - 줄을 우클릭(키보드는 포커스한 항목에서 Shift+F10·메뉴 키)하면 그 자리에 항목 메뉴를 띄운다. 항목 메뉴는 Base UI ContextMenu가 아니라
+ *   줄 옆에 둔 Menu.Root다. ContextMenu.Root로 줄을 감싸면 안의 메뉴 항목이 이 메뉴가 아니라 항목 메뉴에 붙어 방향키·고르기가 깨지기 때문이다.
+ *   이 메뉴의 팝업 안에서 열려 Base UI가 같은 팝업 묶음의 자식으로 보므로, 항목 메뉴를 쓰는 동안 이 메뉴는 닫히지 않는다.
+ *   항목 메뉴가 닫히면 포커스를 그 줄로 돌려준다.
+ * @codocs [[작업 표시줄:우클릭 메뉴]]
+ * @codocs [[접근성:역할]]
+ * @codocs [[접근성:포커스]]
+ * @param props 컴포넌트 속성
+ * @param props.entry 고정 항목
+ */
+function PinnedEntry({ entry }: { entry: MenuPopupPinned }): JSX.Element {
+  const { onClick: handleClick, onUnpin } = entry;
+  // 항목 메뉴를 띄울 자리(화면 좌표). null이면 닫혀 있다.
+  const [menuPoint, setMenuPoint] = useState<{ x: number; y: number } | null>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * 압정 해제 버튼을 누르면 목록에서 뺀다.
+   * @param event 누르기 이벤트
+   */
+  function handleUnpinClick(event: MouseEvent<HTMLButtonElement>): void {
+    event.stopPropagation();
+    onUnpin();
+  }
+
+  /**
+   * 줄을 우클릭하면 누른 자리에 항목 메뉴를 연다. 키보드(Shift+F10·메뉴 키)로 보낸 이벤트는 좌표가 없어 줄의 왼쪽 아래에 연다.
+   * @param event 우클릭 이벤트
+   */
+  function handleContextMenu(event: MouseEvent<HTMLDivElement>): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const rect = event.currentTarget.getBoundingClientRect();
+    const isPointer = event.clientX !== 0 || event.clientY !== 0;
+    setMenuPoint(
+      isPointer ? { x: event.clientX, y: event.clientY } : { x: rect.left, y: rect.bottom },
+    );
+  }
+
+  /**
+   * 항목 메뉴가 닫히려 하면 닫는다.
+   * @param isOpen 열리려는지
+   */
+  function handleMenuOpenChange(isOpen: boolean): void {
+    if (!isOpen) {
+      setMenuPoint(null);
+    }
+  }
+
+  /**
+   * 항목 메뉴가 닫힌 뒤 포커스를 둘 곳으로 그 줄의 메뉴 항목을 고른다.
+   * @returns 줄의 메뉴 항목. 줄이 사라졌으면(고정 해제) null이라 Base UI가 정한다
+   */
+  function getFinalFocus(): HTMLElement | null {
+    return rowRef.current?.querySelector<HTMLElement>('[role="menuitem"]') ?? null;
+  }
+
+  const anchor =
+    menuPoint === null
+      ? null
+      : { getBoundingClientRect: () => DOMRect.fromRect({ ...menuPoint, width: 0, height: 0 }) };
+
+  return (
+    <>
+      <div
+        ref={rowRef}
+        className="group/pinned relative flex w-full flex-col"
+        onContextMenu={handleContextMenu}
+      >
+        <MenuItem
+          label={entry.label}
+          icon={entry.icon}
+          onClick={handleClick}
+          className={PINNED_ROW_CLASS_NAME}
+        />
+        <IconButton
+          variant="subtle"
+          label={entry.unpinLabel}
+          icon={UNPIN_ICON}
+          aria-hidden
+          tabIndex={-1}
+          onMouseDown={handleUnpinMouseDown}
+          onClick={handleUnpinClick}
+          className={UNPIN_BUTTON_CLASS_NAME}
+        />
+      </div>
+      <BaseMenu.Root open={anchor !== null} onOpenChange={handleMenuOpenChange} modal={false}>
+        <BaseMenu.Portal container={getMenuPortalContainer()}>
+          <BaseMenu.Positioner anchor={anchor} side="bottom" align="start">
+            <MenuPopup items={entry.entries} finalFocus={getFinalFocus} />
+          </BaseMenu.Positioner>
+        </BaseMenu.Portal>
+      </BaseMenu.Root>
+    </>
+  );
+}
+
+// 압정 해제 아이콘(피그마 `unpin`의 ic_fluent_pin_off_20_regular)이다.
+const UNPIN_ICON = 'icons/ic_fluent_pin_off_20_regular.svg';
+
+/**
+ * 마우스 전용 버튼을 눌러도 포커스를 옮기지 않는다. 포커스는 메뉴 안에 그대로 둔다.
+ * @param event 누르기 이벤트
+ */
+function handleUnpinMouseDown(event: MouseEvent<HTMLButtonElement>): void {
+  event.preventDefault();
 }
 
 /**

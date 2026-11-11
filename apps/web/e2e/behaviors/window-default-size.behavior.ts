@@ -46,7 +46,7 @@ export const behavior = defineBehavior({
       async run({ page, check }) {
         await page.setViewportSize({ width: 1800, height: 1000 });
         await page.goto('/');
-        await page.getByRole('button', { name: 'Chrome' }).click();
+        await page.getByRole('button', { name: 'Google Chrome' }).click();
         const pcChrome = page.getByRole('region', { name: '새 탭 - Chrome' });
         await expect(pcChrome).toBeVisible();
         await check('Chrome 창이 PC 기본 크기 1280×800으로 열린다', async () => {
@@ -65,7 +65,7 @@ export const behavior = defineBehavior({
       async run({ page, check }) {
         await page.setViewportSize({ width: 1500, height: 850 });
         await page.goto('/');
-        await page.getByRole('button', { name: 'Chrome' }).click();
+        await page.getByRole('button', { name: 'Google Chrome' }).click();
         const laptopChrome = page.getByRole('region', { name: '새 탭 - Chrome' });
         await expect(laptopChrome).toBeVisible();
         await check('Chrome 창이 노트북 기본 크기 1120×640으로 열린다', async () => {

@@ -5,8 +5,12 @@ import { IconButton } from '../icon-button/icon-button';
 
 export type ExplorerStatusBarDevice = 'desktop' | 'mobile';
 
+/** 지금 보기. 자세히·큰 아이콘 버튼을 켜짐으로 그린다. 보통 아이콘은 둘 다 꺼짐이다. */
+export type ExplorerStatusBarView = 'details' | 'large' | 'medium';
+
 type ExplorerStatusBarProps = Omit<ComponentProps<'div'>, 'children'> & {
   device?: ExplorerStatusBarDevice;
+  view?: ExplorerStatusBarView;
   itemCount?: string;
   selection?: string;
   hasSelection?: boolean;
@@ -22,6 +26,7 @@ type ExplorerStatusBarProps = Omit<ComponentProps<'div'>, 'children'> & {
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
  * @param props 컴포넌트 속성
  * @param props.device 피그마 Device. mobile은 보기 전환 버튼을 그리지 않는다
+ * @param props.view 지금 보기. details면 자세히 버튼, large면 큰 아이콘 버튼을 켜짐(IconButton isChecked)으로 그린다. medium(보통 아이콘)은 둘 다 꺼짐이다
  * @param props.itemCount 피그마 TEXT 속성 Item count. 항목 수 글자다
  * @param props.selection 피그마 TEXT 속성 Selection. 선택 정보 글자다
  * @param props.hasSelection 피그마 BOOLEAN 속성 Has selection. 선택 정보를 보일지 정한다
@@ -33,6 +38,7 @@ type ExplorerStatusBarProps = Omit<ComponentProps<'div'>, 'children'> & {
  */
 export function ExplorerStatusBar({
   device = 'desktop',
+  view = 'medium',
   itemCount = '항목 개수',
   selection = '선택 정보',
   hasSelection = true,
@@ -59,13 +65,15 @@ export function ExplorerStatusBar({
           <IconButton
             variant="subtle"
             label={detailsViewLabel}
-            icon="icons/ic_fluent_text_bullet_list_ltr_20_regular.svg"
+            icon="icons/ic_fluent_line_horizontal_4_20_regular.svg"
+            isChecked={view === 'details'}
             onClick={handleDetailsView}
           />
           <IconButton
             variant="subtle"
             label={largeIconsViewLabel}
-            icon="icons/ic_fluent_grid_20_regular.svg"
+            icon="icons/ic_fluent_laptop_20_regular.svg"
+            isChecked={view === 'large'}
             onClick={handleLargeIconsView}
           />
         </>

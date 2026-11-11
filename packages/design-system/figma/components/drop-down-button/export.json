@@ -3,6 +3,13 @@
   "name": "DropDownButton",
   "nodeId": "307:22812",
   "propertyDefinitions": {
+    "Has icon": {
+      "default": false,
+      "type": "BOOLEAN"
+    },
+    "Icon": {
+      "type": "INSTANCE_SWAP"
+    },
     "Label": {
       "default": "레이블",
       "type": "TEXT"
