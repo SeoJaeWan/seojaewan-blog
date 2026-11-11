@@ -1,10 +1,10 @@
 // 시나리오 케이스 화면. 같은 폴더의 table.json을 읽어 그린다. 로컬 도구와 CI 보고서가 같은 코드를 쓴다.
 // 로컬(`mode: local`)의 실행해보기는 그 자리에서 케이스를 돌리고 Trace Viewer를 열고,
-// 보고서(`mode: report`)의 실행해보기는 그 케이스의 CI trace를 보고서와 함께 복사한 Trace Viewer(`trace/`)로 연다.
-// 보고서는 Cloudflare Access(로그인) 뒤에 있어 외부 뷰어는 trace zip을 받지 못한다.
+// 보고서(`mode: report`)의 실행해보기는 그 케이스의 CI trace를 같은 사이트의 Trace Viewer(`report.traceViewer`)로 연다.
+// `main` 보고서는 함께 복사한 `trace/`를, PR 실패 보고서(`/failures/pr-<번호>/`)는 사이트 루트의 `trace/`를 쓴다.
 
 const POLL_MS = 1000;
-const TRACE_VIEWER = 'trace/?trace=';
+const DEFAULT_TRACE_VIEWER = 'trace/';
 const REPORT_URL = 'https://scenario-cases.seojaewan.com/';
 const CHEVRON =
   '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>';
@@ -252,7 +252,8 @@ function runCell(info) {
       return '<span class="dash">–</span>';
     }
     const trace = new URL(info.outcome.trace, location.href).href;
-    return `<a class="run-button" href="${esc(TRACE_VIEWER + encodeURIComponent(trace))}" target="_blank" rel="noopener">실행해보기</a>`;
+    const viewer = state.table.report?.traceViewer ?? DEFAULT_TRACE_VIEWER;
+    return `<a class="run-button" href="${esc(`${viewer}?trace=${encodeURIComponent(trace)}`)}" target="_blank" rel="noopener">실행해보기</a>`;
   }
   const running = state.runs[info.grepToken]?.status === 'running';
   return `<button type="button" class="run-button" data-run="${esc(info.grepToken)}"${running ? ' disabled' : ''}>${running ? '실행 중…' : '실행해보기'}</button>`;
@@ -382,11 +383,33 @@ function bindToggle(id, key) {
 }
 
 /**
+ * 보고서 설정을 화면에 반영한다. PR 실패 보고서는 제목에 PR 번호와 `main` 보고서 링크를 보이고,
+ * 실패한 케이스만 담은 보고서는 "실패만" 거르기를 켜고 연다.
+ */
+function applyReportOptions() {
+  const report = state.table.report;
+  if (report === null || report === undefined) {
+    return;
+  }
+  if (report.pr !== null) {
+    const pr = `PR #${report.pr}`;
+    document.title = `시나리오 케이스 · ${pr} 실패`;
+    document.querySelector('.top h1').innerHTML =
+      `시나리오 케이스 · <a href="${esc(`${state.table.repoUrl}/pull/${report.pr}`)}" target="_blank" rel="noopener">${esc(pr)}</a> 실패 <small><a href="${REPORT_URL}">main 보고서</a></small>`;
+  }
+  if (report.isFailedOnly) {
+    state.onlyFailed = true;
+    document.getElementById('only-failed').setAttribute('aria-pressed', 'true');
+  }
+}
+
+/**
  * 화면 데이터를 읽어 처음 그린다.
  */
 async function start() {
   const response = await fetch('table.json', { cache: 'no-store' });
   state.table = await response.json();
+  applyReportOptions();
   document.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target : null;
     const run = target?.closest('[data-run]');
