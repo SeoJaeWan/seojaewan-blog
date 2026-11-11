@@ -1,88 +1,37 @@
 {
-  "description": "Chrome 주소창과 그 아래 추천 목록. Closed는 입력 줄만, Open은 입력하는 중 추천 목록이 열린 모습(Flyout 한 장이 입력 줄까지 감싼다)이다.",
+  "description": "Chrome 주소창에 입력하는 중 추천 목록이 열린 모습이다. AddressBar Suggesting의 Suggestions 자리에 찾은 글 줄과 맨 끝의 검색 줄을 채운다.",
   "name": "Chrome/AddressSuggestions",
-  "nodeId": "3488:8353",
-  "propertyDefinitions": {
-    "State": {
-      "default": "Closed",
-      "options": [
-        "Closed",
-        "Open"
-      ],
-      "type": "VARIANT"
-    }
-  },
+  "nodeId": "3497:15974",
+  "propertyDefinitions": {},
   "variants": {
-    "state=closed": {
+    "default": {
       "node": {
-        "height": 36,
+        "height": 160,
         "width": 640,
-        "x": 0,
-        "y": 0
+        "x": 16,
+        "y": 8
       },
-      "nodeId": "543:14685",
-      "properties": {
-        "State": "Closed"
-      },
+      "nodeId": "3497:15974",
+      "properties": {},
       "report": {
         "components": [
           {
             "component": "AddressBar",
             "paths": [
-              "popover/Trigger/address bar"
+              "address bar"
             ],
             "properties": {
               "Filled": "True",
               "Placeholder": "글 검색 또는 URL 입력",
               "Query": "리액",
               "State": "Suggesting",
-              "URL": "seojaewan.com/posts/react-19-hooks"
-            }
-          }
-        ],
-        "displayOnly": [],
-        "drawn": [],
-        "motion": [],
-        "offToken": []
-      },
-      "tree": {
-        "name": "State=Closed",
-        "size": {
-          "h": 36,
-          "w": 640
-        },
-        "sizing": {
-          "h": "HUG",
-          "v": "HUG"
-        }
-      }
-    },
-    "state=open": {
-      "node": {
-        "height": 162,
-        "width": 640,
-        "x": 16,
-        "y": 8
-      },
-      "nodeId": "3488:8314",
-      "properties": {
-        "State": "Open"
-      },
-      "report": {
-        "components": [
-          {
-            "component": "Flyout",
-            "paths": [
-              "Flyout"
-            ],
-            "properties": {
-              "Material": "Solid"
+              "URL": "웹 주소"
             }
           },
           {
             "component": "ListItem",
             "paths": [
-              "Flyout/Content/list inset/items/item 리액트 19 훅 정리"
+              "address bar/Suggestions/item 리액트 19 훅 정리"
             ],
             "properties": {
               "Has subtitle": false,
@@ -97,7 +46,7 @@
           {
             "component": "ListItem",
             "paths": [
-              "Flyout/Content/list inset/items/item 리액트 서버 컴포넌트 이해하기"
+              "address bar/Suggestions/item 리액트 서버 컴포넌트 이해하기"
             ],
             "properties": {
               "Has subtitle": false,
@@ -112,7 +61,7 @@
           {
             "component": "ListItem",
             "paths": [
-              "Flyout/Content/list inset/items/item 리액트 검색"
+              "address bar/Suggestions/item 리액트 검색"
             ],
             "properties": {
               "Has subtitle": false,
@@ -123,19 +72,6 @@
               "Title": "리액트 검색",
               "Trailing": "부가 정보"
             }
-          },
-          {
-            "component": "AddressBar",
-            "paths": [
-              "popover/Trigger/address bar"
-            ],
-            "properties": {
-              "Filled": "True",
-              "Placeholder": "글 검색 또는 URL 입력",
-              "Query": "리액",
-              "State": "Suggesting",
-              "URL": "seojaewan.com/posts/react-19-hooks"
-            }
           }
         ],
         "displayOnly": [],
@@ -144,14 +80,14 @@
         "offToken": []
       },
       "tree": {
-        "name": "State=Open",
+        "name": "Chrome/AddressSuggestions",
         "size": {
-          "h": 162,
+          "h": 160,
           "w": 640
         },
         "sizing": {
-          "h": "FIXED",
-          "v": "FIXED"
+          "h": "HUG",
+          "v": "HUG"
         }
       }
     }
