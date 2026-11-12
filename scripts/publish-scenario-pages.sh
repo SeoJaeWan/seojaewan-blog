@@ -51,8 +51,9 @@ for attempt in 1 2 3 4 5; do
   tree=$(
     export GIT_INDEX_FILE="$work/index"
     # 줄 끝을 바꾸지 않고 파일을 그대로 담는다(.gitignore도 보지 않는다).
+    # CI는 scripts만 받는 sparse checkout이라, --sparse가 없으면 하위 폴더(trace 등)가 빠진다.
     git --git-dir="$git_dir" --work-tree="$site" -c core.autocrlf=false \
-      add --all --force -- "$site"
+      add --all --force --sparse -- "$site"
     git --git-dir="$git_dir" write-tree
   )
   if [ -n "$base" ] && [ "$tree" = "$(git rev-parse "$base^{tree}")" ]; then
