@@ -1,7 +1,7 @@
 # @codocs [[배포 환경:배포(CD)]]
 # 블로그(Next.js standalone) 이미지. 빌드 문맥은 저장소 루트다(`docker compose build web`).
 # 완전 SSG라 글은 빌드할 때 저장소의 글 JSON(apps/web/content)에서 읽고, 실행 때는 만든 페이지만 내준다.
-FROM node:24.22.2-bookworm-slim@sha256:01d566e8d94d8c619591d78652babfccd3c6992a3dffa9ed5ab39e11cf6c70e9 AS base
+FROM node:24.22.3-bookworm-slim@sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54 AS base
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0 \
     NEXT_TELEMETRY_DISABLED=1
 # pnpm 버전은 루트 package.json의 packageManager를 따른다
@@ -21,7 +21,7 @@ RUN pnpm install --offline --frozen-lockfile --filter "@seojaewan/web..."
 ARG CONTENT_SOURCE=notion
 RUN CONTENT_SOURCE="${CONTENT_SOURCE}" pnpm --filter @seojaewan/web build
 
-FROM node:24.22.2-bookworm-slim@sha256:01d566e8d94d8c619591d78652babfccd3c6992a3dffa9ed5ab39e11cf6c70e9
+FROM node:24.22.3-bookworm-slim@sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54
 WORKDIR /app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
