@@ -1,5 +1,15 @@
 # @seojaewan/web
 
+## 0.3.1
+
+### Patch Changes
+
+- 486a9cb: E2E 포트 설정의 주석을 미니 PC runner를 쓰지 않는 CI 구조에 맞췄다.
+- cc9cba6: 지운 피그마 캡처 도구와 캡처 표 섹션을 가리키던 스토리·모션 코드 주석을 사실에 맞게 고쳤다.
+- Updated dependencies [7c0cd69]
+- Updated dependencies [cc9cba6]
+  - @seojaewan/design-system@0.3.1
+
 ## 0.3.0
 
 ### Minor Changes
