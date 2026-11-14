@@ -67,10 +67,9 @@ CI: |
   CI는 GitHub Actions다. 워크플로, 도는 조건, 작업 구조, 캐시, 병합 기준은 [[Git 작업 규칙:CI]]에서 정한다.
 
   - 모든 워크플로(`ci.yml`, `branch-name.yml`, `content-sync.yml`)가 GitHub 호스티드 러너(`runs-on: ubuntu-latest`)에서 돈다. self-hosted runner를 쓰는 워크플로는 없다. job마다 깨끗한 머신이라 pnpm은 기본 위치에 설치하고, 앱 서버는 기본 포트(3000)로 띄운다.
-  - 저장소를 공개(public)로 바꾼다. 공개 저장소에서는 GitHub 호스티드 표준 러너가 무료·무제한이고 4 vCPU다. 비공개 저장소에서는 계정의 월 무료 시간을 쓴다.
-  - 공개 전에 미니 PC의 self-hosted runner(`minipc-1`~`minipc-3`)를 저장소에서 뗀다. 공개 저장소에는 self-hosted runner를 두지 않는다.
-  - 공개 전환과 runner 떼기는 사람이 한다. 아직 하지 않았다. 2026-11-11의 CI 구조 개편 PR들이 병합된 뒤에 한다. 그때까지 저장소는 비공개이고 runner는 저장소에 달려 있지만, 어느 워크플로도 runner를 쓰지 않는다.
-  - 시나리오 케이스 보고서는 GitHub Pages(`gh-pages` 브랜치, 커스텀 도메인 `scenario-cases.seojaewan.com`)로 간다([[테스트 작성 규칙:E2E]]). 무료 계정의 비공개 저장소는 Pages를 쓰지 못하므로 사이트는 공개 전환 뒤에 열린다. 미니 PC의 보고서 폴더, 보고서 서버(8470), Cloudflare 터널의 보고서 호스트, 보고서의 Access는 더 쓰지 않는다(서버 쪽 정리는 사람이 한다, [[배포 환경:인프라 설정의 위치]]).
+  - 저장소는 공개(public)다. 공개 저장소에서는 GitHub 호스티드 표준 러너가 무료·무제한이고 4 vCPU다.
+  - 공개 저장소에는 self-hosted runner를 두지 않는다. 2026-11-12에 미니 PC의 self-hosted runner(`minipc-1`~`minipc-3`)를 저장소에서 떼고(저장소의 runner 0개) 저장소를 공개로 바꿨다. 미니 PC의 runner 서비스와 폴더는 2026-11-14에 지웠다([[배포 환경:인프라 설정의 위치]]).
+  - 시나리오 케이스 보고서는 GitHub Pages(`gh-pages` 브랜치, 커스텀 도메인 `scenario-cases.seojaewan.com`)로 간다([[테스트 작성 규칙:E2E]]). 2026-11-14부터 Pages가 내준다. 미니 PC의 보고서 폴더와 보고서 서버(8470), Cloudflare 터널의 보고서 호스트, 보고서의 Access는 2026-11-14에 지웠다([[배포 환경:인프라 설정의 위치]]).
   - 게시 브랜치 `gh-pages`에는 늘 부모 없는 커밋 하나만 남긴다. `main` 보고서가 약 113MB라 병합마다 기록이 쌓이면 안 되기 때문이다. 사이트 루트는 `main` 보고서이고, PR 실패 보고서는 `failures/pr-<번호>/`에 둔다. 올릴 때마다 브랜치를 받아 자기 자리만 고치고 다른 폴더는 지우지 않으며, 받은 뒤 다른 실행이 먼저 올렸으면(`--force-with-lease` 거절) 다시 받아 처음부터 한다(`scripts/publish-scenario-pages.sh`, `scripts/scenario-pages.mjs`). 사이트 루트에는 `CNAME`과 `.nojekyll`을 둔다. Pages 사이트 한도는 1GB다.
   - 시험용 데이터는 E2E만 `CONTENT_SOURCE=fixture`로 쓰고, `Build` 작업의 빌드는 커밋한 글 JSON으로 한다([[콘텐츠 원천:읽는 곳]]).
   - 앱이나 패키지를 바꾼 PR에는 changeset이 있어야 하고, CI가 `changeset status`로 빠뜨린 것을 잡는다([[배포 환경:배포(CD)]]).
@@ -116,20 +115,15 @@ CI: |
 접근 제한: |
   Cloudflare Access(로그인으로 막는 기능)는 이 저장소 쪽에서 쓰지 않는다. 젠킨스 관리 화면(`jenkins.seojaewan.com`)의 Access는 local-server가 맡고 예외를 두지 않는다. 블로그 `seojaewan.com`에는 Access를 쓰지 않는다.
 
-  시나리오 케이스 보고서는 GitHub Pages로 옮기면서 Access가 없어진다. 공개 저장소의 Pages라 누구나 볼 수 있다([[배포 환경:CI]]). 미니 PC 보고서에 걸던 Access 앱은 지울 대상이다(사람이 Cloudflare에서 지운다, [[배포 환경:인프라 설정의 위치]]).
+  시나리오 케이스 보고서는 GitHub Pages로 옮기면서 Access가 없어진다. 공개 저장소의 Pages라 누구나 볼 수 있다([[배포 환경:CI]]). 미니 PC 보고서에 걸던 Access 앱의 `scenario-cases` 대상은 2026-11-14에 지웠다([[배포 환경:인프라 설정의 위치]]).
 
   `/github-webhook/` 경로 공개와 `jenkins-webhook` Access 앱(Bypass)은 2026-11-06에 만들었지만, 웹훅을 쓰지 않게 되어 지운다. Notion 통합 웹훅은 터널이 아니라 Cloudflare Worker(`tools/notion-webhook/`)가 받아 글 동기화를 시작한다([[배포 환경:CI]]).
 인프라 설정의 위치: |
   터널, Access, GitHub Pages와 같은 인프라 설정은 코드가 아니라 서버와 Cloudflare·GitHub 설정이다. 그 절차와 결과(주소, 서비스 이름, 설정 파일 위치)는 이 문서에 적는다. 값(토큰, 비밀번호)은 적지 않는다. 설정이 끝나면 적을 자리가 이 섹션이다.
 
-  - 시나리오 케이스 보고서 사이트(GitHub Pages): 저장소 Settings > Pages에서 `gh-pages` 브랜치 루트를 내주고, 커스텀 도메인은 `scenario-cases.seojaewan.com`이다(브랜치 루트의 `CNAME`은 CI가 넣는다). DNS는 Cloudflare DNS의 `scenario-cases` 레코드를 GitHub Pages로 돌린다. 저장소 공개 전환 뒤에 사람이 설정한다. 아직 하지 않았다.
+  - 시나리오 케이스 보고서 사이트(GitHub Pages): 저장소 Settings > Pages에서 `gh-pages` 브랜치 루트를 내주고, 커스텀 도메인은 `scenario-cases.seojaewan.com`이다(브랜치 루트의 `CNAME`은 CI가 넣는다). DNS는 Cloudflare DNS의 `scenario-cases` 레코드가 `seojaewan.github.io`를 가리킨다. 2026-11-14에 설정했다.
 
-  더 쓰지 않는 설정(2026-11-11 CI 구조 개편으로 쓰지 않게 됐다). 아래는 정리하기 전의 상태이고, 정리는 사람이 한다. 아직 하지 않았다.
-  - self-hosted runner: `minipc-1`~`minipc-3`, 라벨 `self-hosted, Linux, X64`, 버전 v2.338.2. 폴더는 `~/actions-runners/runner-1`~`3`, systemd 서비스는 `actions.runner.SeoJaeWan-seojaewan-blog.minipc-<n>.service`(사용자 `seojaewan`)다. 지금도 저장소에 달려 있지만 어느 워크플로도 쓰지 않는다. 저장소 공개 전환 전에 사람이 저장소에서 떼고 서비스와 폴더를 지운다. 아직 떼지 않았다([[배포 환경:CI]]).
-  - 시나리오 케이스 보고서 폴더: `/home/seojaewan/scenario-cases-report`는 가장 최근 실행을 가리키는 심볼릭 링크다. 실행별 사본은 `/home/seojaewan/scenario-cases-report-builds/`에 있다.
-  - 시나리오 케이스 보고서 서버: `scenario-cases-report.service`(유닛 파일은 `~/scenario-cases-report-server/`)가 `python3 -m http.server`로 `127.0.0.1:8470`을 연다. 부팅 시 자동으로 시작한다.
-  - 시나리오 케이스 보고서 공개 주소: Cloudflare 터널(local-server 터널, 대시보드에서 관리)의 공개 호스트 이름 `scenario-cases.seojaewan.com`이 `http://127.0.0.1:8470`으로 간다. Service Type은 HTTP다(HTTPS로 두면 502). Cloudflare Access 애플리케이션으로 소유자 이메일만 허용한다. 같은 이름을 GitHub Pages로 돌리려면 이 공개 호스트 이름과 Access 앱을 먼저 지운다.
-  - 머신 준비(runner용): Playwright Chromium 시스템 라이브러리 설치(`playwright install-deps chromium`), `corepack enable`. runner를 떼면 이 준비는 필요 없다.
+  더 쓰지 않는 설정: 2026-11-11 CI 구조 개편으로 쓰지 않게 된 미니 PC의 self-hosted runner(`minipc-1`~`minipc-3`) 서비스와 폴더(`~/actions-runners`), 시나리오 케이스 보고서 서버(`scenario-cases-report.service`, 8470)와 보고서 폴더는 2026-11-14에 지웠다. Cloudflare 터널의 `scenario-cases` 공개 호스트 이름과 Access 대상도 같은 날 지웠다. runner용으로 설치한 Playwright Chromium 시스템 라이브러리와 `corepack enable`은 지워서 얻는 것이 없어 그대로 두었다.
 
   계속 쓰는 설정:
   - 포트(2026-11-06 정함): 블로그 컨테이너 `127.0.0.1:3000`, 이미지 서버 컨테이너 `127.0.0.1:3100`, 젠킨스(local-server 소유) `127.0.0.1:8090`이다. 8080은 local-server의 Caddy가 `10.88.0.2:8080`에서 쓰고 있어 피했다.
