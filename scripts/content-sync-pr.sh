@@ -4,12 +4,13 @@
 # 하위 명령 두 개
 # - close-stale: 글 JSON이 main과 같을 때 부른다. 열린 동기화 PR이 있으면(앞선 병합이 실패해 남은 것) 더는 필요 없으므로 닫는다.
 # - publish: 운영 글 빌드가 성공한 뒤 부른다. 고정 브랜치(SYNC_BRANCH)를 main 위의 커밋 하나로 다시 만들어 push하고,
-#   PR을 만들고(열린 PR이 이미 있으면 그것을 쓴다) 바로 병합한다. 병합은 merge commit이고 `--match-head-commit`으로
+#   PR을 만들고(열린 PR이 이미 있으면 그것을 쓴다), 그 커밋에 `main` 병합의 필수 검사(GATE_CONTEXT)를 통과로 보고한 뒤
+#   바로 병합한다. GITHUB_TOKEN이 만든 PR에서는 CI가 돌지 않아 보고가 없으면 ruleset이 병합을 막는다. 병합은 merge commit이고 `--match-head-commit`으로
 #   방금 push한 커밋일 때만 한다. 다른 워크플로의 검사를 기다리지 않는다. 깨진 글이 병합되지 않게 하는 검사는
 #   워크플로의 운영 글 빌드 하나다. merge commit이어야 배포가 "글 JSON만 바뀐 병합"을 `HEAD^1..HEAD`로 알아본다(deploy/version-pr.mjs).
 # 병합 직후 일시적으로 병합할 수 없다고 답할 수 있어(GitHub가 병합 가능 여부를 비동기로 계산한다) 몇 번 다시 시도한다.
-# 필요한 환경 변수: SYNC_BRANCH, CONTENT_PATH, GH_TOKEN(워크플로의 GITHUB_TOKEN. push·PR 만들기·병합 권한), GH_REPO,
-#   GIT_AUTHOR_*·GIT_COMMITTER_*(커밋 작성자)
+# 필요한 환경 변수: SYNC_BRANCH, CONTENT_PATH, GH_TOKEN(워크플로의 GITHUB_TOKEN. push·PR 만들기·검사 보고·병합 권한), GH_REPO,
+#   GIT_AUTHOR_*·GIT_COMMITTER_*(커밋 작성자), publish에는 GATE_CONTEXT(필수 검사 이름)와 RUN_URL(보고에 붙일 실행 주소)
 set -euo pipefail
 
 : "${SYNC_BRANCH:?SYNC_BRANCH가 없다}"
@@ -31,6 +32,8 @@ case "${1:-}" in
     ;;
 
   publish)
+    : "${GATE_CONTEXT:?GATE_CONTEXT가 없다}"
+    : "${RUN_URL:?RUN_URL이 없다}"
     git diff --stat -- "$CONTENT_PATH"
     git switch --force-create "$SYNC_BRANCH"
     git add -- "$CONTENT_PATH"
@@ -55,6 +58,12 @@ BODY
     else
       echo "열린 동기화 PR #$pr을 새 커밋으로 갱신했다."
     fi
+
+    # @codocs [[Git 작업 규칙:CI]]
+    gh api --method POST "repos/$GH_REPO/statuses/$sha" --silent \
+      -f state=success -f context="$GATE_CONTEXT" -f target_url="$RUN_URL" \
+      -f description='Content sync: production content build passed'
+    echo "$sha 커밋에 \"$GATE_CONTEXT\" 통과를 보고했다."
 
     for attempt in 1 2 3 4 5; do
       if gh pr merge "$pr" --merge --match-head-commit "$sha" --delete-branch; then
