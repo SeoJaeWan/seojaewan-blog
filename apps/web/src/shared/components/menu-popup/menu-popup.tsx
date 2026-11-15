@@ -168,7 +168,7 @@ type MenuPopupSide = BaseMenu.Popup.State['side'];
 /** 메뉴를 열 때의 움직임. menu는 드롭다운·우클릭 메뉴, submenu는 하위 메뉴다. */
 export type MenuPopupMotion = 'menu' | 'submenu';
 
-// 메뉴를 열 때의 움직임이다([[피그마 연동:모션 클래스]]). 드롭다운·우클릭 메뉴는 열리는 쪽으로 미끄러져 나오고,
+// 메뉴를 열 때의 움직임이다([[디자인 시스템:모션 클래스]]). 드롭다운·우클릭 메뉴는 열리는 쪽으로 미끄러져 나오고,
 // 하위 메뉴는 측정하지 않아 지금처럼 페이드로 나타난다.
 const enterClassNames = {
   menu: 'motion-menu-enter',
@@ -202,7 +202,7 @@ type MenuPopupProps = MenuPanelProps & {
  * 열린 뒤 `data-side`가 바뀌어도 다시 움직이지 않게 한다.
  * 하위 메뉴는 측정하지 않아 지금처럼 `motion-flyout-enter`로 페이드해 나타난다. 사라지는 움직임은 없어 Base UI가 기다리지 않고 바로 닫는다.
  * @codocs [[디자인 시스템:조립]]
- * @codocs [[피그마 연동:모션 클래스]]
+ * @codocs [[디자인 시스템:모션 클래스]]
  * @param props 컴포넌트 속성
  * @param props.items 메뉴 항목과 구분선. 위에서부터 그린다
  * @param props.width 메뉴 바탕 너비(피그마 메뉴 조립의 Menu 너비). 없으면 Menu 기본 너비다

@@ -1,12 +1,12 @@
 // description과 주석에 적는 `@키 값` 줄을 읽는다. 피그마 API를 쓰지 않는 순수 함수다.
-// 규칙 글의 자리와 키의 뜻은 [[피그마 연동:구조 검사]]에 있다.
+// 규칙 글의 자리와 키의 뜻은 [[디자인 시스템:구조 검사]]에 있다.
 
 /** 받는 키. 피그마 기능(재생 설정, 주석, 변수 연결 등)으로 읽을 수 없는 것만 `@` 줄에 적는다 */
 export const DIRECTIVE_KEYS = ['direction'] as const;
 
 /**
  * 옛 모션 견본(01 · Foundations `Foundations / Motion`) 주석에만 받는 키. 견본을 움직임이 일어나는 자리로 옮기기 전까지
- * 그 견본을 그대로 내보내기 위해 받는다([[디자인 기반:모션 견본]]).
+ * 그 견본을 그대로 내보내기 위해 받는다([[디자인 시스템:모션 견본]]).
  */
 export const LEGACY_SAMPLE_KEYS = ['repeat', 'trigger', 'runtime', 'reduced-motion'] as const;
 
@@ -52,7 +52,7 @@ const LINE_PATTERN = /^@([a-z][a-z-]*)(?:\s+(.+))?$/u;
 /**
  * 글에서 `@키 값` 줄을 읽는다. `@`로 시작하지 않는 줄은 설명이라 보지 않는다.
  * 모르는 키, 값이 없는 줄, 잘못된 값은 고칠 줄로, 더 쓰지 않는 키의 줄은 지울 줄로 돌려준다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param text description이나 주석 글
  * @param options 읽는 방법(옛 견본 주석인지)
  * @returns 키와 값, 고칠 줄, 지울 줄
@@ -134,7 +134,7 @@ export function parseDirectiveTexts(
 /**
  * 컴포넌트 세트나 단독 컴포넌트와 변형의 description에서 `@` 줄을 읽는다. 단독 컴포넌트는 변형이 자기 자신이라
  * 같은 description을 두 번 읽지 않도록 한 번만 읽는다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param node 컴포넌트 세트나 단독 컴포넌트
  * @param node.id 노드 ID
  * @param node.description 노드 description
@@ -154,7 +154,7 @@ export function parseVariantDirectives(
 
 /**
  * 지울 줄 알림 문장을 만든다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param where 위치(컴포넌트·변형, 토큰 이름 등)
  * @param lines 지울 줄
  * @returns 알림 문장

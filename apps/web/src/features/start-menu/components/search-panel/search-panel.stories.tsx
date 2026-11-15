@@ -20,7 +20,7 @@ type FigmaArgs = {
   device: (typeof DEVICES)[number];
 };
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 피그마 조립처럼 본문 자리에 입력 전 본문(Search/Body `View=Before typing`)을 넣는다.
 // 패널 크기는 ShellSurface가 정한다.
 const meta = {

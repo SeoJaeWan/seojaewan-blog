@@ -8,7 +8,7 @@ export type Bindings = Partial<Record<string, string>>;
  * 바꿔 끼운 인스턴스는 바꾸기 전 레이어(원본 컴포넌트 안의 레이어)의 크기 변수 연결을 그대로 쓰지만,
  * 피그마 API는 바꿔 끼운 인스턴스의 boundVariables에 그 연결을 돌려주지 않는다.
  * 그래서 자기 연결이 없는 필드는 원본 레이어의 연결을 물려받은 것으로 본다. 값이 원본과 다르면 덮어쓴 것이라 물려받지 않는다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param own 노드 자신의 연결
  * @param inherited 원본 레이어의 연결
  * @param isSameValue 필드 값이 원본 레이어와 같은지
@@ -43,7 +43,7 @@ export function sourceLayerId(id: string): string | null {
  * 인스턴스가 덮어쓴 안쪽 레이어에 해당하는, 그 인스턴스의 원본 컴포넌트 안 레이어 ID를 구한다.
  * 안쪽 레이어 ID `I<인스턴스 ID>;<나머지>`(인스턴스 ID가 이미 `I`로 시작하면 `<인스턴스 ID>;<나머지>`)에서 인스턴스 ID를 떼면 원본 컴포넌트 기준 ID가 된다
  * (나머지가 `;`로 이어지면 원본 안 인스턴스의 안쪽 레이어라 앞에 `I`를 붙인다).
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param instanceId 덮어쓴 인스턴스 ID
  * @param layerId 덮어쓴 레이어 ID
  * @returns 원본 컴포넌트 안 레이어 ID. 그 인스턴스 안쪽 레이어가 아니면 null
@@ -66,7 +66,7 @@ export type BindingBase =
  * 변형 고르기·인스턴스 교체로 원본 컴포넌트가 바뀐 안쪽 인스턴스(`swappedIds`)와 그 안쪽 레이어는
  * 원래 자리의 원본이 아니라 바꿔 끼운 새 원본 컴포넌트와 비교한다(`sourceId`가 null이면 새 원본 컴포넌트 자신).
  * 품은 교체 인스턴스가 여럿이면 가장 안쪽 것을 쓴다. 바깥 인스턴스 자신의 교체는 이미 새 원본으로 읽으므로 따지지 않는다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param instanceId 덮어쓰기를 가진 바깥 인스턴스 ID
  * @param layerId 덮어쓴 레이어 ID
  * @param swappedIds 원본 컴포넌트를 바꾼 덮어쓰기 레이어 ID들

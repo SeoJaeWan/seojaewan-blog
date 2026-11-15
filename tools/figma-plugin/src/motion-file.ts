@@ -9,7 +9,7 @@ import { type JsonObject, type JsonValue, stableStringify } from './stable-json'
 
 // 애니메이션 견본마다 내보내는 `figma/motions/<이름>.json`의 형식. 형식은 이 파일 한 곳에서 정한다.
 // 모션 시간 검사(tools/figma-parity)는 패키지가 달라 이 타입을 가져다 쓰지 않고, 읽을 때 필요한 값만 다시 검증한다
-// (export.json과 같은 방식). 계약은 [[피그마 연동:모션]]에 있다.
+// (export.json과 같은 방식). 계약은 [[디자인 시스템:모션]]에 있다.
 
 /** 시간 값(ms)과 그 값과 같은 모션 변수. 같은 변수가 없으면 token이 null이다. token: `motion/duration/*`·`motion/delay/*` 변수 이름. */
 export type MotionTime = {
@@ -86,7 +86,7 @@ export const MOTION_NAME_PATTERN = /^motion-[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 /**
  * 모션 json 문자열을 만든다. 키를 정렬하고 숫자는 정한 자리에서 반올림한 값만 담아,
  * 같은 피그마를 다시 내보내면 같은 바이트가 나온다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param motion 모션 자료
  * @returns 키를 정렬한 JSON 문자열(끝 줄바꿈 포함)
  */
@@ -141,7 +141,7 @@ function keyframeJson(keyframe: MotionKeyframe): JsonObject {
 
 /**
  * 견본 링크를 만든다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param fileKey 피그마 파일 키(figma.json)
  * @param nodeId 견본 노드 ID(`12:34`)
  * @returns `https://www.figma.com/design/<파일 키>?node-id=12-34`

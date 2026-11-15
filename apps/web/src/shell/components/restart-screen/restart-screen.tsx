@@ -19,7 +19,7 @@ const BOOT_SCREEN_DELAY = '--motion-delay-boot-screen';
  * 화면은 고정 크기가 아니라 동적 뷰포트(`dvh`) 전체를 채운다(`auto`가 준다).
  * @codocs [[반응형:화면 채우기]]
  * @codocs [[다시 시작:순서]]
- * @codocs [[피그마 연동:모션 클래스]]
+ * @codocs [[디자인 시스템:모션 클래스]]
  *
  * 사이트를 처음 불러올 때(`booting`)는 같은 화면이 서버 HTML에서부터 나타나는 움직임 없이 덮고 있다. 수화와 기기 판단이 끝나
  * shell이 알리면 정해진 시간을 기다리지 않고 바로 `motion-boot-screen-exit`로 걷힌다. 이때는 안전장치 틀

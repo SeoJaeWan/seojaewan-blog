@@ -29,11 +29,11 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 글자를 담은 tooltip 역할 요소다 */
 export const Default: Story = {
   render: () => <Tooltip text="도움말" />,
@@ -44,7 +44,7 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** balloon은 메시지를 그리고 id 같은 div 속성을 넘긴다 */
 export const Balloon: Story = {
   render: () => <Tooltip variant="balloon" message="메시지 내용" id="tip" />,

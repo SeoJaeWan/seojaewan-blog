@@ -17,7 +17,7 @@ import type {
 import { annotationData, annotationTexts, assetGroupOf, type NameCache } from './read-node';
 
 // 피그마에서 움직임과 모션 변수를 motion-data.ts의 순수 데이터로 읽는다. 노드를 바꾸지 않는다(읽기 전용).
-// 움직임은 움직임이 일어나는 자리(컴포넌트·자산 원본, 조립 흐름이 도착하는 프레임)에서 읽는다([[디자인 기반:모션 견본]]).
+// 움직임은 움직임이 일어나는 자리(컴포넌트·자산 원본, 조립 흐름이 도착하는 프레임)에서 읽는다([[디자인 시스템:모션 견본]]).
 // 옛 견본 프레임(`Foundations / Motion`)은 그 자리로 옮기기 전까지 함께 읽는다.
 // 플러그인과 피그마 MCP(use_figma) 양쪽에서 같은 코드가 실행된다.
 
@@ -54,8 +54,8 @@ const MAX_ALIAS_DEPTH = 10;
  * - 컴포넌트·자산 원본: 이름에 `Components`·`Foundations`가 든 페이지의 컴포넌트 가운데, 키프레임을 정의한 것
  * - 조립 흐름: 03 · Patterns 페이지(섹션 안 포함)의 최상위 프레임 가운데 이름이 모션 클래스 이름 꼴이고 키프레임을 가진 것
  * - 옛 견본: 01 · Foundations `Foundations / Motion` 프레임(옛 `Motion` 섹션도) 바로 아래 `motion-` 프레임
- * @codocs [[디자인 기반:모션 견본]]
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션 견본]]
+ * @codocs [[디자인 시스템:모션]]
  * @returns 움직임 목록
  */
 export async function listMotionSamples(): Promise<MotionSampleSummary[]> {
@@ -86,7 +86,7 @@ export async function listMotionSamples(): Promise<MotionSampleSummary[]> {
 
 /**
  * 옛 견본 프레임을 찾는다.
- * @codocs [[디자인 기반:모션 견본]]
+ * @codocs [[디자인 시스템:모션 견본]]
  * @param page 01 · Foundations 페이지
  * @returns 견본 목록
  */
@@ -107,7 +107,7 @@ function legacySamples(page: PageNode): MotionSampleSummary[] {
 
 /**
  * 조립 흐름 프레임을 찾는다. 페이지와 섹션 바로 아래 프레임이 타임라인 하나(재생 설정 Loop 하나)다.
- * @codocs [[디자인 기반:모션 견본]]
+ * @codocs [[디자인 시스템:모션 견본]]
  * @param page 03 · Patterns 페이지
  * @returns 흐름 프레임 목록
  */
@@ -137,7 +137,7 @@ function flowFrames(page: PageNode): MotionSampleSummary[] {
 /**
  * 키프레임을 정의한 컴포넌트·자산 원본을 찾는다. 원본 키프레임은 모든 인스턴스로 이어지므로, 인스턴스 안쪽 레이어의
  * 키프레임은 원본에서 이어진 것이라 보지 않는다. 컴포넌트 세트는 변형마다 타임라인이 있어 변형 하나가 움직임 하나다.
- * @codocs [[디자인 기반:모션 견본]]
+ * @codocs [[디자인 시스템:모션 견본]]
  * @param page 컴포넌트·Foundations 페이지
  * @returns 원본 목록
  */
@@ -160,7 +160,7 @@ async function originalComponents(page: PageNode): Promise<MotionSampleSummary[]
 
 /**
  * 원본 컴포넌트(변형)나 그 세트의 Development 주석에서 모션 클래스 이름(`motion-…` 한 줄)을 찾는다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param component 원본 컴포넌트
  * @param names 이름 캐시
  * @returns 모션 이름, 없으면 null
@@ -254,7 +254,7 @@ function containsKeyframes(value: unknown): boolean {
 
 /**
  * 견본을 담는 묶음인지 본다. 새 구조는 `Foundations / Motion` 프레임, 옛 구조는 `Motion` 섹션이다.
- * @codocs [[디자인 기반:모션 견본]]
+ * @codocs [[디자인 시스템:모션 견본]]
  * @param node 프레임 또는 섹션
  * @returns 견본 묶음이면 true
  */
@@ -295,7 +295,7 @@ export async function isMotionApiAvailable(sampleId: string): Promise<boolean> {
 
 /**
  * `motion/*` 로컬 변수를 읽는다. FLOAT 변수는 컬렉션 기본 모드 값을 별칭까지 풀어 둔다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @returns 모션 변수
  */
 export async function readMotionVariables(): Promise<MotionVariable[]> {
@@ -352,8 +352,8 @@ function easingCurve(
  * 이징의 변수 연결은 키프레임을 정의한 노드(자신, 원본 컴포넌트, 원본 레이어)의 `manualKeyframeTracks`에서 읽는다.
  * `animations`에서는 이징이 풀린 곡선으로 나오기 때문이다. 숨긴 노드는 재생되지 않아 읽지 않는다.
  * 반복은 재생 설정 Loop로 읽는다. 옛 견본은 Loop가 모두 기본값(켜짐)이라 주석의 `@repeat`로 읽는다.
- * @codocs [[피그마 연동:모션]]
- * @codocs [[디자인 기반:모션 견본]]
+ * @codocs [[디자인 시스템:모션]]
+ * @codocs [[디자인 시스템:모션 견본]]
  * @param sampleId 움직임 자리 노드 ID(프레임이나 컴포넌트)
  * @returns 움직임 데이터
  */
@@ -413,7 +413,7 @@ function componentDescription(component: ComponentNode): string {
 
 /**
  * 재생 설정 Loop를 읽는다. 켜면 무한 반복, 끄면 한 번이다. `playbackSettings`는 플러그인 타입 정의에 없어 값의 꼴을 확인한다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param node 움직임을 담은 프레임이나 컴포넌트
  * @returns Loop, 읽지 못하면 null
  */
@@ -428,7 +428,7 @@ function loopOf(node: BaseNode): boolean | null {
 
 /**
  * 타임라인 길이를 읽는다. 자리 안 컴포넌트의 트랙이 더 길면 이 길이에서 잘려 재생된다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param node 움직임을 담은 프레임이나 컴포넌트
  * @returns 길이(ms), 읽지 못했으면 null
  */
@@ -439,7 +439,7 @@ function timelineLength(node: FrameNode | ComponentNode): number | null {
 
 /**
  * 노드의 Development·Accessibility 주석을 움직임 데이터에 더한다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param node 노드
  * @param path 움직임 기준 레이어 경로
  * @param sample 주석을 더할 움직임 데이터
@@ -697,7 +697,7 @@ function lookup(
 /**
  * 키프레임이 걸린 노드의 이름과 종류를 정한다. 인스턴스면 컴포넌트(세트) 이름, 원본이 자산이면 자산 이름이다.
  * 컴포넌트 원본 루트 자신에 건 키프레임도 같은 규칙으로 컴포넌트(세트)·자산 이름이다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param node 노드
  * @returns 노드 이름과 종류
  */

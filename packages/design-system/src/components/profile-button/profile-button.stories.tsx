@@ -21,7 +21,7 @@ const meta = {
   title: 'Components/ProfileButton',
   // 컴포넌트 너비가 홀수라 가운데 정렬에서 0.5px 위치에 놓이지 않게 한다.
   parameters: { layout: 'padded' },
-  // 글자는 피그마 Name 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
+  // 글자는 피그마 Name 속성의 기본값과 같아야 한다([[디자인 시스템:스토리 규칙]]).
   args: { state: 'rest', name: '사용자 이름' },
   argTypes: {
     state: { control: 'inline-radio', options: STATES },
@@ -34,7 +34,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 export const Figma: Story = {};
 

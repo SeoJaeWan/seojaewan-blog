@@ -28,11 +28,10 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:상태]]
 /** 라벨을 접근성 이름으로 갖는 버튼이다. 누르면 onClick을 부른다 */
 export const Default: Story = {
   args: { onClick: fn() },
@@ -75,7 +74,6 @@ function MenuTriggerExample() {
   );
 }
 
-// @codocs [[컴포넌트 목록:상태]]
 /** 메뉴 트리거로 쓰면 누를 때 메뉴가 열리고, 열린 동안 아래 꺾쇠(⌄) 모양이다 */
 export const MenuTrigger: Story = {
   render: () => <MenuTriggerExample />,

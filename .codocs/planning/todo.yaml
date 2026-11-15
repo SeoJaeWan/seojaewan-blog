@@ -1,0 +1,100 @@
+_codocs:
+  id: todo
+  name: todo
+  parent:
+    - seojaewan 블로그
+개요: |
+  이번 피그마 내보내기 작업에서 정할 것과 할 것을 모은다. 한 일과 경과는 적지 않고, 끝난 항목은 지운다.
+  피그마 파일은 "디자이너가 쓰는 피그마"로 다시 정리했고, 내보내기는 그 파일을 기준으로 처음부터 다시 정한다. 그동안 내보낸 자료와 플러그인을 그대로 이어 갈 필요는 없다.
+  논의는 "논의할 것"의 순서대로 하나씩 한다. 정한 내용은 [[디자인 시스템]]에 반영하고 여기서 지운다.
+지금 상태: |
+  피그마 파일(키 `XV9Y1UT5UH4tC5hSqLVipZ`)
+  - 페이지: Cover, Read me, Foundations, Controls, Shell, Blog, Patterns, Screens.
+  - 부품은 Controls·Shell·Blog 세 페이지에 있고, `Section / <이름>` 프레임 → `component grid` → `item/<부품>` → `table/<세트>` 안에 놓인다. `table/` 안에는 컴포넌트 세트와 함께 문서용 레이어(`label`, `row label`, `backdrop`)가 있고, `item/` 안에는 이름과 설명 글자가 있다.
+  - 색 변수는 컬렉션 `Color`의 `Black/60`, `White/100`, `Gray/100`, `Blue/*` 같은 이름이다.
+
+  저장소
+  - 플러그인은 `tools/figma-plugin`이다. 토큰, 컴포넌트, 조립, 자산, 모션을 읽어 GitHub REST로 브랜치와 PR을 만든다. Screens는 내보내지 않는다.
+  - 지금까지 내보낸 자료: 컴포넌트 폴더 84개(`packages/design-system/figma/components`), 조립 `export.json` 60개(`apps/web/figma/patterns`), 모션 29개(`packages/design-system/figma/motions`), 디자인 시스템 쪽 PNG 496개.
+  - 코드의 색 토큰은 옛 이름(`--color-black-6`, `--color-gray-13` 같은 꼴)이고 피그마의 지금 이름과 다르다.
+플러그인과 지금 피그마가 어긋나는 곳: |
+  플러그인 코드는 옛 피그마 구조를 전제로 한다. 코드에서 확인한 것은 다음과 같다.
+  - 컴포넌트 페이지를 이름에 `Components`가 든 페이지로 찾는다(`component-pages.ts`의 `COMPONENTS_PAGE_KEYWORD`). 지금은 그런 페이지가 없다.
+  - 부품 위쪽을 SECTION 두 단(묶음, 컴포넌트)으로 읽는다(`component-pages.ts`). 지금은 프레임 구조다.
+  - 조립 페이지를 노드 ID `517:16130`으로 찾는다(`plugin-config.ts`의 `PATTERNS_PAGE_ID`). 지금 Patterns 페이지의 ID와 같은지는 확인하지 않았다.
+  - 이 밖에 기대는 곳: Foundations 페이지 이름과 `Foundations / Motion` 견본 프레임(`read-motion.ts`), 자산 프레임 이름 `group/<묶음>`(`core/asset-groups.ts`), 조립 이름 `영역/이름`(`naming.ts`), 변수 이름 접두(`motion/`, `font/`, `rotate/`), `Hangul` 글자 스타일 이름(`check-structure.ts`), `Laptop` 모드와 `breakpoint/*` 변수(`tokens-css.ts`). 지금 피그마에서 각각 그대로인지는 확인하지 않았다.
+
+  [[디자인 시스템]]의 내보내기 섹션(피그마 플러그인, 플러그인 화면, 구조 검사, 자산, PR 흐름, 스킬, CI)은 지금 코드가 하는 대로 적혀 있어 같은 옛 구조를 전제로 한다. 아래 논의가 끝나면 코드와 함께 다시 쓴다.
+조사에서 확인한 것: |
+  플러그인으로 되는 것(피그마 공식 문서)
+  - 변수의 컬렉션·모드·별칭·쓰임 범위·코드 이름, 글자·효과 스타일, 컴포넌트 속성 정의와 변형, 인스턴스 덮어쓰기, 자동 배치 값, 슬롯(슬롯 노드와 설정), 모션(키프레임과 애니메이션 스타일, 베타)을 읽는다.
+  - 그림은 PNG·JPG·PDF·SVG·영상·노드 JSON으로 내보내고, `getCSSAsync`로 Inspect의 CSS를 얻는다.
+  - manifest에 도메인을 적으면 GitHub API로 직접 보낸다. `Access-Control-Allow-Origin: *`를 허용하는 API만 부를 수 있다.
+
+  플러그인의 한계
+  - 사람이 열어서 실행해야 한다. 피그마가 바뀔 때 저절로 도는 방법은 문서에서 찾지 못했다.
+  - OAuth 로그인은 자체 서버가 있어야 한다. 토큰을 붙여 넣는 지금 방식은 서버 없이 된다.
+  - codegen 플러그인은 Dev Mode 전용이고 선택한 레이어 하나에 코드 조각을 보여 주는 용도다.
+
+  다른 길
+  - Variables REST API는 Enterprise 전용이다. Enterprise가 아니면 변수를 읽는 길은 플러그인뿐이다.
+  - Code Connect는 피그마 컴포넌트와 코드 컴포넌트를 연결할 뿐 구현을 대신하지 않는다(Professional 이상, Dev 또는 Full 시트).
+  - 피그마 자체의 변수 내보내기는 손으로 실행하고, 파일 형식 설명이 도움말에 없다.
+
+  먼저 해 본 사람들과 연구
+  - 토큰은 플러그인으로 끝까지 자동화한 사례가 많다. 형식은 DTCG(2025.10 첫 안정판)가 표준이고 지금 `tokens.json`도 이 형식이다.
+  - 컴포넌트와 화면을 자동 변환해 그대로 쓰는 사례는 찾지 못했다. 정리된 자료(속성, 구조, 그림)를 내보내고 구현은 사람이나 AI가 한다.
+  - 반복되는 문제는 모드 처리, 별칭 해석, 이름 규칙, 피그마에서 지운 것을 코드에서 지우는 일, 출력 차이 검토다.
+  - AI에게 좌표와 직접 값을 그대로 주면 절대 위치와 임의 값이 늘어 코드가 딱딱해진다(Figma2Code, arXiv 2604.13648). AI는 있는 컴포넌트를 스스로 재사용하지 않는다(DesignBench, arXiv 2506.06251). 화면 전체보다 컴포넌트 단위가 정확했다는 팀 회고가 있다.
+  - 출처: 피그마 Plugin API 문서(`developers.figma.com/docs/plugins`), Variables REST API 문서, Code Connect 문서, Design Tokens 규격 2025.10, 피그마 공식 예제 `figma/variables-github-action-example`, Nathan Curtis "Components as Data".
+논의할 것: |
+  앞의 결정이 뒤의 결정을 좌우하는 순서다.
+  1. 내보낼 대상. 지금은 토큰, 컴포넌트, 조립, 자산, 모션이다. Screens도 내보낼지, 뺄 것이 있는지 정한다.
+  2. 그동안 내보낸 자료. 전부 지우고 새로 내보낼지, 새 피그마에 맞춰 이어 갈지 정한다.
+  3. 피그마에서 대상을 찾는 규칙. 위 "어긋나는 곳"을 새 구조 기준으로 다시 정한다.
+  4. 피그마 묶음과 코드 폴더의 대응. Controls·Shell·Blog 페이지와 묶음 이름을 코드 쪽 폴더와 분류에 반영할지 정한다.
+  5. 컴포넌트·조립 자료에 담을 내용. 토큰 이름, 자동 배치, 속성, 슬롯 중 무엇을 어떤 모양으로 담을지 정한다. 좌표와 직접 값을 그대로 담지 않는 방향을 먼저 본다. 피그마 속성 이름을 코드 prop 이름으로 옮기는 규칙(변형 축 이름, 기본값 이름, 참/거짓 변형)과 상태 변형을 코드로 옮기는 규칙(팝업 트리거의 `Rest`·`Hover`, 포커스 표시, 탐색기 항목의 현재 항목 표시)도 여기서 다시 정한다. 지금 코드는 이 규칙대로 구현돼 있고 문서에는 없다.
+  6. 문서용 레이어 거르기. `label`, `row label`, `backdrop`, 이름·설명 글자를 내보낼 때 어떻게 걸러 낼지 정한다.
+  7. 토큰 이름과 삭제 동기화. 변수 이름을 코드 토큰 이름으로 바꾸는 규칙과, 피그마에서 지운 토큰을 코드에서 지우는 방법을 정한다. 코드의 색 토큰 이름을 지금 피그마 이름으로 옮기는 일이 여기에 든다.
+  8. 구조 검사. 지금은 위반이 하나라도 있으면 커밋하지 않는다. 검사 항목을 새 피그마 기준으로 다시 정한다.
+  9. 내보낸 뒤의 흐름. PR 단위와 브랜치 이름, PR을 처리하는 스킬 셋(`figma-token-pr`, `figma-component-pr`, `figma-motion-pr`), Code Connect를 쓸지 정한다.
+
+  위 논의에서 함께 정할 것은 아래 섹션에 있다: 모습 비교(5·9번), 자산과 토큰 생성 파일(1·7번), 확인을 돌리는 자리와 플러그인 PR의 changeset(9번), 플러그인에서 고칠 것(3번).
+모습 비교: |
+  피그마와 코드가 같은 모습인지 무엇으로 확인할지 정한다. 지금은 자동으로 확인하는 장치가 없고, 구현하는 사람이 플러그인이 내보낸 PNG를 보고 맞춘다.
+  - 픽셀 비교는 두지 않는다. 피그마와 브라우저의 그리는 엔진이 달라 같아 보이는 것도 픽셀로는 다르게 나온다.
+  - 그림 대신 값(크기, 간격, 색, 글자 속성)을 내보내 코드의 계산된 값과 비교하는 방향을 포함해 처음부터 본다.
+  - 함께 정할 것: `Figma` 스토리와 스토리의 `data-parity-target`·`data-parity-hover` 속성을 계속 둘지, 플러그인이 PNG를 계속 내보낼지, 코드만 바꾼 PR의 모습 회귀를 누가 볼지.
+  - 코드 전용 컴포넌트의 `Figma` 스토리와 남은 `figma/components/<코드 전용>/` 폴더를 어떻게 할지도 여기서 정한다.
+자산: |
+  사람이 낸 방향은 원본(SVG, PNG)을 하나의 신뢰 파일로 보고, 원본 폴더(`figma/assets/`)를 따로 두지 않고 `src/assets/`로 합치는 것이다.
+  - 생성기(`packages/design-system/scripts/assets/`)는 SVG를 `Asset` 컴포넌트가 그릴 데이터(`src/assets/asset-data.ts`)로 풀고, 래스터 원본을 WebP로 줄이며 가로·세로를 `image-data.ts`에 적는다. 피그마는 WebP로 내보내지 못한다.
+  - SVG를 `<img>`로 넣으면 `currentColor`가 글자 색을 따르지 않는다. 아이콘은 글자 색 클래스로 칠하므로 `<svg>`로 직접 그려야 하고, SVG를 React가 그릴 꼴로 바꾸는 일이 필요하다.
+  - 정할 것: SVG 변환을 스크립트로 두고 결과만 커밋하지 않을지 번들러 플러그인(SVGR)에 맡길지(둘 다 시험하지 않았다), 래스터를 WebP로 줄이는 일과 크기 값을 어디서 만들지, 자산을 따로 PR(`feat/figma-assets`)로 나눠 컴포넌트·조립 PR보다 먼저 병합할지.
+토큰 생성 파일: |
+  `tokens.json`이 원본이고 `tokens.css`와 `token-names.ts`는 거기서 만든 생성 파일이다. 플러그인과 저장소의 변환 스크립트(`generate:tokens`)가 같은 변환을 따로 하고, 둘이 같은지를 `generate:tokens --check`로 본다.
+  - 정할 것: 생성 파일을 계속 커밋할지, 커밋하지 않고 필요할 때 만들지.
+  - 커밋하지 않으면 플러그인은 `tokens.json`만 올리고 비교할 대상이 없어져 검사도 필요 없다.
+  - 걸리는 곳: lint의 토큰 클래스 규칙과 편집기의 Tailwind 자동 완성이 `tokens.css`를 읽는다. 저장소를 처음 받았거나 브랜치를 바꾼 직후에 생성기가 저절로 돌아야 한다. 실제로 걸어 보지 않았다.
+확인을 돌리는 자리: |
+  아래 확인은 CI에서 돌지 않고 스킬이 로컬에서 돌린다. CI에 둘지, 둔다면 어디에 둘지 정한다.
+  - 토큰 생성 확인(`generate:tokens --check`), 자산 생성 확인(`generate:assets --check`).
+  - 모션 시간·키프레임 검사(`pnpm --filter @seojaewan/figma-parity motion-check`).
+  - 둔다면 따로 뜨는 워크플로가 아니라 `ci.yml` 안의 단계로 둔다. 따로 뜨는 워크플로는 대부분의 PR에서 할 일 없이 끝났다.
+  - `tools/figma-parity`에 캡처라는 이름의 코드(`capture-viewport.ts`, `static-server.ts`, `story-target.ts`)가 남아 있다. 모션 검사가 쓰는지 확인하고 패키지 이름(`@seojaewan/figma-parity`)과 함께 정리한다.
+  - PR 댓글을 다는 코드(`motion-post-comment.ts`, `motion-report.ts`, `pr-comment.ts`, `github-comments.ts`)는 부르는 워크플로가 없다. 둘지 지울지 정한다.
+플러그인 PR의 changeset: |
+  플러그인은 changeset을 넣지 않고 스킬이 처리하면서 넣는다. 그래서 스킬이 처리하기 전의 푸시는 changeset 검사에서 실패한다.
+  플러그인이 changeset을 함께 올릴지, 스킬 처리 전의 PR을 검사 대상에서 뺄지 정한다.
+플러그인에서 고칠 것: |
+  내보내기 방식이 정해지면 그에 맞춰 다시 본다.
+  - MCP 내보내기 진입점(`tools/figma-plugin/src/mcp-entry.ts`, `src/mcp-tokens.ts`, `build.mjs`의 두 묶음 설정)을 둘지 지울지 정한다. `use_figma`는 코드 5만 자, 반환값 48,000바이트 한도가 있고 `fetch`가 없다. 전체 진입점이 이 한도를 넘고, 내보낸 PNG와 `export.json` 일부도 반환 한도를 넘는다.
+  - 토큰이 `main`과 같아도 빈 토큰 PR이 열린다. `export-flow.ts`의 `REPO_PREFIXES`에 `TOKEN_NAMES_PATH`가 없어 `main`의 `token-names.ts`를 읽지 못하는 것이 원인이다(코드를 읽어 내린 판단이고, 고친 뒤 플러그인을 돌려 확인한다). 토큰 내보내기 경로가 모두 비교 목록에 있는지 보는 단위 테스트를 함께 둔다.
+  - 바뀐 파일만 올린다. 지금은 모든 파일을 차례로 blob으로 올린 뒤에 비교한다. git blob SHA-1을 플러그인에서 계산해 저장소의 것과 같으면 올리지 않는다.
+  - 저장소와 기준 브랜치가 코드에 고정돼 있다(`plugin-config.ts`).
+확인할 것: |
+  논의하기 전에 피그마와 코드에서 직접 확인한다.
+  - 지금 Patterns 페이지의 노드 ID.
+  - 모션 견본이 지금 피그마의 어디에 있는지와, 옛 견본 자리(`Foundations / Motion`)가 남아 있는지.
+  - 자산 프레임 이름, 변수 이름 접두, `Hangul` 글자 스타일 이름, `Laptop` 모드가 지금 피그마에서 플러그인이 기대하는 대로인지.
+  - 피그마 변수의 컬렉션과 모드 전체 목록.

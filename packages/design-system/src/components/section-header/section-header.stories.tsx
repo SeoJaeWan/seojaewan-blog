@@ -16,7 +16,7 @@ type FigmaArgs = {
 
 const meta = {
   title: 'Components/SectionHeader',
-  // 글자는 피그마 Label 속성의 기본값이다([[피그마 연동:스토리 규칙]]).
+  // 글자는 피그마 Label 속성의 기본값이다([[디자인 시스템:스토리 규칙]]).
   args: { state: 'rest', label: '머리글' },
   argTypes: {
     state: { control: 'inline-radio', options: STATES },
@@ -30,7 +30,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다. 너비는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 크기로 감싼다
 // ([[디자인 시스템:컴포넌트 조립 규칙]]).
 export const Figma: Story = {

@@ -15,7 +15,7 @@ type SampleWindowProps = {
 /**
  * 창 모션 견본(motion-window-*)의 WindowFrame 인스턴스(창 제목, 기본 앱 아이콘)를 그리고 모션 클래스를 건다.
  * 창 크기는 쓰는 곳이 정하므로 WindowFrame 피그마 원본 크기(FigmaFrame, WindowFrame export.json)로 감싼다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @returns 견본 창
  * @param props 컴포넌트 속성
  * @param props.motionClassName 모션 클래스

@@ -19,7 +19,7 @@ type MessageBoxProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
  * 확인·알림 대화 상자(피그마 MessageBox)를 그린다. 버튼은 Button 인스턴스이고, 띄우는 위치와 막(모달)은 쓰는 곳이 정한다.
  * 바탕 테두리는 피그마에서 레이아웃에 들어가지 않고 내용 위에 겹치므로 안쪽 선 고리(inner-border-*)로 그리고,
  * 버튼 줄의 위 구분선은 레이아웃에 들어가므로 CSS border로 그린다.
- * @codocs [[컴포넌트 목록:기본 컨트롤]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
  * @param props 컴포넌트 속성
  * @param props.buttons 피그마 Buttons. one은 확인 버튼 하나, two는 확인과 취소 버튼이다

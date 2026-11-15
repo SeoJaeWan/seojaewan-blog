@@ -25,7 +25,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
@@ -46,7 +46,7 @@ export const Default: Story = {
 export const AutoDevice: Story = {
   render: () => <BootScreen device="auto" progressLabel="시작하는 중" />,
   play: async ({ canvasElement, step }) => {
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step(
       '진행 링 이름을 쓰는 곳이 정하고, 로고는 PC 구간에서 desktop 크기(100px)다',
       async () => {

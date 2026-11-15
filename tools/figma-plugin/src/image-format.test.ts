@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { rasterExtension } from './image-format';
 
-// @codocs [[피그마 연동:자산]]
+// @codocs [[디자인 시스템:자산]]
 describe('래스터 자산의 확장자', () => {
   it('바이트 앞부분(매직넘버)으로 실제 형식을 알아낸다', () => {
     expect(rasterExtension(bytes([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0]))).toBe('png');

@@ -9,7 +9,7 @@ import { sha256Hex, utf8Encode } from './sha256';
 
 /**
  * Variables와 스타일을 읽어 tokens.json과 같은 변환 함수로 만든 tokens.css, 토큰의 이미지 칠이 가리키는 이미지 자산 파일을 만든다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @returns tokens.json·tokens.css와 이미지 자산 파일, 토큰으로 옮기지 않은 칠 스타일, 쓰는 곳이 없는 변수·스타일 알림
  */
 export async function runMcpTokens(): Promise<{

@@ -25,7 +25,7 @@ function tableBlock(name: string, rowCount: number): string {
   ].join('\n');
 }
 
-// @codocs [[피그마 연동:모션]]
+// @codocs [[디자인 시스템:모션]]
 describe('PR 댓글 길이', () => {
   it('짧으면 댓글 하나에 숨은 표시를 달아 담는다', () => {
     const bodies = paginate('머리', [tableBlock('A', 2)], '꼬리', options);

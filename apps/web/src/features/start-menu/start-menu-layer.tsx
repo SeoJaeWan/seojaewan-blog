@@ -352,7 +352,7 @@ type PanelDialogProps = {
  * 데스크톱 검색 패널은 왼쪽 끝을 작업 표시줄 검색 상자의 왼쪽 끝에 맞추고, 화면 밖으로 나가면 안쪽으로 민다. 열 때와 화면 크기가 바뀔 때 다시 잰다.
  * @codocs [[Start 메뉴:구성]]
  * @codocs [[검색:개요]]
- * @codocs [[디자인 기반:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @codocs [[Start 메뉴:모바일]]
  * @codocs [[접근성:역할]]
  * @param props 컴포넌트 속성

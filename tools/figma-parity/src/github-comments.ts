@@ -19,7 +19,7 @@ export type CommentArgs = {
 
 /**
  * 댓글 본문을 PR에 남긴다. 같은 숨은 표시·순서의 댓글이 있으면 고치고(새로 달지 않는다), 남는 댓글은 지운다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param args 저장소와 PR 번호
  * @param bodies 댓글 본문(숨은 표시로 시작한다)
  * @param name 숨은 표시 이름

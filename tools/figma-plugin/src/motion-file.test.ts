@@ -43,7 +43,7 @@ function motion(time: number, value: number): MotionExport {
   };
 }
 
-// @codocs [[피그마 연동:모션]]
+// @codocs [[디자인 시스템:모션]]
 describe('모션', () => {
   it('같은 디자인을 다시 내보내면 같은 바이트가 나오도록 키를 정렬하고 숫자를 정한 자리에서 반올림한다', () => {
     const text = motionText(motion(2000.0000001, -720.00000004));

@@ -28,7 +28,7 @@ const indicatorClassNames = {
 /**
  * 작업 표시줄의 앱 버튼 하나(피그마 TaskbarButton)를 그린다. 동작과 접근성은 Base UI Button이 맡는다.
  * 크기는 Windows가 정한 40×40으로 고정한다. Rest·Hover·Pressed는 CSS hover·active로 바꾼다.
- * @codocs [[컴포넌트 목록:Windows 화면 요소]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @codocs [[디자인 시스템:아이콘 자리]]
  * @param props 컴포넌트 속성
  * @param props.indicator 피그마 Indicator. none은 표시 없음, running은 실행 중인 앱, active는 지금 고른 앱이다

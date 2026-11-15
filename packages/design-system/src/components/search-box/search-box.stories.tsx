@@ -50,11 +50,11 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 접근성 이름을 갖는 검색 입력창이다. Tab으로 포커스를 받고, 입력하면 값이 바뀌고 onChange를 부른다 */
 export const Default: Story = {
   args: { variant: 'pill', onChange: fn() },
@@ -81,7 +81,7 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 비활성이면 입력할 수 없다 */
 export const Disabled: Story = {
   render: () => <SearchBox aria-label="검색" disabled defaultValue="리액트" />,

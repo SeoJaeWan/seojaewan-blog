@@ -1,5 +1,5 @@
 // @codocs [[저장소 구성:앱 폴더 구조]]
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 작업 표시줄 앱 메뉴(Menu/TaskbarApp)와 점프 목록(Menu/TaskbarJumpList*)을 그리는 스토리가 함께 쓰는 항목이다. 실제 메뉴 함수에 피그마 조립과 같은 상태를 넣어 만든다.
 import { ignoreMenuAction } from '@/shared/components/menu-popup/story-menu-preview';
 

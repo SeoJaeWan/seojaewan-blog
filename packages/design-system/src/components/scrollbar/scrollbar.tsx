@@ -14,8 +14,8 @@ type ScrollbarProps = Omit<ComponentProps<'div'>, 'children'> & {
 
 /**
  * 얇은 세로 스크롤 막대(피그마 Scrollbar)를 그린다. ScrollArea 안에서 넘치는 내용의 위치를 보여 줄 때 쓴다.
- * 막대의 위치와 길이는 쓰는 곳이 실행 중에 정한다(@codocs [[디자인 기반:겹쳐 놓기]]).
- * @codocs [[컴포넌트 목록:기본 컨트롤]]
+ * 막대의 위치와 길이는 쓰는 곳이 실행 중에 정한다(@codocs [[디자인 시스템:겹쳐 놓기]]).
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @param props 컴포넌트 속성
  * @param props.isExpanded 피그마 State=Expanded. false(Rest)는 얇은 막대만, true는 바탕과 양 끝 화살표를 함께 그리고 막대가 두꺼워진다
  * @param props.material 피그마 Material(State=Expanded의 바탕). acrylic은 뒤가 흐리게 비치는 재질, solid는 재질 효과를 뺀 단색이다
@@ -48,7 +48,7 @@ export function Scrollbar({
         className,
       )}
     >
-      {/* 위쪽 화살표는 아래쪽 쉐브론 자산을 반 바퀴 돌려 쓴다(@codocs [[피그마 연동:회전 구현]]). */}
+      {/* 위쪽 화살표는 아래쪽 쉐브론 자산을 반 바퀴 돌려 쓴다(@codocs [[디자인 시스템:회전 구현]]). */}
       {isExpanded && (
         <Asset
           name="icons/ic_fluent_chevron_down_16_regular.svg"

@@ -16,7 +16,6 @@ type TocProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
  * 글 페이지의 목차(피그마 Toc)를 그린다. 넓은 창에서는 펼치고 좁은 창에서는 접어 쓴다.
  * 항목은 `children` 슬롯으로 채우고, 너비는 쓰는 곳이 정한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
  * 피그마 Items 슬롯은 항목만 담고, 넘치면 세로로 스크롤하는 것은 코드가 ScrollArea로 감싸 맡는다(@codocs [[Chrome:글 화면]]).
- * @codocs [[컴포넌트 목록:상태]]
  * @codocs [[Chrome:글 화면]]
  * @param props 컴포넌트 속성
  * @param props.isExpanded 피그마 State=Expanded 변형. 펼치면 제목과 항목 목록, 접으면 제목과 아래 꺾쇠만 보인다

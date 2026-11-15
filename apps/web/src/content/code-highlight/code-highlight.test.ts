@@ -162,7 +162,7 @@ function codeBlocks(
 // 동작 스토리가 쓰는 색 있는 데이터가 손으로 칠한 것이 아니라 실제 강조 결과인지, 캡처용 `Figma` 스토리가 쓰는 색 없는 코드가
 // 같은 코드인지 여기서 다시 강조해 확인한다. 색이 실제로 나오는지도 여기서 본다(캡처는 색 없는 코드로 그린다).
 // @codocs [[기술 스택:글 본문 처리]]
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 describe('스토리의 강조된 코드는 실제 강조 결과다', () => {
   it('CodeBlock 스토리(피그마 슬롯 기본 내용)의 색 있는 줄', async () => {
     const { code, language, lines } = codeBlockStorySample;

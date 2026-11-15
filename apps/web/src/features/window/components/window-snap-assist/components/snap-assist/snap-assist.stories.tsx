@@ -14,7 +14,7 @@ import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thu
 import { SnapAssist } from './snap-assist';
 import { SNAP_ASSIST_CHROME } from './story-data';
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 남은 칸 크기는 쓰는 곳이 정하므로 FigmaFrame이 export.json의 숫자 크기로 감싼다.
 // 제안 창의 축소 화면은 피그마 조립처럼 실제 Chrome 창 조립(Window/Chrome)을 줄여 넣는다.
 const meta = {

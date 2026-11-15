@@ -40,7 +40,7 @@ function result(name: string, change: Partial<MotionResult> = {}): MotionResult 
   };
 }
 
-// @codocs [[피그마 연동:모션]]
+// @codocs [[디자인 시스템:모션]]
 describe('CI', () => {
   it('모션 검사 결과를 견본마다 키프레임 | 속성 | 피그마 | 코드 | 결과 표로 쓴다', () => {
     const [body = ''] = renderMotionComments([result('motion-window-open')], RUN_URL);

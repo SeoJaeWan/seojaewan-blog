@@ -14,7 +14,7 @@ type FigmaArgs = {
   drop: (typeof DROPS)[number];
 };
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 탐색 창 즐겨찾기로 항목을 끄는 순간의 모습이다(그리는 방법은 StoryFavoritesDrag).
 const meta = {
   title: 'Patterns/Explorer/FavoritesDrag',

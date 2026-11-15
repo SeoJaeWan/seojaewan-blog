@@ -38,7 +38,7 @@ export function rasterFormat(bytes: Uint8Array): RasterFormat | undefined {
 /**
  * 원본 형식에 맞는 WebP 인코딩 설정을 정한다. 투명도가 있을 수 있는 PNG·GIF는 무손실로, 사진(JPEG)은 손실 품질
  * WEBP_PHOTO_QUALITY로 바꾼다. 원본이 이미 WebP면 바꾸지 않고 그대로 쓴다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  * @param format 원본 형식
  * @returns 인코딩 설정, 그대로 쓸 원본이면 null
  */

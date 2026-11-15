@@ -49,11 +49,11 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 export const Default: Story = {
   args: {
     itemCount: '3개 항목',
@@ -64,13 +64,13 @@ export const Default: Story = {
   play: async ({ args, canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('항목 수와 선택 정보를 글자로 보인다', async () => {
       await expect(canvas.getByText('3개 항목')).toBeInTheDocument();
       await expect(canvas.getByText('1개 선택')).toBeInTheDocument();
     });
 
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('desktop은 보기 전환 버튼을 그리고 누르면 콜백을 부른다', async () => {
       await userEvent.click(canvas.getByRole('button', { name: '자세히' }));
       await userEvent.click(canvas.getByRole('button', { name: '큰 아이콘' }));
@@ -80,24 +80,24 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 export const WithoutSelection: Story = {
   args: { selection: '1개 선택', hasSelection: false },
   play: async ({ canvasElement, step }) => {
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('hasSelection이 false면 선택 정보를 그리지 않는다', async () => {
       await expect(within(canvasElement).queryByText('1개 선택')).not.toBeInTheDocument();
     });
   },
 };
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 export const DetailsView: Story = {
   args: { view: 'details' },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('details면 자세히 버튼만 켜짐이다', async () => {
       await expect(canvas.getByRole('button', { name: '자세히' })).toHaveAttribute(
         'aria-pressed',
@@ -111,13 +111,13 @@ export const DetailsView: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 export const LargeView: Story = {
   args: { view: 'large' },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('large면 큰 아이콘 버튼만 켜짐이다', async () => {
       await expect(canvas.getByRole('button', { name: '큰 아이콘' })).toHaveAttribute(
         'aria-pressed',
@@ -131,11 +131,11 @@ export const LargeView: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 export const MediumView: Story = {
   args: { view: 'medium' },
   play: async ({ canvasElement, step }) => {
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('medium(보통 아이콘)이면 두 버튼 모두 꺼짐이다', async () => {
       const buttons = within(canvasElement).getAllByRole('button');
       for (const button of buttons) {
@@ -145,11 +145,11 @@ export const MediumView: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 export const Mobile: Story = {
   args: { device: 'mobile' },
   play: async ({ canvasElement, step }) => {
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('mobile은 보기 전환 버튼을 그리지 않는다', async () => {
       await expect(within(canvasElement).queryByRole('button')).not.toBeInTheDocument();
     });

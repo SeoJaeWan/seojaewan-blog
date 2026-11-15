@@ -28,7 +28,7 @@ const variantClassNames = {
 /**
  * 끝을 모르는 진행 상태를 보여 주는 링(피그마 ProgressRing)을 그린다. 글을 불러올 때와 재부팅 화면에 쓴다.
  * 접근성 이름은 쓰는 곳이 `aria-label`로 붙인다.
- * @codocs [[컴포넌트 목록:기본 컨트롤]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @param props 컴포넌트 속성
  * @param props.variant 피그마 Variant. accent는 밝은 바탕 위 강조색 호, on-dark는 재부팅 화면처럼 어두운 바탕 위 흰 호다
  * @param props.size 피그마 Size. 링의 한 변 길이(px)다
@@ -51,7 +51,7 @@ export function ProgressRing({
         className,
       )}
     >
-      {/* 늘 붙는 움직임이라 컴포넌트가 모션 클래스를 붙인다(@codocs [[피그마 연동:PR 흐름]]). */}
+      {/* 늘 붙는 움직임이라 컴포넌트가 모션 클래스를 붙인다(@codocs [[디자인 시스템:PR 흐름]]). */}
       <Asset
         name="shapes/progress-ring-arc.svg"
         className={cn(sizeClassNames[size], 'motion-progress-ring')}

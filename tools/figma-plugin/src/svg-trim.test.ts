@@ -21,7 +21,7 @@ import {
 const ARC_D =
   'M27.5802 7.27352C32.3979 13.6668 31.123 22.7547 24.7321 27.5757C18.3412 32.3966 9.2526 31.1262 4.4285 24.7377C-0.395601 18.3492 0.870199 9.26002 7.2563 4.43272C13.6424 -0.394579 22.7323 0.866721 27.5627 7.25032';
 
-// @codocs [[피그마 연동:모션]]
+// @codocs [[디자인 시스템:모션]]
 describe('경로 트림은 벡터 경로와 트림 기본값으로 pathLength="1"·stroke-dasharray 꼴을 직접 만든다', () => {
   it('트림을 경로에 구운 데스크톱 앱 SVG도 피그마 서버 출력과 같은 바이트가 된다', () => {
     expect(trimmedPathSvg(desktopArcSvg, 'progress-ring/Arc', [arcVector()])).toBe(serverArcSvg);
@@ -62,7 +62,7 @@ describe('경로 트림은 벡터 경로와 트림 기본값으로 pathLength="1
   });
 });
 
-// @codocs [[피그마 연동:자산]]
+// @codocs [[디자인 시스템:자산]]
 describe('트림 벡터와 SVG 요소의 짝을 확실히 정할 수 없으면 이유와 함께 내보내기를 실패한다', () => {
   function fails(svg: string, vectors: TrimmedVector[]): () => string {
     return () => trimmedPathSvg(svg, 'progress-ring/Arc', vectors);

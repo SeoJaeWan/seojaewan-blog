@@ -15,7 +15,6 @@ function optional<T extends z.ZodType>(schema: T) {
  * `ALERT_URL`과 `ALERT_SECRET`은 함께 있거나 함께 없어야 한다. 없으면(로컬 개발) 알림을 로그로만 남긴다.
  * @codocs [[배포 환경:환경 변수]]
  * @codocs [[콘텐츠 원천:연동 토큰]]
- * @codocs [[알림 프로세스:환경 변수]]
  */
 const envSchema = z
   .object({

@@ -9,7 +9,7 @@ const paths = [
   'packages/design-system/figma/motions/motion-window-open.json',
 ];
 
-// @codocs [[피그마 연동:플러그인 화면]]
+// @codocs [[디자인 시스템:플러그인 화면]]
 describe('대상 목록: 저장소에 폴더가 없으면 새로 만듦', () => {
   it('컴포넌트는 컴포넌트 폴더, 조립은 영역/이름 폴더, 애니메이션은 json 파일로 본다', () => {
     expect(

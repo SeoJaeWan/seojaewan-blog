@@ -88,7 +88,7 @@ function observed(overrides: Partial<ObservedAnimation> = {}): ObservedAnimation
 
 const fadeAnimation = observed({ name: 'motion-window-open-fade', easings: ['linear'] });
 
-// @codocs [[피그마 연동:모션]]
+// @codocs [[디자인 시스템:모션]]
 describe('모션', () => {
   it('모션 스토리의 시간·이징·지연이 json 토큰 짝(tokens.json 값)과 같으면 통과한다', () => {
     const spec = parseMotionSpec(windowOpenJson(), 'motion-window-open.json');
@@ -209,7 +209,7 @@ describe('모션', () => {
   });
 });
 
-// @codocs [[피그마 연동:모션]]
+// @codocs [[디자인 시스템:모션]]
 describe('@repeat와 잘린 트랙', () => {
   it('json의 infinite를 CSS 반복과 대조한다', () => {
     const spec = parseMotionSpec({ ...windowOpenJson(), iterations: 'infinite' }, 'a.json');

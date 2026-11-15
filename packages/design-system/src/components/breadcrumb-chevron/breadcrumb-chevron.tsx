@@ -15,7 +15,6 @@ type BreadcrumbChevronProps = Omit<ComponentProps<typeof BaseButton>, 'className
  * 버튼 모양과 상태만 맡고, 여는 메뉴(하위 폴더 목록)는 쓰는 곳이 메뉴 트리거로 감싸 붙인다.
  * 받은 속성을 Base UI Button에 그대로 넘기므로 Base UI `Menu.Trigger`의 `render`로 쓸 수 있다.
  * Hover는 실제 CSS hover로 그리고, 열린 동안(`isOpen`)은 아래 꺾쇠(⌄)와 눌린 바탕이다.
- * @codocs [[컴포넌트 목록:상태]]
  * @param props 컴포넌트 속성
  * @param props.label 접근성 이름. 글자가 없는 버튼이라 aria-label로 붙인다
  * @param props.isOpen 피그마 `State=Open`. 이 버튼이 연 메뉴가 열려 있는지다. 쓰는 곳의 메뉴 열림 상태를 그대로 넘긴다

@@ -42,7 +42,7 @@ export function isFailedMotion(result: MotionResult): boolean {
 
 /**
  * 견본 결과로 댓글 본문 목록을 만든다. 각 본문은 순서 번호가 든 숨은 표시로 시작한다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param results 견본 결과(이름 순)
  * @param runUrl 이 실행(Actions run) 주소
  * @returns 댓글 본문 목록

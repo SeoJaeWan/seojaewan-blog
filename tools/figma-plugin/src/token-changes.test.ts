@@ -38,7 +38,7 @@ function after(change: (tokens: JsonObject) => void): string {
   return stableStringify(copy);
 }
 
-// @codocs [[피그마 연동:피그마 플러그인]]
+// @codocs [[디자인 시스템:피그마 플러그인]]
 describe('바뀐 토큰과 영향받는 이름', () => {
   it('같으면 바뀐 것이 없다. 쓰임 범위($extensions)만 바뀐 것도 바뀐 것이 아니다', () => {
     const text = stableStringify(before);
@@ -111,7 +111,7 @@ describe('바뀐 토큰과 영향받는 이름', () => {
   });
 });
 
-// @codocs [[피그마 연동:피그마 플러그인]]
+// @codocs [[디자인 시스템:피그마 플러그인]]
 describe('바뀐 토큰을 쓰는 컴포넌트', () => {
   const usages = new Map([
     ['Button', new Set(['accent-fill/default', 'Hangul/Body'])],
@@ -131,7 +131,7 @@ describe('바뀐 토큰을 쓰는 컴포넌트', () => {
   });
 });
 
-// @codocs [[피그마 연동:플러그인 화면]]
+// @codocs [[디자인 시스템:플러그인 화면]]
 describe('대상 목록: 토큰 줄의 추가·변경·이름 변경·삭제', () => {
   it('지워진 토큰과 종류·값이 같은 새 토큰은 이름 변경으로 세고 추가·삭제에서 뺀다', () => {
     const changes = tokenChanges(

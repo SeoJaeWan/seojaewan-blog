@@ -7,7 +7,7 @@ import {
   retiredNotice,
 } from './directives';
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('@ 줄', () => {
   it('설명 글은 건너뛰고 키와 값을 읽는다', () => {
     const { directives, problems, retired } = parseDirectives(

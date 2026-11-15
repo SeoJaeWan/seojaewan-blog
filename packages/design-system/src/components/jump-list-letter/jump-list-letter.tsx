@@ -20,7 +20,7 @@ const stateClassNames = [
 /**
  * Start 모두 목록의 글자 격자에서 이동할 글자 하나를 고르는 칸(피그마 JumpListLetter)을 그린다.
  * 동작과 접근성(disabled, 포커스)은 Base UI Button이 맡는다.
- * @codocs [[컴포넌트 목록:기본 컨트롤]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @param props 컴포넌트 속성
  * @param props.label 피그마 Label. 칸에 보이는 글자이자 접근성 이름이다
  * @param props.className 덧붙이거나 덮어쓸 클래스

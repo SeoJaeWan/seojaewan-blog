@@ -4,12 +4,12 @@ import { sizingOf } from './check-structure';
 import { type CodeVariables, cssAngle, pairedVariable } from './code-variables';
 import type { Bound, NodeData, PaintData, ReactionData } from './node-data';
 
-// 변형마다 export.json에 담는 구현 참고용 레이어 트리를 만든다. 판정에는 쓰지 않는다([[피그마 연동:피그마 플러그인]]).
+// 변형마다 export.json에 담는 구현 참고용 레이어 트리를 만든다. 판정에는 쓰지 않는다([[디자인 시스템:피그마 플러그인]]).
 // 기본값은 적지 않아 사람이 읽을 수 있는 크기로 둔다.
 
 /**
  * 노드 데이터를 레이어 트리로 옮긴다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param node 노드 데이터
  * @param codeVariables 회전·최대 줄 수·비율과 짝짓는 코드 전용 변수
  * @param isRoot 변형 루트인지
@@ -84,8 +84,8 @@ function putBound(tree: JsonObject, key: string, bound: Bound): void {
 /**
  * 변수 없는 고정 크기 축을 견본 크기로 적는다. 변수에 연결된 축만 고정 크기다. `size`의 숫자는 그대로 두어
  * 스토리(`FigmaFrame`)가 견본 크기를 줄 수 있게 한다. 배율 인스턴스와 잠긴 비율에서 나오는 축은 적지 않는다.
- * @codocs [[디자인 기반:크기 변수]]
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:크기 변수]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param tree 트리
  * @param node 노드
  * @param sizing 가로·세로 크기 방식
@@ -293,7 +293,7 @@ function roundPx(value: number): number {
 /**
  * 조립 변형의 맨 바깥 프레임만 적는다(이름, 크기 방식, 크기). 조립은 그림 기준이고 구조는 코드가 정하므로 안쪽 트리는 내보내지 않는다.
  * 앱 스토리의 `FigmaFrame`이 이 크기로 조립을 감싼다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @codocs [[테스트 작성 규칙:스토리 테스트]]
  * @param node 변형 루트 노드 데이터
  * @returns 맨 바깥 프레임

@@ -119,8 +119,8 @@ const translate: Omit<Conversion, 'shape'> = {
 
 /**
  * 피그마 항목 → CSS 속성 변환표. 여기에 없는 항목(크기, 반경, 칠 등)은 비교할 수 없어 실패한다.
- * 규칙을 먼저 정해 이 표와 [[피그마 연동:모션]]에 더한다.
- * @codocs [[피그마 연동:모션]]
+ * 규칙을 먼저 정해 이 표와 [[디자인 시스템:모션]]에 더한다.
+ * @codocs [[디자인 시스템:모션]]
  */
 export const conversions: ReadonlyMap<string, Conversion> = new Map<string, Conversion>([
   ['OPACITY', { css: ['opacity'], shape: 'number', tolerance: RATIO_TOLERANCE, unit: '' }],
@@ -190,7 +190,7 @@ type CodeValue = {
  *   노드 이름(또는 경로)과 같은 요소, 없으면 표시가 없는 요소 하나와 짝짓는다.
  * - 키프레임 위치마다 값을 비교하고, 코드에만 있는 키프레임과 피그마 트랙이 없는 CSS 속성도 실패로 적는다.
  * - 실행 중 값(토큰이 아닌 CSS 변수)은 값 대신 그 자리에 변수를 쓰는지와 부호(방향)만 본다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param tracks json 트랙
  * @param effects 모션 스토리의 CSS 애니메이션
  * @param tokenVariables 토큰 CSS 변수 이름(`--motion-scale-window-enter` 등). 여기에 없는 변수는 실행 중 값이다
@@ -253,7 +253,7 @@ function compareTrack(
       missingRow(
         label,
         conversion === undefined
-          ? `변환표에 없는 항목이다. [[피그마 연동:모션]] 변환표와 motion-values.ts에 규칙을 먼저 더한다`
+          ? `변환표에 없는 항목이다. [[디자인 시스템:모션]] 변환표와 motion-values.ts에 규칙을 먼저 더한다`
           : `${track.operation} 연산은 값을 비교할 수 없다(SET만 비교한다)`,
       ),
     ];
@@ -575,7 +575,7 @@ function propertyValue(
 
 /**
  * 경로 트림을 `stroke-dasharray`·`stroke-dashoffset`에서 읽는다. 자산은 `pathLength="1"`로 내보내
- * dasharray `<끝-시작> 1`, dashoffset `-<시작>`이다([[피그마 연동:모션]]).
+ * dasharray `<끝-시작> 1`, dashoffset `-<시작>`이다([[디자인 시스템:모션]]).
  * @param property `PATH_TRIM_START` 또는 `PATH_TRIM_END`
  * @param values 키프레임 값
  * @param pathLength 경로 길이

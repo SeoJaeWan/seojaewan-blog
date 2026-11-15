@@ -59,8 +59,7 @@ function fileRowState({
  * 현재 항목 선은 1px 안쪽 선으로 겹쳐 그려 크기를 바꾸지 않는다.
  * @codocs [[파일 탐색기:보기와 정렬]]
  * @codocs [[파일 탐색기:조작]]
- * @codocs [[컴포넌트 목록:상태]]
- * @codocs [[피그마 연동:컨트롤 테두리 구현]]
+ * @codocs [[디자인 시스템:컨트롤 테두리 구현]]
  * @codocs [[디자인 시스템:아이콘 자리]]
  * @param props 컴포넌트 속성
  * @param props.view 피그마 View. 휴지통(recycle-bin)이면 날짜·유형·위치 대신 원래 위치·삭제한 날짜 칸을 그린다

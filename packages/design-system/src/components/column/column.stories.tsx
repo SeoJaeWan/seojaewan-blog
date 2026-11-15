@@ -16,7 +16,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 `Content` 슬롯 기본 내용(Quote 하나)을 넣은 모습이다.
 export const Figma: Story = {
   render: () => (

@@ -13,7 +13,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 `Content` 슬롯 기본 내용(글 본문 글자)을 넣은 모습이다. 글자 스타일은 Quote가 정한다.
 // 너비는 쓰는 곳이 정하므로 FigmaFrame이 export.json 견본 너비(@sample-size width)로 감싼다.
 export const Figma: Story = {

@@ -14,7 +14,7 @@ main();
 
 /**
  * 모션 검사 결과로 PR 댓글을 만들거나 고친다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  */
 function main(): void {
   const args = readCommentArgs(process.argv.slice(2));

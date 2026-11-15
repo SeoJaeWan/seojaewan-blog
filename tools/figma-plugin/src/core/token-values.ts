@@ -7,7 +7,7 @@ const MAX_ALIAS_DEPTH = 10;
 
 /**
  * 숫자(FLOAT)·색(COLOR) 로컬 변수의 기본 모드 값을 별칭까지 풀어 읽는다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @returns 변수 이름과 값
  */
 export async function readTokenValues(): Promise<TokenValue[]> {

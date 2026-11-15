@@ -24,8 +24,8 @@ export type MotionOutcome =
 
 /**
  * 견본을 읽어 모션 검사를 하고, 통과하면 json 내용을 만든다. 위반이 있으면 파일을 만들지 않는다.
- * @codocs [[피그마 연동:피그마 플러그인]]
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @codocs [[디자인 시스템:모션]]
  * @param sampleId 견본 프레임 ID
  * @param variables `motion/*` 변수(readMotionVariables)
  * @param fileKey 피그마 파일 키(figma.json)

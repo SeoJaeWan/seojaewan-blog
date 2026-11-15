@@ -7,12 +7,12 @@ _codocs:
   화면 크기에 따라 각 화면이 어떻게 달라지는지 정한다.
   진짜 Windows에는 모바일이 없으므로, Windows 11 느낌을 유지하되 휴대폰에서 쓸 수 있게 줄이는 방향이다. 여기서 정하지 않은 동작은 각 화면 문서를 따른다.
 기준: |
-  화면 구간은 PC·노트북·모바일 셋이다. 경계값은 피그마 Foundations의 코드 전용 변수(`breakpoint/*`)이고 코드는 생성된 상수(`BREAKPOINTS`)에서 읽는다([[피그마 연동:토큰 생성]]). 각 값은 "이 값 미만"이다.
+  화면 구간은 PC·노트북·모바일 셋이다. 경계값은 피그마 Foundations의 코드 전용 변수(`breakpoint/*`)이고 코드는 생성된 상수(`BREAKPOINTS`)에서 읽는다([[디자인 시스템:토큰 생성]]). 각 값은 "이 값 미만"이다.
 
   | 구간 | 조건 | 모양 |
   |---|---|---|
   | 모바일 | 폭이 `breakpoint/mobile/width` 미만. 이 판정이 먼저다 | 피그마 `Device=Mobile` 변형 |
-  | 노트북 | 폭이 `breakpoint/laptop/width` 미만이거나 높이가 `breakpoint/laptop/height` 미만 | PC와 같은 `Device=Desktop` 변형. 변수 모드 Laptop 값(간격·크기·글자)만 다르다([[디자인 기반:모드]]) |
+  | 노트북 | 폭이 `breakpoint/laptop/width` 미만이거나 높이가 `breakpoint/laptop/height` 미만 | PC와 같은 `Device=Desktop` 변형. 변수 모드 Laptop 값(간격·크기·글자)만 다르다 |
   | PC | 나머지 | `Device=Desktop` 변형 |
 
   - `use-device`가 `pc | laptop | mobile`을 돌려주고, 컴포넌트 props의 `desktop`·`mobile`은 피그마 변형 이름이라 층 컴포넌트가 바꿔 넘긴다.
@@ -33,6 +33,5 @@ _codocs:
 
   - 화면 높이 기준은 동적 뷰포트(`dvh`)다. JS에서 높이를 읽을 때는 `innerHeight`를 쓰고 `window`의 `resize`를 구독한다.
   - `html`과 `body`에 바탕색을 두어, 화면이 늘어나는 순간에도 흰 여백이 보이지 않게 한다.
-  - 카카오톡 인앱 브라우저에서 오른쪽 여백과 아래 흰 여백이 보인다는 피드백에서 정했다.
 화면별 차이: |
   화면별 동작 차이는 각 기능 문서의 `모바일` 섹션에 있고, 세부 배치는 피그마 `Device=Mobile` 변형과 Screens가 보여 준다.

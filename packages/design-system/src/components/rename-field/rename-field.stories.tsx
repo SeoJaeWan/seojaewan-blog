@@ -18,7 +18,7 @@ const meta = {
   title: 'Components/RenameField',
   // 너비가 31로 홀수라 가운데 정렬하면 0.5px 위치에 놓여 그림이 밀리므로 여백 배치를 쓴다.
   parameters: { layout: 'padded' },
-  // 변형 속성이 없다. 글자는 피그마 Text 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
+  // 변형 속성이 없다. 글자는 피그마 Text 속성의 기본값과 같아야 한다([[디자인 시스템:스토리 규칙]]).
   args: { text: '이름' },
   argTypes: {
     text: { control: 'text' },
@@ -34,11 +34,11 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나(default)를 그린다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 처음 값은 이름이다. 마운트하면 포커스를 받고 이름 전체를 선택하므로, 입력하면 이름을 바꾸고 onChange를 부른다 */
 export const Default: Story = {
   args: { onChange: fn() },
@@ -63,7 +63,7 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** value, onKeyDown, ref를 input에 넘긴다 */
 export const Controlled: Story = {
   args: { onChange: fn(), onKeyDown: fn(), onRef: fn() },

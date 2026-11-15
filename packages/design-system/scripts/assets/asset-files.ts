@@ -17,7 +17,7 @@ import { rasterFormat, webpEncoding } from './raster-code.ts';
 /**
  * figma/assets/에서 만들어야 할 코드 자산 파일과 내용을 계산한다.
  * SVG는 데이터 모듈로, 래스터 원본(PNG·JPEG 등)은 같은 이름의 WebP(`src/assets/<묶음>/<자산>.webp`)로 만든다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  * @returns 쓸 파일의 절대 경로 → 내용
  */
 export async function expectedAssetFiles(): Promise<Map<string, Buffer>> {
@@ -57,7 +57,7 @@ export function staleAssetFiles(outputs: ReadonlyMap<string, Buffer>): string[] 
 
 /**
  * 래스터 원본을 WebP로 바꾼다. 확장자는 바이트로 알아낸 실제 형식과 같아야 한다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  * @param bytes 원본 내용
  * @param relative 오류 메시지에 쓸 자산 경로
  * @param extension 원본 확장자(`.png` 등)

@@ -160,7 +160,7 @@ function page(name: string, nodes: FakeNode[], children: FakeNode[] = [], id = n
   };
 }
 
-// @codocs [[디자인 기반:모션 견본]]
+// @codocs [[디자인 시스템:모션 견본]]
 describe('모션 목록', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
@@ -262,7 +262,7 @@ describe('모션 목록', () => {
   });
 });
 
-// @codocs [[피그마 연동:모션]]
+// @codocs [[디자인 시스템:모션]]
 describe('모션 읽기', () => {
   afterEach(() => {
     vi.unstubAllGlobals();

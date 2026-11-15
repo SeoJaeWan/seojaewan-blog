@@ -27,7 +27,7 @@ type SampleCategoryFolderProps = {
 /**
  * Start 범주 팝업 열기·닫기 모션 견본(motion-start-category-folder-open·close)의 StartCategoryFolder 인스턴스를 그리고 모션 클래스를 건다.
  * 팝업 전체가 움직이므로 클래스는 컴포넌트에 건다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @returns 견본 범주 팝업
  * @param props 컴포넌트 속성
  * @param props.motionClassName 모션 클래스

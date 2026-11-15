@@ -14,7 +14,7 @@ function root(children: NodeData[]): NodeData {
   return node({ path: '', type: 'COMPONENT', child: null, children });
 }
 
-// @codocs [[피그마 연동:피그마 플러그인]]
+// @codocs [[디자인 시스템:피그마 플러그인]]
 describe('레이어 트리', () => {
   it('구조와 연결된 변수를 담고 기본값은 적지 않는다', () => {
     const tree = layerTree(buttonRoot(), noCodeVariables);
@@ -88,8 +88,8 @@ describe('레이어 트리', () => {
   });
 });
 
-// @codocs [[피그마 연동:구조 검사]]
-// @codocs [[디자인 기반:크기 변수]]
+// @codocs [[디자인 시스템:구조 검사]]
+// @codocs [[디자인 시스템:크기 변수]]
 describe('레이어 트리: 주석과 견본 크기', () => {
   it('주석을 카테고리와 함께 적는다', () => {
     const tree = layerTree(
@@ -128,7 +128,7 @@ describe('레이어 트리: 주석과 견본 크기', () => {
   });
 });
 
-// @codocs [[피그마 연동:피그마 플러그인]]
+// @codocs [[디자인 시스템:피그마 플러그인]]
 describe('조립의 맨 바깥 프레임', () => {
   it('이름·크기 방식·크기만 적고 안쪽 트리는 적지 않는다', () => {
     const frame = rootFrame(

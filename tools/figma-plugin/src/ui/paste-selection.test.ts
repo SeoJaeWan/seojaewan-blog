@@ -31,7 +31,7 @@ function select(text: string) {
   return matchPasteNames(parsePasteText(text), catalog.items);
 }
 
-// @codocs [[피그마 연동:플러그인 화면]]
+// @codocs [[디자인 시스템:플러그인 화면]]
 describe('이름 붙여넣기 선택: 형식', () => {
   it('한 줄에 하나, 또는 쉼표로 이은 이름을 나눈다', () => {
     expect(parsePasteText('Button, ToggleSwitch\nMenu/Folder')).toEqual([
@@ -54,7 +54,7 @@ describe('이름 붙여넣기 선택: 형식', () => {
   });
 });
 
-// @codocs [[피그마 연동:플러그인 화면]]
+// @codocs [[디자인 시스템:플러그인 화면]]
 describe('이름 붙여넣기 선택: 이름 짝짓기', () => {
   it('토큰(또는 tokens)은 토큰, 이름은 컴포넌트, 영역/이름은 조립, 견본 이름은 애니메이션이다', () => {
     expect(select('토큰\nButton\nMenu/Folder\nmotion-window-open')).toEqual({

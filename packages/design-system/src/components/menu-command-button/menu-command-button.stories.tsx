@@ -54,7 +54,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 // MenuCommandButton은 열린 Base UI 메뉴 안에서만 동작하므로, 메뉴를 스토리 루트 안에 열고 단추 하나만 담는다.
 export const Figma: Story = { parameters: baseUiFocusGuardParameters };
@@ -99,7 +99,7 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 단축키가 없으면 툴팁은 이름만 보인다 */
 export const WithoutShortcut: Story = {
   parameters: baseUiFocusGuardParameters,
@@ -180,7 +180,7 @@ function OpenMenu(props: {
         <Menu.Root open modal={false}>
           <Menu.Portal container={anchor}>
             <Menu.Positioner anchor={anchor} side="bottom" align="start" sideOffset={0}>
-              {/* 포털 안에 그리므로 캡처 대상을 표시한다([[피그마 연동:스토리 규칙]]). */}
+              {/* 포털 안에 그리므로 캡처 대상을 표시한다([[디자인 시스템:스토리 규칙]]). */}
               <Menu.Popup {...noInitialFocus} data-parity-target>
                 <FigmaFrame source={menuCommandButtonExport} args={props.args}>
                   {props.children}

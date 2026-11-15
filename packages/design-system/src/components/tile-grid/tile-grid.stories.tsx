@@ -64,6 +64,6 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고르고, `Tiles` 슬롯에 피그마 기본 내용과 같은 PinnedTile을 넣는다.
 export const Figma: Story = {};

@@ -15,7 +15,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 `Rows` 슬롯 기본 내용(표 줄 3개)을 넣은 모습이다. 너비는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 너비(글 폭)로 감싼다.
 export const Figma: Story = {
   render: () => (

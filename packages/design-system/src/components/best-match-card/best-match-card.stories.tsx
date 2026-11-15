@@ -20,7 +20,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 변형이 없는 컴포넌트다. `Actions` 슬롯에 피그마 기본 내용과 같은 MenuItem 둘을 넣는다.
 export const Figma: Story = {};
 

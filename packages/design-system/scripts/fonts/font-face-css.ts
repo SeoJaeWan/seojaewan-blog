@@ -74,7 +74,7 @@ function splitDeclaration(line: string): [string, string] {
 
 /**
  * woff2만 가리키는 `@font-face` CSS를 만든다.
- * @codocs [[디자인 기반:서체]]
+ * @codocs [[디자인 시스템:서체 구현]]
  * @param faces parseFontFaces로 읽은 규칙
  * @param fileDir woff2 파일이 있는 폴더(이 CSS 파일 기준 상대 경로)
  * @param packageName 원본 CSS가 있는 패키지 이름(머리말에 적는다)

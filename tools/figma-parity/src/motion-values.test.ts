@@ -65,7 +65,7 @@ function effect(
   };
 }
 
-// @codocs [[피그마 연동:모션]]
+// @codocs [[디자인 시스템:모션]]
 describe('모션', () => {
   it('json 트랙의 키프레임 값을 변환표의 CSS 속성 값과 키프레임 위치마다 비교한다', () => {
     const rows = compareMotionValues(

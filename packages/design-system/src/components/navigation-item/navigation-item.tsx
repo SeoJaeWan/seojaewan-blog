@@ -23,7 +23,7 @@ type NavigationItemProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
  * 너비는 쓰는 곳이 정한다(피그마 원본은 240). Rest·Hover·Selected 모양은 isSelected와 CSS hover로 바꾼다.
  * 선택 바탕과 현재 칸 선의 색은 prop이 아니라 트리 포커스로 고른다. 칸을 담은 트리(`role="tree"`)
  * 트리 안에 포커스가 있을 때 파랑(피그마 State=Selected), 없을 때 회색(State=Selected unfocused)이다.
- * @codocs [[컴포넌트 목록:Windows 화면 요소]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @codocs [[파일 탐색기:탐색 창]]
  * @codocs [[고정:즐겨찾기 고정]]
  * @codocs [[디자인 시스템:아이콘 자리]]

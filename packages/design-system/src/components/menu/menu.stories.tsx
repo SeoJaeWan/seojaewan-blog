@@ -12,7 +12,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 Menu는 변형이 하나다. Flyout Content 슬롯(children)에는 피그마 슬롯 기본 내용과 같은 메뉴 항목과 구분선을 넣는다.
 export const Figma: Story = {
   render: () => (

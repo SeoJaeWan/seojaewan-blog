@@ -15,7 +15,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 슬롯 기본 내용(코드 2줄)을 색 없이 그린 모습이다. 피그마 견본이 한 가지 색이라 캡처는 색 없는 코드로 그리고,
 // 색이 실제 강조 결과인지는 앱 단위 테스트가 본다([[기술 스택:글 본문 처리]]).
 export const Figma: Story = {

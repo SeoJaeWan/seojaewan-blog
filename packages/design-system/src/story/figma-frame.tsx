@@ -17,7 +17,7 @@ type FigmaFrameProps = {
  * 피그마 export.json의 크기 방식(HUG·FIXED·FILL)과 크기 숫자대로 스토리 내용을 감싼다.
  * 스토리는 크기를 손으로 고르지 않고 이 요소로만 준다. 크기는 실행 중에 export.json에서 읽어 Tailwind가 클래스를
  * 만들 수 없으므로 style로 준다.
- * @codocs [[피그마 연동:스토리 규칙]]
+ * @codocs [[디자인 시스템:스토리 규칙]]
  * @codocs [[테스트 작성 규칙:스토리 테스트]]
  * @param props 컴포넌트 속성
  * @param props.source 스토리가 그리는 컴포넌트·조립의 피그마 export.json
@@ -40,7 +40,7 @@ export function FigmaFrame({ source, args = {}, node, children }: FigmaFrameProp
 /**
  * `Figma` 스토리(와 같은 대상의 동작 스토리)를 피그마 루트 크기로 감싸는 데코레이터를 만든다. args는 스토리에서 읽는다.
  * 제목이 `Components/<이름>`·`Patterns/<이름>`이면 export.json의 이름과 같은지 확인해 다른 대상의 크기를 쓰지 않게 한다.
- * @codocs [[피그마 연동:스토리 규칙]]
+ * @codocs [[디자인 시스템:스토리 규칙]]
  * @param source 스토리가 그리는 컴포넌트·조립의 피그마 export.json
  * @returns 데코레이터
  */

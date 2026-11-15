@@ -32,14 +32,12 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:상태]]
 export const Default: Story = {
   play: async ({ canvasElement, step }) => {
-    // @codocs [[컴포넌트 목록:상태]]
     await step('기본 글자는 열 이름이고 정렬 방향이 없다', async () => {
       await expect(within(canvasElement).getByRole('button', { name: '열 이름' })).toHaveAttribute(
         'data-sort',
@@ -49,11 +47,9 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:상태]]
 export const Ascending: Story = {
   args: { sort: 'ascending', label: '이름' },
   play: async ({ canvasElement, step }) => {
-    // @codocs [[컴포넌트 목록:상태]]
     await step('label로 글자를 바꾸고 ascending 정렬 방향을 알린다', async () => {
       await expect(within(canvasElement).getByRole('button', { name: '이름' })).toHaveAttribute(
         'data-sort',
@@ -63,11 +59,9 @@ export const Ascending: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:상태]]
 export const Descending: Story = {
   args: { sort: 'descending' },
   play: async ({ canvasElement, step }) => {
-    // @codocs [[컴포넌트 목록:상태]]
     await step('descending 정렬 방향을 알린다', async () => {
       await expect(within(canvasElement).getByRole('button', { name: '열 이름' })).toHaveAttribute(
         'data-sort',

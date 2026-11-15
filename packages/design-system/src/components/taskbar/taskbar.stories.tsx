@@ -22,7 +22,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 Taskbar는 변형이 하나다. 슬롯에는 피그마 슬롯 기본 내용과 같은 컴포넌트를 넣는다.
 // 검색칸(고정 너비)과 시스템 트레이(고정 높이)는 슬롯 안 노드의 크기로 감싼다.
 export const Figma: Story = {

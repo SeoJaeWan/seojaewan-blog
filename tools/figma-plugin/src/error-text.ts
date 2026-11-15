@@ -6,7 +6,7 @@ const TOKEN_PATTERN = /github_pat_\w+|gh[pousr]_\w+|Bearer\s+\S+/g;
 /**
  * 오류를 사람이 읽는 문장으로 바꾼다. Error가 아닌 값(피그마 fetch가 거부한 객체 등)도 읽을 수 있게 하고,
  * 토큰 모양의 글자는 가린다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param error 던져진 값
  * @returns 오류 문장
  */

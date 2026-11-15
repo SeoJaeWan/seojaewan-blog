@@ -283,7 +283,7 @@ export const DragAndClose: Story = {
 };
 
 // @codocs [[창 동작:창 조작]]
-// @codocs [[피그마 연동:모션 클래스]]
+// @codocs [[디자인 시스템:모션 클래스]]
 /** 창 하나를 최소화했다가 복원하고 닫는다. 열기·최소화·복원·닫기 모션이 차례로 붙는다 */
 export const MinimizeRestoreAndClose: Story = {
   beforeEach: () => {
@@ -356,7 +356,7 @@ export const MinimizeRestoreAndClose: Story = {
 };
 
 // @codocs [[창 동작:창 조작]]
-// @codocs [[피그마 연동:모션 클래스]]
+// @codocs [[디자인 시스템:모션 클래스]]
 /** 최대화 버튼과 제목 표시줄 더블클릭으로 최대화하고 복원한다 */
 export const MaximizeAndRestore: Story = {
   beforeEach: openOnFullHd(['file-explorer']),
@@ -740,7 +740,7 @@ export const ResizeWindow: Story = {
 };
 
 // @codocs [[스냅:끌어서 스냅]]
-// @codocs [[피그마 연동:모션 클래스]]
+// @codocs [[디자인 시스템:모션 클래스]]
 /** 창 하나를 끝으로 끌어 스냅한다. 끄는 동안 채울 자리를 미리 보여 준다 */
 export const DragToSnap: Story = {
   beforeEach: openOnFullHd(['file-explorer']),
@@ -848,7 +848,7 @@ export const DragToSnapWithOtherWindow: Story = {
 };
 
 // @codocs [[스냅:스냅된 창]]
-// @codocs [[피그마 연동:모션 클래스]]
+// @codocs [[디자인 시스템:모션 클래스]]
 /** 최대화·스냅한 창을 끌어 떼어 낸다. 떠 있을 때 크기로 돌아가고 최대화·스냅 모션은 재생하지 않는다 */
 export const DragOffSnapped: Story = {
   beforeEach: () => {

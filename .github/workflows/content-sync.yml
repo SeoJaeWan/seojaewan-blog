@@ -8,8 +8,7 @@
 #
 # 토큰: 글 동기화의 push·PR 만들기·병합은 모두 워크플로의 기본 GITHUB_TOKEN으로 한다(PAT 없음, CONTENT_SYNC_TOKEN 불필요).
 # GITHUB_TOKEN이 만든 push·PR 이벤트는 다른 워크플로를 부르지 않는데, 이 구조에서는 그것이 바로 필요한 성질이다.
-# 병합 뒤 main push에서 돌릴 워크플로가 없고(배포는 젠킨스가 main을 2분마다 직접 확인한다), PR이 열릴 때 도는 검사
-# 워크플로(Figma·모션 검사 등)도 이 PR에서는 필요 없다. PAT로 하면 오히려 그것들이 불필요하게 시작한다.
+# 병합 뒤 main push에서 돌릴 워크플로가 없다(배포는 젠킨스가 main을 2분마다 직접 확인한다).
 # 필요한 최소 권한은 contents: write(브랜치 push, 병합), pull-requests: write(PR 만들기·닫기)다.
 # 단 저장소 설정 Settings > Actions > General > Workflow permissions의
 # "Allow GitHub Actions to create and approve pull requests"가 켜져 있어야 GITHUB_TOKEN이 PR을 만들 수 있다(사람이 켠다).

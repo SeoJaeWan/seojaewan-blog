@@ -23,7 +23,7 @@ const tokenNames: TokenNameLists = {
   flex: ['flex-fill', 'flex-half'],
 };
 
-// @codocs [[피그마 연동:토큰 사용 강제]]
+// @codocs [[디자인 시스템:토큰 사용 강제]]
 describe('스타일링', () => {
   it.each([
     ['p-spacing-md', 'p-spacing-sm', 'p-spacing-sm'],

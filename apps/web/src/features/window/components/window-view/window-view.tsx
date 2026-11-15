@@ -83,7 +83,7 @@ const windowMotionClassNames: Readonly<Record<WindowMotion, string>> = {
  * 서버가 그린 첫 진입 창(`isEntry`)은 아직 숫자 자리가 없어 `data-window-entry`를 달고 CSS(`globals.css`)가 기본 크기·가운데(모바일은
  * 전체화면)에 놓는다. 저장소에 같은 창이 열리면 같은 요소에 숫자 자리가 들어간다. 그동안은 끌거나 크기를 조절하지 않는다.
  * @codocs [[창 동작:창 조작]]
- * @codocs [[피그마 연동:모션 클래스]]
+ * @codocs [[디자인 시스템:모션 클래스]]
  * @codocs [[스냅:스냅된 창]]
  * @codocs [[창 동작:모바일]]
  * @codocs [[창 동작:새로고침과 첫 진입]]
@@ -346,7 +346,7 @@ function ResizeHandle({ direction, className, onResizeStart }: ResizeHandleProps
 /**
  * 지금 단계에 맞는 창 모션을 고른다. 모션 클래스와 `data-window-motion`이 이 값을 따르고, 클래스는 `entered`에서 뗀다.
  * 최소화가 끝난 뒤(exited)에도 최소화 클래스를 두어 끝 모습(투명도 0)을 붙든다. 숨김은 `hidden`이 맡는다.
- * @codocs [[디자인 기반:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param status presence 단계
  * @param isClosing 닫히는 창인지
  * @param isRestoring 최소화에서 돌아오는 창인지

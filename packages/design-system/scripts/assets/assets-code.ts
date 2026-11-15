@@ -8,7 +8,7 @@ const GENERATED_HEADER = `// 이 파일은 scripts/assets/generate-assets.ts가 
 // 다시 만들기: pnpm --filter @seojaewan/design-system generate:assets`;
 
 // 입력은 피그마가 내보낸 정적 SVG이고 CI가 다시 만들어 바이트를 비교하므로, 요소와 속성은 표로 막지 않고 규칙으로 옮긴다.
-// @codocs [[피그마 연동:자산]]
+// @codocs [[디자인 시스템:자산]]
 // 이름공간 속성의 React 이름. React가 SVG 이름과 다른 이름을 쓰는 속성이다(하이픈 규칙으로는 만들 수 없다).
 const namespacedAttributeNames: Readonly<Record<string, string>> = {
   'xlink:href': 'xlinkHref',
@@ -60,7 +60,7 @@ export type SvgAssetData = {
 /**
  * 피그마가 내보낸 SVG를 요소 데이터로 바꾼다.
  * 루트 svg 아래 요소를 중첩 그대로 옮긴다. 글자 내용과 React에 그대로 넘길 수 없는 속성은 실패한다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  * @param svg SVG 문서 문자열
  * @param file 오류 메시지에 쓸 자산 파일 경로
  * @returns viewBox와 요소 목록
@@ -151,7 +151,7 @@ function parseElement(tag: string, rawAttributes: string, file: string): SvgElem
 
 /**
  * 자산 데이터 모듈(src/assets/asset-data.ts)의 내용을 만든다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  * @param assets 자산 파일 경로(`icons/ic_fluent_add_20_regular.svg`) → SVG 데이터
  * @returns TypeScript 모듈 문자열
  */
@@ -188,7 +188,7 @@ export type ImageAssetSize = { width: number; height: number };
 /**
  * 래스터 자산 지도 모듈(src/assets/image-data.ts)의 내용을 만든다. 자산 이름(`images/file-folder`)마다 파일 주소와
  * 원본 너비·높이를 담는다. 주소는 Vite와 Next.js가 빌드 결과의 파일 주소로 바꿔 주도록 `new URL(…, import.meta.url)`을 글자 그대로 쓴다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  * @param images 자산 이름(figma/assets/ 기준 경로에서 확장자를 뺀 이름) → 크기
  * @returns TypeScript 모듈 문자열
  */

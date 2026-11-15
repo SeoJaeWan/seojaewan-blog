@@ -11,7 +11,7 @@ type FigmaArgs = {
   position: StartTilePosition;
 };
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. Position은 우클릭한 고정 칸의 위치이고, 위치마다 보이는 이동 메뉴가 다르다.
 const meta = {
   title: 'Patterns/Menu/StartTile',

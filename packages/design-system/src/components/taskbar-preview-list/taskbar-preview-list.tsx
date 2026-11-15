@@ -14,7 +14,7 @@ type TaskbarPreviewListProps = Omit<ComponentProps<'div'>, 'children'> & {
  * - Mobile: 제목 줄(WindowPreview Title)을 세로로 쌓고, 줄이 판 너비를 채운다. 판 너비는 쓰는 곳이 정한다.
  * 판에는 안쪽 여백을 두지 않고 카드를 틈 없이 붙이며, 판 모서리 둥글기는 카드와 같다. 판의 칠·선·효과는 두 기기가 같다.
  * 피그마에서 테두리가 레이아웃에 들어가므로(strokes included in layout) CSS border를 쓴다.
- * @codocs [[디자인 기반:재질 효과]]
+ * @codocs [[디자인 시스템:재질 구현]]
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
  * @codocs [[작업 표시줄:창 미리보기]]
  * @param props 컴포넌트 속성

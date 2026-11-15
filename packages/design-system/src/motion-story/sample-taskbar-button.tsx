@@ -12,7 +12,7 @@ type SampleTaskbarButtonProps = {
 /**
  * 순서 바꾸기 끌기 모션 견본(motion-reorder-*)의 TaskbarButton 인스턴스를 그리고 모션 클래스를 건다.
  * 작업 표시줄 앱 버튼·탭·Start 고정됨 칸이 함께 쓰는 움직임이라 견본은 작업 표시줄 앱 버튼 하나로 보여 준다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @returns 견본 작업 표시줄 앱 버튼
  * @param props 컴포넌트 속성
  * @param props.motionClassName 모션 클래스

@@ -43,7 +43,7 @@ const variantClassNames = {
 
 /**
  * 기본 버튼(피그마 Button)을 그린다. 동작과 접근성(disabled, 포커스)은 Base UI Button이 맡는다.
- * @codocs [[컴포넌트 목록:기본 컨트롤]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @param props 컴포넌트 속성
  * @param props.variant 피그마 Variant. accent는 강조 채우기, standard는 기본 버튼, subtle은 배경 없는 버튼이다
  * @param props.label 피그마 Label. 버튼 글자이자 접근성 이름이다

@@ -75,7 +75,7 @@ export type ReadProblem = {
 };
 
 /**
- * 움직임을 읽은 자리([[디자인 기반:모션 견본]]).
+ * 움직임을 읽은 자리([[디자인 시스템:모션 견본]]).
  * - sample: 옛 견본 프레임(01 · Foundations `Foundations / Motion`). 움직임이 일어나는 자리로 옮기기 전까지만 읽는다
  * - flow: 조립 프로토타입 흐름이 도착하는 프레임(03 · Patterns). 요소 전체·공통 움직임
  * - component: 컴포넌트·자산 원본. 안쪽 움직임

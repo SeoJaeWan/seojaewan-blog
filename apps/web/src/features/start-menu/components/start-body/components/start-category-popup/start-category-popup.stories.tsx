@@ -20,7 +20,7 @@ const pagedPosts = Array.from({ length: 25 }, (_, index) => ({
   title: `글 ${String(index + 1)}`,
 }));
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 피그마 조립처럼 한 쪽을 넘는 글 범주를 연 팝업이라 쪽 표시 점(3쪽)이 보인다.
 const meta = {
   title: 'Patterns/Start/CategoryFolder',

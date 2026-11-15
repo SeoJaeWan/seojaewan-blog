@@ -23,7 +23,7 @@ type ExplorerStatusBarProps = Omit<ComponentProps<'div'>, 'children'> & {
 /**
  * 탐색기 본문 맨 아래의 항목 수·선택 정보 줄(피그마 ExplorerStatusBar)을 그린다.
  * 너비는 쓰는 곳이 정한다. 높이는 Desktop이 보기 전환 버튼(32)에, Mobile이 글자 줄(16)에 맞춰진다.
- * @codocs [[컴포넌트 목록:Windows 화면 요소]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @param props 컴포넌트 속성
  * @param props.device 피그마 Device. mobile은 보기 전환 버튼을 그리지 않는다
  * @param props.view 지금 보기. details면 자세히 버튼, large면 큰 아이콘 버튼을 켜짐(IconButton isChecked)으로 그린다. medium(보통 아이콘)은 둘 다 꺼짐이다

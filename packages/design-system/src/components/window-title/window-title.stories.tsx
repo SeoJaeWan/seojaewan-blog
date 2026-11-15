@@ -37,7 +37,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 // 부모가 너비를 정하는 컴포넌트라 FigmaFrame이 피그마 원본 너비로 감싼다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
 export const Figma: Story = {

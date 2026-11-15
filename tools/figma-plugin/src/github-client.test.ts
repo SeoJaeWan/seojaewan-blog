@@ -67,7 +67,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-// @codocs [[피그마 연동:피그마 플러그인]]
+// @codocs [[디자인 시스템:피그마 플러그인]]
 describe('GitHub 요청 다시 시도', () => {
   it('5xx 뒤 성공하면 결과를 돌려준다', async () => {
     const mock = mockFetch([json(503, { message: 'unavailable' }), json(200, { sha: 'abc' })]);
@@ -168,7 +168,7 @@ describe('GitHub 요청 다시 시도', () => {
   });
 });
 
-// @codocs [[피그마 연동:피그마 플러그인]]
+// @codocs [[디자인 시스템:피그마 플러그인]]
 describe('PR 열기', () => {
   const pullRequest = { title: 't', body: 'b', head: 'feat/figma-taskbar', base: 'main' };
 

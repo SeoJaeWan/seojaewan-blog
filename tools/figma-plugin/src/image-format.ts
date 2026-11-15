@@ -6,7 +6,7 @@ export type RasterExtension = 'png' | 'jpg' | 'gif' | 'webp';
 
 /**
  * 바이트 앞부분(매직넘버)으로 이미지 형식을 알아낸다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  * @param bytes 이미지 바이트
  * @returns 확장자, 모르는 형식이면 undefined
  */

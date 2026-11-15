@@ -41,7 +41,7 @@ export type MotionSpec = {
 /**
  * 모션 json을 검증하고 검사에 쓰는 값으로 바꾼다. 트랙 길이 토큰이 없거나 첫 키프레임 뒤 이징 토큰이 없으면
  * 플러그인 검사를 거치지 않은 자료라 실패한다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param value json을 파싱한 값
  * @param where 오류 메시지에 쓸 위치(파일 경로)
  * @returns 검사에 쓰는 값
@@ -76,7 +76,7 @@ function parseIterations(value: unknown, where: string): number | 'infinite' | n
 
 /**
  * 견본 길이에서 잘린 트랙인지 본다. 플러그인이 표시한 트랙은 견본 안 컴포넌트의 움직임이라 검사하지 않는다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param item json 트랙
  * @returns 잘린 트랙이면 true
  */
@@ -87,7 +87,7 @@ function isTruncatedTrack(item: unknown): boolean {
 /**
  * 모션 json에서 키프레임 값 검사에 쓰는 트랙 값(노드, 항목, 연산, 키프레임 위치와 값)을 읽는다.
  * 값의 꼴은 항목마다 다르므로(숫자, `{ x, y }`) 여기서는 그대로 두고 비교할 때 변환표로 읽는다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param value json을 파싱한 값
  * @param where 오류 메시지에 쓸 위치(파일 경로)
  * @returns 트랙 값

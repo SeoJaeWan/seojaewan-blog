@@ -51,7 +51,7 @@ const CUBIC_BEZIER_PATTERN = /^cubic-bezier\(([^)]*)\)$/u;
  * - 지연: CSS 지연 모음과 json 시작 지연 토큰 값(없으면 0) 모음이 같아야 한다.
  * - 이징: CSS 키프레임 이징 모음과 json 이징 토큰 곡선 모음이 같아야 한다.
  * - 반복: json에 반복 횟수(견본의 `@repeat`)가 있으면 모든 CSS 애니메이션이 같아야 한다. 옛 내보내기(null)는 검사하지 않는다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param spec json 값
  * @param tokens figma/tokens.json을 파싱한 값
  * @param allObserved 모션 스토리에서 읽은 CSS 애니메이션
@@ -134,7 +134,7 @@ export function compareMotion(
 
 /**
  * 잘린 트랙이 있는 견본의 애니메이션만 고른다. 잘린 트랙은 견본 안 컴포넌트의 움직임이라, 그 컴포넌트의 애니메이션은 이 견본의 값이 아니다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param spec json 값
  * @param observed 모션 스토리에서 읽은 애니메이션
  * @returns 견본 클래스의 애니메이션(잘린 트랙이 없으면 모두)
@@ -161,7 +161,7 @@ export function iterationSummary(observed: readonly ObservedAnimation[]): string
 
 /**
  * Storybook index.json에서 제목이 `Motion/<이름>`인 스토리를 찾는다. 여럿이면 첫 스토리다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param index storybook-static/index.json을 파싱한 값
  * @param name 견본 이름
  * @returns 스토리 ID, 또는 찾지 못한 이유

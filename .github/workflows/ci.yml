@@ -1,5 +1,5 @@
 # @codocs [[Git 작업 규칙:CI]]
-# @codocs [[배포 환경:CI]] GitHub 호스티드 러너(`ubuntu-latest`)에서 돈다. job마다 깨끗한 머신이라 pnpm은 기본 위치에 설치한다.
+# GitHub 호스티드 러너(`ubuntu-latest`)에서 돈다. job마다 깨끗한 머신이라 pnpm은 기본 위치에 설치한다.
 # `Scope`가 돌릴지 정하고(scripts/ci-scope.mjs), `Changeset`(PR만)이 통과하면 네 작업(`Static checks`, `Test`, `Build`, `E2E`)이
 # 나란히 돈다. 네 작업은 서로 기다리지 않고, 하나가 실패해도 나머지는 끝까지 돈다.
 # 브랜치 이름 검사는 `branch-name.yml`이 맡는다.

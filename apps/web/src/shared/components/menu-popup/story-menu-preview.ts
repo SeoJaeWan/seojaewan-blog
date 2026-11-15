@@ -1,5 +1,5 @@
 // @codocs [[디자인 시스템:조립]]
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 메뉴 조립(`Menu/*`) 스토리가 실제 메뉴 함수가 만든 항목을 피그마 조립처럼 그리게 바꾸는 도우미다.
 import type { MenuPopupEntry } from './menu-popup';
 

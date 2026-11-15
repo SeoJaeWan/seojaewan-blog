@@ -16,7 +16,6 @@ type DropDownButtonProps = Omit<ComponentProps<typeof BaseButton>, 'className' |
 /**
  * 현재 선택값과 아래 꺾쇠가 있는 드롭다운 버튼(피그마 DropDownButton)을 그린다. 동작과 접근성(disabled, 포커스)은 Base UI Button이 맡는다.
  * 상태 색은 실제 CSS 상태(hover, active, focus-visible, disabled)로 바꾸고, 키보드 포커스는 outline으로 그린다.
- * @codocs [[컴포넌트 목록:상태]]
  * @codocs [[접근성:버튼 이름]]
  * @param props 컴포넌트 속성
  * @param props.label 피그마 Label. 현재 선택값 글자다

@@ -35,7 +35,7 @@ export type TokenChanges = {
 
 /**
  * 두 tokens.json을 비교해 바뀐 토큰과 영향받는 이름을 찾는다. `$extensions`(컬렉션, 쓰임 범위)는 모습과 관계없어 비교하지 않는다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param oldText main의 tokens.json 내용(없으면 null)
  * @param newText 새로 내보낸 tokens.json 내용
  * @returns 바뀐 토큰 경로와 영향받는 이름
@@ -88,7 +88,7 @@ export function tokenChanges(oldText: string | null, newText: string): TokenChan
 
 /**
  * 플러그인 화면의 토큰 줄에 보일 추가·변경·이름 변경·삭제를 나눈다. 이름이 바뀐 토큰은 추가·삭제에서 뺀다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param changes tokens.json 비교 결과
  * @returns 화면에 보일 토큰 변경
  */
@@ -106,7 +106,7 @@ export function tokenSummary(changes: TokenChanges): TokenSummary {
 /**
  * 쓰는 토큰 이름 목록 가운데 하나라도 바뀐 토큰을 쓰는 컴포넌트를 찾는다.
  * 쓰는 토큰은 피그마에서 컴포넌트의 모든 레이어(인스턴스 안쪽 포함)에 연결된 변수와 스타일 이름이다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param usages 컴포넌트 이름 → 쓰는 토큰 이름(변수 경로, 스타일 이름)
  * @param names 찾을 토큰 이름
  * @returns 그 토큰을 쓰는 컴포넌트 이름(정렬)

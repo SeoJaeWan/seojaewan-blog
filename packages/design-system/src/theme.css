@@ -10,7 +10,7 @@
 @import './reset.css';
 
 /*
- * @codocs [[디자인 기반:서체]]
+ * @codocs [[디자인 시스템:서체 구현]]
  * 기울임 글꼴은 Open Sans Italic만 있다. Pretendard에는 기울임 글꼴이 없어 한글은 기울이지 않으므로,
  * 브라우저가 글꼴을 기울여 흉내 내지 않게 한다.
  */

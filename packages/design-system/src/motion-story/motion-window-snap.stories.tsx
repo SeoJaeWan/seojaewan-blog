@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { MotionPreview } from './motion-preview';
 import { SampleWindow } from './sample-window';
 
-// @codocs [[피그마 연동:모션]]
+// @codocs [[디자인 시스템:모션]]
 // 견본 motion-window-snap에는 WindowFrame 인스턴스(800x500)를 놓고 인스턴스 전체에 키프레임을 건다.
 // 최대화·복원·스냅은 동작에 따라 붙는 움직임이라 컴포넌트에는 붙이지 않고 여기서만 건다.
 // 실행 중 값은 이전 위치·크기이고(견본 주석의 `@runtime`), 견본의 대표값 이동 (120, 60), 배율 X 0.6·Y 0.7을 넣는다.

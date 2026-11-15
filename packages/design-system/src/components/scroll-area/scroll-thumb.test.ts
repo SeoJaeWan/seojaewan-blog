@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { draggedScrollTop, scrollThumb } from './scroll-thumb';
 
-// @codocs [[디자인 기반:겹쳐 놓기]]
+// @codocs [[디자인 시스템:겹쳐 놓기]]
 describe('scrollThumb', () => {
   it('내용이 넘치지 않으면 막대가 없다', () => {
     expect(
@@ -23,7 +23,7 @@ describe('scrollThumb', () => {
   });
 });
 
-// @codocs [[디자인 기반:겹쳐 놓기]]
+// @codocs [[디자인 시스템:겹쳐 놓기]]
 describe('draggedScrollTop', () => {
   // 막대 길이 80, 막대가 움직이는 길이 212 - 80 = 132, 스크롤 범위 396
   const viewport = { clientHeight: 240, scrollHeight: 636, scrollTop: 90 };

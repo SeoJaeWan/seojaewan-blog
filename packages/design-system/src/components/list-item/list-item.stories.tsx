@@ -30,7 +30,7 @@ type FigmaArgs = {
 
 const meta = {
   title: 'Components/ListItem',
-  // 글자는 피그마 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
+  // 글자는 피그마 속성의 기본값과 같아야 한다([[디자인 시스템:스토리 규칙]]).
   args: {
     size: 'compact',
     state: 'rest',
@@ -74,7 +74,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 // 피그마 변형 하나를 args 하나로 고른다. 너비는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 크기로 감싼다
 // ([[디자인 시스템:컴포넌트 조립 규칙]]).

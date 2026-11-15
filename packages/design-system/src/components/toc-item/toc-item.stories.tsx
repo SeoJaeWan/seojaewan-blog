@@ -36,11 +36,10 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나(Active, Level, State)를 args 하나로 고른다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:상태]]
 /** isActive가 아니면 aria-current가 없다 */
 export const Default: Story = {
   args: { isActive: false },
@@ -52,7 +51,6 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:상태]]
 /** isActive이면 aria-current가 붙는다 */
 export const Active: Story = {
   args: { label: '소개' },

@@ -21,7 +21,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:모션]]
+// @codocs [[디자인 시스템:모션]]
 /** 견본에 모션 클래스를 걸어 재생하고, 다시 재생과 느리게 보기 버튼을 둔다 */
 export const Default: Story = {
   play: async ({ canvas, userEvent, step }) => {

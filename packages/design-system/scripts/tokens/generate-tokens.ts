@@ -16,7 +16,7 @@ if (import.meta.main) {
 
 /**
  * figma/tokens.json에서 src/tokens.css와 src/token-names.ts를 만들거나, 만든 결과와 같은지 확인한다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  */
 function main(): void {
   const isCheck = process.argv.includes(CHECK_FLAG);

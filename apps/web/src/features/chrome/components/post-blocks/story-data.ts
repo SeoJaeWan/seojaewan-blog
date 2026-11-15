@@ -1,5 +1,5 @@
 // @codocs [[저장소 구성:앱 폴더 구조]]
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // Notion 블록 견본 조립(Chrome/PostBlocks) 스토리의 고정 데이터다. 피그마 조립과 같은 글자와 블록을 둔다.
 
 import { getImageAsset } from '@seojaewan/design-system';

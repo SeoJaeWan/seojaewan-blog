@@ -41,7 +41,7 @@ function exported(
   return result;
 }
 
-// @codocs [[피그마 연동:모션]]
+// @codocs [[디자인 시스템:모션]]
 describe('모션', () => {
   it('트랙 길이가 motion/duration/* 값(ms)과 같으면 통과하고 그 변수를 적는다(키프레임은 초)', () => {
     const { motion } = exported(windowOpenSample());
@@ -199,7 +199,7 @@ describe('모션', () => {
   });
 });
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('구조 검사', () => {
   it('한 견본의 위반은 위치(견본 / 레이어 / 항목 / 키프레임)·이유·고칠 방법과 함께 모두 한 번에 돌려준다', () => {
     const sample = windowOpenSample();
@@ -275,8 +275,8 @@ function currentSample(change: Partial<MotionSampleData> = {}): MotionSampleData
   };
 }
 
-// @codocs [[피그마 연동:모션]]
-// @codocs [[디자인 기반:모션 견본]]
+// @codocs [[디자인 시스템:모션]]
+// @codocs [[디자인 시스템:모션 견본]]
 describe('움직임이 일어나는 자리', () => {
   it('반복은 재생 설정 Loop로 읽고 @repeat·@trigger 줄을 요구하지 않는다', () => {
     expect(exported(currentSample()).motion.iterations).toBe(1);

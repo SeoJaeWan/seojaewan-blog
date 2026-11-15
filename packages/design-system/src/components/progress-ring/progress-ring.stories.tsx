@@ -52,12 +52,12 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
-// @codocs [[피그마 연동:PR 흐름]]
+// @codocs [[디자인 시스템:피그마 파일]]
+// @codocs [[디자인 시스템:PR 흐름]]
 /** 진행 표시 역할과 쓰는 곳이 붙인 이름을 갖고, 호가 늘 돈다 */
 export const Default: Story = {
   render: () => <ProgressRing aria-label="불러오는 중" />,

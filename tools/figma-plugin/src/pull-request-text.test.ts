@@ -63,7 +63,7 @@ describe('커밋 제목은 영어 Conventional Commits, 본문은 한국어다',
   });
 });
 
-// @codocs [[피그마 연동:피그마 플러그인]]
+// @codocs [[디자인 시스템:피그마 플러그인]]
 describe('피그마 플러그인 브랜치는 대상마다 이름이 고정이다', () => {
   it('컴포넌트는 feat/figma-<컴포넌트 폴더>, 토큰은 feat/figma-tokens다', () => {
     expect(componentBranchName('search-box')).toBe('feat/figma-search-box');
@@ -130,7 +130,7 @@ function manyVariants(name: string, folder: string, count: number): TargetChange
   };
 }
 
-// @codocs [[피그마 연동:피그마 플러그인]]
+// @codocs [[디자인 시스템:피그마 플러그인]]
 describe('PR 본문의 피그마 미리보기', () => {
   it('대상마다 `## 이름` 아래 표에 변형을 두 개씩 나란히 놓고, 이미지 아래 변형 이름을 피그마 노드로 연결한다', () => {
     expect(variantPreviews('feat/figma-button', [button])).toEqual([
