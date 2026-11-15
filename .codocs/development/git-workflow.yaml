@@ -15,9 +15,9 @@ _codocs:
   피그마 플러그인이 여는 브랜치의 고정 이름과 재내보내기 시 브랜치 재사용은 [[디자인 시스템:피그마 플러그인]]에서 정한다.
   `main`과 Renovate가 여는 `renovate/...` 브랜치는 이 형식 검사에서 제외한다.
   버전 PR 브랜치 `chore/release`는 사람이 쓰지 않는 예약 이름이다([[Git 작업 규칙:Changesets]]).
-  `branch-name.yml`의 `Branch name` 작업과 push 훅(pre-push)이 이름을 검사한다. 설명은 소문자·숫자·하이픈이고, 종류 목록은 commitlint 설정(`type-enum`)에서 읽는다. `branch-name.yml`은 모든 PR(버전 PR 포함)에서 돌고 `main` push에서는 돌지 않는다.
+  `ci.yml`의 `Branch name` 작업과 push 훅(pre-push)이 이름을 검사한다. 설명은 소문자·숫자·하이픈이고, 종류 목록은 commitlint 설정(`type-enum`)에서 읽는다. `Branch name` 작업은 모든 PR(버전 PR 포함)에서 돌고 `main` push에서는 건너뛴다.
 
-  `docs/` 브랜치는 문서만 바꾼다. `docs/` PR에서는 CI(`ci.yml`)가 돌지 않으므로([[Git 작업 규칙:CI]]), 문서가 아닌 파일이 검사 없이 병합되지 않게 `Branch name` 작업이 PR이 바꾼 파일(추가·수정·삭제, 이름 변경은 옛 경로와 새 경로 모두)을 본다(`scripts/check-docs-branch.mjs`). 하나라도 아래 범위 밖이면 실패한다.
+  `docs/` 브랜치는 문서만 바꾼다. `docs/` PR에서는 `ci.yml`의 나머지 검사가 돌지 않으므로([[Git 작업 규칙:CI]]), 문서가 아닌 파일이 검사 없이 병합되지 않게 `Branch name` 작업이 PR이 바꾼 파일(추가·수정·삭제, 이름 변경은 옛 경로와 새 경로 모두)을 본다(`scripts/check-docs-branch.mjs`). 하나라도 아래 범위 밖이면 실패한다.
   - `.codocs/` 아래 전부
   - `.claude/` 아래 전부
   - 파일 이름이 `AGENTS.md`, `CLAUDE.md`, `README.md`인 파일(어느 폴더든)
@@ -46,11 +46,10 @@ CI: |
   GitHub Actions에서 실행한다. 모든 워크플로가 GitHub 호스티드 러너(`runs-on: ubuntu-latest`)에서 돌고, self-hosted runner는 쓰지 않는다. 저장소가 공개라 호스티드 표준 러너(4 vCPU)가 무료·무제한이기 때문이다. job마다 깨끗한 머신이라 pnpm은 기본 위치에 설치하고, 앱 서버는 기본 포트(3000)로 띄운다.
 
   워크플로:
-  - `branch-name.yml`: 모든 PR(버전 PR 포함)에서 브랜치 이름과 `docs/` 브랜치의 파일 범위를 검사한다([[Git 작업 규칙:브랜치]]). `main` push에서는 돌지 않는다.
   - `ci.yml`: PR과 `main` push의 검사. 아래 도는 조건과 작업 구조를 따른다.
   - `content-sync.yml`: 글 동기화([[콘텐츠 원천:갱신 방식]]).
 
-  `ci.yml`이 도는 조건(`scripts/ci-scope.mjs`, 맨 앞 `Scope` 작업이 정한다):
+  `ci.yml`이 도는 조건(`scripts/ci-scope.mjs`, 맨 앞 `Scope` 작업이 정한다). `Branch name`과 `Merge gate`는 이 조건을 보지 않는다:
   - PR: 브랜치가 `chore/release`(버전 PR), `docs/*`(문서 PR), `chore/notion-content-sync`(글 동기화 PR)이면 돌지 않는다. 그 밖의 PR은 Renovate(`renovate/*`)를 포함해 모두 돈다.
   - `main` push: 위 세 종류가 아닌 PR을 병합한 push에서만 돈다. push 이벤트에는 PR 브랜치 이름이 없어, 병합 커밋 제목(`Merge pull request #N from <owner>/<branch>`)에서 브랜치를 읽는다([[Git 작업 규칙:병합]]). 브랜치를 읽지 못한 push(직접 push 등)는 돈다.
   - 같은 ref에 새 실행이 오면 앞 실행을 취소한다.
@@ -64,6 +63,10 @@ CI: |
      - `E2E`: Chromium 준비 뒤 fixture 빌드와 E2E(`pnpm test:e2e`). worker 수는 지정하지 않는다. 그 결과로 시나리오 케이스 보고서를 만든다([[테스트 작성 규칙:E2E]]).
   3. `Publish report`: `E2E`가 만든 보고서를 GitHub Pages 브랜치(`gh-pages`)에 올린다(`scripts/publish-scenario-pages.sh`). 이 작업만 한 번에 하나씩 돌게 줄을 세운다(`concurrency`). 포크에서 온 PR은 쓰기 권한이 없어 건너뛴다.
 
+  위 구조와 따로 도는 작업:
+  - `Branch name`: 모든 PR(버전 PR, 문서 PR 포함)에서 브랜치 이름과 `docs/` 브랜치의 파일 범위를 검사한다([[Git 작업 규칙:브랜치]]). `main` push에서는 건너뛴다.
+  - `Merge gate`: 끝 작업. `Scope`, `Branch name`, `Changeset`, `Static checks`, `Test`, `Build`, `E2E`가 모두 통과했거나 조건에 따라 건너뛰었을 때만 통과하고, 하나라도 실패했거나 취소됐으면 실패한다. `Scope`는 통과해야 한다. 앞 작업이 실패해도 건너뛰지 않고 돈다(`always()`). GitHub가 건너뛴 필수 검사를 통과로 치기 때문이다.
+
   캐시:
   - pnpm 저장소: `actions/setup-node`의 `cache: pnpm`. 루트 의존성만 설치하는 작업(`Branch name`, `Changeset`)은 캐시를 쓰지 않는다. 일부만 담은 저장소를 같은 키로 먼저 저장하지 않게 하기 위해서다.
   - Playwright 브라우저: Playwright 버전을 키로 `actions/cache`(`~/.cache/ms-playwright`, `.github/actions/setup-playwright`). 캐시가 맞으면 아무것도 설치하지 않는다. Chromium이 쓰는 시스템 라이브러리는 러너에 이미 있다. 캐시가 없으면 브라우저와 시스템 라이브러리를 함께 설치한다(`playwright install --with-deps`).
@@ -72,7 +75,7 @@ CI: |
 
   미리보기 배포가 없으므로([[배포 환경]]) 깨진 빌드를 PR에서 바로 잡기 위해 CI에서 빌드한다. Storybook 빌드는 디자인 시스템 카탈로그와 앱 조립 스토리가 깨지지 않았는지 확인한다.
 
-  GitHub ruleset `main: CI 통과 필수`가 `main`으로 가는 병합에 검사 일곱 개(`Scope`, `Changeset`, `Static checks`, `Test`, `Build`, `E2E`, `Branch name`)를 강제한다. 실패했거나 보고되지 않은 검사가 있으면 GitHub가 병합을 막고, 조건에 따라 건너뛴 작업은 통과로 친다. 글 동기화 PR은 CI를 돌리지 않고 `content-sync.yml`이 한 실행 안에서 병합한다([[콘텐츠 원천:갱신 방식]]).
+  GitHub ruleset `main: CI 통과 필수`가 `main`으로 가는 병합에 필수 검사 `Merge gate` 하나를 강제한다. GitHub Actions가 보고한 것만 받는다. 실패했거나 보고되지 않으면 GitHub가 병합을 막는다. 일반 PR과 문서 PR에서는 `ci.yml`의 `Merge gate` 작업이 보고한다. 글 동기화 PR은 `GITHUB_TOKEN`이 만들어 `ci.yml`이 돌지 않으므로, `content-sync.yml`이 운영 글 빌드가 통과한 뒤 같은 이름으로 통과를 보고하고 한 실행 안에서 병합한다([[콘텐츠 원천:갱신 방식]]).
 Changesets: |
   배포할 앱의 버전을 Changesets로 관리한다. 배포 흐름은 [[배포 환경:배포(CD)]]에서 정한다.
 
