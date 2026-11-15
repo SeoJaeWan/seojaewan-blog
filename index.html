@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>시나리오 케이스</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="top"><h1>시나리오 케이스</h1></header>
+    <section id="stats" class="stats" aria-label="요약"></section>
+    <div class="layout">
+      <nav id="nav" class="nav" aria-label="행위"></nav>
+      <main>
+        <div class="tools" role="search">
+          <input type="search" id="query" placeholder="행위·결과·조건 값 찾기" aria-label="찾기" />
+          <button type="button" class="chip" id="only-failed" aria-pressed="false">실패만</button>
+          <button type="button" class="chip" id="only-missing" aria-pressed="false">
+            빠진 값만
+          </button>
+        </div>
+        <div id="list"></div>
+      </main>
+    </div>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
