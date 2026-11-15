@@ -17,7 +17,6 @@ type BreadcrumbItemProps = Omit<ComponentProps<'div'>, 'children'> & {
  * 경로의 한 칸(피그마 BreadcrumbItem)을 그린다. Breadcrumb의 Items 슬롯에 쓴다.
  * Rest·Hover·Pressed 모양은 CSS hover와 active로 바꾼다. isCurrent는 모양이 같아 피그마 변형에 없다.
  * 오른쪽 구분자는 BreadcrumbChevron 인스턴스다. 하위 폴더 메뉴는 쓰는 곳이 `renderSeparator`로 꺾쇠를 메뉴 트리거로 감싸 붙인다.
- * @codocs [[컴포넌트 목록:상태]]
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
  * @param props 컴포넌트 속성
  * @param props.label 피그마 Label 속성. 위치 이름 글자다

@@ -19,7 +19,7 @@ type FigmaArgs = {
 
 const meta = {
   title: 'Components/DropDownButton',
-  // 글자는 피그마 Label 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
+  // 글자는 피그마 Label 기본값과 같아야 한다([[디자인 시스템:스토리 규칙]]).
   args: { state: 'rest', label: '레이블', hasIcon: false },
   argTypes: {
     state: { control: 'inline-radio', options: STATES },
@@ -43,7 +43,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
@@ -58,13 +58,11 @@ export const WithSubject: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:상태]]
 export const Default: Story = {
   args: { onClick: fn() },
   play: async ({ args, canvasElement, step }) => {
     const button = within(canvasElement).getByRole('button', { name: '레이블' });
 
-    // @codocs [[컴포넌트 목록:상태]]
     await step('누르거나 키보드로 실행하면 onClick을 부른다', async () => {
       await userEvent.tab();
       await expect(button).toHaveFocus();
@@ -75,13 +73,11 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:상태]]
 export const Disabled: Story = {
   args: { state: 'disabled', onClick: fn() },
   play: async ({ args, canvasElement, step }) => {
     const button = within(canvasElement).getByRole('button', { name: '레이블' });
 
-    // @codocs [[컴포넌트 목록:상태]]
     await step('disabled면 누를 수 없고 Tab 포커스도 받지 않는다', async () => {
       await userEvent.click(button);
       await userEvent.tab();
@@ -92,13 +88,11 @@ export const Disabled: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:상태]]
 export const WithIcon: Story = {
   args: { hasIcon: true },
   play: async ({ canvasElement, step }) => {
     const button = within(canvasElement).getByRole('button', { name: '레이블' });
 
-    // @codocs [[컴포넌트 목록:상태]]
     await step('hasIcon이면 글자 앞에 아이콘을 더해 꺾쇠까지 svg가 둘이다', async () => {
       await expect(button.querySelectorAll('svg')).toHaveLength(2);
     });

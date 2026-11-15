@@ -42,7 +42,7 @@ export default meta;
 
 type Story = StoryObj<FigmaArgs>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나(Default)를 고른다. MenuCommandBar는 열린 Base UI 메뉴 안에서만 동작하므로, 메뉴를 스토리 루트 안에 열고 줄 하나만 담는다.
 export const Figma: Story = { parameters: baseUiFocusGuardParameters };
 
@@ -121,7 +121,7 @@ function OpenMenu(props: { children: ReactNode }): JSX.Element {
           <Menu.Root open modal={false}>
             <Menu.Portal container={anchor}>
               <Menu.Positioner anchor={anchor} side="bottom" align="start" sideOffset={0}>
-                {/* 포털 안에 그리므로 캡처 대상을 표시한다([[피그마 연동:스토리 규칙]]). */}
+                {/* 포털 안에 그리므로 캡처 대상을 표시한다([[디자인 시스템:스토리 규칙]]). */}
                 <Menu.Popup {...noInitialFocus} data-parity-target>
                   <FigmaFrame source={menuCommandBarExport}>{props.children}</FigmaFrame>
                 </Menu.Popup>

@@ -92,7 +92,7 @@ const MOTION_EASING_PREFIX = 'motion/easing/';
 /**
  * 변형 하나의 구조를 검사한다. 숨긴 노드는 이미 빠져 있다.
  * 막는 것은 변수·스타일에 연결되지 않은 시각 값, CSS로 그릴 수 없는 기능, 인스턴스 모양의 직접 덮어쓰기 세 가지다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param root 변형 루트 노드 데이터
  * @param where 위치 접두어(`Button / Style=Accent, State=Rest`)
  * @param context 이름 있는 이미지 자산과 코드 전용 변수
@@ -126,8 +126,8 @@ export function checkVariant(root: NodeData, where: string, context: CheckContex
 
 /**
  * 변형 전환의 시간과 이징이 모션 변수 값인지 본다. 재생 시작 조건(트리거)은 읽지 않는다.
- * @codocs [[피그마 연동:구조 검사]]
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:구조 검사]]
+ * @codocs [[디자인 시스템:모션]]
  * @param root 변형 루트
  * @param reaction 전환
  * @param variables 모션 변수
@@ -208,7 +208,7 @@ const ancestorKinds: Readonly<Record<string, string>> = {
  * 변형의 그림자와 변형 밖으로 나온 자식이 PNG에서 빠진다. 한 대상의 변형은 모두 같은 조상 아래에 있으므로
  * 변형마다가 아니라 대상마다 한 번, 자르는 조상마다 위반 하나를 낸다.
  * 페이지와 섹션은 자르지 않는다. 변형 자신의 자르기는 보지 않는다(자기 그림자는 자기 자르기에 잘리지 않는다).
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param target 대상 이름(컴포넌트 세트, 단독 컴포넌트, 조립)
  * @param ancestors 변형의 조상(페이지 아래 가장 바깥부터 가장 가까운 것까지)
  * @returns 위반 목록(자르는 조상마다 하나)
@@ -308,7 +308,7 @@ type OverrideTarget = {
  *   색은 쓰는 곳이 정하고, 토큰에 없는 색은 구조 검사 1번(자산의 색 변수 연결)이 막는다.
  * - 직접 놓은 인스턴스 전체의 불투명도(`opacity`와 그 변수 연결). 안쪽 레이어나 다른 인스턴스 안에 든 인스턴스의 불투명도는 막는다.
  * 숨긴 레이어와 줄인 인스턴스(`scaleFactor`가 1이 아님)의 안쪽은 보지 않는다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param root 변형 루트 노드 데이터
  * @param add 위반을 더하는 함수
  */
@@ -483,7 +483,7 @@ function checkType(node: NodeData, add: Add): boolean {
 /**
  * 이미지 자산 인스턴스의 비율이 원본과 같은지 본다. 높이는 칸 너비와 자산 비율에서 나오므로 숫자를 정하지 않는다.
  * 두 축 모두 부모가 크기를 정하면(FILL, 양쪽 늘이기) 틀에 맞춰 자르는 그림(커버, 바탕화면)이라 막지 않는다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param node 자산 인스턴스
  * @param isRoot 변형 루트인지
  * @param add 위반을 더하는 함수
@@ -509,7 +509,7 @@ function checkImageRatio(node: NodeData, isRoot: boolean, add: Add): void {
 
 /**
  * 노드에 변수를 연결할 수 없는 값이 코드 전용 변수와 짝이 있는지 본다. 묶음에 변수가 없으면 아직 만들지 않은 것이라 보지 않는다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param node 노드
  * @param label 메시지에 쓸 이름
  * @param value 짝을 찾는 값
@@ -760,8 +760,8 @@ function checkLayout(node: NodeData, add: Add): void {
  * 양쪽 제약(STRETCH)인 축의 크기는 제약이 정하는 값이라 검사하지 않는다.
  * 배율 인스턴스(`scaleFactor`가 1이 아님) 자체의 고정 너비·높이는 검사하지 않는다.
  * 배율이 고정일 수도 칸에 맞춘 값일 수도 있어 결과 크기가 토큰이 아닐 수 있고, 피그마는 배율 인스턴스의 크기를 변수에 연결하면 배율을 풀기 때문이다. 크기는 그것을 담는 칸이 변수로 지킨다.
- * @codocs [[피그마 연동:구조 검사]]
- * @codocs [[디자인 기반:크기 변수]]
+ * @codocs [[디자인 시스템:구조 검사]]
+ * @codocs [[디자인 시스템:크기 변수]]
  * @param node 노드
  * @param isRoot 변형 루트인지
  * @param add 위반을 더하는 함수
@@ -791,7 +791,7 @@ function checkSizes(node: NodeData, isRoot: boolean, add: Add): void {
  * 내용 맞춤(HUG) 축의 크기를 정하는 자식이 있는지 검사한다. 자식이 모두 그 축에서 부모 채움(FILL)이거나 절대 위치이면
  * 그 축의 크기가 어떤 변수에도 묶이지 않은 채 피그마에 저장된 값으로 정해진다.
  * 다만 그 축의 최대 크기가 변수에 연결돼 있고 그 축에서 부모 채움인 글자 자식이 있으면, 글자 내용이 크기를 정하고 최대 크기에서 멈추므로 막지 않는다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param node 노드
  * @param horizontal 가로 크기 방식
  * @param vertical 세로 크기 방식

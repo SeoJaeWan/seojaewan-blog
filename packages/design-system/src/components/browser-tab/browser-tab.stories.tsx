@@ -23,7 +23,7 @@ type FigmaArgs = {
 
 const meta = {
   title: 'Components/BrowserTab',
-  // 글자는 피그마 Title 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
+  // 글자는 피그마 Title 속성의 기본값과 같아야 한다([[디자인 시스템:스토리 규칙]]).
   args: { state: 'rest', title: '페이지 제목', hasSeparator: true },
   argTypes: {
     state: { control: 'inline-radio', options: STATES },
@@ -55,7 +55,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};

@@ -18,7 +18,7 @@ import type {
 } from './motion-data';
 
 // 모션 견본의 구조 검사와 내보낼 자료 만들기. 피그마 API를 쓰지 않는 순수 함수다.
-// 막는 것: 모션 변수 값이 아닌 트랙 길이·시작 지연, 변수에 연결되지 않은 키프레임 이징([[피그마 연동:구조 검사]] 4번),
+// 막는 것: 모션 변수 값이 아닌 트랙 길이·시작 지연, 변수에 연결되지 않은 키프레임 이징([[디자인 시스템:구조 검사]] 4번),
 // 잘못되거나 빠진 `@` 줄(`@repeat`·`@trigger`는 필수다).
 // 막지 않는 것: 배율·투명도·회전 등이 모션 변수 값과 같으면 짝을 적는다. 이동과 그 밖의 숫자는 보지 않는다.
 
@@ -48,8 +48,8 @@ const MS_PER_SECOND = 1000;
 /**
  * 모션 견본 하나를 검사하고, 통과하면 내보낼 자료(`figma/motions/<이름>.json`)를 만든다.
  * 위반은 견본의 트랙마다 위치·이유·고칠 방법을 담아 한 번에 돌려준다.
- * @codocs [[피그마 연동:모션]]
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:모션]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param sample 견본에서 읽은 트랙
  * @param variables `motion/*` 변수
  * @param fileKey 피그마 파일 키(figma.json)
@@ -211,7 +211,7 @@ export function checkMotionSample(
 
 /**
  * 트랙을 견본 길이까지만 남긴다. 견본 안 컴포넌트가 가진 더 긴 움직임은 그 견본에서 잘려 재생되므로 이 견본의 값이 아니다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param track 트랙
  * @param lengthMs 견본 길이(ms). 모르면 null
  * @returns 남은 키프레임과 잘렸는지
@@ -231,7 +231,7 @@ function clipTrack(
 
 /**
  * 모션 이름을 정할 수 없을 때의 이유와 고칠 방법을 자리마다 만든다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param sample 움직임 데이터
  * @returns 이유와 고칠 방법
  */
@@ -254,7 +254,7 @@ function nameProblem(sample: MotionSampleData): [string, string] {
 /**
  * 자리마다 `@` 줄을 읽는다. 옛 견본은 주석의 `@repeat`·`@trigger`가 필수이고, 원본은 컴포넌트 description의 `@` 줄이다.
  * 흐름 프레임은 description이 없어 `@` 줄이 없다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param sample 움직임 데이터
  * @param notices 알림 목록
  * @param add 위반을 더하는 함수
@@ -285,7 +285,7 @@ function sourceDirectives(
     if (directives[key] === undefined) {
       add(
         `견본 주석에 \`@${key}\` 줄이 없다. 옛 견본은 반복과 재생 시작 조건을 주석으로 읽는다`,
-        `견본 프레임 주석에 \`@${key} <값>\`을 적거나, 움직임을 일어나는 자리로 옮긴다([[디자인 기반:모션 견본]]).`,
+        `견본 프레임 주석에 \`@${key} <값>\`을 적거나, 움직임을 일어나는 자리로 옮긴다([[디자인 시스템:모션 견본]]).`,
       );
     }
   }
@@ -294,7 +294,7 @@ function sourceDirectives(
 
 /**
  * 재생 설정 Loop를 반복 횟수로 바꾼다. 켜면 무한 반복, 끄면 한 번이다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param sample 움직임 데이터
  * @returns 횟수나 `infinite`, 읽지 못했으면 null
  */
@@ -307,7 +307,7 @@ function loopIterations(sample: MotionSampleData): number | 'infinite' | null {
 
 /**
  * `@repeat`를 반복 횟수로 바꾼다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param directives `@` 줄
  * @returns 횟수나 `infinite`, 없으면 null
  */

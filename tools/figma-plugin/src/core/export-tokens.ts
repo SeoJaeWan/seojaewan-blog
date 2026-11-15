@@ -30,7 +30,7 @@ export type TokensExport = {
 /**
  * tokens.json 내용만 만든다. 이미지 자산 바이트, tokens.css, 사용처 알림은 만들지 않아 가볍다.
  * 플러그인을 열 때 `main`의 tokens.json과 비교하는 데 쓴다. 내용은 exportTokensText의 text와 같다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @returns tokens.json 내용
  */
 export async function tokensJsonText(): Promise<string> {
@@ -44,7 +44,7 @@ export async function tokensJsonText(): Promise<string> {
  * 이미지 칠은 이름 있는 이미지 자산을 가리키고, 그 자산 파일도 함께 돌려준다.
  * 쓰는 곳이 없는 변수·스타일은 알림으로 함께 돌려준다(막지 않음).
  * 변환 규칙에 맞지 않는 토큰이 있으면 tokensJsonToCss가 경로와 이유를 담아 실패한다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @returns tokens.json과 tokens.css 문자열, 토큰으로 옮기지 않은 칠 스타일 이름, 이미지 자산, 알림
  */
 export async function exportTokensText(): Promise<TokensExport> {
@@ -83,7 +83,7 @@ export async function exportTokensText(): Promise<TokensExport> {
 
 /**
  * tokens.json 내용으로 token-names.ts 내용을 만든다. 변환 스크립트와 같은 함수다.
- * @codocs [[피그마 연동:토큰 검사]]
+ * @codocs [[디자인 시스템:토큰 검사]]
  * @param text tokens.json 내용
  * @returns token-names.ts 내용
  */
@@ -95,7 +95,7 @@ export function tokenNamesText(text: string): string {
 /**
  * tokens.json 내용으로 tokens.css 내용을 만든다. 변환 스크립트(`generate:tokens`)와 같은 함수를 써서,
  * 플러그인이 커밋한 tokens.css가 변환 스크립트가 다시 만든 것과 같다.
- * @codocs [[피그마 연동:토큰 검사]]
+ * @codocs [[디자인 시스템:토큰 검사]]
  * @param text tokens.json 내용
  * @returns tokens.css 내용
  */

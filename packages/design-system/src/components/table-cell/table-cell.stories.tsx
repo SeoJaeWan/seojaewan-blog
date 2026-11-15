@@ -34,7 +34,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형은 args로 고른다(`Variant=Body` → `variant: 'body'`).
 export const Figma: Story = {};
 

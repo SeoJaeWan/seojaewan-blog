@@ -29,11 +29,11 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 기본은 가로선이다 */
 export const Default: Story = {
   play: async ({ canvasElement, step }) => {
@@ -46,7 +46,7 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** vertical은 세로선이다 */
 export const Vertical: Story = {
   args: { orientation: 'vertical' },

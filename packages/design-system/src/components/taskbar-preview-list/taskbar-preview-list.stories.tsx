@@ -28,7 +28,7 @@ export default meta;
 
 type Story = StoryObj<FigmaArgs>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다. Previews 슬롯에는 피그마 슬롯 기본 내용과 같은 WindowPreview 둘을 넣는다
 // (Desktop은 Default 카드, Mobile은 Title 줄). WindowPreview의 thumbnail 슬롯은 피그마에서 비어 있어 넣지 않는다.
 // Mobile은 너비를 갖지 않고 쓰는 곳이 정하므로, FigmaFrame이 피그마 원본 크기로 감싼다.

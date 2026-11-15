@@ -26,7 +26,7 @@ const PACKAGE_CSS = `/* [0] */
 	unicode-range: U+d723-d728;
 }`;
 
-// @codocs [[디자인 기반:서체]]
+// @codocs [[디자인 시스템:서체 구현]]
 describe('서체', () => {
   it('Pretendard @font-face는 woff 없이 woff2 파일만 가리킨다', () => {
     const css = fontFacesToCss(
@@ -75,7 +75,7 @@ describe('서체', () => {
     expect(italicWeights('nanum-gothic-coding.css')).toEqual([]);
   });
 
-  // @codocs [[피그마 연동:서체 구현]]
+  // @codocs [[디자인 시스템:서체 구현]]
   it('코드 서체 @font-face 이름은 피그마 서체 이름(font/family/code 토큰 값)과 같다', () => {
     const css = readFileSync(path.join(sourceDir, 'nanum-gothic-coding.css'), 'utf8');
     const tokens = readFileSync(path.join(sourceDir, 'tokens.css'), 'utf8');

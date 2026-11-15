@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { canonicalCategoryName } from './annotation-category';
 import { annotationData } from './read-node';
 
-// @codocs [[피그마 연동:모션]]
+// @codocs [[디자인 시스템:모션]]
 describe('주석 카테고리 이름', () => {
   afterEach(() => {
     vi.unstubAllGlobals();

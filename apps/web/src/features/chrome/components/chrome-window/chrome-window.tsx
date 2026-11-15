@@ -75,7 +75,7 @@ type ChromeWindowProps = WindowFrameControlProps &
 
 // 탭 파비콘은 Chrome 창 안의 Material 글 아이콘(색은 도구 모음 아이콘과 같다), 모바일 앱 아이콘은 피그마 Window/Chrome의 인스턴스(app/Chrome) 그대로다.
 // @codocs [[Chrome:구성]]
-// @codocs [[디자인 기반:자산]]
+// @codocs [[디자인 시스템:자산]]
 const tabFavicon = (
   <Asset name="icons/ic_material_description_20_outlined.svg" className="text-color-gray-70" />
 );

@@ -14,7 +14,7 @@ function box(id: string, x: number, y: number, height = 100) {
   return { id, x, y, width: 100, height };
 }
 
-// @codocs [[피그마 연동:플러그인 화면]]
+// @codocs [[디자인 시스템:플러그인 화면]]
 describe('대상 목록: 묶음 안은 피그마 캔버스 순서', () => {
   it('위에서 아래로 행을 나누고 행 안은 왼쪽에서 오른쪽으로 읽는다', () => {
     expect(

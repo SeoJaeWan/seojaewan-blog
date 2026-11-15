@@ -74,7 +74,7 @@ const SECONDARY_TEXT_CLASS_NAME = 'text-color-black-61 group-data-disabled:text-
  * 메뉴 항목(피그마 MenuItem)을 그린다. Base UI Menu의 Popup 안에 둔다.
  * variant에 따라 Base UI의 Item, SubmenuTrigger, CheckboxItem, RadioItem이 키보드 조작과 접근성을 맡는다.
  * variant마다 받는 속성이 달라 공통 속성만 꺼내고, 나머지는 `variantProps`에 모아 variant로 좁힌다.
- * @codocs [[컴포넌트 목록:기본 컨트롤]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @param props 컴포넌트 속성
  * @param props.label 항목 이름. 길면 한 줄로 말줄임한다
  * @param props.icon 이름 앞 16px 아이콘(피그마 Has icon). SVG 아이콘이나 앱 로고 같은 래스터 자산(`images/*`)을 넣는다.
@@ -231,7 +231,7 @@ type MenuZoomRowProps = MenuItemCommonProps & {
 /**
  * 확대/축소 줄(피그마 MenuItem `Variant=Zoom`)을 그린다. 줄 전체가 아니라 −·+ 버튼이 Base UI 메뉴 항목(`Menu.Item`)이라
  * ↑↓ 키로 닿고, `closeOnClick={false}`라 눌러도 메뉴가 닫히지 않는다. 실제 배율 동작은 쓰는 곳이 콜백과 값으로 잇는다.
- * @codocs [[컴포넌트 목록:기본 컨트롤]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @codocs [[Chrome:확대/축소]]
  * @param props 컴포넌트 속성
  * @param props.label 항목 이름. 길면 한 줄로 말줄임한다

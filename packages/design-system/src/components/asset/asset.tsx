@@ -10,7 +10,7 @@ type AssetProps = Omit<SVGProps<SVGSVGElement>, 'viewBox' | 'children'> & {
  * 피그마 Foundations / Assets의 SVG 자산을 그린다. 요소는 generate:assets가 피그마 자산 파일에서 만든다.
  * 한 가지 색 자산은 currentColor로 그리므로 색은 글자 색 클래스(`text-*`)로 정하고, 크기는 크기 클래스로 정한다.
  * 여러 색 자산의 그라데이션 ID는 한 화면에 같은 자산이 여럿 있어도 겹치지 않게 요소마다 다른 접두어를 붙인다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  * @param props 컴포넌트 속성
  * @param props.name 피그마 자산 파일 경로(figma/assets/ 기준, 예: `icons/ic_fluent_add_20_regular.svg`)
  */

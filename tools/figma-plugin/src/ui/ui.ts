@@ -218,7 +218,7 @@ function handleBackClick(): void {
 
 /**
  * 붙여넣은 이름으로 선택을 바꾼다. 지금 선택을 지우고 붙여넣은 대상만 고른 뒤, 고른 항목이 든 묶음을 펼친다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  */
 function handlePasteSelectClick(): void {
   const match = matchPasteNames(parsePasteText(ui.paste.value), state.catalog.items);
@@ -260,7 +260,7 @@ function handleFilterInput(): void {
 
 /**
  * 토큰을 입력하면 바로 저장한다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  */
 function handleTokenInput(): void {
   post({ type: 'save-token', token: ui.token.value });
@@ -286,7 +286,7 @@ function handleTokenVisibilityClick(): void {
 
 /**
  * 저장소를 읽어 연결과 쓰기 권한을 확인한다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  */
 function handleCheckConnectionClick(): void {
   ui.connection.className = 'connection muted';
@@ -306,8 +306,8 @@ function handleClearTokenClick(): void {
 
 /**
  * 고른 대상으로 내보내기를 요청하고 진행 화면을 연다.
- * @codocs [[피그마 연동:피그마 플러그인]]
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  */
 function handleExportClick(): void {
   /**
@@ -379,7 +379,7 @@ function render(): void {
 
 /**
  * 아래 고정줄(고른 수 · 열릴 PR 수, 토큰 안내, 내보내기 버튼)을 그린다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  */
 function renderBottomBar(): void {
   const count = state.selected.size;
@@ -407,7 +407,7 @@ function hasTokenChanges(): boolean | null {
 
 /**
  * 대상 목록(토큰 줄, 컴포넌트·조립·애니메이션 묶음)을 그린다. 목록 안 찾기에 걸린 항목만 보이고, 걸린 묶음은 펼친다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  */
 function renderList(): void {
   if (!state.isLoaded) {
@@ -482,7 +482,7 @@ function sectionStatus(): string {
 
 /**
  * 토큰 줄과, 펼쳤으면 바뀐 토큰 이름 목록을 만든다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @returns 토큰 줄 요소
  */
 function tokenRow(): Node[] {
@@ -555,7 +555,7 @@ function handleTokenDetailClick(): void {
 
 /**
  * 묶음 하나(머리 줄과 펼친 항목)를 만든다. 묶음 체크박스는 보이는 항목을 모두 켜고 끈다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param group 묶음
  * @param items 보이는 항목
  * @param isFiltering 목록 안 찾기 중이면 true(걸린 묶음을 펼친다)
@@ -608,7 +608,7 @@ function groupBlock(group: CatalogGroup, items: CatalogItem[], isFiltering: bool
 
 /**
  * 묶음 섹션(컴포넌트 섹션을 담은 페이지 바로 아래 섹션)을 만든다. 접고 펼칠 수 있고, 체크박스와 고른 수 / 전체 수를 둔다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param band 묶음 섹션
  * @param blocks 그 안의 묶음(컴포넌트 섹션) 요소
  * @param keys 체크박스로 고르는 항목 키(보이는 항목)
@@ -658,7 +658,7 @@ function bandBlock(
 
 /**
  * 항목 한 줄(체크박스, 이름, 변형 수, 상태)을 만든다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param item 항목
  * @returns 목록 줄
  */
@@ -727,7 +727,7 @@ function toggleGroup(key: string): void {
 
 /**
  * 진행·결과 화면을 그린다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  */
 function renderRun(): void {
   const { run } = state;
@@ -836,7 +836,7 @@ function progressBlock(progress: ExportProgress | null): HTMLElement {
 
 /**
  * 커밋 결과를 PR 종류(토큰·컴포넌트·조립·애니메이션)별로 묶어 만든다. 바뀐 것 없음은 접어 둔다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param commits PR별 커밋
  * @param unchanged 바뀐 것이 없는 대상
  * @returns 결과 요소
@@ -886,8 +886,8 @@ function resultBlocks(commits: readonly PullRequestCommit[], unchanged: readonly
 
 /**
  * 조립 보고를 조립마다 접은 묶음으로 만든다. 막지 않는 보고라 결과 아래에 둔다. 줄마다 그 레이어를 피그마에서 보는 버튼을 둔다.
- * @codocs [[피그마 연동:플러그인 화면]]
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param reports 이번에 내보낸 조립의 보고
  * @returns 보고 요소
  */
@@ -974,8 +974,8 @@ function commitItem(commit: PullRequestCommit): HTMLLIElement {
 
 /**
  * 구조 검사 위반을 대상별로 묶어 만든다. 줄마다 그 레이어를 피그마에서 보는 버튼을 둔다.
- * @codocs [[피그마 연동:플러그인 화면]]
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param groups 대상별 위반
  * @returns 위반 요소
  */

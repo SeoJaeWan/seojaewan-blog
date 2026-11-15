@@ -15,7 +15,6 @@ type ColumnHeaderProps = Omit<ComponentProps<typeof BaseButton>, 'className' | '
  * 너비는 부모가 정한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]). Hover는 실제 CSS hover로 그린다.
  * 정렬 화살표는 칸 위쪽 가운데에 절대 위치로 겹쳐 그려, 글자 자리는 정렬 여부와 상관없이 그대로다.
  * 오른쪽 구분선은 피그마에서 레이아웃에 들어가므로 실제 border로 그린다.
- * @codocs [[컴포넌트 목록:상태]]
  * @param props 컴포넌트 속성
  * @param props.label 피그마 Label 속성. 열 제목 글자다
  * @param props.sort 피그마 Sort 변형. 현재 정렬 방향이다

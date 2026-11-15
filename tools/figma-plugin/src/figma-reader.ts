@@ -37,8 +37,8 @@ import type { UsageInput, UsageStyle, UsageVariable } from './unused-tokens';
 /**
  * 컴포넌트 페이지(이름에 `Components`가 든 페이지, `02 · Components`)의 컴포넌트 세트와 단독 컴포넌트를 캔버스 순서로 찾는다.
  * 묶음(band)은 페이지 바로 아래 섹션, 그룹(group)은 그 안 컴포넌트 섹션이다.
- * @codocs [[피그마 연동:피그마 플러그인]]
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @returns 컴포넌트 목록
  */
 export async function listComponents(): Promise<ComponentSummary[]> {
@@ -55,8 +55,8 @@ export async function listComponents(): Promise<ComponentSummary[]> {
 
 /**
  * "03 · Patterns" 페이지의 조립(컴포넌트 세트와 단독 컴포넌트)을 캔버스 순서로 찾는다. 묶음은 이름의 영역(조립 PR 단위)이다.
- * @codocs [[피그마 연동:피그마 플러그인]]
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @returns 조립 목록
  */
 export async function listPatterns(): Promise<ComponentSummary[]> {
@@ -68,7 +68,7 @@ export async function listPatterns(): Promise<ComponentSummary[]> {
 /**
  * 노드를 피그마 캔버스에서 읽는 순서로 정렬한다. 페이지 바로 아래부터 조상마다 형제 사이 순서(위→아래 행, 행 안 왼→오른)를 구해
  * 바깥 묶음 순서부터 비교한다. 찾지 못한 노드는 뒤에 둔다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param items 노드 ID를 가진 항목
  * @returns 캔버스 순서로 정렬한 새 배열
  */
@@ -123,7 +123,7 @@ async function listPageComponents(
 
 /**
  * 컴포넌트가 든 묶음 섹션(페이지 바로 아래 섹션)과 컴포넌트 섹션(그 안 섹션)의 이름을 구한다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param node 컴포넌트
  * @returns 묶음과 그룹 이름
  */
@@ -274,7 +274,7 @@ export async function readDesignTokensInput(): Promise<DesignTokensInput> {
 
 /**
  * 기본 모드가 아닌 모드의 값을 읽는다. 기본 값과 같은 모드는 적지 않고, 값이 없는 모드는 지원하지 않는 값으로 표시해 막는다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param variable 변수
  * @param collection 변수의 컬렉션
  * @returns 모드 이름 → 값
@@ -303,7 +303,7 @@ function otherModeValues(
  * 쓰는 곳이 없는 변수·스타일을 찾으려고 변수 별칭, 스타일 사용처, 모든 페이지 노드의 변수·스타일 연결을 읽는다.
  * 글자 일부 구간에만 입힌 글자·칠 스타일은 스타일 사용처(getStyleConsumersAsync)에 나오지 않아 구간에서 따로 읽는다.
  * 페이지를 하나씩 불러와 노드를 훑으므로 파일이 크면 시간이 걸린다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @returns 사용처 계산 입력
  */
 export async function readUsageInput(): Promise<UsageInput> {
@@ -357,7 +357,7 @@ export type ComponentTokenUsage = {
 /**
  * 컴포넌트 페이지의 컴포넌트마다 쓰는 변수와 스타일 이름을 읽는다. 인스턴스 안쪽 레이어도 본다.
  * 바뀐 토큰을 쓰는 컴포넌트를 찾아 토큰 PR에 그 변형 PNG를 다시 넣는 데 쓴다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @returns 컴포넌트마다 쓰는 토큰 이름
  */
 export async function readComponentTokenUsage(): Promise<ComponentTokenUsage[]> {
@@ -442,7 +442,7 @@ export function collectNodeUsage(node: SceneNode, usage: NodeUsage): void {
 /**
  * 노드의 키프레임 트랙(`manualKeyframeTracks`)에서 키프레임 이징이 연결한 변수(EASING 변수 별칭)를 모은다.
  * 효과·칠 등 다른 트랙 안의 같은 모양도 함께 센다. 모션 API를 쓸 수 없는 계정이면 건너뛴다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param node 노드
  * @param ids 모을 곳
  */
@@ -510,7 +510,7 @@ export type ImageAsset = {
  * Foundations / Assets의 이미지 묶음(`group/Images`)에서 이미지 칠 하나만 가진 컴포넌트를 찾아
  * 이미지 해시 → 자산 표를 만든다. 토큰의 이미지 칠은 이 표로 자산 이름을 얻고,
  * 구조 검사는 이 표에 없는 이미지를 막는다. 묶음 프레임이 있는 첫 페이지만 읽는다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  * @returns 이미지 해시 → 자산
  */
 export async function readImageAssets(): Promise<Map<string, ImageAsset>> {
@@ -551,7 +551,7 @@ export async function readImageAssets(): Promise<Map<string, ImageAsset>> {
 
 /**
  * 구조 검사에 쓰는 파일 정보(이름 있는 이미지 자산의 해시, 코드 전용 변수, 모션 변수)를 읽는다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @returns 검사 정보
  */
 export async function readCheckContext(): Promise<CheckContext> {
@@ -565,7 +565,7 @@ export async function readCheckContext(): Promise<CheckContext> {
 
 /**
  * 값 짝을 찾는 코드 전용 변수(회전·최대 줄 수·비율)를 읽는다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @returns 묶음마다 변수
  */
 async function readCodeVariables(): Promise<CodeVariables> {

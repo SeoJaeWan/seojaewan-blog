@@ -3,6 +3,6 @@
 /**
  * 기본 화면 크기(CSS px). 피그마 견본은 PC 구간이라, 노트북 구간(폭 1600 미만 또는 높이 900 미만) 규칙이
  * 섞이지 않게 노트북 경계(1600×900) 이상으로 고정한다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  */
 export const CAPTURE_VIEWPORT = { width: 1600, height: 900 } as const;

@@ -12,7 +12,7 @@ type FigmaArgs = {
   device: (typeof DEVICES)[number];
 };
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 이 제목이 피그마 조립과 짝이다.
 const meta = {
   title: 'Patterns/Explorer/Commands',

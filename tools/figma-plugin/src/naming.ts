@@ -54,7 +54,7 @@ export type PatternPlace = { area: string; name: string };
 
 /**
  * 조립 이름(`영역/이름`)을 폴더 이름(kebab-case)으로 바꾼다. 예: `Menu/ViewSubmenu` → `menu`, `view-submenu`
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param name 피그마 조립 이름
  * @returns 영역과 이름 폴더, `영역/이름` 꼴이 아니면 null
  */
@@ -75,7 +75,7 @@ export function patternPlace(name: string): PatternPlace | null {
 
 /**
  * 조립 폴더의 저장소 경로를 만든다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param place 조립의 영역과 이름
  * @returns `apps/web/figma/patterns/<영역>/<이름>`
  */
@@ -127,7 +127,7 @@ export function assetSlug(name: string): string {
 
 /**
  * 자산 이름(`<묶음>/<자산>`)을 만든다. 확장자는 넣지 않는다. 코드와 tokens.json이 이 이름으로 자산을 찾는다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  * @param asset 자산 묶음과 이름
  * @param asset.group 묶음 이름
  * @param asset.name 자산 컴포넌트 이름
@@ -139,7 +139,7 @@ export function assetName(asset: { group: string; name: string }): string {
 
 /**
  * 자산 파일 이름(`<묶음>/<자산>.<확장자>`)을 만든다. 벡터 자산은 SVG, 래스터 자산은 내보낸 바이트의 실제 형식이다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  * @param name 자산 이름(`assetName`)
  * @param extension 확장자(`svg`, `png`, `jpg` 등)
  * @returns 자산 폴더 기준 파일 경로

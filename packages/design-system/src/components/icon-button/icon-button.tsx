@@ -49,7 +49,7 @@ const variantClassNames = {
 
 /**
  * 아이콘만 있는 버튼(피그마 IconButton)을 그린다. 동작과 접근성(disabled, 포커스)은 Base UI Button이 맡는다.
- * @codocs [[컴포넌트 목록:기본 컨트롤]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @param props 컴포넌트 속성
  * @param props.variant 피그마 Variant. standard는 기본 버튼, subtle은 배경 없는 버튼, chrome은 Chrome 도구 모음용으로 아이콘 색이 chrome/text-secondary이고 반지름이 radius/circular다. close는 호버·눌림에 빨간 바탕과 흰 아이콘이다
  * @param props.isChecked 켜짐 여부. 정하면 aria-pressed를 달고, subtle이면 켜짐 모양(파란 바탕과 안쪽 선)을 그린다

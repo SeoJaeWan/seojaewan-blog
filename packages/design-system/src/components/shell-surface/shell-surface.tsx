@@ -22,7 +22,7 @@ const deviceClassNames = {
 /**
  * Start와 검색 패널의 셸 바탕(피그마 ShellSurface)을 그린다. 내용은 children 자리(피그마 Content 슬롯)에 넣는다.
  * 피그마에서 테두리가 레이아웃에 들어가므로(strokes included in layout) CSS border를 쓴다.
- * @codocs [[디자인 기반:재질 효과]]
+ * @codocs [[디자인 시스템:재질 구현]]
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
  * @param props 컴포넌트 속성
  * @param props.device 피그마 Device. desktop은 네 모서리가 둥글고, mobile은 아래쪽 모서리가 각진 화면 크기다

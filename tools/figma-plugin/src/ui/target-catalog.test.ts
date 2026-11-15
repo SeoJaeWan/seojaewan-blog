@@ -30,7 +30,7 @@ const catalog = buildCatalog(
   [{ id: '3:1', name: 'motion-window-open' }],
 );
 
-// @codocs [[피그마 연동:플러그인 화면]]
+// @codocs [[디자인 시스템:플러그인 화면]]
 describe('대상 목록: 묶음', () => {
   it('컴포넌트는 영역 섹션, 조립은 영역, 애니메이션은 하나로 묶고 받은 순서(캔버스 순서)를 지킨다', () => {
     expect(
@@ -64,7 +64,7 @@ describe('대상 목록: 묶음', () => {
   });
 });
 
-// @codocs [[피그마 연동:플러그인 화면]]
+// @codocs [[디자인 시스템:플러그인 화면]]
 describe('대상 목록: 열릴 PR 수', () => {
   it('컴포넌트·애니메이션은 하나마다, 조립은 영역마다 PR 하나다', () => {
     const selected = new Set(['component:1:1', 'pattern:2:1', 'pattern:2:2', 'motion:3:1']);
@@ -82,7 +82,7 @@ describe('대상 목록: 열릴 PR 수', () => {
   });
 });
 
-// @codocs [[피그마 연동:플러그인 화면]]
+// @codocs [[디자인 시스템:플러그인 화면]]
 describe('대상 목록: 묶음 섹션 > 컴포넌트 섹션 > 컴포넌트', () => {
   const paged = buildCatalog(
     [

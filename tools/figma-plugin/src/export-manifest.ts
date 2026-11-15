@@ -4,7 +4,7 @@ import { type JsonObject, type JsonValue, stableStringify } from './stable-json'
 // 대상(컴포넌트나 조립) 폴더마다 두는 export.json과 figma.json을 만들고 읽는다.
 // export.json은 이름, 변형 이름, 변형 속성, PNG 안 노드 위치와 구현 참고용 레이어 트리를 담는다.
 // 레이어 트리는 판정에 쓰지 않는다.
-// 계약은 [[피그마 연동:스토리 규칙]], [[피그마 연동:피그마 플러그인]]에 있다.
+// 계약은 [[디자인 시스템:스토리 규칙]], [[디자인 시스템:피그마 플러그인]]에 있다.
 
 /** 변형 PNG 안에서 변형 노드가 놓인 자리(배율 1의 px) */
 export type NodeBox = { x: number; y: number; width: number; height: number };
@@ -31,7 +31,7 @@ type Bounds = { x: number; y: number; width: number; height: number };
 /**
  * 변형 PNG 안에서 노드가 놓인 자리를 구한다. PNG는 노드가 그려지는 범위(그림자, 노드 밖 자식 포함)를 담으므로,
  * 노드 상자와 그려지는 범위의 차이가 PNG 안 노드 위치다. 소수 오차는 0.01px로 반올림한다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param box 노드 상자(absoluteBoundingBox)
  * @param render 그려지는 범위(absoluteRenderBounds). 없으면 노드 상자와 같다고 본다
  * @returns PNG 안 노드 위치와 크기
@@ -88,8 +88,8 @@ export function pngFile(variant: string): string {
 
 /**
  * export.json 문자열을 만든다. 내보낸 시각 같은 값은 두지 않아, 같은 피그마를 다시 내보내면 내용이 같다.
- * @codocs [[피그마 연동:스토리 규칙]]
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:스토리 규칙]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param manifest export.json
  * @returns 키를 정렬한 JSON 문자열
  */
@@ -142,7 +142,7 @@ function reportJson(report: PatternReport): JsonObject {
 
 /**
  * 폴더에 있어야 할 파일 이름(export.json과 변형 PNG)을 만든다. 나머지 파일은 지울 대상이다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param manifest export.json
  * @returns 폴더 안 파일 이름
  */

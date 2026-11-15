@@ -179,7 +179,7 @@ const textDecorations: Readonly<Record<string, string>> = {
  * Variables와 글자·효과·칠 스타일을 W3C 디자인 토큰(DTCG) 형식의 토큰 트리로 바꾼다.
  * 별칭은 풀지 않고 `{경로}`로 남긴다. 계약에 없는 값이 하나라도 있으면 모두 모아 중단한다.
  * 단색도 그라디언트도 보이지 않는 칠 스타일(이미지만 있는 배경 등)은 토큰이 아니므로 넣지 않고 따로 알린다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param input 피그마에서 읽은 변수와 스타일
  * @returns tokens.json에 쓸 토큰 트리와 넣지 않은 스타일
  */
@@ -239,7 +239,7 @@ export function buildDesignTokens(input: DesignTokensInput): DesignTokensResult 
 
 /**
  * description의 `@` 줄을 토큰 확장 필드에 담는다. 줄이 없으면 토큰은 그대로다(설명 글은 내보내지 않는다).
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param token 토큰
  * @param source description이 있는 입력
  * @param source.description description
@@ -281,7 +281,7 @@ function withDirectives(
 /**
  * 변수 이름을 DTCG 별칭 참조로 바꾼다. 예: `color/gray/f9f9f9` → `{color.gray.f9f9f9}`
  * 이름이 그룹의 이름이기도 하면(`color/white`와 `color/white/70`) 변수는 그룹의 `$root` 토큰이라 `{color.white.$root}`로 쓴다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param name 가리키는 변수 이름
  * @param isGroupName 그 이름이 다른 변수 이름의 앞부분이기도 한지
  * @returns 별칭 참조 문자열
@@ -504,7 +504,7 @@ function literalValue(
 
 /**
  * `EASING` 변수 값을 베지어 네 숫자로 바꾼다. 직선은 문자열 `linear`와 같은 `[0, 0, 1, 1]`이다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param easing 이징 변수 값
  * @returns `[x1, y1, x2, y2]`, 곡선·직선이 아니면(스프링 등) null
  */
@@ -523,7 +523,7 @@ function easingCubicBezier(easing: EasingValue): number[] | null {
  * 글자 스타일을 typography 토큰으로 바꾼다. 변수에 묶인 속성은 별칭으로 남긴다.
  * 기울임과 글자 장식은 DTCG typography 값에 자리가 없어, 기본값(normal, none)이 아닐 때만
  * `com.seojaewan` 확장 필드(`fontStyle`, `textDecoration`)에 둔다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param style 글자 스타일
  * @param context 별칭 이름표와 문제 목록
  * @returns typography 토큰
@@ -578,7 +578,7 @@ function textStyleToken(style: TextStyleInput, context: ConversionContext): Json
  * 글꼴 스타일 이름을 굵기 이름과 기울임으로 나눈다.
  * 예: `Italic` → Regular + 기울임, `SemiBold Italic` → SemiBold + 기울임, `Bold` → Bold.
  * 굵기가 변수에 묶여 있어도 기울임은 이 이름으로 정한다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param style 피그마 글꼴 스타일 이름
  * @returns 굵기 이름과 기울임 여부
  */
@@ -754,7 +754,7 @@ function paintStyleToken(style: PaintStyleInput, context: ConversionContext): Js
 /**
  * 칠 스타일 안의 단색 층과 그라디언트 색 지점이 색 변수에 연결되어 있는지 본다. 날값이면 막는다.
  * 재질 칠 스타일처럼 층이 여럿인 스타일도 같다. 코드는 연결된 변수 이름으로 색을 쓴다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param paint 칠 층
  * @param label 오류 메시지에 쓸 이름
  * @param context 문제 목록
@@ -950,7 +950,7 @@ function insertStyle(
 /**
  * 경로를 따라 그룹을 만들고 토큰을 넣는다. 이름이 그룹의 이름이기도 한 토큰은 그 그룹의 `$root`에 둔다.
  * 같은 경로의 토큰이 둘이거나 DTCG에서 쓸 수 없는 이름이면 문제로 남긴다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param root 토큰 트리
  * @param path 그룹 경로와 토큰 이름
  * @param token 넣을 토큰

@@ -41,7 +41,7 @@ type FigmaArgs = {
 
 const meta = {
   title: 'Components/NavigationItem',
-  // 글자는 피그마 Label 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
+  // 글자는 피그마 Label 속성의 기본값과 같아야 한다([[디자인 시스템:스토리 규칙]]).
   args: {
     expand: 'none',
     state: 'rest',
@@ -84,7 +84,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 // @codocs [[파일 탐색기:탐색 창]]
 // 피그마 변형 하나를 args 하나로 고른다. Selected는 트리에 포커스가 있는 모습이라 칸에 포커스를 준다.
@@ -104,7 +104,7 @@ function TreeFrame(props: { children: ReactNode }): JSX.Element {
   );
 }
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 /** label을 이름으로 갖는 treeitem이다. 꺾쇠가 없으면(expand none) 펼침 상태를 알리지 않고, icon 슬롯을 그린다 */
 export const Default: Story = {
@@ -121,7 +121,7 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** expand에 따라 접힘·펼침 상태를 aria-expanded로 알리고, chevron 슬롯을 그린다 */
 export const Expandable: Story = {
   render: () => (
@@ -143,7 +143,7 @@ export const Expandable: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** isSelected면 선택된 항목이다 */
 export const Selected: Story = {
   render: () => (
@@ -159,7 +159,7 @@ export const Selected: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 꺾쇠를 누르면 onChevronClick만 부르고 항목 누르기(onClick)로 올리지 않는다 */
 export const ChevronClick: Story = {
   args: { onClick: fn(), onChevronClick: fn() },

@@ -62,7 +62,7 @@ function fixedChild(overrides: Partial<NodeData> & Pick<NodeData, 'path' | 'type
   });
 }
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('구조 검사: 변수·스타일에 연결되지 않은 시각 값', () => {
   it('변수·스타일에 연결된 정상 구조는 위반이 없다', () => {
     expect(reasonsAfter(() => undefined)).toEqual([]);
@@ -310,7 +310,7 @@ describe('구조 검사: 변수·스타일에 연결되지 않은 시각 값', (
   });
 });
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('구조 검사: CSS로 그릴 수 없는 기능', () => {
   it('노이즈·텍스처·점진 블러 효과, 블렌드 효과, 투명한 부분 뒤 그림자를 막는다', () => {
     expect(
@@ -439,7 +439,7 @@ describe('구조 검사: CSS로 그릴 수 없는 기능', () => {
     ).toEqual([]);
   });
 
-  // @codocs [[디자인 기반:서체]]
+  // @codocs [[디자인 시스템:서체 구현]]
   it('코드 서체 NanumGothicCoding은 한글이 들어 있어 한글 구간에도 허용한다', () => {
     expect(
       reasonsAfter((root) => {
@@ -517,7 +517,7 @@ function checkWith(child: NodeData): ReturnType<typeof checkVariant> {
   return checkVariant(root, 'Menu/Folder / Default', context);
 }
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('구조 검사: 인스턴스 모양의 직접 덮어쓰기', () => {
   it('인스턴스 안 레이어의 칠을 덮어쓰면 위치·이유·고칠 방법을 알린다', () => {
     expect(
@@ -696,7 +696,7 @@ function assetInstance(path: string, overrides: { id: string; fields: string[] }
   });
 }
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('구조 검사: 자산 인스턴스 안쪽의 덮어쓰기', () => {
   it('검사 대상이 직접 놓은 자산 인스턴스의 안쪽 덮어쓰기는 막지 않는다', () => {
     expect(checkWith(assetInstance('icon', [{ id: 'icon;vector', fields: ['fills'] }]))).toEqual(
@@ -747,7 +747,7 @@ describe('구조 검사: 자산 인스턴스 안쪽의 덮어쓰기', () => {
   });
 });
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('구조 검사: 인스턴스 전체의 불투명도', () => {
   it('직접 놓은 인스턴스 전체의 불투명도와 그 변수 연결은 막지 않는다', () => {
     expect(
@@ -796,7 +796,7 @@ describe('구조 검사: 인스턴스 전체의 불투명도', () => {
   });
 });
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('구조 검사: 줄인 인스턴스', () => {
   /**
    * 칠이 변수에 연결되지 않은 자식을 만든다.
@@ -861,7 +861,7 @@ describe('구조 검사: 줄인 인스턴스', () => {
   });
 });
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('구조 검사: 부모 자동 배치 밖 노드의 크기 판단', () => {
   function frameWith(
     sizing: 'AUTO' | 'FIXED',
@@ -920,7 +920,7 @@ describe('구조 검사: 부모 자동 배치 밖 노드의 크기 판단', () =
   });
 });
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('구조 검사: 변형을 자르는 조상', () => {
   it('자르기가 꺼진 조상과 섹션·그룹은 위반이 없다', () => {
     expect(
@@ -1043,7 +1043,7 @@ function reasonsOf(child: NodeData, extra: Partial<CheckContext> = {}): string[]
   );
 }
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('이미지 자산 비율', () => {
   it('비율이 원본과 다른 이미지 자산을 막는다', () => {
     const reasons = reasonsOf(
@@ -1118,7 +1118,7 @@ describe('이미지 자산 비율', () => {
   });
 });
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('코드 전용 변수 짝', () => {
   const codeVariables = {
     rotate: [{ name: 'rotate/quarter', value: 90 }],
@@ -1172,7 +1172,7 @@ describe('코드 전용 변수 짝', () => {
   });
 });
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('다이아몬드 그라데이션', () => {
   it('구조 검사가 막는다', () => {
     const reasons = reasonsOf(
@@ -1187,7 +1187,7 @@ describe('다이아몬드 그라데이션', () => {
   });
 });
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('변형 전환', () => {
   const motionVariables: MotionVariable[] = [
     { name: 'motion/duration/faster', resolvedType: 'FLOAT', value: 83 },
@@ -1239,8 +1239,8 @@ describe('변형 전환', () => {
   });
 });
 
-// @codocs [[피그마 연동:구조 검사]]
-// @codocs [[디자인 기반:크기 변수]]
+// @codocs [[디자인 시스템:구조 검사]]
+// @codocs [[디자인 시스템:크기 변수]]
 describe('구조 검사: 견본 크기(변수 연결 여부)', () => {
   it('변수 없는 고정 크기는 견본 크기라 루트와 안쪽 레이어 모두 막지 않는다', () => {
     const root = node({

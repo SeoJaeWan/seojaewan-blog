@@ -8,7 +8,7 @@ const TRACK_INSET = 10;
 /**
  * 스크롤 위치와 영역 크기로 스크롤바 막대의 위치와 길이를 구한다.
  * 막대 길이는 보이는 비율, 위치는 스크롤한 비율을 막대가 움직이는 길이에 옮긴 것이다.
- * @codocs [[디자인 기반:겹쳐 놓기]]
+ * @codocs [[디자인 시스템:겹쳐 놓기]]
  * @param viewport 스크롤하는 요소
  * @param scrollbarLength 스크롤바 길이
  * @returns 막대의 위치와 길이. 내용이 넘치지 않으면 undefined
@@ -28,7 +28,7 @@ export function scrollThumb(
 
 /**
  * 막대를 끈 거리만큼 옮긴 스크롤 위치를 구한다. 막대가 움직이는 길이 끝에서 끝까지가 스크롤 처음에서 끝까지다.
- * @codocs [[디자인 기반:겹쳐 놓기]]
+ * @codocs [[디자인 시스템:겹쳐 놓기]]
  * @param viewport 스크롤하는 요소. 끌기 시작할 때의 스크롤 위치를 scrollTop으로 준다
  * @param scrollbarLength 스크롤바 길이
  * @param dragDistance 끌기 시작한 곳에서 포인터가 움직인 세로 거리(px). 아래가 양수다

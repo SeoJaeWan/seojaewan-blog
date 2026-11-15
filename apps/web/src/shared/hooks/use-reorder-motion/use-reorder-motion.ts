@@ -87,7 +87,7 @@ export type ReorderMotion = {
  *   실제 항목의 상태는 `data-reorder-motion`(enter·swap), 사본은 exit·swap으로 드러낸다. 기다릴 애니메이션이 없으면(동작 줄이기, jsdom) 바로 끝낸다.
  * - 이전 자리는 그릴 때마다 항목의 원래 자리를 목록 바탕 기준으로 기억해 둔다. 목록을 담은 패널이 움직여도(Start 열기) 어긋나지 않게 하기 위해서다.
  * @codocs [[항목 조작:순서 바꾸기 끌기]]
- * @codocs [[피그마 연동:모션 클래스]]
+ * @codocs [[디자인 시스템:모션 클래스]]
  * @param containerRef 항목들을 담은 요소. `display: contents`이면 그 부모를 바탕으로 잰다
  * @param options 항목 속성과 따라오는 방향
  * @returns 끌기를 다루는 함수

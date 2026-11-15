@@ -22,7 +22,7 @@ type ExplorerTabProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
  * 닫기 버튼은 마우스 전용이다(`tablist`에는 탭만 있어야 한다). 키보드는 탭에서 Delete로 닫는다(쓰는 곳이 `onKeyDown`으로 받는다).
  * 눌러도 포커스를 가져오지 않는다.
  * @codocs [[접근성:역할]]
- * @codocs [[컴포넌트 목록:Windows 화면 요소]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @codocs [[디자인 시스템:아이콘 자리]]
  * @param props 컴포넌트 속성
  * @param props.isSelected 피그마 State=Selected. 지금 고른 탭이면 바탕을 깐다

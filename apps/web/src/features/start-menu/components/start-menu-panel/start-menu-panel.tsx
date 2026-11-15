@@ -32,7 +32,7 @@ type StartMenuPanelProps = {
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[Start 메뉴:구성]]
  * @codocs [[Start 메뉴:모바일]]
- * @codocs [[디자인 기반:재질 효과]]
+ * @codocs [[디자인 시스템:재질 구현]]
  * @param props 컴포넌트 속성
  * @param props.device 피그마 Device. 모바일은 검색 띠의 좌우 여백이 16으로 좁다. 패널 크기와 모서리는 ShellSurface가 정한다
  * @param props.searchBoxProps 위쪽 검색 입력칸(SearchBox `Appearance=Pill`)에 넘길 속성

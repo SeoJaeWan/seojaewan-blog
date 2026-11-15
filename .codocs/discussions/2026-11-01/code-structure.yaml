@@ -42,4 +42,4 @@ _codocs:
   - `TaskbarAppMenu`를 지운다. `TaskbarAppPreview`는 `TaskbarAppItem`으로 바꾼다(`app-item`). 피그마 `Taskbar/AppPreview`와 `Taskbar/AppMenu` 스토리를 둘 다 이 컴포넌트로 그린다.
   - `PostBlocks`는 `chrome/components/post-blocks/`에 둔다. `content/`는 `app`만 쓰는 층으로 둔다. Snap Assist 스토리는 `PostBlocks`를 바로 가져온다. #319와 73번은 이 결정으로 닫는다.
 남은 일: |
-  전체 나무의 원본은 일괄 작업 때 스크립트로 다시 계산한다(훅과 `utils` 자리 포함). 부모 import 금지, 조상 메뉴 보기, `hooks/` 안의 `utils/` 중첩은 시험 설정에 없어 일괄 작업 전에 확인한다. [[저장소 구성]] 등 문서 변경과 코드 작업은 모든 논의가 끝난 뒤 한다.
+  전체 나무의 원본은 일괄 작업 때 스크립트로 다시 계산한다(훅과 `utils` 자리 포함). 부모 import 금지, 조상 메뉴 보기, `hooks/` 안의 `utils/` 중첩은 시험 설정에 없어 일괄 작업 전에 확인한다. 저장소 구성 등 문서 변경과 코드 작업은 모든 논의가 끝난 뒤 한다.

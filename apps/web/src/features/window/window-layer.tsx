@@ -60,7 +60,7 @@ type WindowSnapshot = Pick<WindowState, 'windows' | 'order'>;
  * 창의 z-index가 뒤에 오는 패널 층과 작업 표시줄(미리보기 목록 포함) 위로 올라가지 않게 한다.
  * 포커스: 창을 열거나 복원하거나 맨 앞으로 가져오면 그 창의 바로 쓸 곳(`data-window-focus`, 없으면 창)으로 옮긴다. 맨 앞 창을 닫거나 최소화해
  * 포커스를 잃으면 다음 맨 앞 창, 창이 없으면 바탕화면(`main`)으로 옮긴다. Snap Assist가 사라져 포커스를 잃어도 같다.
- * @codocs [[피그마 연동:모션 클래스]]
+ * @codocs [[디자인 시스템:모션 클래스]]
  * @codocs [[창 동작:창 조작]]
  * @codocs [[스냅:끌어서 스냅]]
  * @codocs [[스냅:Snap Assist]]

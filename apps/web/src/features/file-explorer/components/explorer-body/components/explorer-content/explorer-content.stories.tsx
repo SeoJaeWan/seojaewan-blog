@@ -19,7 +19,7 @@ type FigmaArgs = {
   address: (typeof ADDRESSES)[number];
 };
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 본문은 크기를 갖지 않고 창이 정하므로 FigmaFrame이 피그마 원본 크기로 감싼다.
 // 본문 바탕(LayerSurface) 안 탐색 창에는 실제 NavigationItem(탐색기 창 스토리와 같은 Blog 폴더 트리)을 넣는다.
 // 위치 칸·명령·항목 자리는 피그마 조립처럼 비워 둔다(내용은 Window/Explorer가 채운다).

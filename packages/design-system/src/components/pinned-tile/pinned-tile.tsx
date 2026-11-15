@@ -14,7 +14,7 @@ type PinnedTileProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'ch
  * 크기는 Windows가 정한 95×84로 고정한다. Rest·Hover·Pressed는 CSS hover·active로 바꾼다.
  * 테두리는 안쪽 선 고리로 그려 자리를 차지하지 않는다. 글자 폭이 피그마와 같은 87px로 늘 같아, 상태가 바뀌어도
  * 아이콘과 글자가 움직이지 않고 글자가 먼저 잘리지도 않는다.
- * @codocs [[컴포넌트 목록:Windows 화면 요소]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @param props 컴포넌트 속성
  * @param props.icon 피그마 인스턴스 교체 속성 Item icon. 쓰는 곳마다 다른 앱·파일·폴더 아이콘이라 꼭 넘긴다. 32px 자리에 맞춰 그린다
  * @param props.label 피그마 TEXT 속성 Label. 아이콘 아래에 보일 이름이다

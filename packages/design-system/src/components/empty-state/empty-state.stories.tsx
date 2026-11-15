@@ -21,7 +21,7 @@ type FigmaArgs = {
 
 const meta = {
   title: 'Components/EmptyState',
-  // 글자는 피그마 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
+  // 글자는 피그마 속성의 기본값과 같아야 한다([[디자인 시스템:스토리 규칙]]).
   args: { heading: '제목', message: '메시지 내용', code: '오류 코드', hasButton: true },
   argTypes: {
     heading: { control: 'text' },
@@ -49,7 +49,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형이 하나(default)라 기본 args가 그 변형이다.
 export const Figma: Story = {};
 

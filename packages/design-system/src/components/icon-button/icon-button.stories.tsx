@@ -37,11 +37,11 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 라벨을 접근성 이름으로 갖는 버튼이다. 누르거나 키보드로 실행하면 onClick을 부른다 */
 export const Default: Story = {
   args: { onClick: fn() },
@@ -63,7 +63,7 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 비활성이면 누를 수 없고 Tab 포커스도 받지 않는다 */
 export const Disabled: Story = {
   args: { onClick: fn() },

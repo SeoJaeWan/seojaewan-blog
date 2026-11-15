@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { describeError } from './error-text';
 
-// @codocs [[피그마 연동:피그마 플러그인]]
+// @codocs [[디자인 시스템:피그마 플러그인]]
 describe('describeError', () => {
   it('Error는 message를 쓴다', () => {
     expect(describeError(new Error('깨졌다'))).toBe('깨졌다');

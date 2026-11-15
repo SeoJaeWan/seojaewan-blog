@@ -42,23 +42,20 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:상태]]
 export const Default: Story = {
   args: { onLabelClick: fn() },
   play: async ({ args, canvasElement, step }) => {
     const button = within(canvasElement).getByRole('button', { name: '위치 이름' });
 
-    // @codocs [[컴포넌트 목록:상태]]
     await step('기본은 현재 위치가 아니고 구분자를 그린다', async () => {
       await expect(button).not.toHaveAttribute('aria-current');
       await expect(canvasElement.firstElementChild).toHaveAttribute('data-separator', 'true');
     });
 
-    // @codocs [[컴포넌트 목록:상태]]
     await step('위치 이름 버튼을 누르면 onLabelClick을 부른다', async () => {
       await userEvent.click(button);
       await expect(args.onLabelClick).toHaveBeenCalledTimes(1);
@@ -66,11 +63,9 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:상태]]
 export const Current: Story = {
   args: { isCurrent: true, label: '문서', hasSeparator: false },
   play: async ({ canvasElement, step }) => {
-    // @codocs [[컴포넌트 목록:상태]]
     await step('isCurrent는 aria-current를 붙이고 hasSeparator를 끄면 구분자가 없다', async () => {
       await expect(within(canvasElement).getByRole('button', { name: '문서' })).toHaveAttribute(
         'aria-current',
@@ -133,7 +128,6 @@ function SeparatorMenuExample() {
   );
 }
 
-// @codocs [[컴포넌트 목록:상태]]
 /** 꺾쇠 구분자는 renderSeparator로 메뉴 트리거가 되고, 열린 동안 아래 꺾쇠 모양이다 */
 export const SeparatorMenu: Story = {
   render: () => <SeparatorMenuExample />,

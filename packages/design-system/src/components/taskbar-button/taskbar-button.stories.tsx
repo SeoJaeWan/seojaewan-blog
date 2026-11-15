@@ -32,7 +32,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
@@ -40,7 +40,7 @@ export const Figma: Story = {};
 type ClickArgs = { onClick: () => void };
 type ClickStory = StoryObj<ClickArgs>;
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 /** label을 접근성 이름으로 갖는 버튼이고, 누르면 onClick을 부른다 */
 export const Default: ClickStory = {
@@ -65,7 +65,7 @@ export const Default: ClickStory = {
   },
 };
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** indicator에 따라 표시줄 상태가 바뀐다. 기본은 표시줄이 없다. 여러 버튼은 TaskbarButton을 담는 Taskbar의 가운데 자리에 놓는다 */
 export const Indicators: Story = {
   render: () => (

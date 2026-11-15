@@ -10,7 +10,7 @@ export type TokenNameLists = { readonly [key in keyof typeof TOKEN_NAMES]: reado
  * 디자인 토큰 이름을 아는 `tailwind-merge`를 만든다. 기본 설정은 Tailwind 기본 테마 이름(`text-sm`, `border-2`)만 알아서,
  * `border-stroke-width-focus-outer`(두께)와 `border-color-black-89`(색)를 같은 색 클래스로 보고 앞의 것을 지운다.
  * 이름 목록은 `generate:tokens`와 플러그인이 tokens.css와 함께 만든다.
- * @codocs [[피그마 연동:토큰 사용 강제]]
+ * @codocs [[디자인 시스템:토큰 사용 강제]]
  * @param names 토큰 이름 목록
  * @returns 클래스를 합치는 함수
  */
@@ -57,7 +57,7 @@ const twMerge = createTokenMerge(TOKEN_NAMES);
 /**
  * 조건부 클래스를 `clsx`로 풀어 합치고, 같은 속성을 정하는 클래스가 겹치면 뒤의 것만 남긴다.
  * 컴포넌트는 기본 클래스 뒤에 사용처의 `className`을 넘겨 사용처가 덮어쓸 수 있게 한다.
- * @codocs [[피그마 연동:토큰 사용 강제]]
+ * @codocs [[디자인 시스템:토큰 사용 강제]]
  * @param inputs 클래스 이름, 조건 객체, 배열 등 `clsx`가 받는 값
  * @returns 합친 클래스 문자열
  */

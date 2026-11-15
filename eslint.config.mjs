@@ -251,7 +251,7 @@ const defaultExportFiles = [
   'tools/notion-webhook/src/worker.ts',
 ];
 
-// @codocs [[피그마 연동:토큰 사용 강제]]
+// @codocs [[디자인 시스템:토큰 사용 강제]]
 // 토큰 변수 이름은 피그마 경로 그대로라 Tailwind 기본 이름공간에 들어가는 것이 있다. 그러면 Tailwind 기본 유틸리티가
 // 뜻하지 않은 클래스를 만들고(`--text-fill-primary` → 글자 크기 `text-fill-primary`, `--stroke-width-default` →
 // 선 색 `stroke-width-default`) no-unknown-classes가 막지 못한다. tokens.css의 @theme 변수 중 이 이름공간의 것은
@@ -269,7 +269,7 @@ const misreadTokenClasses = themeVariableNames.filter((name) =>
   misreadNamespaces.some((namespace) => name.startsWith(`${namespace}-`)),
 );
 
-// @codocs [[피그마 연동:토큰 사용 강제]]
+// @codocs [[디자인 시스템:토큰 사용 강제]]
 // 숫자로 끝나는 토큰 이름(`color-gray-11`, `color-white-70`)이다. 클래스는 유틸리티 + 토큰 이름이라, 이 이름으로 끝나는
 // 클래스(`text-color-gray-11`)는 숫자 값 클래스 규칙에서 뺀다. 투명도 덧붙임(`/50`)이 붙으면 이름으로 끝나지 않아 걸린다.
 const numericTokenNames = [
@@ -286,7 +286,7 @@ const numericTokenLookahead =
     ? ''
     : `(?!(?:.*:)?[a-z-]+?-(?:${numericTokenNames.join('|')})!?$)`;
 
-// @codocs [[피그마 연동:토큰 사용 강제]]
+// @codocs [[디자인 시스템:토큰 사용 강제]]
 // 이름이 `ClassName`·`CLASS_NAME`(복수 포함)로 끝나는 변수의 문자열·배열·객체 값과 `*ClassName` 속성도 클래스로 검사한다.
 // 객체의 `className` 키 값(`createElement('ul', { className: '…' })`, 스토리 `args: { className: '…' }`)도 검사한다.
 // 함수 인자, 변수 초기값, JSX 속성 값 안의 객체를 본다. 셀렉터는 함수 호출·함수 경계를 넘어가지 않는다.
@@ -305,7 +305,7 @@ const classSelectors = [
   { kind: 'attribute', name: '.*', match: classNameKeyMatch },
 ];
 
-// @codocs [[피그마 연동:토큰 사용 강제]]
+// @codocs [[디자인 시스템:토큰 사용 강제]]
 // JSX `style` 객체에 값을 직접(문자열·숫자 리터럴, 식이 없는 템플릿) 쓰지 않는다. 값은 토큰 클래스로 주고, style에는
 // 실행 중 계산한 값(식별자, 멤버 접근, 함수 호출, `${}`가 든 템플릿)만 둔다. 조건식·논리식으로 고른 객체도 본다.
 const styleObjects = ['', 'ConditionalExpression > ', 'LogicalExpression > '].map(
@@ -354,7 +354,7 @@ function storyStyleRestrictions(attributeException) {
   ];
 }
 
-// @codocs [[피그마 연동:토큰 사용 강제]]
+// @codocs [[디자인 시스템:토큰 사용 강제]]
 // lint는 `.join()` 앞의 배열을 읽지 못하므로 className 안에서는 `cn`으로 조합한다.
 const classJoinRestrictions = [
   {
@@ -737,7 +737,7 @@ export default defineConfig(
     },
   },
 
-  // @codocs [[피그마 연동:토큰 사용 강제]]
+  // @codocs [[디자인 시스템:토큰 사용 강제]]
   // 임의 값(`bg-[#fff]`, `p-[13px]`, `bg-(--x)`)을 막고, 토큰에 없는 클래스(`bg-red-500`)를 막는다.
   {
     files: tokenScopeFiles,
@@ -759,15 +759,15 @@ export default defineConfig(
               message:
                 'Tailwind 임의 값("$0")은 쓰지 않는다. 토큰에 없는 값이 필요하면 피그마부터 고친다.',
             },
-            // @codocs [[피그마 연동:토큰 사용 강제]]
+            // @codocs [[디자인 시스템:토큰 사용 강제]]
             // 움직임은 motion.css의 motion-* 클래스로만 준다. Tailwind 기본 유틸리티는 토큰 없이도 움직임을 만든다
             // (`duration-150`은 숫자를 그대로 ms로 쓴다).
             {
               pattern: '(^|:)(transition(-[^:]*)?|(duration|ease|delay|animate)-[^:]*)$',
               message:
-                '"$0"으로 움직임을 직접 주지 않는다. motion.css의 motion-* 클래스를 쓴다([[디자인 기반:모션]]).',
+                '"$0"으로 움직임을 직접 주지 않는다. motion.css의 motion-* 클래스를 쓴다([[디자인 시스템:모션]]).',
             },
-            // @codocs [[피그마 연동:토큰 사용 강제]]
+            // @codocs [[디자인 시스템:토큰 사용 강제]]
             // 클래스에는 숫자 값이 들어가지 않는다. 모든 값은 피그마 토큰이 붙인 이름으로 온다. 숫자로 끝나는 클래스 가운데
             // 토큰 이름의 클래스(`text-color-gray-11`)만 두고, Tailwind 기본 숫자 클래스(`shrink-0`, `rotate-180`, `z-10`),
             // 비율(`w-1/2`), 투명도 덧붙임(`bg-x/50`), 토큰에 없는 이름(`text-color-gray-12`)을 막는다.
@@ -1070,7 +1070,7 @@ export default defineConfig(
     },
   },
 
-  // @codocs [[피그마 연동:토큰 사용 강제]]
+  // @codocs [[디자인 시스템:토큰 사용 강제]]
   // style 값 제한은 토큰 클래스 검사와 같은 파일(앱·디자인 시스템 소스, `*.test.*` 제외)에 건다.
   // no-restricted-syntax는 블록마다 목록을 통째로 바꾸므로 default export 예외 파일은 따로 둔다(`[[a, b]]`는 둘 다 맞는 파일).
   {

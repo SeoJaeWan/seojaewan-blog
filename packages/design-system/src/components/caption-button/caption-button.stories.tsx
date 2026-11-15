@@ -43,15 +43,15 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다. Inactive는 args로 고른다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 export const Default: Story = {
   args: { onClick: fn() },
   play: async ({ args, canvasElement, step }) => {
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('label을 접근성 이름으로 갖고 누르면 onClick을 부른다', async () => {
       await userEvent.click(within(canvasElement).getByRole('button', { name: '최소화' }));
       await expect(args.onClick).toHaveBeenCalledTimes(1);
@@ -59,13 +59,13 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 export const Inactive: Story = {
   args: { state: 'inactive', onClick: fn() },
   play: async ({ args, canvasElement, step }) => {
     const button = within(canvasElement).getByRole('button', { name: '최소화' });
 
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('창이 비활성이어도 누를 수 있다', async () => {
       await userEvent.click(button);
       await expect(button).toBeEnabled();

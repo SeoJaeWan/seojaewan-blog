@@ -14,7 +14,7 @@ await main();
 
 /**
  * 피그마 자산에서 코드 자산을 만들거나, 만든 결과와 같은지 확인한다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  */
 async function main(): Promise<void> {
   const isCheck = process.argv.includes(CHECK_FLAG);

@@ -45,7 +45,7 @@ export type GroupSelection = { selected: number; total: number; state: 'none' | 
 
 /**
  * 본체가 보낸 목록으로 묶음을 만든다. 본체가 캔버스 순서로 보내므로 순서를 바꾸지 않고, 묶음은 처음 나온 순서다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param components 컴포넌트(캔버스 순서)
  * @param patterns 조립(캔버스 순서)
  * @param motions 애니메이션 견본
@@ -112,7 +112,7 @@ export function buildCatalog(
 /**
  * 묶음을 묶음 섹션으로 나눈다. 이어진 묶음 가운데 묶음 섹션이 같은 것끼리 모으고 순서는 바꾸지 않는다.
  * 묶음 섹션이 없는 묶음(섹션 밖 컴포넌트, 조립, 애니메이션)은 band가 null인 묶음으로 모인다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param groups 묶음(받은 순서)
  * @returns 묶음 섹션
  */
@@ -144,7 +144,7 @@ export function bandKeyOf(item: CatalogItem): string | null {
 
 /**
  * 묶음에서 고른 수와 체크박스 상태(일부만 고르면 반쯤 찬 표시)를 구한다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param items 묶음 항목(보이는 항목만 넘길 수도 있다)
  * @param selected 고른 키
  * @returns 고른 수, 전체 수, 상태
@@ -166,7 +166,7 @@ export function groupSelection(
 /**
  * 고른 대상으로 열리거나 갱신될 PR 수를 짐작한다. 컴포넌트·애니메이션은 하나마다, 조립은 영역마다 하나다.
  * 토큰은 `main`과 다르면 다른 대상을 내보낼 때도 토큰 PR이 생기므로 하나 더한다. 비교 전이면 토큰을 골랐을 때만 센다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param catalog 대상 목록
  * @param selected 고른 키
  * @param hasTokenChanges 토큰이 `main`과 다른지. 모르면 null
@@ -194,7 +194,7 @@ export function estimatePullRequests(
 
 /**
  * 목록 안 찾기에 걸리는 항목을 고른다. 이름에 글자가 든 항목만 남기고, 대소문자는 구분하지 않는다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param items 항목
  * @param query 찾을 글자. 비면 모두
  * @returns 걸린 항목

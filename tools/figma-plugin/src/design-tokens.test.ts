@@ -36,7 +36,7 @@ function at(tree: JsonObject, path: string[]): JsonValue | undefined {
   return current;
 }
 
-// @codocs [[피그마 연동:토큰 생성]]
+// @codocs [[디자인 시스템:토큰 생성]]
 describe('Variables를 DTCG 토큰으로 내보낸다', () => {
   const { tokens } = buildDesignTokens(tokensInput());
 
@@ -181,7 +181,7 @@ describe('Variables를 DTCG 토큰으로 내보낸다', () => {
   });
 });
 
-// @codocs [[피그마 연동:토큰 생성]]
+// @codocs [[디자인 시스템:토큰 생성]]
 describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 넣는다', () => {
   it('글자 스타일은 typography이고 변수에 묶인 속성은 별칭이다', () => {
     const { tokens } = buildDesignTokens(tokensInput({ textStyles: [bodyStyle] }));
@@ -552,7 +552,7 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
   });
 });
 
-// @codocs [[피그마 연동:토큰 생성]]
+// @codocs [[디자인 시스템:토큰 생성]]
 describe('코드 전용 변수와 모드', () => {
   /**
    * 변수 하나로 토큰을 만든다.

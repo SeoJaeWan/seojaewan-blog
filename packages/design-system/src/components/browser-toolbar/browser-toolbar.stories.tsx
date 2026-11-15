@@ -37,7 +37,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 고른다. 변형이 없는 컴포넌트라 args가 없다.
 export const Figma: Story = {};
 

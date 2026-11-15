@@ -23,7 +23,7 @@ type MessageBoxDialogProps = MessageBoxContentProps & {
  * Base UI AlertDialog가 포커스 가두기, Esc, 열고 닫기를 맡고, 화면 가운데에 `motion-flyout-enter`로 페이드해 나타난다.
  * 사라지는 움직임은 없어 버튼을 누르면 바로 닫힌다. 버튼은 어느 쪽이든 핸들러를 부른 뒤 닫는다.
  * @codocs [[휴지통:비우기]]
- * @codocs [[피그마 연동:모션 클래스]]
+ * @codocs [[디자인 시스템:모션 클래스]]
  * @param props 컴포넌트 속성
  * @param props.isOpen 열림 여부. 주면 쓰는 곳이 열고 닫기를 정한다
  * @param props.isDefaultOpen 처음 열림 여부(열림 여부를 쓰는 곳이 갖지 않을 때)

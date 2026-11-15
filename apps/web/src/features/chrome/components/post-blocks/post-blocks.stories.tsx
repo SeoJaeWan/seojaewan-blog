@@ -10,7 +10,7 @@ import type { PostBlock } from '@/shared/utils/post-body/post-body';
 import { PostBlocks } from './post-blocks';
 import { expandedToggleIndexes, sampleBlocks } from './story-data';
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 변형이 없는 조립이라 args가 없다.
 // 본문은 너비를 갖지 않고 글 화면이 정하므로 FigmaFrame이 피그마 원본 너비(size/post/width)로 감싼다. 바탕은 PostBlocks가 갖는다(피그마 루트 칠 chrome/page-fill).
 // 이미지는 피그마처럼 배경화면 Bloom을 자산 원본 비율로 넣는다. 수식은 제품처럼 KaTeX가 그린 HTML(스토리 데이터의 `html`)로 그린다.

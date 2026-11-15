@@ -8,7 +8,7 @@ import { SnapLayoutMenu } from './snap-layout-menu';
 // 동작 스토리가 칸을 골랐는지 보는 함수
 const handleStoryZoneSelect = fn();
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 피그마 조립은 선택지를 닫은 모습이라 Figma 스토리도 닫은 채로 그린다.
 // 선택지는 버튼 아래 가운데로 버튼보다 넓게 열리므로 캔버스 전체를 쓰고, 버튼 자리(피그마 노드)를 캡처 대상으로 표시한다.
 const meta = {

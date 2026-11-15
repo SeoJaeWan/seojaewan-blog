@@ -53,8 +53,8 @@ start().catch(reportFailure);
 /**
  * 저장한 토큰과 컴포넌트·조립·애니메이션 견본 목록을 UI에 보내고, 토큰이 있으면 저장소와 비교한다.
  * 모션 API를 쓸 수 없는 계정이면 애니메이션 목록 대신 안내를 보낸다.
- * @codocs [[피그마 연동:피그마 플러그인]]
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  */
 async function start(): Promise<void> {
   const stored: unknown = await figma.clientStorage.getAsync(TOKEN_STORAGE_KEY);
@@ -111,7 +111,7 @@ function handleMessage(message: unknown): void {
 
 /**
  * 토큰을 플러그인 로컬 저장소에 저장한다. 빈 문자열이면 지운다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param token GitHub 토큰
  */
 async function saveToken(token: string): Promise<void> {
@@ -126,7 +126,7 @@ async function saveToken(token: string): Promise<void> {
 
 /**
  * 저장소를 읽어 연결과 쓰기 권한을 UI에 알린다. 실패 이유도 그대로 보인다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param token GitHub 토큰
  */
 async function checkConnection(token: string): Promise<void> {
@@ -144,7 +144,7 @@ async function checkConnection(token: string): Promise<void> {
 /**
  * `main`과 비교해 토큰 변경 개수와 새로 만드는 대상을 UI에 알린다.
  * 트리를 한 번 읽어 대상 폴더가 있는지 보고, tokens.json은 한 번만 받는다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param token GitHub 토큰
  */
 async function refreshStatus(token: string): Promise<void> {
@@ -180,7 +180,7 @@ async function refreshStatus(token: string): Promise<void> {
  * 노드의 페이지로 옮겨 그 노드를 선택하고 화면에 맞춘다. 위반 줄의 "피그마에서 보기"가 쓴다.
  * 동적 페이지 불러오기(`documentAccess: dynamic-page`)에서는 `figma.currentPage`에 바로 대입할 수 없어
  * `setCurrentPageAsync`로 바꾼다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param nodeId 노드 ID
  */
 async function focusNode(nodeId: string): Promise<void> {

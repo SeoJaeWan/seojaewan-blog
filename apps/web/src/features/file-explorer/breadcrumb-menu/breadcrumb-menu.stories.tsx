@@ -67,7 +67,7 @@ function StoryBreadcrumbMenu(): JSX.Element {
   );
 }
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 변형이 없는 조립이라 args가 없다. 목록은 문서 끝(body)에 포털하지만
 // 캡처는 프레임 자리를 잘라 찍으므로 프레임 위에 겹친 목록도 함께 찍힌다.
 const meta = {

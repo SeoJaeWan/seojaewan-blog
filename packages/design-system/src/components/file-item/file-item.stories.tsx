@@ -65,7 +65,7 @@ function focusItem(item: HTMLDivElement | null): void {
 
 const meta = {
   title: 'Components/FileItem',
-  // 글자는 피그마 Name 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
+  // 글자는 피그마 Name 속성의 기본값과 같아야 한다([[디자인 시스템:스토리 규칙]]).
   args: { surface: 'desktop', size: 'large', state: 'rest', isCurrent: false, name: '파일 이름' },
   argTypes: {
     surface: { control: 'inline-radio', options: SURFACES },
@@ -110,7 +110,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
@@ -125,13 +125,12 @@ function getItem(canvasElement: HTMLElement): HTMLElement {
   return item;
 }
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 export const Default: Story = {
   args: { name: '긴 이름' },
   play: async ({ canvasElement, step }) => {
     const item = getItem(canvasElement);
 
-    // @codocs [[컴포넌트 목록:상태]]
     await step('포커스를 받아도 선택 모습은 바뀌지 않는다', async () => {
       await userEvent.tab();
       await expect(item).toHaveFocus();
@@ -141,32 +140,32 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 export const Selected: Story = {
   args: { surface: 'explorer', state: 'selected', name: '긴 이름' },
   play: async ({ canvasElement, step }) => {
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('isSelected면 선택된 항목으로 알린다', async () => {
       await expect(getItem(canvasElement)).toHaveAttribute('data-selected', 'true');
     });
   },
 };
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 // 잘라낸 항목은 아이콘과 이름을 흐리게 그려 이름 글자의 색 대비가 모자라다.
 // 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
 export const Cut: Story = {
   args: { surface: 'explorer', state: 'cut', name: '긴 이름' },
   parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
   play: async ({ canvasElement, step }) => {
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('isCut이면 잘라낸 항목으로 알린다', async () => {
       await expect(getItem(canvasElement)).toHaveAttribute('data-cut', 'true');
     });
   },
 };
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 export const Renaming: Story = {
   // 목록 항목(option) 안에 입력창이 들어가 nested-interactive에 걸린다. 앱의 바탕화면·탐색기 목록도 같은 구조다.
   parameters: { a11y: { config: { rules: [{ id: 'nested-interactive', enabled: false }] } } },
@@ -179,13 +178,13 @@ export const Renaming: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('isRenaming이면 이름 대신 name을 처음 값으로 가진 입력창을 그린다', async () => {
       await expect(canvas.getByRole('textbox')).toHaveValue('문서');
       await expect(canvas.queryByText('문서', { selector: 'span' })).not.toBeInTheDocument();
     });
 
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('renameFieldProps를 이름 바꾸기 입력창에 넘긴다', async () => {
       await expect(canvas.getByRole('textbox', { name: '새 이름' })).toHaveValue('문서');
     });
@@ -242,7 +241,6 @@ export const DesktopRenaming: Story = {
 };
 
 // @codocs [[파일 탐색기:조작]]
-// @codocs [[컴포넌트 목록:상태]]
 /**
  * 탐색기 항목의 선택 바탕과 현재 항목 선의 색은 목록(role="listbox")에 포커스가 있는지로 바뀐다.
  * 현재 항목 선은 포커스가 목록을 떠나도 남고, 현재 항목이 아닌 항목에는 없다. 선은 크기에 넣지 않는다

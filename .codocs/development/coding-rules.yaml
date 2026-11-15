@@ -30,8 +30,7 @@ _codocs:
   함수 안의 `const`는 초기값과 상관없이 camelCase다.
 
   접두어는 뜻에 따라 고른다. 지금 상태는 `is`, 가진 것·켜진 부분은 `has`, 할 수 있는지(능력)는 `can`, 해야 하는지는 `should`다. 뒤로·앞으로·위로 이동 버튼처럼 "갈 수 있는지"를 나타내는 prop은 `canGoBack`·`canGoForward`·`canGoUp`이다(`isBackDisabled`처럼 뒤집어 넘기지 않는다).
-  우리 타입(Props 타입과 데이터 타입 모두)에 선언하는 boolean 속성도 모두 `is`·`has`·`can`·`should`로 시작한다(`isSelected`, `isActive`, `isOpen`, `isExpanded`, `isCurrent`). lint가 모든 타입 리터럴에 직접 선언한 boolean 속성(`boolean`, `boolean | undefined`)을 검사한다. `naming-convention`은 타입 속성의 boolean 여부를 가리지 못해 `no-restricted-syntax` 선택자로 건다. 객체 값의 키(`{ visible: true }`)는 바깥 API 이름이라 검사하지 않는다. Toc·Scrollbar의 펼침도 `state` 문자열이 아니라 `isExpanded` boolean으로 받는다. 피그마 불리언 속성 `Has …`는 `has…` prop이 된다([[컴포넌트 목록:속성 이름]]).
-  `ComponentProps<...>`로 받아 `...rest`로 그대로 흘려보내는 HTML·Base UI 표준 이름(`disabled`, `type` 등)만 그대로 쓴다.
+  우리 타입(Props 타입과 데이터 타입 모두)의 boolean 속성 예: `isSelected`, `isActive`, `isOpen`, `isExpanded`, `isCurrent`. lint가 모든 타입 리터럴에 직접 선언한 boolean 속성(`boolean`, `boolean | undefined`)을 검사한다. `naming-convention`은 타입 속성의 boolean 여부를 가리지 못해 `no-restricted-syntax` 선택자로 건다. 객체 값의 키(`{ visible: true }`)는 바깥 API 이름이라 검사하지 않는다. Toc·Scrollbar의 펼침도 `state` 문자열이 아니라 `isExpanded` boolean으로 받는다.  `ComponentProps<...>`로 받아 `...rest`로 그대로 흘려보내는 HTML·Base UI 표준 이름(`disabled`, `type` 등)만 그대로 쓴다.
   우리 타입에 직접 선언한 boolean은 표준 이름과 같아도 접두어를 붙이고(`checked` → `isChecked`), 안쪽 요소나 Base UI에 넘길 때만 표준 이름으로 바꿔 넘긴다(Checkbox `isChecked` → `aria-checked={isChecked}`).
   바깥 API(피그마 Plugin API, Notion, Playwright 결과 등)의 값을 담는 우리 타입도 우리 이름을 쓴다. 값을 받는 곳에서 옮겨 담고(`isVisible: paint.visible ?? true`), 바깥 API 객체를 직접 읽는 곳(`node.visible`)은 바깥 이름 그대로다. 예외 주석으로 이름을 피하지 않는다.
 
@@ -99,5 +98,5 @@ React와 Next.js: |
   - React Compiler를 켜고 `useMemo`·`useCallback`·`memo`는 직접 쓰지 않는다. 성능 문제가 측정된 곳에서만 예외로 쓴다.
   - 환경 변수는 Zod로 검증하는 모듈 하나에서만 읽는다. 코드 곳곳에서 `process.env`를 직접 읽지 않는다.
 검토한 대안: |
-  - Server Action을 props로 내려 불러 데이터(글 본문) 받기: Server Action은 POST 요청이라 캐시를 쓰기 어렵고(당시 ISR과 태그 캐시를 쓰던 때의 판단이다, 지금은 [[콘텐츠 원천:결정]]), 함수 prop을 여러 층 내려야 해 고르지 않았다.
+  - Server Action을 props로 내려 불러 데이터(글 본문) 받기: Server Action은 POST 요청이라 캐시를 쓰기 어렵고, 함수 prop을 여러 층 내려야 해 고르지 않았다.
   - 모든 글 본문을 처음 렌더에 넣기: 글이 늘수록 첫 페이지가 무거워져 고르지 않았다.

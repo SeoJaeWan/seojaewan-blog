@@ -223,7 +223,7 @@ export class TokenFormatError extends Error {
 /**
  * tokens.json을 tokens.css 내용으로 바꾼다. 같은 입력이면 언제나 같은 글자를 돌려준다.
  * CSS 이름은 `--` + 피그마 경로를 `-`로 이은 것이고(스타일도 스타일 이름 경로로 같다), 별칭은 `var()`로 남긴다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param json figma/tokens.json을 파싱한 값
  * @returns Tailwind 기본값 지우기, `@theme static`, `@utility`를 담은 CSS
  */
@@ -234,7 +234,7 @@ export function tokensJsonToCss(json: unknown): string {
 /**
  * tokens.json을 src/token-names.ts 내용으로 바꾼다. `cn`이 쓰는 토큰 이름 목록과 경계값 상수다.
  * 이름 목록은 `@theme`에 든 변수에서 만들어 tokens.css와 늘 같다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param json figma/tokens.json을 파싱한 값
  * @returns TS 파일 내용
  */
@@ -296,7 +296,7 @@ function camelPath(path: string): string {
 
 /**
  * tokens.json을 변환한다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param json figma/tokens.json을 파싱한 값
  * @returns CSS와 테마 변수 이름, 경계값
  */
@@ -389,7 +389,7 @@ function convertTokens(json: unknown): Converted {
 /**
  * `breakpoint/*` 변수에서 경계값과 구간 조건을 만든다. 모바일 판정이 먼저라 노트북 구간은 모바일 폭을 뺀다.
  * 그래서 어느 창 크기든 `pc | laptop | mobile` 가운데 하나에만 든다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param tokens 변수 토큰
  * @returns 경계값
  */
@@ -429,7 +429,7 @@ function breakpointsOf(tokens: readonly FlatToken[]): Breakpoints {
 
 /**
  * 구간 변형을 블록 형식 `@custom-variant`로 만든다. 한 줄 형식은 쉼표에서 잘려 깨진다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param breakpoints 경계값
  * @returns `@custom-variant` 블록
  */
@@ -449,7 +449,7 @@ function customVariants(breakpoints: Breakpoints): string[] {
 /**
  * 노트북 모드 값을 `@media` 안 `:root`로 만든다. 기본 값과 다른 변수만 tokens.json에 있다.
  * `:root`는 층 밖이라 `@theme` 변수(층 안)보다 앞서고, `:root` 블록보다 뒤에 와서 그 값도 덮는다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param tokens 변수 토큰
  * @param breakpoints 경계값
  * @param context 변환 표
@@ -489,7 +489,7 @@ function laptopModeBlock(
 
 /**
  * 피그마 경로를 CSS 사용자 속성 이름으로 바꾼다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param path 경로 조각(`['text-fill', 'primary']`, `['Surface', 'Flyout (Acrylic)']`)
  * @returns `--text-fill-primary`, `--surface-flyout-acrylic`
  */
@@ -798,7 +798,7 @@ function pathGroupRow(group: PathGroup): string {
 
 /**
  * Tailwind 기본 테마 지우기와 기본 서체 블록을 만든다. 토큰보다 앞에 와야 한다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param texts 글자 스타일
  * @param breakpoints 경계값. 있으면 Tailwind 기본 구간도 지운다
  * @param context 변환 표
@@ -855,7 +855,7 @@ function block(selector: string, lines: readonly string[]): string {
 /**
  * 변수 토큰 하나를 CSS 변수로 바꾼다. 경로 규칙 토큰은 경로 이름 변수를 :root에 두어 이름공간을 뺀 클래스(`p-sm`)가 생기지 않게 하고,
  * 클래스는 이름공간 + 경로 전체 별칭 변수(`--spacing-spacing-sm`)가 만든다. 값을 바꾸는 `@media`는 경로 이름 변수를 덮는다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param token 변수 토큰
  * @param context 변환 표
  * @returns CSS 변수(자신과 경로 규칙 별칭)
@@ -971,7 +971,7 @@ function effectSource(token: FlatToken): string {
 /**
  * 그림자만 있는 효과 스타일을 `text-shadow` 값(`<x> <y> <blur> <color>`)으로 바꾼다.
  * text-shadow에는 퍼짐과 안쪽 그림자가 없어서, 퍼짐이 0이 아니거나 안쪽 그림자인 층이 있으면 만들지 않는다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param token 효과 스타일
  * @param context 변환 표
  * @returns `0px 1px 2px #00000099`, 만들 수 없으면 undefined
@@ -1103,7 +1103,7 @@ function paintVariable(token: FlatToken, context: Context): CssVariable {
  * 단색 칠 스타일의 색을 만든다. 이미지 층(예전 재질의 노이즈)은 그리지 않는다.
  * 피그마에서 변수에 연결한 단색 칠은 변수 색의 알파를 쓰지 않고 칠 불투명도만 쓰므로,
  * 불투명도가 1보다 작으면 변수 색의 RGB에 칠 불투명도를 알파로 준다.
- * @codocs [[피그마 연동:재질 구현]]
+ * @codocs [[디자인 시스템:재질 구현]]
  * @param token 칠 스타일
  * @param context 변환 표
  * @param source 오류 메시지에 쓸 경로
@@ -1136,7 +1136,7 @@ function solidPaintColor(token: FlatToken, context: Context, source: string): st
 /**
  * 재질 칠 스타일(`Material/*` 효과 스타일 이름으로 시작하는 칠 스타일)을 `@utility`로 바꾼다.
  * 재질은 반투명 바탕색(칠 스타일)과 배경 흐림(효과 스타일)이다.
- * @codocs [[피그마 연동:재질 구현]]
+ * @codocs [[디자인 시스템:재질 구현]]
  * @param paints 칠 스타일
  * @param effects 효과 스타일
  * @returns `@utility material-*` 블록
@@ -1171,7 +1171,7 @@ function materialUtilities(paints: readonly FlatToken[], effects: readonly FlatT
 
 /**
  * 글자 스타일을 `@utility type-*`로 바꾼다. `Hangul/*` 스타일은 짝인 라틴 스타일의 서체 목록 뒤에 붙인다.
- * @codocs [[디자인 기반:서체]]
+ * @codocs [[디자인 시스템:서체 구현]]
  * @param texts 글자 스타일
  * @param context 변환 표
  * @returns `@utility` 블록
@@ -1228,7 +1228,7 @@ function textUtility(
  * 글자 스타일 확장 필드의 기울임과 글자 장식을 CSS 선언으로 바꾼다. 값이 없으면 기본값이라 선언하지 않는다.
  * 글자 장식은 `text-decoration-line`으로 쓴다. 줄임 속성 `text-decoration`은 색·모양까지 기본값으로
  * 되돌려, 사용처가 따로 준 장식 색을 지우기 때문이다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param token 글자 스타일
  * @param source 오류 메시지에 쓸 경로
  * @returns `font-style`, `text-decoration-line` 선언
@@ -1303,7 +1303,7 @@ function textFamily(token: FlatToken, texts: readonly FlatToken[], context: Cont
  * 토큰 값(정지점)이 첫 그라데이션 층의 것이므로 방향도 그 층을 쓴다.
  * 층 정보나 변환이 없는 옛 tokens.json은 위→아래로 읽는다.
  * 다이아몬드는 CSS에 대응하는 그라데이션이 없어 실패한다(구조 검사도 막는다).
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param token 그라데이션 칠 스타일
  * @param source 오류 메시지에 쓸 경로
  * @returns 그라데이션 종류와 2×3 변환 행렬
@@ -1357,7 +1357,7 @@ function gradientLayer(
 
 /**
  * 그라데이션 칠 스타일을 CSS 값으로 바꾼다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param token 그라데이션 칠 스타일
  * @param context 변환 표
  * @param source 오류 메시지에 쓸 경로
@@ -1377,7 +1377,7 @@ function gradientValue(token: FlatToken, context: Context, source: string): stri
 /**
  * 피그마 변환의 역변환으로 그라데이션 공간의 점을 도형의 정규화 좌표로 옮긴다.
  * 방사형·각도형은 그라데이션 공간의 (0.5, 0.5)가 가운데이고, (1, 0.5)가 첫 손잡이, (0.5, 1)이 둘째 손잡이다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param transform 피그마 gradientTransform
  * @param source 오류 메시지에 쓸 경로
  * @returns 가운데, 첫 손잡이 벡터, 둘째 손잡이 벡터, 뒤집혔는지
@@ -1416,7 +1416,7 @@ function gradientHandles(
 /**
  * 피그마 방사형을 `radial-gradient(ellipse ...)`로 바꾼다. 반지름·위치가 상자 비율이라 어느 상자에서나 피그마와 같다.
  * 정규화 좌표에서 축이 기울어진 타원은 CSS로 그릴 수 없어 실패한다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param stops `[{color, position}]`
  * @param transform 피그마 gradientTransform
  * @param context 변환 표
@@ -1447,7 +1447,7 @@ function radialGradient(
 /**
  * 피그마 각도형을 `conic-gradient()`로 바꾼다. 첫 손잡이 쪽에서 시작해 시계 방향으로 돈다.
  * 정사각형 상자에서는 피그마와 같고, 아니면 근사다(선형과 같다). 뒤집힌 각도형은 CSS로 그릴 수 없어 실패한다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param stops `[{color, position}]`
  * @param transform 피그마 gradientTransform
  * @param context 변환 표
@@ -1494,7 +1494,7 @@ function percent(ratio: number): string {
  * 가운데에서의 위치를 t₀, 그라데이션 선 길이를 L이라 하면 CSS 위치 s = (t - t₀) / (k·L) + 0.5다.
  * 정사각형에서는 피그마와 똑같이 그려진다. 정사각형이 아니면 피그마는 정규화 좌표 기준으로
  * 기울기가 상자 비율만큼 늘어나므로 같은 각도·위치는 근사다(위→아래·왼→오는 어느 상자에서나 같다).
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param transform 피그마 gradientTransform
  * @param source 오류 메시지에 쓸 경로
  * @returns CSS 각도와 위치 변환
@@ -1532,7 +1532,7 @@ export function roundAngle(degrees: number): number {
  * 위→아래(180deg)는 기존 출력과 같게 `to bottom`으로 쓴다.
  * 피그마는 정지점 사이 색을 투명도와 따로(투명도를 곱하지 않고) 섞고, CSS는 투명도를 곱한 값으로 섞는다.
  * 투명도와 RGB가 모두 다른 두 정지점 사이에는 피그마 방식으로 계산한 중간 정지점을 넣는다.
- * @codocs [[피그마 연동:컨트롤 테두리 구현]]
+ * @codocs [[디자인 시스템:컨트롤 테두리 구현]]
  * @param stops `[{color, position}]`
  * @param transform 피그마 gradientTransform
  * @param context 변환 표
@@ -1554,7 +1554,7 @@ function linearGradient(
 /**
  * 정지점 목록을 CSS 정지점 글자로 바꾼다.
  * 피그마는 정지점 사이 색을 투명도와 따로 섞고 CSS는 투명도를 곱해 섞으므로, 투명도와 RGB가 모두 다른 두 정지점 사이에 중간 정지점을 넣는다.
- * @codocs [[피그마 연동:컨트롤 테두리 구현]]
+ * @codocs [[디자인 시스템:컨트롤 테두리 구현]]
  * @param stops `[{color, position}]`
  * @param toCss 피그마 위치(0~1) → CSS 위치(0~1)
  * @param context 변환 표
@@ -1751,7 +1751,7 @@ function variableKey(token: FlatToken): string {
  * 토큰 트리를 펼친다. `$type`은 묶음에서 물려받는다(DTCG).
  * 묶음의 `$root` 자식은 묶음 자신의 토큰이라 CSS 이름이 묶음 경로와 같다.
  * `$value`와 자식이 함께 있는 객체는 DTCG에서 쓸 수 없어 실패한다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param group 묶음
  * @param prefix 경로 앞부분
  * @param inheritedType 물려받은 `$type`
@@ -1880,7 +1880,7 @@ function colorValue(value: unknown, source: string): string {
 
 /**
  * 베지어 값을 `cubic-bezier()`로 바꾼다. 직선(피그마 LINEAR, `[0, 0, 1, 1]`)은 `linear`다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param value `[x1, y1, x2, y2]`
  * @param source 오류 메시지에 쓸 경로
  * @returns `cubic-bezier(0, 0, 0, 1)`, `linear`

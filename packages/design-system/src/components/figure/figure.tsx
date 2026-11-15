@@ -28,7 +28,7 @@ export type FigureImageSize = {
  * 반짝임은 받는 중에 늘 붙는 움직임이라 여기서 모션 클래스(motion-image-skeleton)를 붙이고, 상태를 바꾸는 일은 쓰는 곳이 한다.
  * @codocs [[Notion 블록:모양]]
  * @codocs [[Notion 이미지 제공:로딩 표시]]
- * @codocs [[피그마 연동:PR 흐름]]
+ * @codocs [[디자인 시스템:PR 흐름]]
  * @param props 컴포넌트 속성
  * @param props.image 피그마 `Image` 속성(인스턴스 교체). 글의 이미지다. 틀의 너비를 채우고 모서리를 둥글게 잘라 그린다. `State=Loaded`에서만 그린다
  * @param props.state 피그마 `State` 변형. 이미지를 다 받았는지(`loaded`), 받는 중인지(`loading`), 받지 못했는지(`failed`)다

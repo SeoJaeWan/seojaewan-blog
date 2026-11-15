@@ -23,7 +23,7 @@ type FigmaArgs = {
 
 const meta = {
   title: 'Components/ExplorerTab',
-  // 글자는 피그마 Title 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
+  // 글자는 피그마 Title 속성의 기본값과 같아야 한다([[디자인 시스템:스토리 규칙]]).
   args: { state: 'rest', title: '폴더 이름', hasSeparator: true },
   argTypes: {
     state: { control: 'inline-radio', options: STATES },
@@ -55,12 +55,12 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 export const Default: Story = {
   args: { title: '문서', onClick: fn(), onClose: fn() },
@@ -69,13 +69,13 @@ export const Default: Story = {
     const tab = canvas.getByRole('tab', { name: /문서/u });
     const closeButton = canvas.getByLabelText('탭 닫기');
 
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('기본은 선택되지 않은 탭이고 오른쪽 구분선을 그린다', async () => {
       await expect(tab).toHaveAttribute('aria-selected', 'false');
       await expect(tab.parentElement).toHaveAttribute('data-separator', 'true');
     });
 
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('닫기 버튼은 탭(role="tab") 안이 아니라 옆에 둔다', async () => {
       await expect(tab).not.toContainElement(closeButton);
     });
@@ -89,7 +89,7 @@ export const Default: Story = {
       },
     );
 
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('닫기 버튼은 onClose만 부르고 탭의 onClick은 부르지 않는다', async () => {
       await userEvent.click(closeButton);
       await expect(args.onClose).toHaveBeenCalledTimes(1);
@@ -98,13 +98,13 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 export const Selected: Story = {
   args: { state: 'selected' },
   play: async ({ canvasElement, step }) => {
     const tab = within(canvasElement).getByRole('tab');
 
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('selected면 선택된 탭이고 오른쪽 구분선을 그리지 않는다', async () => {
       await expect(tab).toHaveAttribute('aria-selected', 'true');
       await expect(tab.parentElement).toHaveAttribute('data-separator', 'false');
@@ -112,11 +112,11 @@ export const Selected: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 export const WithoutSeparator: Story = {
   args: { hasSeparator: false },
   play: async ({ canvasElement, step }) => {
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    // @codocs [[디자인 시스템:피그마 파일]]
     await step('hasSeparator=false면 선택되지 않은 탭도 구분선을 그리지 않는다', async () => {
       const tab = within(canvasElement).getByRole('tab');
       await expect(tab).toHaveAttribute('aria-selected', 'false');

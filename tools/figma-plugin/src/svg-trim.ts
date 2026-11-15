@@ -49,8 +49,8 @@ const replacedAttributes = new Set(['d', 'pathLength', 'stroke-dasharray', 'stro
  * 요소는 `d`(벡터 경로를 자산 좌표로 옮긴 것), `pathLength="1"`, 원래 요소의 나머지 속성(선 색·두께·끝 모양 등),
  * `stroke-dasharray="<끝-시작> 1"`, 시작이 0이 아니면 `stroke-dashoffset="-<시작>"` 순서다.
  * 트림 벡터와 SVG 요소의 짝을 확실히 정할 수 없으면(트림 벡터나 선 요소가 하나가 아님 등) 이유와 함께 실패한다.
- * @codocs [[피그마 연동:자산]]
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:자산]]
+ * @codocs [[디자인 시스템:모션]]
  * @param svg 피그마가 내보낸 SVG
  * @param asset 자산 이름(메시지에 쓴다)
  * @param vectors 자산 안에서 트림이 걸린 레이어
@@ -132,7 +132,7 @@ export function trimmedPathSvg(
 /**
  * 자식 노드의 변환을 부모 노드 좌표로 옮긴다. 두 노드의 `absoluteTransform`으로 부모⁻¹ × 자식을 구한다.
  * 그룹 안 노드도 같은 식으로 구할 수 있고, 피그마 SVG 내보내기와 같은 좌표가 나온다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  * @param parent 부모(자산 컴포넌트)의 절대 변환
  * @param child 자식(벡터)의 절대 변환
  * @returns 자식 좌표 → 부모 좌표 변환
@@ -155,7 +155,7 @@ export function relativeTransform(
 
 /**
  * 피그마 경로 데이터(`M 1 2 C …`)의 좌표를 변환하고 피그마 SVG 표기(`M1 2C…`)로 쓴다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  * @param data 경로 데이터(절대 좌표 M·L·Q·C·Z)
  * @param transform 좌표 변환
  * @returns SVG `d` 값
@@ -191,7 +191,7 @@ export function transformPathData(data: string, transform: AffineTransform): str
 
 /**
  * 숫자를 피그마 SVG 내보내기와 같은 유효 6자리로 쓴다. 같은 값이면 늘 같은 글자가 나온다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  * @param value 숫자
  * @returns 표기(끝의 0과 -0은 없앤다)
  */

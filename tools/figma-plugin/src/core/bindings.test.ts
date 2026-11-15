@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { bindingBase, inheritedBindings, overrideSourceId, sourceLayerId } from './bindings';
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('바꿔 끼운 아이콘의 크기 연결', () => {
   it('자기 연결이 없고 값이 원본 레이어와 같으면 원본 레이어의 연결을 쓴다', () => {
     expect(
@@ -28,7 +28,7 @@ describe('바꿔 끼운 아이콘의 크기 연결', () => {
   });
 });
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('덮어쓴 레이어의 원본 레이어', () => {
   it('인스턴스 ID를 떼면 원본 컴포넌트 기준 레이어 ID가 된다', () => {
     expect(overrideSourceId('414:15967', 'I414:15967;13:91')).toBe('13:91');
@@ -41,7 +41,7 @@ describe('덮어쓴 레이어의 원본 레이어', () => {
   });
 });
 
-// @codocs [[피그마 연동:구조 검사]]
+// @codocs [[디자인 시스템:구조 검사]]
 describe('변형을 바꿔 끼운 인스턴스의 변수 연결 기준', () => {
   const swapped = ['I1:2;3:4'];
 

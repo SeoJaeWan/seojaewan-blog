@@ -16,7 +16,7 @@ type StoryFavoritesDragProps = {
  * 탐색 창은 실제 즐겨찾기 조립(NavigationFavorites)과 탐색기 창 스토리와 같은 Blog 폴더 트리로 그리고, 피그마처럼 프레임 아래에 붙인다.
  * 끄는 복제본과 툴팁은 실제로는 포인터를 따라 화면 기준으로 그리므로(ItemDragGhost), 여기서는 같은 부품(잘라낸 모양의 FileItem, Tooltip)을
  * 피그마 자리에 둔다. 놓을 수 없을 때의 `not-allowed` 커서는 그림에 나오지 않는다.
- * @codocs [[피그마 연동:스토리 규칙]]
+ * @codocs [[디자인 시스템:스토리 규칙]]
  * @param props 컴포넌트 속성
  * @param props.drop 피그마 Drop. allowed는 폴더를 놓을 자리에 가로선, not-allowed는 글이라 가로선이 없다
  * @returns 즐겨찾기로 끄는 모습

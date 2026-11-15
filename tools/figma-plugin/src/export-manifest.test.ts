@@ -27,7 +27,7 @@ const manifest: ExportManifest = {
   },
 };
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 describe('export.json은 변형을 스토리와 짝짓는 데 필요한 것만 담는다', () => {
   it('이름, nodeId, 변형 파일 이름마다 변형 nodeId, 속성, PNG 안 노드 위치만 둔다', () => {
     expect(JSON.parse(manifestText(manifest))).toEqual({
@@ -61,7 +61,7 @@ describe('export.json은 변형을 스토리와 짝짓는 데 필요한 것만 �
   });
 });
 
-// @codocs [[피그마 연동:피그마 플러그인]]
+// @codocs [[디자인 시스템:피그마 플러그인]]
 describe('PNG 안 노드 위치', () => {
   it('노드 상자와 그려지는 범위(그림자, 노드 밖 자식)의 차이로 구한다', () => {
     // Tooltip Type=Balloon: 위로 나온 꼬리와 그림자 때문에 PNG가 316×66이다.
@@ -86,7 +86,7 @@ describe('PNG 안 노드 위치', () => {
   });
 });
 
-// @codocs [[피그마 연동:피그마 플러그인]]
+// @codocs [[디자인 시스템:피그마 플러그인]]
 describe('다시 내보내면 그 대상 폴더만 새로 쓴다', () => {
   it('폴더에는 export.json과 변형 PNG만 있어야 한다', () => {
     expect(manifestFiles(manifest)).toEqual([

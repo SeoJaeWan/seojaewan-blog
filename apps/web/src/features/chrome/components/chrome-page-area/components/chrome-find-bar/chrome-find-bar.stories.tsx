@@ -16,7 +16,7 @@ type FigmaArgs = {
 const FIND_QUERY = '훅';
 const FIND_COUNT = { current: 1, total: 3 } as const;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. mobile은 도구 모음 아래 전체 폭이라 FigmaFrame이 피그마 원본 너비(size/screen/mobile-width)로 감싼다.
 // 그림자가 있는 상자라 가운데 놓으면 소수 px 위치에 놓이므로 정수 위치(padded)에 둔다.
 const meta = {

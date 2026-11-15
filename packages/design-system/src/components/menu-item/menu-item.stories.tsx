@@ -19,7 +19,7 @@ const VARIANTS = [
   'zoom',
 ] as const;
 const STATES = ['rest', 'hover', 'pressed', 'disabled'] as const;
-// 피그마 예시 글자다([[피그마 연동:스토리 규칙]]).
+// 피그마 예시 글자다([[디자인 시스템:스토리 규칙]]).
 const LABEL = '메뉴 항목';
 const SHORTCUT = 'Ctrl+O';
 
@@ -65,12 +65,12 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 // MenuItem은 열린 Base UI 메뉴 안에서만 동작하므로, 메뉴를 스토리 루트 안에 열고 항목 하나만 담는다.
 export const Figma: Story = { parameters: baseUiFocusGuardParameters };
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 이름을 접근성 이름으로 갖는 menuitem이다. 고르면 onClick을 부르고 단축키를 보인다 */
 export const Default: Story = {
   parameters: baseUiFocusGuardParameters,
@@ -88,7 +88,7 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 확인 항목은 menuitemcheckbox이고 고르면 켜짐 여부가 바뀐다 */
 export const Checkbox: Story = {
   parameters: baseUiFocusGuardParameters,
@@ -113,7 +113,7 @@ export const Checkbox: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 라디오 항목은 묶음의 값과 같으면 골라진 menuitemradio다 */
 export const Radio: Story = {
   parameters: baseUiFocusGuardParameters,
@@ -137,7 +137,7 @@ export const Radio: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 하위 메뉴 항목은 하위 메뉴를 가진 menuitem이다 */
 export const Submenu: Story = {
   parameters: baseUiFocusGuardParameters,
@@ -187,7 +187,7 @@ export const Zoom: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 비활성이면 골라도 onClick을 부르지 않는다 */
 export const Disabled: Story = {
   parameters: baseUiFocusGuardParameters,
@@ -207,7 +207,7 @@ export const Disabled: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 래스터 자산 아이콘은 이미지로, SVG 아이콘은 svg로 그린다 */
 export const Icons: Story = {
   parameters: baseUiFocusGuardParameters,
@@ -226,7 +226,7 @@ export const Icons: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 확인·라디오 항목도 선택 표시 다음에 아이콘을, 이름 뒤에 단축키를 그린다 */
 export const CheckIconsAndShortcut: Story = {
   parameters: baseUiFocusGuardParameters,
@@ -261,7 +261,7 @@ export const CheckIconsAndShortcut: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 메뉴 밖에 홀로 둔(standalone) 항목은 버튼으로 그리고, 누르면 onClick을 부른다 */
 export const Standalone: Story = {
   args: { onClick: fn() },
@@ -339,7 +339,7 @@ function OpenMenu(props: {
         <Menu.Root open modal={false}>
           <Menu.Portal container={anchor}>
             <Menu.Positioner anchor={anchor} side="bottom" align="start" sideOffset={0}>
-              {/* 포털 안에 그리므로 캡처 대상을 표시한다([[피그마 연동:스토리 규칙]]). */}
+              {/* 포털 안에 그리므로 캡처 대상을 표시한다([[디자인 시스템:스토리 규칙]]). */}
               <Menu.Popup {...noInitialFocus} data-parity-target>
                 <FigmaFrame source={menuItemExport} args={props.args}>
                   {props.children}

@@ -46,7 +46,7 @@ function preventLineBreak(event: Event): void {
  * 한 줄(기본)은 input이고 최대 너비 없이 옆으로 는다. 여러 줄(`isMultiline`)은 textarea이고, 부모 너비 안에서 글자 단위로
  * 줄을 바꾸며 아래로 길어진다. 짧은 이름이면 글자 너비만 차지하고 높이는 제한하지 않는다. 줄 바꿈 문자는 입력되지 않는다.
  * Enter 확정·Esc 취소 같은 동작은 쓰는 곳이 `onKeyDown` 등으로 붙인다.
- * @codocs [[컴포넌트 목록:기본 컨트롤]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @codocs [[항목과 폴더:폴더 이름]]
  * @param props 컴포넌트 속성
  * @param props.text 피그마 TEXT 속성 text. 입력창의 처음 값이다(`value`를 주면 쓰지 않는다)

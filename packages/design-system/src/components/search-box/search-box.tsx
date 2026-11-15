@@ -19,7 +19,7 @@ type SearchBoxProps = Omit<ComponentProps<typeof Input>, 'className' | 'type'> &
  * Hover·Focused는 실제 CSS 상태(hover, focus-within)로 바꾸고, 안쪽 선은 피그마 안쪽 선처럼 ::before 고리
  * (border-gradient-*, inner-border-*)로 그린다. 상태 전환은 피그마 프로토타입 전환과 같은 모션 클래스를 쓴다:
  * default·web은 Rest→Hover(motion-control-state), pill·taskbar는 Rest→Focused(motion-search-box-focus-state)다.
- * @codocs [[컴포넌트 목록:기본 컨트롤]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @param props 컴포넌트 속성
  * @param props.variant 피그마 Variant. default는 탐색기 안 검색(아이콘 오른쪽), pill은 Start·검색 패널(아이콘 왼쪽, 완전히 둥근 모서리),
  *   taskbar는 작업 표시줄 검색칸, web은 Chrome 새 탭 검색칸(검색 아이콘 효과 없음)이다

@@ -4,7 +4,7 @@ import { StoryStage } from '@seojaewan/design-system/story';
 
 import { MessageBoxReservedName } from './message-box-reserved-name';
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 변형이 없는 조립이라 args가 없다.
 const meta = {
   title: 'Patterns/MessageBox/ReservedName',

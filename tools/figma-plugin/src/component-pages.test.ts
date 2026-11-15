@@ -27,7 +27,7 @@ function frame(name: string): AncestorInfo {
   return { type: 'FRAME', name };
 }
 
-// @codocs [[피그마 연동:피그마 플러그인]]
+// @codocs [[디자인 시스템:피그마 플러그인]]
 describe('컴포넌트는 02 · Components 페이지의 묶음 섹션 > 컴포넌트 섹션으로 묶는다', () => {
   it('이름에 Components가 든 페이지가 컴포넌트 페이지다(번호가 바뀌어도 된다)', () => {
     expect(isComponentsPage('02 · Components')).toBe(true);
@@ -70,7 +70,7 @@ describe('컴포넌트는 02 · Components 페이지의 묶음 섹션 > 컴포�
   });
 });
 
-// @codocs [[컴포넌트 목록:코드 전용 컴포넌트]]
+// @codocs [[디자인 시스템:코드 전용 컴포넌트]]
 describe('코드 전용 컴포넌트', () => {
   it('감싸기·배치용 컴포넌트는 내보내지 않는다', () => {
     expect(isCodeOnlyComponent('ScrollArea')).toBe(true);

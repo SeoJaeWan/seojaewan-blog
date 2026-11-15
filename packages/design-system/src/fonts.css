@@ -1,7 +1,7 @@
 /*
  * 웹 폰트를 패키지에서 직접 제공한다. 피그마, 로컬, CI, 방문자가 모두 같은 서체로 보게 하기 위해서다.
  *
- * @codocs [[디자인 기반:서체]]
+ * @codocs [[디자인 시스템:서체 구현]]
  * - 굵기는 Regular(400), SemiBold(600), Bold(700)만 불러온다.
  * - 각 파일은 unicode-range로 나뉜 하위 집합이라 브라우저가 화면에 나온 글자의 파일만 받는다.
  *   Open Sans에는 한글 범위가 없어 한글은 글자마다 Pretendard로 그린다.
@@ -9,7 +9,7 @@
  *   그래서 woff2만 가리키는 @font-face를 만들어 쓴다(scripts/fonts/generate-fonts.ts).
  * - 글 본문의 기울임은 Open Sans Italic Regular(400 italic)만 불러온다. 한글은 기울이지 않는다(theme.css).
  * - 코드 블록용 Nanum Gothic Coding은 Regular만 쓴다. 한글이 든 서체라 Pretendard로 대체하지 않고,
- *   @font-face 이름은 피그마 서체 이름 NanumGothicCoding으로 만든다(@codocs [[피그마 연동:서체 구현]]).
+ *   @font-face 이름은 피그마 서체 이름 NanumGothicCoding으로 만든다(@codocs [[디자인 시스템:서체 구현]]).
  */
 @import './open-sans.css';
 @import './pretendard.css';

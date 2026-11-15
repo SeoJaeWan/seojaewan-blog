@@ -83,7 +83,7 @@ export type TokensSummary = {
 
 /**
  * 컴포넌트 PR 브랜치 이름을 만든다. 컴포넌트마다 고정이다. 예: `feat/figma-search-box`
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param slug 컴포넌트 폴더 이름
  * @returns 브랜치 이름
  */
@@ -109,7 +109,7 @@ export function componentBranchName(slug: string): string {
 
 /**
  * 조립 PR 브랜치 이름을 만든다. 영역마다 고정이다. 예: `feat/figma-patterns-menu`
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param area 영역 폴더 이름
  * @returns 브랜치 이름
  */
@@ -158,7 +158,7 @@ export function targetCommitBody(names: readonly string[], summary: CommitSummar
 
 /**
  * 컴포넌트 PR의 한국어 본문을 만든다. 맨 위에 바뀐 변형 수 표를, 그 아래 바뀐 변형의 피그마 미리보기를 담는다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param branch PR 브랜치
  * @param target 컴포넌트와 main 기준 변경
  * @param renamedFolders 이름이 바뀌어 지운 이전 폴더
@@ -186,7 +186,7 @@ export function componentPullRequestBody(
 
 /**
  * 조립 PR의 한국어 본문을 만든다. 맨 위에 조립별 바뀐 변형 수 표를, 그 아래 조립마다 바뀐 변형의 피그마 미리보기를 담는다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param branch PR 브랜치
  * @param area 영역 폴더 이름
  * @param targets 이번에 내보낸 조립과 main 기준 변경
@@ -228,7 +228,7 @@ export function patternPullRequestBody(
 
 /**
  * 조립 보고를 조립마다 접은 Markdown으로 만든다. 묶음마다 줄이 많으면 앞의 줄만 싣는다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param reports 조립 보고
  * @returns 본문 줄
  */
@@ -312,7 +312,7 @@ function noteLines(targets: readonly TargetChanges[], renamedFolders: readonly s
 /**
  * 바뀐 변형 미리보기를 대상마다 만든다. 대상마다 `## 이름` 아래 표에 변형을 두 개씩 나란히 놓고, 이미지 아래 변형 이름에서
  * 최신 피그마 노드로 연결한다. 바뀐 변형이 많은 대상은 이름과 변형 수만 보이게 접는다. 바뀐 변형이 없는 대상은 싣지 않는다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param branch PR 브랜치
  * @param targets 대상과 main 기준 변경
  * @returns 미리보기 줄
@@ -421,7 +421,7 @@ export function tokensCommitBody(summary: TokensSummary): string {
 
 /**
  * 토큰 PR의 한국어 본문을 만든다. 새로 생기거나 바뀌거나 사라진 토큰과, 그 토큰을 쓰는 컴포넌트를 적는다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param summary 토큰 변경
  * @returns PR 본문(Markdown)
  */
@@ -491,7 +491,7 @@ function blobRoot(branch: string): string {
  * 애니메이션 PR 브랜치 이름을 만든다. 견본마다 고정이다. 견본 이름에서 앞의 `motion-`을 뺀 이름을 붙인다
  * (json 파일 이름은 견본 이름 그대로다). 예: `motion-progress-ring` → `feat/figma-motion-progress-ring`
  * @codocs [[Git 작업 규칙:브랜치]]
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param name 견본 이름
  * @returns 브랜치 이름
  */
@@ -525,8 +525,8 @@ export function motionCommitBody(motion: MotionExport): string {
 
 /**
  * 애니메이션 PR의 한국어 본문을 만든다. 피그마 견본 링크, 키프레임 표, 토큰 짝 표를 담는다.
- * @codocs [[피그마 연동:피그마 플러그인]]
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @codocs [[디자인 시스템:모션]]
  * @param motion 내보낸 모션
  * @returns PR 본문(Markdown)
  */
@@ -564,7 +564,7 @@ export function motionPullRequestBody(motion: MotionExport): string {
 
 /**
  * 반복을 글로 만든다. 옛 견본은 주석의 `@repeat`, 나머지는 재생 설정 Loop에서 온다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param motion 내보낸 모션
  * @returns 반복 글
  */
@@ -578,7 +578,7 @@ function iterationText(motion: MotionExport): string {
 
 /**
  * Development·Accessibility 주석 줄을 만든다. 실행 중 값과 동작 줄이기에서 남기는 움직임이다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param motion 내보낸 모션
  * @returns 목록 줄
  */

@@ -45,7 +45,7 @@ const titleBarClassNames = {
 /**
  * 창 제목 표시줄의 최소화·최대화·닫기 버튼 하나(피그마 CaptionButton)를 그린다. 동작과 접근성은 Base UI Button이 맡는다.
  * 너비는 Windows가 정한 46으로 고정하고, 높이는 제목 표시줄에 맞춰 32(default) 또는 40(custom)이다.
- * @codocs [[컴포넌트 목록:Windows 화면 요소]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @codocs [[창 동작:창 조작]]
  * @param props 컴포넌트 속성
  * @param props.variant 피그마 Variant. default는 최소화·최대화 버튼, close는 닫기 버튼이다

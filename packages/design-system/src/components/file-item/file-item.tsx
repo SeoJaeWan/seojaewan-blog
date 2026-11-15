@@ -51,7 +51,6 @@ function desktopBackgroundClassName(isSelected: boolean, isRenaming: boolean): s
 /**
  * 탐색기 항목의 바탕 클래스를 고른다. 선택 바탕(이름 바꾸는 중 포함)은 항목을 담은 목록(`role="listbox"`)에 포커스가 있으면
  * 파랑(피그마 State=Selected), 없으면 회색(State=Selected unfocused)이다. 목록 밖에 그리는 항목은 `isListFocused`로 파랑을 고른다.
- * @codocs [[컴포넌트 목록:상태]]
  * @param hasSelectionBackground 선택 바탕을 깔지 여부
  * @param isListFocused 목록에 포커스가 있는 모습으로 그릴지 여부
  * @returns 바탕 클래스
@@ -87,9 +86,8 @@ function explorerCurrentLineClassName(isListFocused: boolean): string {
  *   포커스가 목록 안에 있으면 파란 바탕·검은 선(State=Selected), 아니면 회색 바탕·회색 선(State=Selected unfocused)이다.
  *   목록 밖에 그리는 항목(끄는 복제본)은 `isListFocused`로 늘 파란 모습을 고른다.
  * 이름 바꾸기 입력창은 여러 줄 RenameField라 항목 너비 안에서 줄을 바꾸며 아래로 길어진다.
- * @codocs [[컴포넌트 목록:상태]]
- * @codocs [[피그마 연동:컨트롤 테두리 구현]]
- * @codocs [[컴포넌트 목록:Windows 화면 요소]]
+ * @codocs [[디자인 시스템:컨트롤 테두리 구현]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @codocs [[항목과 폴더:폴더 이름]]
  * @codocs [[항목 조작:끌기]]
  * @param props 컴포넌트 속성

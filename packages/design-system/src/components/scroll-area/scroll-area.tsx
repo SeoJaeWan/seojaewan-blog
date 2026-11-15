@@ -27,9 +27,9 @@ type ScrollAreaProps = ComponentProps<'div'> & {
  * 브라우저 스크롤바는 숨기고, 내용이 넘칠 때만 세로 Scrollbar를 오른쪽에 겹쳐 그린다. 넘치면 가는 막대가 늘 보이고,
  * 마우스를 스크롤바 칸에 올렸을 때만 펼친다. 막대를 끄는 동안은 포인터가 칸 밖이어도 펼친 채다.
  * 크기는 쓰는 곳이 className으로 정한다(피그마 원본은 400×200). 내용은 children(피그마 Content 슬롯)이다.
- * @codocs [[컴포넌트 목록:기본 컨트롤]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
- * @codocs [[디자인 기반:겹쳐 놓기]]
+ * @codocs [[디자인 시스템:겹쳐 놓기]]
  * @param props 컴포넌트 속성
  * @param props.material 피그마 Material. 안쪽 Scrollbar의 재질로, 스크롤바 칸에 마우스를 올려 펼친 바탕이다
  * @param props.contentClassName 스크롤되는 요소 안쪽에 줄 클래스. 내용 둘레의 여백을 토큰 클래스로 준다.

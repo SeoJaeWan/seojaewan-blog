@@ -58,7 +58,7 @@ describe('이미지 파일 이름은 피그마 변형 이름과 1:1로 맞춘다
   });
 });
 
-// @codocs [[피그마 연동:자산]]
+// @codocs [[디자인 시스템:자산]]
 describe('자산 파일', () => {
   it('자산은 figma/assets/<묶음>/<이름>에 두고, 확장자는 내보낸 형식이다', () => {
     expect(assetName({ group: 'Icons', name: 'ic_fluent_add_20_regular' })).toBe(
@@ -84,7 +84,7 @@ describe('자산 파일', () => {
   });
 });
 
-// @codocs [[피그마 연동:피그마 플러그인]]
+// @codocs [[디자인 시스템:피그마 플러그인]]
 describe('조립 폴더', () => {
   it('조립 이름 `영역/이름`을 apps/web/figma/patterns/<영역>/<이름>으로 둔다', () => {
     const place = patternPlace('Menu/ViewSubmenu');

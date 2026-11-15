@@ -26,7 +26,7 @@ function utilityBlock(name: string): string {
   return start === -1 ? '' : css.slice(start, css.indexOf('\n}', start) + 2);
 }
 
-// @codocs [[피그마 연동:토큰 생성]]
+// @codocs [[디자인 시스템:토큰 생성]]
 describe('토큰 생성', () => {
   it('변수 이름은 -- 뒤에 피그마 경로를 -로 이은 것이다', () => {
     expect(css).toContain('  --text-fill-primary: var(--color-black-40);');
@@ -298,7 +298,7 @@ describe('토큰 생성', () => {
   });
 });
 
-// @codocs [[피그마 연동:토큰 생성]]
+// @codocs [[디자인 시스템:토큰 생성]]
 describe('그룹과 이름이 같은 변수', () => {
   const white = { $type: 'color', $value: '#ffffff' };
   const white70 = { $type: 'color', $value: '#ffffffb3' };
@@ -393,7 +393,7 @@ function linear(gradientTransform: number[][]): Record<string, unknown> {
   return { type: 'GRADIENT_LINEAR', gradientTransform };
 }
 
-// @codocs [[피그마 연동:토큰 생성]]
+// @codocs [[디자인 시스템:토큰 생성]]
 describe('그라데이션 방향', () => {
   it('위→아래(피그마 기본 변환)는 기존 출력과 같게 to bottom이다', () => {
     expect(
@@ -530,7 +530,7 @@ describe('그라데이션 각도 반올림', () => {
   });
 });
 
-// @codocs [[피그마 연동:토큰 검사]]
+// @codocs [[디자인 시스템:토큰 검사]]
 describe('토큰 검사', () => {
   it('커밋된 src/tokens.css가 figma/tokens.json에서 만든 결과와 같다', () => {
     const json: unknown = JSON.parse(readFileSync(tokensJsonPath, 'utf8'));
@@ -585,7 +585,7 @@ const pathTokens = {
   },
 };
 
-// @codocs [[피그마 연동:토큰 생성]]
+// @codocs [[디자인 시스템:토큰 생성]]
 describe('경로 규칙', () => {
   const pathCss = tokensJsonToCss(pathTokens);
   const [, theme = ''] = pathCss.split('@theme static {');
@@ -748,7 +748,7 @@ function gradientCss(type: string, transform: readonly (readonly number[])[]): s
   return /--glow: (.+);/u.exec(output)?.[1] ?? '';
 }
 
-// @codocs [[피그마 연동:토큰 생성]]
+// @codocs [[디자인 시스템:토큰 생성]]
 describe('방사형·각도형 그라데이션', () => {
   const identity = [
     [1, 0, 0],
@@ -800,7 +800,7 @@ describe('방사형·각도형 그라데이션', () => {
   });
 });
 
-// @codocs [[피그마 연동:토큰 검사]]
+// @codocs [[디자인 시스템:토큰 검사]]
 describe('생성한 이름 목록', () => {
   it('커밋된 src/token-names.ts가 figma/tokens.json에서 만든 결과와 같다', () => {
     const json: unknown = JSON.parse(readFileSync(tokensJsonPath, 'utf8'));

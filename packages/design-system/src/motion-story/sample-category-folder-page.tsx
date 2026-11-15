@@ -17,7 +17,7 @@ type SampleCategoryFolderPageProps = {
  * 견본의 `page clip`(격자를 자르는 틀)과 `tile grid`(항목 격자)를 구성하고, 모션 클래스는 격자에 건다.
  * 틀 높이는 한 쪽(3줄)이다. 투명한 한 쪽 높이 칸이 틀의 높이를 정하고, 격자는 그 위에 겹쳐 두 쪽만큼 이어진다.
  * 제목과 쪽 표시 점, 쪽 표시 점이 바뀌는 모습은 재현하지 않는다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @returns 견본 틀과 격자
  * @param props 컴포넌트 속성
  * @param props.motionClassName 모션 클래스

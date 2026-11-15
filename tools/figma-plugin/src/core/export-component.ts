@@ -47,9 +47,9 @@ export type TargetKind = 'component' | 'pattern';
 /**
  * 컴포넌트(세트)나 조립을 변형마다 내보낸다.
  * 컴포넌트는 구조 검사를 하고 위반이 하나라도 있으면 파일을 만들지 않고 위반을 모두 돌려준다.
- * 조립은 구조 검사를 하지 않고 막지 않으며, 변형마다 조립 보고를 담는다([[피그마 연동:구조 검사]]).
+ * 조립은 구조 검사를 하지 않고 막지 않으며, 변형마다 조립 보고를 담는다([[디자인 시스템:구조 검사]]).
  * 내보내는 것은 변형 이름과 속성, 변형 PNG와 PNG 안 노드 위치, 쓰는 자산 파일, 구현 참고용 레이어 트리다. 레이어 트리는 판정에 쓰지 않는다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
  * @param scale PNG 배율
  * @param context 구조 검사와 조립 보고에 쓰는 파일 정보
@@ -159,7 +159,7 @@ export async function exportTargetCore(
 /**
  * 변형 안에서 키프레임이 걸린 보이는 레이어를 찾는다. 경로는 변형 기준 레이어 경로(`a/b`)다.
  * 모션 API를 쓸 수 없는 계정이면 빈 목록과 알림이다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param variant 변형
  * @param where 알림에 쓸 위치
  * @param notices 알림 목록
@@ -204,7 +204,7 @@ function animatedLayers(variant: ComponentNode, where: string, notices: string[]
 
 /**
  * 컴포넌트 속성 정의를 읽는다. 변형이 아닌 단독 컴포넌트와 세트만 정의를 가진다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param node 컴포넌트 세트나 단독 컴포넌트
  * @returns 속성 이름 → 종류와 기본값
  */
@@ -229,8 +229,8 @@ export type VariantImagesOutcome =
 /**
  * 컴포넌트(세트)의 변형 PNG만 다시 내보낸다. 바뀐 토큰을 쓰는 컴포넌트의 모습만 갱신할 때 쓴다.
  * 변형 트리의 구조 검사(checkVariant)는 하지 않는다. 자르는 조상만은 PNG 자체를 틀리게 만들므로 검사하고, 걸리면 PNG를 만들지 않는다.
- * @codocs [[피그마 연동:피그마 플러그인]]
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
  * @param variants 내보낼 변형 이름(저장소에 있는 변형)
  * @param scale PNG 배율
@@ -262,7 +262,7 @@ export async function exportVariantImages(
 /**
  * 변형의 조상을 페이지 아래 가장 바깥부터 읽는다. 컴포넌트 세트의 변형은 세트가 가장 가까운 조상이고,
  * 세트의 변형은 모두 세트의 바로 아래 자식이라 조상이 같다. 변형 자신은 넣지 않는다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param node 컴포넌트 세트나 단독 컴포넌트
  * @returns 조상 목록
  */
@@ -353,8 +353,8 @@ function collectAssets(node: NodeData, assets: Map<string, AssetData>): void {
  * 여러 색 자산은 SVG 그대로 내보낸다. 래스터 이미지는 rasterAsset이 정한다. SVG 안의 id는 내용으로 정해지는 이름으로 바꾼다.
  * 경로 트림이 걸린 벡터는 벡터 경로와 트림 기본값으로 `pathLength="1"`·`stroke-dasharray` 요소를 직접 만든다.
  * 트림이 없는 자산은 피그마가 내보낸 SVG를 그대로 쓴다.
- * @codocs [[피그마 연동:자산]]
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:자산]]
+ * @codocs [[디자인 시스템:모션]]
  * @param asset 자산
  * @returns 파일 내용과 확장자
  */
@@ -381,7 +381,7 @@ async function exportAsset(asset: AssetData): Promise<AssetExport> {
  * 자산 컴포넌트 안에서 경로 트림 키프레임(PATH_TRIM_START·PATH_TRIM_END)이 걸린 레이어를 읽는다.
  * 경로는 벡터의 `vectorPaths`(트림 전 전체), 위치는 두 노드의 `absoluteTransform`, 보이는 범위는 트랙의 기본값(baseValue)이다.
  * 트랙이 없는 쪽은 트림이 없는 값(시작 0, 끝 1)이다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param component 자산 컴포넌트
  * @returns 트림 레이어
  */
@@ -459,7 +459,7 @@ export type AssetExport = {
  * 이미지 자산의 바이트를 읽는다. 이미지 칠 하나만 있으면 원본 이미지를, 아니면 1배 PNG를 쓴다.
  * 원본을 쓰면 토큰의 이미지 칠과 같은 해시의 파일이 된다. 확장자는 바이트의 매직넘버로 정한다(JPEG 원본이면 `jpg`).
  * 원본이 알 수 없는 형식이면 1배 PNG로 내보낸다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  * @param node 자산 컴포넌트
  * @returns 이미지 바이트와 확장자
  */

@@ -99,11 +99,11 @@ function getThumb(scrollbar: HTMLElement): HTMLElement {
   return thumb;
 }
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다. 캡처용이라 play를 두지 않는다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /**
  * 내용이 넘치면 가는 스크롤바를 늘 보이고, 마우스를 스크롤바 칸에 올렸을 때만 펼친다.
  * 막대를 끄는 동안은 칸 밖이어도 펼친 채이고, 스크롤하거나 끌면 막대가 움직인다
@@ -122,7 +122,7 @@ export const Overflow: Story = {
       await expect(scrollbar).toHaveAttribute('data-state', 'rest');
     });
 
-    // @codocs [[디자인 기반:겹쳐 놓기]]
+    // @codocs [[디자인 시스템:겹쳐 놓기]]
     await step('영역에 마우스를 올려도 펼치지 않는다', async () => {
       await fireEvent.pointerOver(viewport);
       await expect(scrollbar).toHaveAttribute('data-state', 'rest');
@@ -169,7 +169,7 @@ export const Overflow: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 내용이 넘치지 않으면 스크롤바를 숨기고, 영역은 포커스를 받지 않는다 */
 export const FitsContent: Story = {
   args: { material: 'solid' },

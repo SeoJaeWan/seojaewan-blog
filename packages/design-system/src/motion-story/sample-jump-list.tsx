@@ -46,7 +46,7 @@ type SampleJumpListProps = {
  * 모션 클래스는 둘을 감싼 요소에 걸고, 격자에 data-jump-list="grid", 목록에 data-jump-list="list"를 둔다(motion.css의 약속).
  * 격자와 목록이 모두 투명도를 움직이므로, 키프레임 값 검사가 json 트랙과 짝짓도록 data-motion-node에 json의 노드 이름
  * (`Start/JumpList`, `list`)을 단다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @returns 견본 글자 격자와 목록
  * @param props 컴포넌트 속성
  * @param props.motionClassName 모션 클래스. 격자와 목록을 함께 감싼 요소에 건다

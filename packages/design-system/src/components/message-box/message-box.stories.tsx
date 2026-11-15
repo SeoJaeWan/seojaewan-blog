@@ -20,7 +20,7 @@ type FigmaArgs = {
 
 const meta = {
   title: 'Components/MessageBox',
-  // 글자는 피그마 Title·Message 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
+  // 글자는 피그마 Title·Message 속성의 기본값과 같아야 한다([[디자인 시스템:스토리 규칙]]).
   args: { buttons: 'one', title: '제목', message: '메시지 내용' },
   argTypes: {
     buttons: { control: 'inline-radio', options: BUTTONS },
@@ -34,11 +34,11 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 제목을 이름으로, 메시지를 설명으로 갖는 alertdialog다. 버튼은 확인 하나뿐이다 */
 export const Default: Story = {
   render: () => <MessageBox title="휴지통 비우기" message="모든 항목을 지울까요?" id="box" />,
@@ -58,7 +58,7 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 확인과 취소 버튼을 그리고 누르면 각 핸들러를 부른다 */
 export const TwoButtons: Story = {
   args: { onPrimaryClick: fn(), onSecondaryClick: fn() },

@@ -28,7 +28,7 @@ import {
 } from '@/shared/utils/window-rules/window-rules';
 
 /**
- * 창을 끌거나 크기를 조절하는 중인지. 그동안에는 최대화·스냅 모션을 끈다([[피그마 연동:모션 클래스]]).
+ * 창을 끌거나 크기를 조절하는 중인지. 그동안에는 최대화·스냅 모션을 끈다([[디자인 시스템:모션 클래스]]).
  * 끄는 동안의 자리는 저장소에 두지 않고 창 요소에 바로 그리며, 놓을 때 `setBounds`·`snap`·`maximize`로 반영한다.
  */
 export type WindowInteraction = 'drag' | 'resize' | null;

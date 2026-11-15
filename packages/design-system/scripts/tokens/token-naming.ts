@@ -58,7 +58,7 @@ export const BREAKPOINT_GROUP = 'breakpoint';
 
 /**
  * 경로가 든 규칙 묶음을 찾는다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param path 피그마 경로(`spacing/sm`)
  * @returns 묶음, 규칙 밖이면 undefined
  */
@@ -68,7 +68,7 @@ export function pathGroupOf(path: string): PathGroup | undefined {
 
 /**
  * 변수가 코드 전용 묶음인지 확인한다. 이 묶음은 숫자를 단위 없는 number로 내보내고 STRING 변수도 받는다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param path 피그마 경로
  * @returns 코드 전용 묶음이면 true
  */

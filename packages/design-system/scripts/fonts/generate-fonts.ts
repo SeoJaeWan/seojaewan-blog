@@ -23,8 +23,8 @@ export type FontSource = {
   family?: string;
 };
 
-// @codocs [[디자인 기반:서체]]
-// @codocs [[피그마 연동:서체 구현]]
+// @codocs [[디자인 시스템:서체 구현]]
+// @codocs [[디자인 시스템:서체 구현]]
 // 굵기는 Regular·SemiBold·Bold만 쓰고(피그마가 제공하는 Pretendard 굵기와 같다), 코드 블록 서체는 Regular만 쓴다.
 // @font-face 이름은 피그마 서체 이름(토큰 값)에 맞춘다.
 // 글 본문의 기울임(`Body Large Italic`)은 Open Sans Italic Regular로 그려 브라우저가 기울임을 흉내 내지 않게 한다.
@@ -62,7 +62,7 @@ if (import.meta.main) {
 /**
  * 웹 폰트 패키지 CSS에서 src/의 woff2 전용 CSS를 만들거나, 만든 결과와 같은지 확인한다.
  * 패키지 CSS는 woff 대체 파일도 가리켜 빌드에 woff가 딸려 들어가므로 woff2만 남긴다.
- * @codocs [[디자인 기반:서체]]
+ * @codocs [[디자인 시스템:서체 구현]]
  */
 function main(): void {
   const isCheck = process.argv.includes(CHECK_FLAG);

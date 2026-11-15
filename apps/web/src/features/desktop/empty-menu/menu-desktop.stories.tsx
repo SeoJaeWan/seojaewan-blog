@@ -16,7 +16,7 @@ type FigmaArgs = {
   placement: MenuStoryPlacement;
 };
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 피그마 `Paste` 변형은 `isPaste` arg로 붙여넣을 것이 있는지(단추 줄의 붙여넣기)를,
 // `Placement` 변형은 `placement` arg로 메뉴를 여는 쪽을 고른다. 하위 메뉴는 닫은 모양이다.
 // 무대가 여백을 두므로 여백 없이(fullscreen) 그린다.

@@ -130,8 +130,8 @@ type PlacedPattern = PlacedTarget & { area: string };
  * 애니메이션 PR은 `figma/motions/<이름>.json`만 바꾼다. 토큰만 고르면 토큰만 내보낸다.
  * 토큰은 늘 읽어 main의 tokens.json과 비교하고, 다르면 토큰 PR(`feat/figma-tokens`)을 따로 열거나 갱신한다.
  * 진행은 검사(대상마다 하나와 토큰)와 커밋(PR마다 하나와 토큰) 두 단계로 알린다.
- * @codocs [[피그마 연동:피그마 플러그인]]
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param request 토큰, 고른 컴포넌트와 조립, 진행 로그
  * @returns PR별 커밋 결과, 또는 대상별 위반 목록
  */
@@ -306,8 +306,8 @@ async function nodeName(id: string): Promise<string> {
 /**
  * 고른 애니메이션 견본을 모션 검사하고 json 내용을 만든다. 위반은 견본별 묶음으로 더한다.
  * 모션 API를 쓸 수 없는 계정이면 애니메이션만 건너뛰고 알림을 남긴다(다른 대상은 그대로 내보낸다).
- * @codocs [[피그마 연동:피그마 플러그인]]
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @codocs [[디자인 시스템:모션]]
  * @param ids 견본 프레임 ID
  * @param sink 위반 묶음·알림을 더할 목록과 진행 알림
  * @param sink.groups 위반 묶음을 더할 목록
@@ -363,7 +363,7 @@ async function exportMotions(
 /**
  * 애니메이션 견본 하나를 그 견본의 PR(`feat/figma-motion-<견본 이름에서 motion-을 뺀 이름>`)에 커밋한다. `figma/motions/<이름>.json`만 바꾼다.
  * 브랜치와 내용이 같으면 커밋하지 않는다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param token GitHub 토큰
  * @param motion 내보낸 모션
  * @param main main 상태
@@ -402,7 +402,7 @@ async function commitMotion(
 
 /**
  * tokens.json과 tokens.css를 만든다. 변환 규칙에 맞지 않는 토큰이 있으면 위반으로 더하고 null을 돌려준다.
- * @codocs [[피그마 연동:토큰 생성]]
+ * @codocs [[디자인 시스템:토큰 생성]]
  * @param groups 위반 묶음을 더할 목록
  * @returns 내보낸 토큰, 변환에 실패하면 null
  */
@@ -457,7 +457,7 @@ async function readTarget(token: string, branch: string, main: RepoState): Promi
  * 컴포넌트 하나를 그 컴포넌트의 PR에 커밋한다. 컴포넌트 폴더의 export.json과 모든 변형 PNG를 새로 쓰고,
  * 사라진 변형의 파일과 이름이 바뀐 이전 폴더를 지우고, 쓰는 자산과 figma.json을 담는다.
  * 브랜치와 내용이 같은 파일은 바꾸지 않으므로, 바뀐 것이 없으면 커밋하지 않는다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param token GitHub 토큰
  * @param component 내보낸 컴포넌트
  * @param main main 상태
@@ -508,7 +508,7 @@ async function commitComponent(
 /**
  * 한 영역의 조립을 그 영역의 조립 PR에 커밋한다. 조립 폴더마다 export.json과 모든 변형 PNG를 새로 쓰고,
  * 사라진 변형의 파일과 이름이 바뀐 이전 폴더를 지우고, 쓰는 자산을 담는다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param token GitHub 토큰
  * @param area 영역 폴더 이름
  * @param patterns 이번에 내보낸 그 영역의 조립
@@ -561,7 +561,7 @@ async function commitPatterns(
 
 /**
  * 내보낸 조립의 변형별 보고를 모은다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param pattern 내보낸 조립
  * @returns 조립 보고
  */
@@ -689,7 +689,7 @@ function targetChanges(
 /**
  * 토큰이 main과 다르면 토큰 PR에 커밋한다. tokens.json과 같은 변환 함수로 만든 tokens.css, 토큰이 가리키는 이미지 자산,
  * 바뀐 토큰을 쓰는 컴포넌트의 변형 PNG를 담아 바로 병합할 수 있게 한다. 이번에 함께 내보낸 컴포넌트의 PNG는 그 컴포넌트 PR에만 넣으므로 여기서 뺀다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param token GitHub 토큰
  * @param tokens 내보낸 토큰
  * @param main main 상태
@@ -788,7 +788,7 @@ async function commitTokens(
 /**
  * 트리 항목으로 커밋하고, 열린 PR이 있으면 그 브랜치에 이어서, 없으면 main에서 브랜치를 만들어 PR을 연다.
  * 열린 PR이 없는데 브랜치가 남아 있으면(병합했거나 닫은 PR) main 기준 커밋으로 옮긴다. PR 본문은 늘 새로 쓴다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param token GitHub 토큰
  * @param target 커밋할 브랜치의 상태
  * @param entries 트리 항목

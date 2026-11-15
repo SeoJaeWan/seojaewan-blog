@@ -1,5 +1,5 @@
 // @codocs [[디자인 시스템:조립]]
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 메뉴 조립(`Menu/*`) 스토리의 `play`가 하위 메뉴 열림을 확인하는 도우미다.
 import type { userEvent } from 'storybook/test';
 import { expect, screen, waitFor } from 'storybook/test';

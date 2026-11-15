@@ -32,7 +32,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다. Title은 너비를 갖지 않고 쓰는 곳이 정하므로, FigmaFrame이 피그마 원본 크기로 감싼다.
 export const Figma: Story = {
   decorators: [figmaFrame(windowPreviewExport)],

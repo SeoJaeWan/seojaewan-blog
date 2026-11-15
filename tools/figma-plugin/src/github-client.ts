@@ -16,7 +16,7 @@ export type TreeEntry = { path: string; sha: string | null };
 /**
  * 저장소를 읽어 토큰으로 연결되는지와 쓰기 권한(`permissions.push`)을 확인한다.
  * 실패하면 상태 코드에 맞춰 고칠 방법이 보이는 이유로 오류를 낸다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param token GitHub 토큰
  * @returns 저장소 이름(`owner/name`)과 쓰기 권한
  */
@@ -165,7 +165,7 @@ export async function createBlob(token: string, base64: string): Promise<string>
 /**
  * 기준 트리에 파일 변경을 얹은 새 트리를 만든다. 항목이 많으면 나눠서 앞 트리 위에 이어 만든다.
  * 한 번에 큰 트리를 보내면 GitHub가 422로 거절하기 때문이다. 커밋은 마지막 트리로 하나만 만든다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param token GitHub 토큰
  * @param baseTree 기준 트리 SHA
  * @param entries 파일 변경
@@ -345,7 +345,7 @@ export function commitUrl(sha: string): string {
 
 /**
  * PR을 연다. 요청이 실패해도 같은 머리 브랜치로 열린 PR이 이미 있으면 그 PR을 쓴다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param token GitHub 토큰
  * @param pullRequest 제목, 본문, 머리 브랜치, 기준 브랜치
  * @param pullRequest.title PR 제목
@@ -405,7 +405,7 @@ async function request(
  * 다시 시도하고, 그 밖의 응답(4xx 포함)은 그대로 돌려준다. 다시 보내는 요청(blob·tree·commit·브랜치·PR)은
  * 결과가 겹쳐도 문제가 없다. 같은 blob은 같은 SHA가 나오고, 중복 커밋은 브랜치가 가리키지 않으면 버려지며,
  * 브랜치와 PR은 호출한 쪽이 이미 생겼는지 확인한다. 네트워크 실패가 끝내 이어지면 읽을 수 있는 문장의 오류를 낸다.
- * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param token GitHub 토큰
  * @param method HTTP 메서드
  * @param path API 경로

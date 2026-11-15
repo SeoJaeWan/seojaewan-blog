@@ -59,7 +59,7 @@ const footer: FigmaExport = {
   },
 };
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 describe('figmaFrameStyle', () => {
   it('args로 변형을 골라 고정 축에 export.json의 크기 숫자를 주고 HUG 축은 비운다', () => {
     expect(figmaFrameStyle(listItem, { size: 'compact', state: 'rest' })).toEqual({

@@ -20,7 +20,6 @@ type TocItemProps = Omit<ComponentProps<'div'>, 'children'> & {
  * 너비는 쓰는 곳이 정하고(피그마 원본은 220), 긴 제목은 그 너비 안에서 끝을 …로 줄인다.
  * 단계(Level)는 왼쪽 여백으로만 들여 쓴다. 글에서 가장 높은 제목 단계를 1로 맞추는 것은 쓰는 곳이 한다.
  * Rest·Hover 모양은 CSS hover로 바꾼다. Hover는 목록 항목과 같은 옅은 바탕이다.
- * @codocs [[컴포넌트 목록:상태]]
  * @codocs [[Chrome:글 화면]]
  * @param props 컴포넌트 속성
  * @param props.isActive 피그마 Active 변형. 지금 읽는 목차 항목인지 정한다. 글자 색이 강조색으로 바뀐다

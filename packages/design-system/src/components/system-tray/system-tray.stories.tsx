@@ -23,11 +23,11 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** time과 date를 위아래 두 줄로 그린다 */
 export const Default: Story = {
   render: () => <SystemTray time="오후 3:20" date="2026-10-24" />,
@@ -41,7 +41,7 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// @codocs [[디자인 시스템:피그마 파일]]
 /** 값을 주지 않으면 자리를 설명하는 기본 문구를 그린다 */
 export const Placeholder: Story = {
   render: () => <SystemTray />,

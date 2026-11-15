@@ -133,7 +133,7 @@ async function misreadBuiltInClasses(): Promise<string[]> {
     });
 }
 
-// @codocs [[피그마 연동:토큰 사용 강제]]
+// @codocs [[디자인 시스템:토큰 사용 강제]]
 describe('토큰 사용 강제', () => {
   it('tokens.css의 @utility가 만든 토큰 클래스와 값 종류 토큰의 Tailwind 기본 클래스는 lint가 안다', async () => {
     await expect(

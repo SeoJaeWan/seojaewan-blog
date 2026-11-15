@@ -82,7 +82,7 @@ type PointerSession = {
  * @codocs [[창 동작:창 조작]]
  * @codocs [[스냅:끌어서 스냅]]
  * @codocs [[스냅:스냅된 창]]
- * @codocs [[피그마 연동:모션 클래스]]
+ * @codocs [[디자인 시스템:모션 클래스]]
  * @param options 창과 알릴 곳
  * @returns 제목 표시줄과 크기 조절 핸들의 누르기 핸들러
  */

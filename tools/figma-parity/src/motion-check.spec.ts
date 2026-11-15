@@ -27,7 +27,7 @@ import {
 } from './paths.ts';
 import { startStaticServer, type StaticServer } from './static-server.ts';
 
-// @codocs [[피그마 연동:모션]]
+// @codocs [[디자인 시스템:모션]]
 // 견본마다 디자인 시스템 Storybook의 `Motion/<이름>` 스토리를 열고 getAnimations()로
 // - 시간·이징·지연·반복 횟수를 읽어 json의 토큰 짝(값은 tokens.json)과 비교하고(모션 시간 검사),
 // - getKeyframes()의 키프레임 값을 json 키프레임 값과 비교한다(키프레임 값 검사, motion-values.ts).

@@ -40,7 +40,7 @@ const EPSILON = 1e-6;
  * 변형 루트와 그 아래 보이는 노드를 읽는다. 숨긴 노드는 그리지 않으므로 읽지 않는다.
  * 슬롯은 안쪽(조립이 채운 내용)까지 읽는다. 자산 인스턴스(Foundations 자산 묶음의 컴포넌트)는 안쪽을 읽지 않고
  * 이름·묶음·색만 읽는다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param node 변형 루트
  * @param names 변수·스타일 이름 캐시
  * @returns 노드 데이터
@@ -168,7 +168,7 @@ async function readNode(
  * 인스턴스의 원본 컴포넌트 이름, 배율, 직접 덮어쓴 필드(`InstanceNode.overrides`)를 읽는다.
  * `boundVariables`를 덮어쓴 레이어는 원본 컴포넌트 안 같은 레이어와 변수 연결을 비교해 어느 필드가 바뀌었는지 적는다.
  * 피그마는 `boundVariables` 하나로만 알려 주기 때문이다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param node 인스턴스
  * @returns 인스턴스 정보
  */
@@ -215,7 +215,7 @@ function componentProperties(node: InstanceNode): Record<string, string | boolea
 
 /**
  * 잠긴 비율을 읽는다. 자동 크기 글자처럼 비율을 쓸 수 없는 노드는 null이다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param node 노드
  * @returns 너비 ÷ 높이, 잠기지 않았으면 null
  */
@@ -229,7 +229,7 @@ function aspectRatioOf(node: SceneNode): number | null {
 
 /**
  * 노드 주석의 글을 읽는다. 평문(`label`)을 먼저 쓴다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param node 노드
  * @returns 주석 글
  */
@@ -244,7 +244,7 @@ export function annotationTexts(node: BaseNode): string[] {
 
 /**
  * 노드 주석의 글과 카테고리를 읽는다. 평문(`label`)을 먼저 쓰고, 카테고리 이름은 이름 캐시에 함께 둔다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param node 노드
  * @param names 이름 캐시(카테고리 ID → 이름도 담는다)
  * @returns 주석
@@ -284,7 +284,7 @@ async function categoryName(id: string | undefined, names: NameCache): Promise<s
 
 /**
  * 변형 전환을 읽는다. 노드로 이동하는 항목만 담는다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param node 변형 루트
  * @returns 전환 목록
  */
@@ -329,7 +329,7 @@ function transitionData(transition: Transition): TransitionData {
 /**
  * 원본 컴포넌트를 바꿔 끼운(변형 고르기·인스턴스 교체) 안쪽 인스턴스의 ID를 구한다.
  * 덮어쓴 인스턴스 레이어의 원본 컴포넌트를 원래 자리(바깥 인스턴스의 원본 컴포넌트 안 같은 위치)의 원본과 비교한다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param node 바깥 인스턴스
  * @returns 바꿔 끼운 안쪽 인스턴스 ID 목록
  */
@@ -362,7 +362,7 @@ async function swappedInstanceIds(node: InstanceNode): Promise<string[]> {
  * 변형 고르기·인스턴스 교체로 원본 컴포넌트가 바뀐 안쪽 인스턴스와 그 안쪽 레이어는 원래 자리의 원본이 아니라
  * 바꿔 끼운 새 원본 컴포넌트와 비교한다. 원래 자리와 비교하면 원본이 속성으로 연 변형 고르기가 직접 덮어쓴 것으로 잡힌다.
  * 기준을 구할 수 없으면 비교하지 않는다. 오탐으로 정상 작업을 막는 것보다 놓치는 쪽이 낫다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param node 덮어쓰기를 가진 바깥 인스턴스
  * @param main 바깥 인스턴스의 원본 컴포넌트
  * @param layerId 덮어쓴 레이어 ID
@@ -420,7 +420,7 @@ function differentBindings(layer: BaseNode | null, source: BaseNode | null): str
 
 /**
  * 노드의 변수 연결 표를 읽는다. 인스턴스 교체 속성으로 바꿔 끼운 인스턴스는 바꾸기 전 레이어의 연결을 물려받는다.
- * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:구조 검사]]
  * @param node 노드
  * @returns 필드 이름 → 변수 별칭
  */
@@ -790,7 +790,7 @@ async function assetData(node: InstanceNode, names: NameCache): Promise<AssetDat
 
 /**
  * 원본 컴포넌트가 든 자산 묶음(`group/<묶음>` 프레임)을 찾는다. 그 묶음이 처리 방식을 정한다.
- * @codocs [[피그마 연동:자산]]
+ * @codocs [[디자인 시스템:자산]]
  * @param main 원본 컴포넌트
  * @returns 묶음 이름과 처리 방식, 자산 묶음 밖이면 null
  */

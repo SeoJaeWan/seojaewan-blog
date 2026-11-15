@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 import { getImageAsset, type ImageAssetName } from './image-asset';
 
-// @codocs [[피그마 연동:자산]]
+// @codocs [[디자인 시스템:자산]]
 describe('ImageAsset', () => {
   it('generate:assets가 만든 래스터 자산(WebP)을 모두 확장자 없는 이름으로 쓸 수 있다', () => {
     const files = readdirSync(path.resolve(import.meta.dirname, '../../assets/images')).sort();

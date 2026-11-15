@@ -11,7 +11,7 @@ type FigmaArgs = {
   device: (typeof DEVICES)[number];
 };
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 데스크톱은 너비가 창 개수에 맞으므로(HUG) 정수 위치(padded)에 둔다.
 // 데스크톱 축소 화면은 피그마 조립처럼 실제 탐색기 창 조립(Window/Explorer)을 줄여 넣는다. 모바일은 축소 화면 없는 제목 줄이다.
 const meta = {

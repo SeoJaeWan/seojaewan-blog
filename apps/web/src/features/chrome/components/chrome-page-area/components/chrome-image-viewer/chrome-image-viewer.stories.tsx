@@ -25,7 +25,7 @@ const LARGE_IMAGE: ImageAssetName = 'images/wallpaper-bloom';
 const TALL_IMAGE: ImageAssetName = 'images/chart-bar-ranking';
 const SMALL_IMAGE: ImageAssetName = 'images/app-chrome';
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 크기는 FigmaFrame이 피그마 루트 크기로 준다.
 // 피그마 `@runtime 영역 안에 맞추되 원본보다 키우지 않는다`는 아래 동작 스토리가 비율이 다른 이미지로 확인한다.
 const meta = {

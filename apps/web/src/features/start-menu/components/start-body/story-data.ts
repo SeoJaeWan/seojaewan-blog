@@ -1,5 +1,5 @@
 // @codocs [[저장소 구성:앱 폴더 구조]]
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // Start/Body 조립 스토리가 쓰는 고정 데이터다. 피그마 조립과 같은 값을 둔다.
 
 /** 피그마 Start/Body `View=Category`의 글 범주와 Start/CategoryFolder의 항목. 이름순이고, 4개 이상이라 카드에 큰 아이콘 3개와 묶음이 놓인다 */

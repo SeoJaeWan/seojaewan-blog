@@ -53,7 +53,7 @@ type FigmaArgs = {
 const meta = {
   title: 'Components/FileRow',
   parameters: { layout: 'padded' },
-  // 글자는 피그마 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
+  // 글자는 피그마 속성의 기본값과 같아야 한다([[디자인 시스템:스토리 규칙]]).
   args: {
     view: 'default',
     state: 'rest',
@@ -111,12 +111,11 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
-// @codocs [[컴포넌트 목록:상태]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 /** 기본 글자와 icon 슬롯을 그린다. 위치 칸은 hasLocation을 켜기 전에는 없다 */
 export const Default: Story = {
@@ -130,7 +129,6 @@ export const Default: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:상태]]
 /** hasLocation을 켜면 위치 칸을 그린다 */
 export const WithLocation: Story = {
   render: () => <FileRow icon={<i />} hasLocation />,
@@ -139,7 +137,6 @@ export const WithLocation: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:상태]]
 /** recycle-bin 보기는 원래 위치와 삭제한 날짜 칸을 그리고 수정한 날짜·유형·위치 칸은 그리지 않는다 */
 export const RecycleBin: Story = {
   render: () => <FileRow icon={<i />} view="recycle-bin" hasLocation />,
@@ -152,7 +149,6 @@ export const RecycleBin: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:상태]]
 /** isSelected면 선택된 줄이다 */
 export const Selected: Story = {
   render: () => <FileRow data-testid="row" icon={<i />} isSelected />,
@@ -161,7 +157,6 @@ export const Selected: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:상태]]
 // 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
 /** isCut이면 잘라낸 줄이다 */
 export const Cut: Story = {
@@ -172,7 +167,6 @@ export const Cut: Story = {
   },
 };
 
-// @codocs [[컴포넌트 목록:상태]]
 /** isRenaming이면 이름 대신 입력 상자를 이름으로 채워 그리고, renameFieldProps를 입력창에 넘긴다 */
 export const Renaming: Story = {
   render: () => (
@@ -192,7 +186,6 @@ export const Renaming: Story = {
 };
 
 // @codocs [[파일 탐색기:조작]]
-// @codocs [[컴포넌트 목록:상태]]
 /**
  * 선택 바탕과 현재 항목 선의 색은 목록(role="listbox")에 포커스가 있는지로 바뀐다. 현재 항목 선은 포커스가 목록을 떠나도 남고,
  * 현재 항목이 아닌 줄에는 없다. 선은 크기에 넣지 않는다

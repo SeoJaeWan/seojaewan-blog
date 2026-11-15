@@ -54,13 +54,12 @@ type TaskbarAppItemProps = {
 /**
  * 작업 표시줄 앱 하나의 버튼과 그 창 미리보기 목록(피그마 조립 `Taskbar/AppPreview`), 우클릭 메뉴(피그마 조립 `Taskbar/AppMenu`)를 그린다.
  * 목록은 버튼 위 가운데 맞춤(피그마 Popover `Top-Center`)으로 띄우고, 메뉴와 목록 모두 작업 표시줄 위 끝에서 `spacing/md` 떨어진다. 열림 여부와 버튼 클릭 동작은 쓰는 곳이 prop으로 넣는다.
- * 열렸을 때 버튼의 `aria-expanded`가 true고 버튼은 Hover 모양이다(`data-preview-open` 변형 클래스, [[컴포넌트 목록:상태]]의 예외). 마우스를 올려 여닫는 시간은 쓰는 곳이 재고, 포인터 들어옴·나감만 받아 넘긴다.
- * `menuItems`를 주면 버튼을 우클릭(모바일은 길게 누르기)할 때 같은 `Top-Center` 자리에 우클릭 메뉴를 연다(`isMenuAtPointer`면 누른 자리 근처). 메뉴가 열려 있는 동안 버튼은 `Rest` 모양 그대로다
- * ([[컴포넌트 목록:상태]]). 창 미리보기가 마우스를 올려 여는 팝업이라 `Hover`인 것과 다르다.
+ * 열렸을 때 버튼의 `aria-expanded`가 true고 버튼은 Hover 모양이다(`data-preview-open` 변형 클래스). 마우스를 올려 여닫는 시간은 쓰는 곳이 재고, 포인터 들어옴·나감만 받아 넘긴다.
+ * `menuItems`를 주면 버튼을 우클릭(모바일은 길게 누르기)할 때 같은 `Top-Center` 자리에 우클릭 메뉴를 연다(`isMenuAtPointer`면 누른 자리 근처). 메뉴가 열려 있는 동안 버튼은 `Rest` 모양 그대로다.
+ * 창 미리보기가 마우스를 올려 여는 팝업이라 `Hover`인 것과 다르다.
  * `isCentered`면 목록의 기준을 버튼이 아닌 작업 표시줄(가장 가까운 위치 기준 조상)로 옮겨, 목록이 작업 표시줄 위 가운데에 뜬다.
  * @codocs [[디자인 시스템:팝업]]
  * @codocs [[작업 표시줄:창 미리보기]]
- * @codocs [[컴포넌트 목록:상태]]
  * @codocs [[작업 표시줄:우클릭 메뉴]]
  * @codocs [[작업 표시줄:고정과 순서]]
  * @param props 컴포넌트 속성

@@ -30,7 +30,7 @@ type NodeSizing = {
 };
 
 /**
- * 피그마 이름을 정규화한다. 변형과 스토리 args를 짝짓는 규칙([[피그마 연동:스토리 규칙]])과 같다(소문자, `[a-z0-9-]` 밖은 `-`).
+ * 피그마 이름을 정규화한다. 변형과 스토리 args를 짝짓는 규칙([[디자인 시스템:스토리 규칙]])과 같다(소문자, `[a-z0-9-]` 밖은 `-`).
  * @param value 피그마 속성 이름이나 값
  * @returns 정규화한 이름
  */
@@ -126,7 +126,7 @@ function sizingStyle(sizing: NodeSizing, label: string): CSSProperties {
 /**
  * 스토리 args에 맞는 피그마 변형들에서 노드의 크기를 감싸는 요소의 style로 구한다.
  * args에 없는 변형 속성은 아무 값이나 맞는 것으로 보고, 맞는 변형끼리 크기가 다르면 오류를 낸다.
- * @codocs [[피그마 연동:스토리 규칙]]
+ * @codocs [[디자인 시스템:스토리 규칙]]
  * @param source 컴포넌트·조립의 export.json
  * @param args 스토리 args(변형 속성)
  * @param node 루트가 아닌 안쪽 노드를 감쌀 때 노드 이름 경로(`/`로 나눈 문자열이나 이름 배열)

@@ -29,7 +29,7 @@ type FigmaArgs = {
 // 동작 스토리가 항목을 열었는지 보는 함수
 const handleStoryItemOpen = fn<(item: StartItem) => void>();
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 데이터는 피그마 조립과 같다.
 // 본문은 크기를 갖지 않고 Start 메뉴가 정하므로 FigmaFrame이 피그마 원본 크기로 감싼다. 동작 스토리도 같은 크기로 감싼다.
 const meta = {

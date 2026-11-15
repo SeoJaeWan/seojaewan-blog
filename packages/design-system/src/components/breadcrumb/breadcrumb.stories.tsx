@@ -46,7 +46,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
+// @codocs [[디자인 시스템:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
 
@@ -190,7 +190,6 @@ function SeparatorMenuExample() {
   );
 }
 
-// @codocs [[컴포넌트 목록:상태]]
 /** 맨 앞 꺾쇠는 renderSeparator로 메뉴 트리거가 되고, 열린 동안 아래 꺾쇠 모양이다 */
 export const SeparatorMenu: Story = {
   render: () => <SeparatorMenuExample />,

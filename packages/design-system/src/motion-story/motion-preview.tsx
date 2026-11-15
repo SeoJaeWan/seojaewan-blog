@@ -16,7 +16,7 @@ const NORMAL_PLAYBACK_RATE = 1;
  * 모션 스토리(`Motion/<이름>`)에서 모션 클래스를 걸어 재생하고, 다시 재생·느리게 보기 버튼을 둔다.
  * 실행 중 값은 CSS 변수로 넣는다. 느리게 보기는 재생 속도(playbackRate)만 바꿔, 모션 시간 검사가 읽는
  * 시간·이징·지연·반복 횟수는 그대로다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param props 컴포넌트 속성
  * @param props.motionClass 재생할 모션 클래스 이름(`motion-progress-ring`). 모션 스토리 제목 `Motion/<이름>`의 이름과 같다
  * @param props.runtimeValues 실행 중 값 CSS 변수와 견본의 대표값(견본 주석의 `@runtime`). 예: `{ '--motion-target-x': '120px' }`

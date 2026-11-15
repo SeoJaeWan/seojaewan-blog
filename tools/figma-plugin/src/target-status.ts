@@ -14,7 +14,7 @@ export type StatusTargets = {
  * 저장소에 대상 폴더(애니메이션은 `figma/motions/<이름>.json`)가 없는 대상을 찾는다.
  * 파일 목록은 트리를 한 번 읽어 얻어, 대상마다 GitHub API를 부르지 않는다.
  * 이름으로 폴더를 정할 수 없는 대상(영문이 없는 이름, `영역/이름` 꼴이 아닌 조립)은 저장소에 있을 수 없어 새로 만듦으로 본다.
- * @codocs [[피그마 연동:플러그인 화면]]
+ * @codocs [[디자인 시스템:플러그인 화면]]
  * @param paths 저장소 `main`의 파일 경로
  * @param targets 컴포넌트·조립·애니메이션
  * @returns 새로 만드는 대상의 노드 ID

@@ -48,7 +48,7 @@ const ICON_CLASS_NAME = 'size-size-icon-sm shrink-shrink-none text-color-gray-70
  * 바깥 상자가 쌓임 맥락(`z-layer-popover`)을 만들어 카드가 아래 페이지 위에 뜨고, 안에서는 카드를 먼저·입력 줄을 나중에
  * 두어(둘 다 위치 지정, z 없음) 입력 줄이 카드 위 층에 그려진다. 입력칸은 Suggesting을 켜고 꺼도 같은 요소라 포커스가 남는다.
  * 너비는 갖지 않고 쓰는 곳이 정한다.
- * @codocs [[컴포넌트 목록:Windows 화면 요소]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @codocs [[Chrome:주소창]]
  * @param props 컴포넌트 속성
  * @param props.className 바깥 상자에 덧붙일 클래스. 너비 같은 바깥 배치에만 쓴다

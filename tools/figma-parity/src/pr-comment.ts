@@ -18,7 +18,7 @@ export type PaginateOptions = {
 
 /**
  * 블록을 댓글 길이 제한에 맞춰 나눈다. 블록 하나가 너무 길면 줄 단위로 나눈다.
- * @codocs [[피그마 연동:모션]]
+ * @codocs [[디자인 시스템:모션]]
  * @param header 첫 댓글 머리말
  * @param blocks 블록
  * @param footer 마지막 댓글 꼬리말

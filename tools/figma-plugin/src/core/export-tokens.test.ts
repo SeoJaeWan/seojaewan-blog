@@ -9,7 +9,7 @@ import { tokensCssText } from './export-tokens';
 
 const packageRoot = path.resolve(import.meta.dirname, '../../../../packages/design-system');
 
-// @codocs [[피그마 연동:토큰 검사]]
+// @codocs [[디자인 시스템:토큰 검사]]
 describe('토큰 PR의 tokens.css', () => {
   it('저장소의 tokens.json에서 만든 결과가 저장소의 tokens.css와 같다(변환 스크립트와 같은 함수)', () => {
     const json = readFileSync(path.join(packageRoot, 'figma/tokens.json'), 'utf8');
@@ -18,7 +18,7 @@ describe('토큰 PR의 tokens.css', () => {
   });
 });
 
-// @codocs [[피그마 연동:토큰 생성]]
+// @codocs [[디자인 시스템:토큰 생성]]
 describe('내보낸 그라데이션 방향', () => {
   it('칠의 gradientTransform이 tokens.json에 남아 tokens.css에서 같은 각도가 된다', () => {
     const [gradient] = controlBorderPaintStyle.paints;

@@ -12,7 +12,7 @@ type TaskbarProps = Omit<ComponentProps<'div'>, 'children'> & {
  * 가운데(center)와 오른쪽(right) 자리만 열고, 시작 버튼·검색·앱 버튼·SystemTray는 조립(Taskbar/Default)이 채운다.
  * 자리가 둘이라 children 하나가 아닌 이름 있는 ReactNode prop으로 연다.
  * 높이는 Windows가 정한 48로 고정하고, 너비는 쓰는 곳이 정한다.
- * @codocs [[컴포넌트 목록:Windows 화면 요소]]
+ * @codocs [[디자인 시스템:피그마 파일]]
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
  * @param props 컴포넌트 속성
  * @param props.center 피그마 Center 슬롯. 시작 버튼·검색·앱 버튼을 넣는다
