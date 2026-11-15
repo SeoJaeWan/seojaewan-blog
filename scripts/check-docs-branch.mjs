@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 
 // @codocs [[Git 작업 규칙:브랜치]]
-// `docs/` 브랜치의 PR이 문서만 바꿨는지 검사한다. `branch-name.yml`이 쓴다.
+// `docs/` 브랜치의 PR이 문서만 바꿨는지 검사한다. CI(`ci.yml`)의 `Branch name` 작업이 쓴다.
 // `docs/` PR에서는 CI(`ci.yml`)가 돌지 않으므로, 코드가 섞여 검사 없이 병합되지 않게 막는다.
 
 /** 문서 브랜치로 보는 이름 */
