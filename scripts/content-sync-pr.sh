@@ -19,7 +19,7 @@ set -euo pipefail
 TITLE='chore(content): sync notion content'
 
 open_pr() {
-  gh pr list --head "$SYNC_BRANCH" --base main --state open --json number --jq '.[0].number // empty'
+  gh pr list --head "$SYNC_BRANCH" --base ci/merge-gate-test-base --state open --json number --jq '.[0].number // empty'
 }
 
 case "${1:-}" in
@@ -44,7 +44,7 @@ case "${1:-}" in
 
     pr="$(open_pr)"
     if [ -z "$pr" ]; then
-      gh pr create --base main --head "$SYNC_BRANCH" --title "$TITLE" --body "$(
+      gh pr create --base ci/merge-gate-test-base --head "$SYNC_BRANCH" --title "$TITLE" --body "$(
         cat <<'BODY'
 ## 무엇을 왜
 
