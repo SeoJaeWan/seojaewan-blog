@@ -23,8 +23,3 @@ runs:
       if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
       run: pnpm --filter @seojaewan/web exec playwright install --with-deps chromium
-
-    - name: Install Playwright system dependencies
-      if: steps.cache.outputs.cache-hit == 'true'
-      shell: bash
-      run: pnpm --filter @seojaewan/web exec playwright install-deps chromium
