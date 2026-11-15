@@ -1,5 +1,11 @@
 # @seojaewan/design-system
 
+## 0.3.2
+
+### Patch Changes
+
+- 60b4d75: 코드 주석의 `@codocs` 참조를 합친 `디자인 시스템` 문서의 주소로 바꿨다. 동작은 바뀌지 않는다.
+
 ## 0.3.1
 
 ### Patch Changes
