@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p src/ui/tsconfig.json"
   },
   "devDependencies": {
-    "@figma/plugin-typings": "1.142.0",
+    "@figma/plugin-typings": "1.143.0",
     "esbuild": "0.28.2"
   }
 }
