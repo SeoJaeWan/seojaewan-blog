@@ -376,8 +376,8 @@ importers:
         specifier: 1.9.0
         version: 1.9.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@fluentui/react-icons':
-        specifier: 2.0.345
-        version: 2.0.345(react@19.3.1)
+        specifier: 2.0.347
+        version: 2.0.347(react@19.3.1)
       '@fontsource/nanum-gothic-coding':
         specifier: 5.3.0
         version: 5.3.0
@@ -1125,8 +1125,8 @@ packages:
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
 
-  '@fluentui/react-icons@2.0.345':
-    resolution: {integrity: sha512-lU3TXTAknzs0n4luCR1dlir10ZJQkqSUPsfwCErEenZufZQp8P3Nj+agYVx7Dk2v76JSAPweA9CpQD/0AzeVFQ==}
+  '@fluentui/react-icons@2.0.347':
+    resolution: {integrity: sha512-cu5VrxrdT6ccwhUy2TKOMpIKt0Sm0PRcv7E2Ez9ko4RgiGhveP5CKyZFFhauYz6lpl/BmNlnJepnWETxTFRhHQ==}
     peerDependencies:
       react: '>=16.8.0 <20.0.0'
 
@@ -5453,7 +5453,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
-  '@fluentui/react-icons@2.0.345(react@19.3.1)':
+  '@fluentui/react-icons@2.0.347(react@19.3.1)':
     dependencies:
       '@griffel/react': 1.7.8(react@19.3.1)
       react: 19.3.1
