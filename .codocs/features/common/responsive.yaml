@@ -12,10 +12,10 @@ _codocs:
   | 구간 | 조건 | 모양 |
   |---|---|---|
   | 모바일 | 폭이 `breakpoint/mobile/width` 미만. 이 판정이 먼저다 | 피그마 `Device=Mobile` 변형 |
-  | 노트북 | 폭이 `breakpoint/laptop/width` 미만이거나 높이가 `breakpoint/laptop/height` 미만 | PC와 같은 `Device=Desktop` 변형. 변수 모드 Laptop 값(간격·크기·글자)만 다르다 |
+  | 노트북 | 폭이 `breakpoint/laptop/width` 미만이거나 높이가 `breakpoint/laptop/height` 미만 | PC와 같은 `Device=Desktop` 변형. 변수 모드 `Laptop`에서 값이 다른 글자 변수 넷만 다르다 |
   | PC | 나머지 | `Device=Desktop` 변형 |
 
-  - `use-device`가 `pc | laptop | mobile`을 돌려주고, 컴포넌트 props의 `desktop`·`mobile`은 피그마 변형 이름이라 층 컴포넌트가 바꿔 넘긴다.
+  - 모양은 미디어 쿼리가 고른다([[디자인 시스템:기기 변형]]). `use-device`(`pc | laptop | mobile`)는 동작을 가를 때만 쓴다.
   - 서버와 수화 첫 렌더는 화면 크기를 모르므로 PC로 그린다. 수화한 뒤 실제 구간으로 바뀌는 모습은 처음 불러올 때 덮는 재부팅 화면이 가린다([[창 동작:새로고침과 첫 진입]]).
   - 지원하는 가장 작은 크기는 320×568이다. 구간 안에서 작아질 때는 각 화면의 줄어드는 규칙(창은 작업 영역 안으로, 패널은 가운데 본문만 줄여 스크롤)을 따른다.
   - Chrome 글 화면의 넓은·좁은 모양은 화면 구간이 아니라 창 내용 너비를 따른다([[Chrome:글 화면]]).
