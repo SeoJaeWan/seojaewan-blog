@@ -156,6 +156,8 @@ _codocs:
   │  ├─ nanum-gothic-coding.css # 같다
   │  ├─ tokens/           # 피그마에서 온 tokens.json과 거기서 생성한 tokens.css·token-names.ts
   │  ├─ assets/           # 피그마에서 온 자산 원본과 거기서 생성한 자산 데이터·이미지
+  │  ├─ assemblies/       # 조립. 사람이 쓴다([[디자인 시스템:조립]])
+  │  │  └─ desktop/
   │  └─ components/
   │     └─ button/
   │        ├─ button.json         # 피그마에서 온 스키마
@@ -175,6 +177,7 @@ _codocs:
 의존 방향: |
   - `apps/web`은 `@seojaewan/design-system`을 공개 이름으로만 import한다. 패키지 내부 경로는 쓰지 않는다.
   - `packages/design-system`은 앱을 import하지 않는다. 데이터를 가져오지 않고 블로그 도메인(Notion, 글)을 알지 못한다.
+  - `packages/design-system/src` 안에서 조립(`assemblies/`)은 컴포넌트(`components/`)와 동작(`behaviors/`)을 import하고, 컴포넌트와 동작은 조립을 import하지 않는다([[디자인 시스템:조립]]).
   - `apps/web/src`의 import 방향은 `app → shell → features → shared`다. 아래 층은 위 층을 import하지 않는다(`features/`가 `app/`을 import하지 않는 것도 이 방향이다). 자리를 정하는 법은 [[저장소 구성:앱 폴더 구조]]에서 확인한다.
   - 바깥(`app/`, `shell/`)은 기능 폴더 바로 아래 파일만 import한다. `app/`은 `shell/`에서 `shell/shell.tsx`만 import한다. `content/`는 `app/`만 쓴다.
   - 기능끼리는 import하지 않는다. 기능 사이에 오가는 상태는 `shared/stores`로 주고받는다. 기능끼리 import하면 층 컴포넌트가 서로를 알게 되어 한 기능을 고칠 때 다른 기능이 함께 깨지기 때문이다.
