@@ -2,6 +2,7 @@
 # GitHub 호스티드 러너(`ubuntu-latest`)에서 돈다. job마다 깨끗한 머신이라 pnpm은 기본 위치에 설치한다.
 # `Scope`가 돌릴지 정하고(scripts/ci-scope.mjs), `Changeset`(PR만)이 통과하면 네 작업(`Static checks`, `Test`, `Build`, `E2E`)이
 # 나란히 돈다. 네 작업은 서로 기다리지 않고, 하나가 실패해도 나머지는 끝까지 돈다.
+# 피그마 PR(`feat/figma-*`)에서는 `Changeset`과 네 작업 사이에 `Generate`가 끼어, 생성 파일을 만들어 그 PR에 커밋한다.
 # `Branch name`(PR만)은 `Scope`와 상관없이 모든 PR에서 돈다.
 # 끝 작업 `Merge gate`가 위 작업들의 결과를 모은다. `main` 병합의 필수 검사는 이것 하나다.
 #
@@ -116,14 +117,84 @@ jobs:
           git fetch --no-tags origin main:refs/remotes/origin/main
           node scripts/check-changeset.mjs "$BRANCH" origin/main
 
+  # @codocs [[디자인 시스템:CI]]
+  # 피그마 PR(`feat/figma-*`)의 생성. 피그마에서 온 자료(`tokens.json`, 자산 원본, 스키마)로 생성 파일을 만들어, 바뀐 것이 있으면
+  # 그 PR 브랜치에 커밋해 올린다. 뒤 작업(`Static checks`, `Test`, `Build`, `E2E`)은 이 커밋을 체크아웃해 검사한다.
+  # - 같은 저장소의 브랜치만 한다. 포크에서 온 PR에는 쓰기 권한이 없고 쓰지도 않는다.
+  # - 순서는 토큰, 자산, 컴포넌트다. 컴포넌트 생성기가 `tokens.css`를 읽는다.
+  # - 바뀐 것이 없으면 커밋하지 않고 `sha` 출력을 비운다. 뒤 작업은 PR의 병합 커밋을 그대로 받는다.
+  #   생성은 같은 입력에 같은 결과라서, 생성 커밋을 올린 PR을 다시 돌려도 새 커밋이 생기지 않는다.
+  # - GITHUB_TOKEN이 올린 커밋은 워크플로를 부르지 않는다. 그래서 새 커밋에는 필수 검사(`Merge gate`)가 붙지 않는데,
+  #   `Merge gate` 작업이 끝에 그 커밋에 같은 이름으로 결과를 보고한다(`content-sync.yml`과 같은 방식).
+  generate:
+    name: Generate
+    needs: [scope, changeset]
+    if: ${{ !cancelled() && needs.scope.outputs.run == 'true' && needs.changeset.result == 'success' && github.event_name == 'pull_request' && startsWith(github.head_ref, 'feat/figma-') && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      # 생성 커밋의 해시. 바뀐 것이 없으면 빈 값이다
+      sha: ${{ steps.commit.outputs.sha }}
+    env:
+      BRANCH: ${{ github.head_ref }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      # 저장소 규칙의 커밋 작성자([[Git 작업 규칙:커밋]])
+      GIT_AUTHOR_NAME: Ing-yeo_Developer
+      GIT_AUTHOR_EMAIL: 52366178+SeoJaeWan@users.noreply.github.com
+      GIT_COMMITTER_NAME: Ing-yeo_Developer
+      GIT_COMMITTER_EMAIL: 52366178+SeoJaeWan@users.noreply.github.com
+      # Git 훅은 사람의 커밋용이다
+      HUSKY: 0
+    steps:
+      # 병합 커밋이 아니라 PR 브랜치의 끝에서 받는다. 이 위에 생성 커밋을 얹어 브랜치에 올린다
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: pnpm/action-setup@v6.1.1
+
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate tokens
+        run: pnpm --filter @seojaewan/design-system generate:tokens
+
+      - name: Generate assets
+        run: pnpm --filter @seojaewan/design-system generate:assets
+
+      - name: Generate components
+        run: pnpm --filter @seojaewan/design-system generate:components
+
+      # 브랜치가 그 사이 앞으로 갔으면 push가 거절되어 실패한다. 그 push가 만든 새 실행이 이어서 검사한다
+      - name: Commit and push
+        id: commit
+        run: |
+          git add --all -- packages/design-system/src
+          if git diff --cached --quiet; then
+            echo '바뀐 생성 파일이 없다.'
+            exit 0
+          fi
+          git diff --cached --stat
+          git commit --message 'chore: generate figma export files'
+          git push origin "HEAD:refs/heads/$BRANCH"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
   static-checks:
     name: Static checks
-    needs: [scope, changeset]
-    # `main` push에서는 `Changeset`이 건너뛰어지므로, 건너뜀도 통과로 보고 돈다
-    if: ${{ !cancelled() && needs.scope.outputs.run == 'true' && (needs.changeset.result == 'success' || needs.changeset.result == 'skipped') }}
+    needs: [scope, changeset, generate]
+    # `main` push에서는 `Changeset`이 건너뛰어지므로, 건너뜀도 통과로 보고 돈다. 피그마 PR이 아니면 `Generate`도 건너뛴다
+    if: ${{ !cancelled() && needs.scope.outputs.run == 'true' && (needs.changeset.result == 'success' || needs.changeset.result == 'skipped') && (needs.generate.result == 'success' || needs.generate.result == 'skipped') }}
     runs-on: ubuntu-latest
     steps:
+      # 생성 커밋이 있으면 그 커밋을, 없으면(빈 값) 기본 체크아웃을 받는다
       - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ needs.generate.outputs.sha }}
 
       - uses: pnpm/action-setup@v6.1.1
 
@@ -155,11 +226,14 @@ jobs:
 
   test:
     name: Test
-    needs: [scope, changeset]
-    if: ${{ !cancelled() && needs.scope.outputs.run == 'true' && (needs.changeset.result == 'success' || needs.changeset.result == 'skipped') }}
+    needs: [scope, changeset, generate]
+    if: ${{ !cancelled() && needs.scope.outputs.run == 'true' && (needs.changeset.result == 'success' || needs.changeset.result == 'skipped') && (needs.generate.result == 'success' || needs.generate.result == 'skipped') }}
     runs-on: ubuntu-latest
     steps:
+      # 생성 커밋이 있으면 그 커밋을, 없으면(빈 값) 기본 체크아웃을 받는다
       - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ needs.generate.outputs.sha }}
 
       - uses: pnpm/action-setup@v6.1.1
 
@@ -179,11 +253,14 @@ jobs:
 
   build:
     name: Build
-    needs: [scope, changeset]
-    if: ${{ !cancelled() && needs.scope.outputs.run == 'true' && (needs.changeset.result == 'success' || needs.changeset.result == 'skipped') }}
+    needs: [scope, changeset, generate]
+    if: ${{ !cancelled() && needs.scope.outputs.run == 'true' && (needs.changeset.result == 'success' || needs.changeset.result == 'skipped') && (needs.generate.result == 'success' || needs.generate.result == 'skipped') }}
     runs-on: ubuntu-latest
     steps:
+      # 생성 커밋이 있으면 그 커밋을, 없으면(빈 값) 기본 체크아웃을 받는다
       - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ needs.generate.outputs.sha }}
 
       - uses: pnpm/action-setup@v6.1.1
 
@@ -219,8 +296,8 @@ jobs:
   # E2E가 실패해도 보고서는 만들어 넘기고, 마지막에 이 작업을 실패로 끝낸다. 올리는 일은 `Publish report`가 한다.
   e2e:
     name: E2E
-    needs: [scope, changeset]
-    if: ${{ !cancelled() && needs.scope.outputs.run == 'true' && (needs.changeset.result == 'success' || needs.changeset.result == 'skipped') }}
+    needs: [scope, changeset, generate]
+    if: ${{ !cancelled() && needs.scope.outputs.run == 'true' && (needs.changeset.result == 'success' || needs.changeset.result == 'skipped') && (needs.generate.result == 'success' || needs.generate.result == 'skipped') }}
     runs-on: ubuntu-latest
     outputs:
       # 게시할 일: `main`(전체 보고서), `failure`(PR 실패 보고서), `clear`(PR 통과, 실패 폴더 지우기), 빈 값(없음)
@@ -232,7 +309,10 @@ jobs:
           echo "RESULTS=$RUNNER_TEMP/e2e-results.json" >> "$GITHUB_ENV"
           echo "REPORT_DIR=$RUNNER_TEMP/scenario-cases-report" >> "$GITHUB_ENV"
 
+      # 생성 커밋이 있으면 그 커밋을, 없으면(빈 값) 기본 체크아웃을 받는다
       - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ needs.generate.outputs.sha }}
 
       - uses: pnpm/action-setup@v6.1.1
 
@@ -349,9 +429,12 @@ jobs:
   # 글 동기화 PR에서는 이 워크플로가 돌지 않아, `content-sync.yml`이 같은 이름으로 통과를 보고한다.
   merge-gate:
     name: Merge gate
-    needs: [scope, branch-name, changeset, static-checks, test, build, e2e]
+    needs: [scope, branch-name, changeset, generate, static-checks, test, build, e2e]
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      statuses: write
     steps:
       - name: Check results
         env:
@@ -359,6 +442,21 @@ jobs:
         run: |
           jq -r 'to_entries[] | "\(.key): \(.value.result)"' <<< "$NEEDS"
           jq -e '.scope.result == "success" and all(.[]; .result == "success" or .result == "skipped")' <<< "$NEEDS" > /dev/null
+
+      # `Generate`가 커밋을 올렸으면 PR의 끝 커밋은 그 커밋이다. 이 실행은 옛 끝 커밋에 붙으므로, 필수 검사 `Merge gate`를
+      # 그 커밋에 직접 보고한다. 앞 단계가 실패해도 실패로 보고한다(job.status).
+      - name: Report to generated commit
+        if: always() && needs.generate.outputs.sha != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          GENERATED_SHA: ${{ needs.generate.outputs.sha }}
+          GATE_STATE: ${{ job.status == 'success' && 'success' || 'failure' }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh api "repos/$GH_REPO/statuses/$GENERATED_SHA" \
+            -f state="$GATE_STATE" -f context='Merge gate' \
+            -f description='피그마 PR 생성 커밋의 검사 결과' -f target_url="$RUN_URL"
 
   # @codocs [[테스트 작성 규칙:E2E]]
   # 시나리오 케이스 보고서를 GitHub Pages 브랜치(`gh-pages`)에 올린다(scripts/publish-scenario-pages.sh).
