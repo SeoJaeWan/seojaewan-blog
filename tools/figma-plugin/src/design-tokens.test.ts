@@ -448,6 +448,20 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
     );
   });
 
+  it('다이아몬드 그라데이션 칠 스타일은 막는다', () => {
+    const [gradient] = controlBorderPaintStyle.paints;
+    if (gradient === undefined || !('gradientStops' in gradient)) {
+      throw new Error('fixture');
+    }
+    const diamond = {
+      name: 'Diamond',
+      paints: [{ ...gradient, type: 'GRADIENT_DIAMOND' as const }],
+    };
+    expect(() => buildDesignTokens(tokensInput({ paintStyles: [diamond] }))).toThrow(
+      '다이아몬드 그라데이션은 CSS로 옮길 수 없다',
+    );
+  });
+
   it('이름 있는 이미지 자산이 아닌 이미지 칠은 막는다', () => {
     expect(() =>
       buildDesignTokens(tokensInput({ paintStyles: [acrylicPaintStyle], imageAssets: {} })),

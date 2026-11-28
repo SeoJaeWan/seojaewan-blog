@@ -1,14 +1,12 @@
 import { tokensJsonText } from './core/export-tokens';
-import { isMotionApiAvailable, listMotionSamples } from './core/read-motion';
 import { describeError } from './error-text';
 import { runExport } from './export-flow';
-import { listComponents, listPatterns, sortByCanvasOrder } from './figma-reader';
+import { listComponents } from './figma-reader';
 import { getBranchHead, getFileText, listTreeFiles, readRepository } from './github-client';
 import type {
   ComponentSummary,
   ExportMessage,
   MainMessage,
-  MotionSummary,
   RepoStatus,
   UiMessage,
 } from './messages';
@@ -16,14 +14,12 @@ import {
   BASE_BRANCH,
   COMPONENTS_DIR,
   FILE_KEY,
-  MOTIONS_DIR,
-  PATTERNS_DIR,
   REPO_NAME,
   REPO_OWNER,
   TOKEN_STORAGE_KEY,
   TOKENS_PATH,
 } from './plugin-config';
-import { newTargetIds } from './target-status';
+import { newComponentIds } from './target-status';
 import { tokenChanges, tokenSummary } from './token-changes';
 
 // 플러그인 본체 진입점. UI를 띄우고 메시지를 받아 내보내기·저장소 비교·연결 확인·노드 보기를 실행한다.
@@ -31,40 +27,25 @@ import { tokenChanges, tokenSummary } from './token-changes';
 figma.showUI(__html__, { width: 420, height: 640, themeColors: true });
 figma.ui.on('message', handleMessage);
 
-// 모션 API를 쓸 수 없는 계정에서 보여 주는 안내다.
-const MOTION_UNAVAILABLE_TEXT =
-  '이 계정은 피그마 모션 API를 쓸 수 없어 애니메이션을 내보낼 수 없다. 나머지 대상은 내보낼 수 있다.';
-// 설정 화면에 링크로 두는 PR 규칙 문서
-const RULES_URL = `https://github.com/${REPO_OWNER}/${REPO_NAME}/blob/${BASE_BRANCH}/.codocs/design-system/figma-sync.yaml`;
+// 설정 화면에 링크로 두는 플러그인 규칙 문서
+const RULES_URL = `https://github.com/${REPO_OWNER}/${REPO_NAME}/blob/${BASE_BRANCH}/.codocs/design-system/design-system.yaml`;
 // GitHub fine-grained 토큰 만들기 화면
 const NEW_TOKEN_URL = 'https://github.com/settings/personal-access-tokens/new';
 
-/** 열 때 읽은 목록. 저장소 비교에 다시 쓴다 */
-type Catalog = {
-  components: ComponentSummary[];
-  patterns: ComponentSummary[];
-  motions: MotionSummary[];
-};
-
-let catalog: Catalog = { components: [], patterns: [], motions: [] };
+/** 열 때 읽은 컴포넌트 목록. 저장소 비교에 다시 쓴다 */
+let components: ComponentSummary[] = [];
 
 start().catch(reportFailure);
 
 /**
- * 저장한 토큰과 컴포넌트·조립·애니메이션 견본 목록을 UI에 보내고, 토큰이 있으면 저장소와 비교한다.
- * 모션 API를 쓸 수 없는 계정이면 애니메이션 목록 대신 안내를 보낸다.
+ * 저장한 토큰과 컴포넌트 목록을 UI에 보내고, 토큰이 있으면 저장소와 비교한다.
  * @codocs [[디자인 시스템:피그마 플러그인]]
  * @codocs [[디자인 시스템:플러그인 화면]]
  */
 async function start(): Promise<void> {
   const stored: unknown = await figma.clientStorage.getAsync(TOKEN_STORAGE_KEY);
   const token = typeof stored === 'string' ? stored : '';
-  const components = await listComponents();
-  const patterns = await listPatterns();
-  const motions = await sortByCanvasOrder(await listMotionSamples());
-  const [first] = motions;
-  const isAvailable = first === undefined || (await isMotionApiAvailable(first.id));
-  catalog = { components, patterns, motions: isAvailable ? motions : [] };
+  components = await listComponents();
   post({
     type: 'init',
     token,
@@ -75,9 +56,6 @@ async function start(): Promise<void> {
       newTokenUrl: NEW_TOKEN_URL,
     },
     components,
-    patterns,
-    motions: catalog.motions,
-    motionUnavailable: isAvailable ? null : MOTION_UNAVAILABLE_TEXT,
   });
   await refreshStatus(token);
 }
@@ -142,8 +120,8 @@ async function checkConnection(token: string): Promise<void> {
 }
 
 /**
- * `main`과 비교해 토큰 변경 개수와 새로 만드는 대상을 UI에 알린다.
- * 트리를 한 번 읽어 대상 폴더가 있는지 보고, tokens.json은 한 번만 받는다.
+ * `main`과 비교해 토큰 변경 개수와 새로 만드는 컴포넌트를 UI에 알린다.
+ * 트리를 한 번 읽어 스키마가 있는지 보고, tokens.json은 한 번만 받는다.
  * @codocs [[디자인 시스템:플러그인 화면]]
  * @param token GitHub 토큰
  */
@@ -157,12 +135,8 @@ async function refreshStatus(token: string): Promise<void> {
   let status: RepoStatus;
   try {
     const head = await getBranchHead(trimmed, BASE_BRANCH);
-    const files = await listTreeFiles(trimmed, head.treeSha, [
-      `${COMPONENTS_DIR}/`,
-      `${PATTERNS_DIR}/`,
-      `${MOTIONS_DIR}/`,
-    ]);
-    const newIds = newTargetIds(files.keys(), catalog);
+    const files = await listTreeFiles(trimmed, head.treeSha, [`${COMPONENTS_DIR}/`]);
+    const newIds = newComponentIds(files.keys(), components);
     const mainTokens = await getFileText(trimmed, TOKENS_PATH, head.commitSha);
     try {
       const summary = tokenSummary(tokenChanges(mainTokens, await tokensJsonText()));
@@ -213,19 +187,16 @@ async function exportFromUi(message: ExportMessage): Promise<void> {
     throw new Error('GitHub 토큰을 입력해야 한다.');
   }
   const hasTarget =
-    message.isTokensSelected ||
-    message.componentIds.length > 0 ||
-    message.patternIds.length > 0 ||
-    message.motionIds.length > 0;
+    message.isTokensSelected || message.isAssetsSelected || message.componentIds.length > 0;
   if (!hasTarget) {
-    throw new Error('내보낼 대상(토큰, 컴포넌트, 조립, 애니메이션)을 하나 이상 고른다.');
+    throw new Error('내보낼 대상(토큰, 자산, 컴포넌트)을 하나 이상 고른다.');
   }
   await figma.clientStorage.setAsync(TOKEN_STORAGE_KEY, token);
   const result = await runExport({
     token,
+    isTokensSelected: message.isTokensSelected,
+    isAssetsSelected: message.isAssetsSelected,
     componentIds: message.componentIds,
-    patternIds: message.patternIds,
-    motionIds: message.motionIds,
     log: (text) => {
       post({ type: 'log', text });
     },
@@ -296,15 +267,13 @@ function isUiMessage(message: unknown): message is UiMessage {
 function isExportMessage(message: object): boolean {
   const token: unknown = Reflect.get(message, 'token');
   const isTokensSelected: unknown = Reflect.get(message, 'isTokensSelected');
+  const isAssetsSelected: unknown = Reflect.get(message, 'isAssetsSelected');
   const componentIds: unknown = Reflect.get(message, 'componentIds');
-  const patternIds: unknown = Reflect.get(message, 'patternIds');
-  const motionIds: unknown = Reflect.get(message, 'motionIds');
   return (
     typeof token === 'string' &&
     typeof isTokensSelected === 'boolean' &&
-    isIdList(componentIds) &&
-    isIdList(patternIds) &&
-    isIdList(motionIds)
+    typeof isAssetsSelected === 'boolean' &&
+    isIdList(componentIds)
   );
 }
 

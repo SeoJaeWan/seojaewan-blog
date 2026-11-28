@@ -104,24 +104,6 @@ export function tokenSummary(changes: TokenChanges): TokenSummary {
 }
 
 /**
- * 쓰는 토큰 이름 목록 가운데 하나라도 바뀐 토큰을 쓰는 컴포넌트를 찾는다.
- * 쓰는 토큰은 피그마에서 컴포넌트의 모든 레이어(인스턴스 안쪽 포함)에 연결된 변수와 스타일 이름이다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param usages 컴포넌트 이름 → 쓰는 토큰 이름(변수 경로, 스타일 이름)
- * @param names 찾을 토큰 이름
- * @returns 그 토큰을 쓰는 컴포넌트 이름(정렬)
- */
-export function componentsUsingTokens(
-  usages: ReadonlyMap<string, ReadonlySet<string>>,
-  names: ReadonlySet<string>,
-): string[] {
-  return [...usages]
-    .filter(([, used]) => [...used].some((name) => names.has(name)))
-    .map(([component]) => component)
-    .sort();
-}
-
-/**
  * 토큰 트리를 경로 → 비교용 문자열(`$type`, `$value`)로 펼친다.
  * @param value 토큰 트리
  * @param prefix 지금까지의 경로

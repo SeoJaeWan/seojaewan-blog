@@ -1,38 +1,32 @@
 // 플러그인이 내보내는 대상과 경로. 저장소와 기준 브랜치는 고정이다.
 
-/** 내보내는 피그마 파일 키 */
+/**
+ * 내보내는 피그마 파일 키. 저장소에 키를 적는 파일을 따로 두지 않고 여기에만 둔다.
+ * @codocs [[디자인 시스템:피그마 파일]]
+ */
 export const FILE_KEY = 'XV9Y1UT5UH4tC5hSqLVipZ';
-
-/** 조립이 있는 "03 · Patterns" 페이지. 이름은 바뀔 수 있어 ID로 찾는다 */
-export const PATTERNS_PAGE_ID = '517:16130';
-
-/** PNG 내보내기 배율. figma.json에 함께 기록한다. */
-export const SCALE = 1;
 
 export const REPO_OWNER = 'SeoJaeWan';
 export const REPO_NAME = 'seojaewan-blog';
 export const BASE_BRANCH = 'main';
 
-/** 디자인 시스템 패키지의 피그마 기준 자료 폴더 */
-export const FIGMA_DIR = 'packages/design-system/figma';
-export const TOKENS_PATH = `${FIGMA_DIR}/tokens.json`;
-/** tokens.json에서 변환 함수로 만드는 생성 파일 */
-export const TOKENS_CSS_PATH = 'packages/design-system/src/tokens.css';
-/** tokens.json에서 만든 토큰 이름·경계값 상수 */
-export const TOKEN_NAMES_PATH = 'packages/design-system/src/token-names.ts';
-/** 파일 키와 배율처럼 바뀌지 않는 전역 값 */
-export const SETTINGS_PATH = `${FIGMA_DIR}/figma.json`;
-/** 컴포넌트마다 export.json과 변형 PNG를 두는 폴더 */
-export const COMPONENTS_DIR = `${FIGMA_DIR}/components`;
+/** 디자인 시스템 패키지 폴더와 이름. changeset의 대상이다 */
+export const DESIGN_SYSTEM_DIR = 'packages/design-system';
+export const DESIGN_SYSTEM_PACKAGE = '@seojaewan/design-system';
 
-/** 조립마다 `<영역>/<이름>/`에 export.json과 변형 PNG를 두는 폴더(앱) */
-export const PATTERNS_DIR = 'apps/web/figma/patterns';
+/** 토큰 원본. 생성 파일(tokens.css, token-names.ts)은 CI가 같은 폴더에 만든다 */
+export const TOKENS_PATH = `${DESIGN_SYSTEM_DIR}/src/tokens/tokens.json`;
+/** 컴포넌트마다 `<이름>/<이름>.json`(스키마)과 `<이름>/<이름>.layout.json`(검증 자료)을 두는 폴더 */
+export const COMPONENTS_DIR = `${DESIGN_SYSTEM_DIR}/src/components`;
+/** 자산 원본(SVG, 래스터)을 묶음별로 두는 폴더. 생성 파일과 함께 있다 */
+export const ASSETS_DIR = `${DESIGN_SYSTEM_DIR}/src/assets`;
+/** PR을 열 때 함께 올리는 changeset 폴더 */
+export const CHANGESET_DIR = '.changeset';
+
+/** 컴포넌트를 내보내는 페이지([[디자인 시스템:내보낼 대상]]) */
+export const COMPONENT_PAGES = ['Controls', 'Shell', 'Blog'] as const;
+/** 토큰과 자산이 있는 페이지 */
+export const FOUNDATIONS_PAGE = 'Foundations';
 
 /** GitHub 토큰을 보관하는 figma.clientStorage 키 */
 export const TOKEN_STORAGE_KEY = 'github-token';
-
-/** 자산(아이콘·도형·일러스트·이미지)을 묶음별로 두는 폴더 */
-export const ASSETS_DIR = `${FIGMA_DIR}/assets`;
-
-/** 애니메이션 견본마다 `<이름>.json`을 두는 폴더 */
-export const MOTIONS_DIR = `${FIGMA_DIR}/motions`;

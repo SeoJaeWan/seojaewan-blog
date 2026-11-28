@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { canonicalCategoryName } from './annotation-category';
-import { annotationData } from './read-node';
+import { behaviorOf, createReadContext } from './read-node';
 
-// @codocs [[디자인 시스템:모션]]
+// @codocs [[디자인 시스템:동작의 종류]]
 describe('주석 카테고리 이름', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
@@ -23,18 +23,31 @@ describe('주석 카테고리 이름', () => {
     expect(canonicalCategoryName('디자인 메모')).toBe('디자인 메모');
   });
 
-  it('한국어 카테고리의 "표시용" 주석을 표시용 레이어로 읽는다', async () => {
+  it('한국어 화면의 Interaction 주석에서 동작의 종류를 읽는다', async () => {
     vi.stubGlobal('figma', {
       annotations: {
-        getAnnotationCategoryByIdAsync: () => Promise.resolve({ label: '개발' }),
+        getAnnotationCategoryByIdAsync: (id: string) =>
+          Promise.resolve({ label: id === 'i' ? '인터랙션' : '개발' }),
       },
     });
-    const annotations = await annotationData(
-      {
-        annotations: [{ label: '표시용: 호버 커서 그림', categoryId: 'c' }],
-      } as unknown as BaseNode,
-      new Map(),
-    );
-    expect(annotations).toEqual([{ text: '표시용: 호버 커서 그림', category: 'Development' }]);
+    const node = {
+      id: '1:1',
+      annotations: [
+        { label: '설명 문장', categoryId: 'd' },
+        { label: ' button ', categoryId: 'i' },
+      ],
+    } as unknown as ComponentSetNode;
+    expect(await behaviorOf(node, createReadContext(new Map(), new Map()))).toBe('button');
+  });
+
+  it('Interaction 주석이 없으면 동작의 종류가 없다', async () => {
+    vi.stubGlobal('figma', {
+      annotations: { getAnnotationCategoryByIdAsync: () => Promise.resolve({ label: '개발' }) },
+    });
+    const node = {
+      id: '1:2',
+      annotations: [{ label: 'button', categoryId: 'd' }],
+    } as unknown as ComponentSetNode;
+    expect(await behaviorOf(node, createReadContext(new Map(), new Map()))).toBeNull();
   });
 });

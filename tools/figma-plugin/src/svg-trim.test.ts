@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 
-import { utf8Encode } from './sha256';
 import { monoColorSvg, utf8Decode } from './svg-normalize';
 import {
   relativeTransform,
@@ -17,6 +16,7 @@ import {
   desktopArcSvg,
   serverArcSvg,
 } from './svg-trim.fixture';
+import { utf8Encode } from './utf8';
 
 const ARC_D =
   'M27.5802 7.27352C32.3979 13.6668 31.123 22.7547 24.7321 27.5757C18.3412 32.3966 9.2526 31.1262 4.4285 24.7377C-0.395601 18.3492 0.870199 9.26002 7.2563 4.43272C13.6424 -0.394579 22.7323 0.866721 27.5627 7.25032';

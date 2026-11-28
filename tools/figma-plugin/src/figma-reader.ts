@@ -1,22 +1,7 @@
+import type { AssetRef, ComponentPage } from '../../../packages/design-system/src/figma-contract';
 import { type CanvasBox, compareRankPaths, readingOrder } from './canvas-order';
-import {
-  type AncestorInfo,
-  type ComponentPlace,
-  componentPlace,
-  isCodeOnlyComponent,
-  isComponentsPage,
-  isDocComponent,
-  UNGROUPED,
-} from './component-pages';
-import { ASSET_GROUP_PREFIX, ASSET_GROUPS } from './core/asset-groups';
-import type { CheckContext } from './core/check-structure';
-import {
-  CODE_VARIABLE_PREFIXES,
-  type CodeVariable,
-  type CodeVariables,
-} from './core/code-variables';
-import { defaultFloatValue, isMotionApiError, readMotionVariables } from './core/read-motion';
-import { readTokenValues } from './core/token-values';
+import { componentPageOf } from './component-pages';
+import { assetGroupOf } from './core/asset-groups';
 import type {
   DesignTokensInput,
   EffectInput,
@@ -29,40 +14,171 @@ import type {
 } from './design-tokens';
 import type { ComponentSummary } from './messages';
 import { assetName } from './naming';
-import { PATTERNS_PAGE_ID } from './plugin-config';
+import { COMPONENT_PAGES, FOUNDATIONS_PAGE } from './plugin-config';
 import type { UsageInput, UsageStyle, UsageVariable } from './unused-tokens';
 
-// 피그마 API를 읽어 순수 데이터로 옮기는 얇은 층. 변환 규칙은 design-tokens.ts, naming.ts에 둔다.
+// 피그마 API를 읽어 순수 데이터로 옮기는 얇은 층. 변환 규칙은 design-tokens.ts, naming.ts, core/에 둔다.
+
+// 피그마가 사용자 기능 플래그로 막은 API를 부르면 나오는 오류 문장이다.
+const UNSUPPORTED_API_TEXT = 'is not a supported API';
+
+/** 내보내는 컴포넌트(세트이거나 변형이 없는 컴포넌트)와 그 페이지 */
+export type PageComponent = { node: ComponentSetNode | ComponentNode; page: ComponentPage };
 
 /**
- * 컴포넌트 페이지(이름에 `Components`가 든 페이지, `02 · Components`)의 컴포넌트 세트와 단독 컴포넌트를 캔버스 순서로 찾는다.
- * 묶음(band)은 페이지 바로 아래 섹션, 그룹(group)은 그 안 컴포넌트 섹션이다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
+ * Controls·Shell·Blog 페이지의 컴포넌트 세트와 변형이 없는 컴포넌트를 모두 찾는다. 페이지는 이름으로 찾고,
+ * 컴포넌트를 감싼 틀의 모양은 보지 않는다. 이름으로 거르지 않는다.
+ * @codocs [[디자인 시스템:내보낼 대상]]
+ * @returns 컴포넌트와 페이지
+ */
+export async function listComponentNodes(): Promise<PageComponent[]> {
+  const result: PageComponent[] = [];
+  for (const page of figma.root.children) {
+    const name = componentPageOf(page.name);
+    if (name === null) {
+      continue;
+    }
+    await page.loadAsync();
+    for (const node of page.findAllWithCriteria({ types: ['COMPONENT_SET', 'COMPONENT'] })) {
+      if (node.type === 'COMPONENT_SET' || node.parent?.type !== 'COMPONENT_SET') {
+        result.push({ node, page: name });
+      }
+    }
+  }
+  return result;
+}
+
+/**
+ * 대상 목록에 보이는 컴포넌트를 페이지 순서(Controls → Shell → Blog), 페이지 안은 캔버스 순서로 만든다.
  * @codocs [[디자인 시스템:플러그인 화면]]
  * @returns 컴포넌트 목록
  */
 export async function listComponents(): Promise<ComponentSummary[]> {
-  const summaries: ComponentSummary[] = [];
-  for (const page of figma.root.children) {
-    if (!isComponentsPage(page.name)) {
-      continue;
-    }
-    await page.loadAsync();
-    summaries.push(...(await listPageComponents(page, sectionPlace)));
-  }
-  return summaries;
+  const nodes = await listComponentNodes();
+  const summaries: ComponentSummary[] = nodes.map(
+    /**
+     * 컴포넌트 하나를 목록 항목으로 옮긴다.
+     * @param item 컴포넌트와 페이지
+     * @param item.node 컴포넌트
+     * @param item.page 페이지
+     * @returns 목록 항목
+     */
+    ({ node, page }) => ({
+      id: node.id,
+      name: node.name,
+      page,
+      variantCount:
+        node.type === 'COMPONENT_SET'
+          ? node.children.filter((child) => child.type === 'COMPONENT').length
+          : 1,
+    }),
+  );
+  const sorted = await sortByCanvasOrder(summaries);
+  return COMPONENT_PAGES.flatMap((page) => sorted.filter((summary) => summary.page === page));
 }
 
 /**
- * "03 · Patterns" 페이지의 조립(컴포넌트 세트와 단독 컴포넌트)을 캔버스 순서로 찾는다. 묶음은 이름의 영역(조립 PR 단위)이다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @codocs [[디자인 시스템:플러그인 화면]]
- * @returns 조립 목록
+ * 컴포넌트 세트의 변형 하나가 고른 축 값을 읽는다. 변형 이름 대신 피그마가 정한 값을 쓴다.
+ * @codocs [[디자인 시스템:스키마]]
+ * @param component 컴포넌트
+ * @returns 변형 축 이름 → 값. 세트의 변형이 아니면 빈 객체
  */
-export async function listPatterns(): Promise<ComponentSummary[]> {
-  return listPageComponents(await loadPage(PATTERNS_PAGE_ID), (node) => ({
-    group: patternAreaName(node),
-  }));
+export function variantValuesOf(component: ComponentNode): Record<string, string> {
+  return component.parent?.type === 'COMPONENT_SET' ? { ...component.variantProperties } : {};
+}
+
+/**
+ * 노드가 놓인 페이지 이름과 조상 이름(페이지 바로 아래부터 가장 가까운 것까지)을 읽는다.
+ * @param node 노드
+ * @returns 페이지 이름과 조상 이름
+ */
+export function placeOf(node: BaseNode): { page: string; ancestors: string[] } {
+  const ancestors: string[] = [];
+  for (let current = node.parent; current !== null; current = current.parent) {
+    if (current.type === 'PAGE') {
+      return { page: current.name, ancestors };
+    }
+    ancestors.unshift(current.name);
+  }
+  return { page: '', ancestors };
+}
+
+/**
+ * 자산 하나.
+ * - ref: 자산 참조(묶음, 피그마 이름, 파일 이름)
+ * - node: 자산 원본 컴포넌트
+ */
+export type AssetComponent = { ref: AssetRef; node: ComponentNode };
+
+/**
+ * Foundations 페이지의 자산 컴포넌트를 모두 찾는다. 묶음은 원본 컴포넌트가 놓인 구역으로 정한다.
+ * @codocs [[디자인 시스템:자산]]
+ * @returns 자산 목록(페이지 안 순서)
+ */
+export async function listAssetComponents(): Promise<AssetComponent[]> {
+  const result: AssetComponent[] = [];
+  for (const page of figma.root.children) {
+    if (page.name !== FOUNDATIONS_PAGE) {
+      continue;
+    }
+    await page.loadAsync();
+    for (const node of page.findAllWithCriteria({ types: ['COMPONENT'] })) {
+      const place = placeOf(node);
+      const group = assetGroupOf(place.page, place.ancestors);
+      if (group !== null) {
+        result.push({
+          ref: { group, name: node.name, file: assetName({ group, name: node.name }) },
+          node,
+        });
+      }
+    }
+  }
+  return result;
+}
+
+/**
+ * 이름 있는 이미지 자산(Images 묶음에서 이미지 칠 하나만 가진 컴포넌트)의 이미지 해시 → 자산 표를 만든다.
+ * 토큰의 이미지 칠과 컴포넌트의 이미지 칠은 이 표로 자산을 얻고, 구조 검사는 이 표에 없는 이미지를 막는다.
+ * @codocs [[디자인 시스템:자산]]
+ * @param assets 자산 목록. 없으면 새로 찾는다
+ * @returns 이미지 해시 → 자산
+ */
+export async function readImageAssets(
+  assets?: readonly AssetComponent[],
+): Promise<Map<string, AssetComponent>> {
+  const images = new Map<string, AssetComponent>();
+  for (const asset of assets ?? (await listAssetComponents())) {
+    if (asset.ref.group !== 'Images') {
+      continue;
+    }
+    const { node } = asset;
+    const fills =
+      node.fills === figma.mixed ? [] : node.fills.filter((fill) => fill.visible !== false);
+    const [fill] = fills;
+    if (fills.length === 1 && fill?.type === 'IMAGE' && fill.imageHash !== null) {
+      images.set(fill.imageHash, asset);
+    }
+  }
+  return images;
+}
+
+/**
+ * Foundations와 컴포넌트 페이지의 컴포넌트·세트를 키로 찾는 표를 만든다. 인스턴스 교체 속성의 선호값은 키로만 온다.
+ * @codocs [[디자인 시스템:아이콘 자리]]
+ * @returns 키 → 컴포넌트나 세트
+ */
+export async function componentsByKey(): Promise<Map<string, ComponentNode | ComponentSetNode>> {
+  const result = new Map<string, ComponentNode | ComponentSetNode>();
+  for (const page of figma.root.children) {
+    if (page.name !== FOUNDATIONS_PAGE && componentPageOf(page.name) === null) {
+      continue;
+    }
+    await page.loadAsync();
+    for (const node of page.findAllWithCriteria({ types: ['COMPONENT_SET', 'COMPONENT'] })) {
+      result.set(node.key, node);
+    }
+  }
+  return result;
 }
 
 /**
@@ -82,78 +198,6 @@ export async function sortByCanvasOrder<T extends { readonly id: string }>(
     paths.set(item.id, node === null ? [Number.MAX_SAFE_INTEGER] : rankPath(node, ranks));
   }
   return [...items].sort((a, b) => compareRankPaths(paths.get(a.id) ?? [], paths.get(b.id) ?? []));
-}
-
-/**
- * 페이지의 컴포넌트 세트와 세트 밖 단독 컴포넌트를 찾아 캔버스 순서로 정렬한다. 이름이 점으로 시작하는 문서용 컴포넌트는 뺀다.
- * @param page 불러온 페이지
- * @param placeOf 노드의 묶음 이름(그룹, 있으면 그 위 묶음)을 정하는 함수
- * @returns 컴포넌트 목록
- */
-async function listPageComponents(
-  page: PageNode,
-  placeOf: (node: ComponentSetNode | ComponentNode) => Pick<ComponentSummary, 'group' | 'band'>,
-): Promise<ComponentSummary[]> {
-  const nodes = page.findAllWithCriteria({ types: ['COMPONENT_SET', 'COMPONENT'] });
-  const summaries: ComponentSummary[] = [];
-  for (const node of nodes) {
-    if (isDocComponent(node.name) || isCodeOnlyComponent(node.name)) {
-      continue;
-    }
-    if (node.type === 'COMPONENT_SET') {
-      summaries.push({
-        id: node.id,
-        name: node.name,
-        kind: node.type,
-        variantCount: variantsOf(node).length,
-        ...placeOf(node),
-      });
-    } else if (node.parent?.type !== 'COMPONENT_SET') {
-      summaries.push({
-        id: node.id,
-        name: node.name,
-        kind: node.type,
-        variantCount: 1,
-        ...placeOf(node),
-      });
-    }
-  }
-  return sortByCanvasOrder(summaries);
-}
-
-/**
- * 컴포넌트가 든 묶음 섹션(페이지 바로 아래 섹션)과 컴포넌트 섹션(그 안 섹션)의 이름을 구한다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param node 컴포넌트
- * @returns 묶음과 그룹 이름
- */
-function sectionPlace(node: BaseNode): ComponentPlace {
-  const ancestors: AncestorInfo[] = [];
-  for (
-    let current = node.parent;
-    current !== null && current.type !== 'PAGE' && current.type !== 'DOCUMENT';
-    current = current.parent
-  ) {
-    ancestors.unshift({ type: current.type, name: current.name });
-  }
-  return componentPlace(ancestors);
-}
-
-/**
- * 조립 이름의 영역(`Menu/Folder` → `Menu`)을 구한다.
- * @param node 조립
- * @returns 영역 이름, `영역/이름` 꼴이 아니면 `묶음 밖`
- */
-function patternAreaName(node: BaseNode): string {
-  const parts = node.name.split('/').map((part) => part.trim());
-  const [area, rest] = parts;
-  return parts.length === 2 &&
-    area !== undefined &&
-    area !== '' &&
-    rest !== undefined &&
-    rest !== ''
-    ? area
-    : UNGROUPED;
 }
 
 /**
@@ -266,7 +310,7 @@ export async function readDesignTokensInput(): Promise<DesignTokensInput> {
         description: style.description,
       }),
     ),
-    imageAssets: Object.fromEntries([...images].map(([hash, image]) => [hash, image.name])),
+    imageAssets: Object.fromEntries([...images].map(([hash, image]) => [hash, image.ref.file])),
   };
   await addRemoteAliasNames(input, aliasNames);
   return input;
@@ -347,56 +391,6 @@ export async function readUsageInput(): Promise<UsageInput> {
   };
 }
 
-/** 컴포넌트 하나가 쓰는 토큰. tokens: 연결된 변수 이름과 스타일 이름. */
-export type ComponentTokenUsage = {
-  id: string;
-  name: string;
-  tokens: Set<string>;
-};
-
-/**
- * 컴포넌트 페이지의 컴포넌트마다 쓰는 변수와 스타일 이름을 읽는다. 인스턴스 안쪽 레이어도 본다.
- * 바뀐 토큰을 쓰는 컴포넌트를 찾아 토큰 PR에 그 변형 PNG를 다시 넣는 데 쓴다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @returns 컴포넌트마다 쓰는 토큰 이름
- */
-export async function readComponentTokenUsage(): Promise<ComponentTokenUsage[]> {
-  const variableNames = new Map<string, string | undefined>();
-  const styleNames = new Map<string, string | undefined>();
-  const result: ComponentTokenUsage[] = [];
-  for (const summary of await listComponents()) {
-    const node = await figma.getNodeByIdAsync(summary.id);
-    if (node === null || (node.type !== 'COMPONENT_SET' && node.type !== 'COMPONENT')) {
-      continue;
-    }
-    const usage: NodeUsage = { variableIds: new Set(), styleIds: new Set() };
-    for (const item of [node, ...node.findAll(() => true)]) {
-      collectNodeUsage(item, usage);
-    }
-    const tokens = new Set<string>();
-    for (const id of usage.variableIds) {
-      if (!variableNames.has(id)) {
-        variableNames.set(id, (await figma.variables.getVariableByIdAsync(id))?.name);
-      }
-      const name = variableNames.get(id);
-      if (name !== undefined) {
-        tokens.add(name);
-      }
-    }
-    for (const id of usage.styleIds) {
-      if (!styleNames.has(id)) {
-        styleNames.set(id, (await figma.getStyleByIdAsync(id))?.name);
-      }
-      const name = styleNames.get(id);
-      if (name !== undefined) {
-        tokens.add(name);
-      }
-    }
-    result.push({ id: summary.id, name: summary.name, tokens });
-  }
-  return result;
-}
-
 /** 노드가 쓰는 변수 ID와 스타일 ID */
 export type NodeUsage = { variableIds: Set<string>; styleIds: Set<string> };
 
@@ -453,7 +447,7 @@ function collectKeyframeVariableIds(node: SceneNode, ids: Set<string>): void {
   try {
     collectAliasIds(node.manualKeyframeTracks, ids);
   } catch (error) {
-    if (!isMotionApiError(error)) {
+    if (!(error instanceof Error) || !error.message.includes(UNSUPPORTED_API_TEXT)) {
       throw error;
     }
   }
@@ -494,133 +488,6 @@ function collectAliasIds(value: unknown, ids: Set<string>): void {
   for (const item of Object.values(value)) {
     collectAliasIds(item, ids);
   }
-}
-
-/**
- * 이미지 자산 하나.
- * - name: 자산 이름(`images/<자산>`, 확장자 없음)
- * - node: 자산 컴포넌트
- */
-export type ImageAsset = {
-  name: string;
-  node: ComponentNode;
-};
-
-/**
- * Foundations / Assets의 이미지 묶음(`group/Images`)에서 이미지 칠 하나만 가진 컴포넌트를 찾아
- * 이미지 해시 → 자산 표를 만든다. 토큰의 이미지 칠은 이 표로 자산 이름을 얻고,
- * 구조 검사는 이 표에 없는 이미지를 막는다. 묶음 프레임이 있는 첫 페이지만 읽는다.
- * @codocs [[디자인 시스템:자산]]
- * @returns 이미지 해시 → 자산
- */
-export async function readImageAssets(): Promise<Map<string, ImageAsset>> {
-  const rasterGroups = new Set(
-    Object.entries(ASSET_GROUPS)
-      .filter(([, kind]) => kind === 'raster')
-      .map(([group]) => `${ASSET_GROUP_PREFIX}${group}`),
-  );
-  const images = new Map<string, ImageAsset>();
-  for (const page of figma.root.children) {
-    await page.loadAsync();
-    const frames = page.findAll((node) => rasterGroups.has(node.name) && 'children' in node);
-    for (const frame of frames) {
-      if (!('findAllWithCriteria' in frame)) {
-        continue;
-      }
-      const group = frame.name.slice(ASSET_GROUP_PREFIX.length);
-      for (const component of frame.findAllWithCriteria({ types: ['COMPONENT'] })) {
-        const fills =
-          component.fills === figma.mixed
-            ? []
-            : component.fills.filter((fill) => fill.visible !== false);
-        const [fill] = fills;
-        if (fills.length === 1 && fill?.type === 'IMAGE' && fill.imageHash !== null) {
-          images.set(fill.imageHash, {
-            name: assetName({ group, name: component.name }),
-            node: component,
-          });
-        }
-      }
-    }
-    if (frames.length > 0) {
-      break;
-    }
-  }
-  return images;
-}
-
-/**
- * 구조 검사에 쓰는 파일 정보(이름 있는 이미지 자산의 해시, 코드 전용 변수, 모션 변수)를 읽는다.
- * @codocs [[디자인 시스템:구조 검사]]
- * @returns 검사 정보
- */
-export async function readCheckContext(): Promise<CheckContext> {
-  return {
-    imageHashes: new Set((await readImageAssets()).keys()),
-    codeVariables: await readCodeVariables(),
-    motionVariables: await readMotionVariables(),
-    tokenValues: await readTokenValues(),
-  };
-}
-
-/**
- * 값 짝을 찾는 코드 전용 변수(회전·최대 줄 수·비율)를 읽는다.
- * @codocs [[디자인 시스템:구조 검사]]
- * @returns 묶음마다 변수
- */
-async function readCodeVariables(): Promise<CodeVariables> {
-  const collections = new Map(
-    (await figma.variables.getLocalVariableCollectionsAsync()).map((collection) => [
-      collection.id,
-      collection,
-    ]),
-  );
-  const variables = await figma.variables.getLocalVariablesAsync('FLOAT');
-  /**
-   * 묶음의 변수를 값과 함께 읽는다.
-   * @param prefix 변수 이름 앞부분
-   * @returns 변수
-   */
-  async function group(prefix: string): Promise<CodeVariable[]> {
-    const result: CodeVariable[] = [];
-    for (const variable of variables) {
-      const value = variable.name.startsWith(prefix)
-        ? await defaultFloatValue(variable, collections)
-        : null;
-      if (value !== null) {
-        result.push({ name: variable.name, value });
-      }
-    }
-    return result;
-  }
-  return {
-    rotate: await group(CODE_VARIABLE_PREFIXES.rotate),
-    lineClamp: await group(CODE_VARIABLE_PREFIXES.lineClamp),
-    ratio: await group(CODE_VARIABLE_PREFIXES.ratio),
-  };
-}
-
-/**
- * 페이지를 ID로 찾아 불러온다. `documentAccess: dynamic-page`라 페이지 내용을 먼저 불러와야 한다.
- * @param pageId 페이지 ID
- * @returns 불러온 페이지
- */
-export async function loadPage(pageId: string): Promise<PageNode> {
-  const page = await figma.getNodeByIdAsync(pageId);
-  if (page?.type !== 'PAGE') {
-    throw new Error(`페이지 ${pageId}를 찾을 수 없다.`);
-  }
-  await page.loadAsync();
-  return page;
-}
-
-/**
- * 컴포넌트 세트의 변형(컴포넌트)만 고른다.
- * @param set 컴포넌트 세트
- * @returns 변형 목록
- */
-function variantsOf(set: ComponentSetNode): ComponentNode[] {
-  return set.children.filter((child): child is ComponentNode => child.type === 'COMPONENT');
 }
 
 /**

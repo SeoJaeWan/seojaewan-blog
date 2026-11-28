@@ -9,6 +9,6 @@
   "enablePrivatePluginApi": true,
   "networkAccess": {
     "allowedDomains": ["https://api.github.com"],
-    "reasoning": "Commits exported images and tokens to the repository and opens a pull request."
+    "reasoning": "Commits exported schemas, assets and tokens to the repository and opens pull requests."
   }
 }

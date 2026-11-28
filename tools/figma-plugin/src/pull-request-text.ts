@@ -1,130 +1,68 @@
-import type { MotionValue } from './core/motion-data';
-import { reportSections } from './core/pattern-report';
-import { pngFile } from './export-manifest';
-import type { PatternReportView } from './messages';
-import { type MotionExport, type MotionTime, roundMs, roundValue } from './motion-file';
-import { FILE_KEY, REPO_NAME, REPO_OWNER } from './plugin-config';
+import type { ComponentSchema } from '../../../packages/design-system/src/figma-contract';
+import { figmaNodeUrl } from './naming';
+import { CHANGESET_DIR, DESIGN_SYSTEM_PACKAGE } from './plugin-config';
 
-// 플러그인이 여는 브랜치 이름과 커밋·PR 글을 만든다. 컴포넌트 하나마다 PR 하나, 조립은 영역마다 PR 하나,
-// 토큰은 따로 PR 하나다.
+// 플러그인이 여는 브랜치 이름과 커밋·PR 글, changeset을 만든다. 토큰·자산은 PR 하나씩, 컴포넌트는 하나마다 PR 하나다.
 
 /** 토큰 PR 브랜치. 이름이 고정이라 다시 내보내면 열린 PR을 이어 쓴다 */
 export const TOKENS_BRANCH = 'feat/figma-tokens';
-
-/** 조립 PR 브랜치 앞부분. 뒤에 영역 폴더 이름이 붙는다 */
-const PATTERNS_BRANCH_PREFIX = 'feat/figma-patterns-';
-
-/** 움직임을 읽은 자리의 이름 */
-const sourceTexts: Readonly<Record<MotionExport['source'], string>> = {
-  sample: '옛 견본 프레임(Foundations / Motion)',
-  flow: '조립 흐름 프레임',
-  component: '컴포넌트·자산 원본',
-};
-
-/** 애니메이션 PR 브랜치 앞부분. 뒤에 견본 이름이 붙는다 */
-const MOTION_BRANCH_PREFIX = 'feat/figma-motion-';
-/** 브랜치 이름에서 빼는 견본 이름 앞부분 */
-const MOTION_NAME_PREFIX_PATTERN = /^motion-/u;
-
-/** 미리보기 표 한 줄에 놓는 변형 수 */
-const PREVIEW_COLUMNS = 2;
-/** 미리보기 이미지 너비(px) */
-const PREVIEW_IMAGE_WIDTH = 360;
-/** 바뀐 변형이 이보다 많은 대상은 미리보기를 접는다 */
-const FOLD_VARIANT_COUNT = 4;
-/** 조립 보고에서 묶음 하나에 싣는 최대 줄 수. 넘는 줄은 export.json의 report에서 본다 */
-const REPORT_LINE_LIMIT = 30;
-
-/**
- * PR 하나에 담긴 대상 하나의 변경(main 기준).
- * - name: 피그마 컴포넌트 이름
- * - folder: 저장소의 대상 폴더(PNG가 있는 곳)
- * - changedVariants: 새로 생기거나 PNG가 바뀐 변형
- * - removedVariants: 사라진 변형
- * - variants: 이번에 내보낸 변형 이름과 최신 피그마 노드 ID
- */
-export type TargetChanges = {
-  name: string;
-  folder: string;
-  changedVariants: readonly string[];
-  removedVariants: readonly string[];
-  variants: readonly { name: string; nodeId: string }[];
-};
-
-/**
- * 대상 PR 한 번의 커밋에 담은 변경.
- * - changedCount: 새로 쓰거나 바뀐 파일 수
- * - deletedCount: 지운 파일 수(사라진 변형, 이름이 바뀐 대상의 이전 폴더)
- * - assetCount: 새로 쓰거나 바뀐 자산 파일 수
- */
-export type CommitSummary = {
-  changedCount: number;
-  deletedCount: number;
-  assetCount: number;
-};
+/** 자산 PR 브랜치 */
+export const ASSETS_BRANCH = 'feat/figma-assets';
+/** 컴포넌트 PR 브랜치 앞부분. 뒤에 컴포넌트 폴더 이름이 붙는다 */
+const COMPONENT_BRANCH_PREFIX = 'feat/figma-';
 
 /**
  * 토큰 PR에 쓰는 내용.
  * - addedPaths: main에 없던 토큰 경로
  * - modifiedPaths: 값이나 종류가 바뀐 토큰 경로
  * - removedPaths: 이름이 바뀌었거나 지워진 토큰 경로
- * - usingComponents: 바뀐 토큰을 쓰는 컴포넌트 이름(피그마 기준)
- * - refreshedComponents: 그중 저장소에 있어 변형 이미지를 다시 내보낸 컴포넌트 이름
- * - imageUploadCount: 새로 올리거나 바꾼 이미지 자산 수
  */
 export type TokensSummary = {
   addedPaths: readonly string[];
   modifiedPaths: readonly string[];
   removedPaths: readonly string[];
-  usingComponents: readonly string[];
-  refreshedComponents: readonly string[];
-  imageUploadCount: number;
+};
+
+/**
+ * 자산 PR에 쓰는 내용. 경로는 `src/assets/` 기준이다.
+ * - changedFiles: 새로 생기거나 바뀐 자산 원본
+ * - deletedFiles: 지운 자산 원본(피그마에서 지웠거나 원본 형식이 바뀐 것)
+ */
+export type AssetsSummary = {
+  changedFiles: readonly string[];
+  deletedFiles: readonly string[];
+};
+
+/** 변형 하나. nodeId: 피그마 링크에 쓰는 변형 노드 ID */
+export type VariantRef = { name: string; nodeId: string };
+
+/**
+ * `main`의 스키마와 견준 변형 변경.
+ * - added: 새로 생긴 변형
+ * - changed: 같은 이름인데 스키마 내용이 바뀐 변형
+ * - removed: 사라진 변형(노드 ID는 main 스키마의 것)
+ */
+export type VariantChanges = {
+  added: VariantRef[];
+  changed: VariantRef[];
+  removed: VariantRef[];
 };
 
 /**
  * 컴포넌트 PR 브랜치 이름을 만든다. 컴포넌트마다 고정이다. 예: `feat/figma-search-box`
+ * 토큰·자산 브랜치와 겹치는 이름이면 멈춘다(브랜치는 토큰, 자산, 컴포넌트 셋뿐이다).
  * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param slug 컴포넌트 폴더 이름
  * @returns 브랜치 이름
  */
 export function componentBranchName(slug: string): string {
-  const branch = `feat/figma-${slug}`;
-  if (branch === TOKENS_BRANCH) {
+  const branch = `${COMPONENT_BRANCH_PREFIX}${slug}`;
+  if (branch === TOKENS_BRANCH || branch === ASSETS_BRANCH) {
     throw new Error(
-      `컴포넌트 폴더 이름 "${slug}"는 토큰 PR 브랜치와 겹친다. 컴포넌트 이름을 바꾼다.`,
-    );
-  }
-  if (branch.startsWith(PATTERNS_BRANCH_PREFIX)) {
-    throw new Error(
-      `컴포넌트 폴더 이름 "${slug}"는 조립 PR 브랜치와 겹친다. 컴포넌트 이름을 바꾼다.`,
-    );
-  }
-  if (branch.startsWith(MOTION_BRANCH_PREFIX)) {
-    throw new Error(
-      `컴포넌트 폴더 이름 "${slug}"는 애니메이션 PR 브랜치와 겹친다. 컴포넌트 이름을 바꾼다.`,
+      `컴포넌트 폴더 이름 "${slug}"는 토큰·자산 PR 브랜치와 겹친다. 컴포넌트 이름을 바꾼다.`,
     );
   }
   return branch;
-}
-
-/**
- * 조립 PR 브랜치 이름을 만든다. 영역마다 고정이다. 예: `feat/figma-patterns-menu`
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param area 영역 폴더 이름
- * @returns 브랜치 이름
- */
-export function patternBranchName(area: string): string {
-  return `${PATTERNS_BRANCH_PREFIX}${area}`;
-}
-
-/**
- * 조립 PR의 영어 커밋 제목을 만든다. PR 제목도 같다.
- * @codocs [[Git 작업 규칙:커밋]]
- * @param area 영역 폴더 이름
- * @returns 커밋 제목
- */
-export function patternsCommitSubject(area: string): string {
-  return `feat(figma): export ${area} patterns`;
 }
 
 /**
@@ -138,265 +76,6 @@ export function componentCommitSubject(slug: string): string {
 }
 
 /**
- * 컴포넌트·조립 PR 커밋의 한국어 본문을 만든다.
- * @codocs [[Git 작업 규칙:커밋]]
- * @param names 이번 커밋에 담은 대상 이름
- * @param summary 이번 커밋의 변경
- * @returns 커밋 본문
- */
-export function targetCommitBody(names: readonly string[], summary: CommitSummary): string {
-  const lines = [
-    `피그마에서 내보낸 ${names.join(', ')}의 변형 목록과 변형 이미지, 쓰는 자산을 갱신한다.`,
-    '',
-    `- 파일 ${summary.changedCount}개 갱신, ${summary.deletedCount}개 삭제`,
-  ];
-  if (summary.assetCount > 0) {
-    lines.push(`- 그중 자산 파일 ${summary.assetCount}개`);
-  }
-  return lines.join('\n');
-}
-
-/**
- * 컴포넌트 PR의 한국어 본문을 만든다. 맨 위에 바뀐 변형 수 표를, 그 아래 바뀐 변형의 피그마 미리보기를 담는다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param branch PR 브랜치
- * @param target 컴포넌트와 main 기준 변경
- * @param renamedFolders 이름이 바뀌어 지운 이전 폴더
- * @returns PR 본문(Markdown)
- */
-export function componentPullRequestBody(
-  branch: string,
-  target: TargetChanges,
-  renamedFolders: readonly string[],
-): string {
-  return [
-    '## 변경',
-    '',
-    ...changeTable('컴포넌트', [target]),
-    ...noteLines([target], renamedFolders),
-    '',
-    ...variantPreviews(branch, [target]),
-    '',
-    '## 확인',
-    '',
-    '- 피그마 이미지가 구현할 모습이다. 이 PR에서 코드와 `Figma` 스토리를 고친다. 피그마와의 모습 비교를 자동으로 확인하는 장치는 지금 없다.',
-    `- 토큰 PR(\`${TOKENS_BRANCH}\`)이 열려 있으면 그것을 먼저 병합하고 이 PR에 \`main\`을 받아 온다.`,
-  ].join('\n');
-}
-
-/**
- * 조립 PR의 한국어 본문을 만든다. 맨 위에 조립별 바뀐 변형 수 표를, 그 아래 조립마다 바뀐 변형의 피그마 미리보기를 담는다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param branch PR 브랜치
- * @param area 영역 폴더 이름
- * @param targets 이번에 내보낸 조립과 main 기준 변경
- * @param renamedFolders 이름이 바뀌어 지운 이전 폴더
- * @param reports 이번에 내보낸 조립의 보고
- * @returns PR 본문(Markdown)
- */
-export function patternPullRequestBody(
-  branch: string,
-  area: string,
-  targets: readonly TargetChanges[],
-  renamedFolders: readonly string[],
-  reports: readonly PatternReportView[],
-): string {
-  return [
-    '## 변경',
-    '',
-    ...changeTable('조립', targets),
-    '',
-    `- 영역: \`${area}\``,
-    ...noteLines(targets, renamedFolders),
-    '',
-    ...variantPreviews(branch, targets),
-    '',
-    '## 조립 보고',
-    '',
-    '조립은 구조 검사 없이 보고만 한다. 막지 않는다. 같은 내용이 `export.json` 변형의 `report`에 있다.',
-    '',
-    ...reportMarkdown(reports),
-    '',
-    '## 확인',
-    '',
-    '- 피그마 그림이 구현할 모습이다. 조립의 구조는 코드가 정하고, 그림은 참고용 기준이다. 조립 보고(쓴 컴포넌트, 컴포넌트 밖에서 그린 것, Foundations에 없는 값, 표시용, 움직임)를 먼저 읽는다.',
-    '- 앱(`apps/web`의 `shell/`·`features/`·`shared/`)의 조립 컴포넌트와 스토리를 만들고, 기능은 `play` 동작 스토리로 확인한다.',
-    '- 피그마와의 모습 비교를 자동으로 확인하는 장치는 지금 없다. 조립은 참고용이라 큰 차이가 보일 때 판단한다.',
-    '- 쓰는 토큰·컴포넌트 PR이 열려 있으면 그것을 먼저 병합하고 이 PR에 `main`을 받아 온다.',
-  ].join('\n');
-}
-
-/**
- * 조립 보고를 조립마다 접은 Markdown으로 만든다. 묶음마다 줄이 많으면 앞의 줄만 싣는다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param reports 조립 보고
- * @returns 본문 줄
- */
-export function reportMarkdown(reports: readonly PatternReportView[]): string[] {
-  if (reports.length === 0) {
-    return ['보고할 조립이 없다.'];
-  }
-  return reports.flatMap(
-    /**
-     * 조립 하나의 보고를 만든다.
-     * @param pattern 조립 보고
-     * @param index 조립 순서
-     */
-    (pattern, index) => [
-      ...(index === 0 ? [] : ['']),
-      `<details><summary><b>${htmlText(pattern.name)}</b> · 변형 ${String(pattern.variants.length)}개</summary>`,
-      '',
-      ...pattern.variants.flatMap(
-        /**
-         * 변형 하나의 보고를 만든다.
-         * @param variant 변형과 보고
-         */
-        (variant) => [
-          `#### ${variant.name}`,
-          '',
-          ...reportSections(variant.report).flatMap(
-            /**
-             * 보고 묶음 하나를 만든다.
-             * @param section 보고 묶음
-             */
-            (section) => {
-              const shown = section.lines.slice(0, REPORT_LINE_LIMIT);
-              const rest = section.lines.length - shown.length;
-              return [
-                `- ${section.title}`,
-                ...shown.map((line) => `  - ${line.text}`),
-                ...(rest > 0 ? [`  - 외 ${String(rest)}줄(export.json의 report에서 본다)`] : []),
-              ];
-            },
-          ),
-          '',
-        ],
-      ),
-      '</details>',
-    ],
-  );
-}
-
-/**
- * 대상별 바뀐 변형 수 표를 만든다. 변형 이름은 아래 미리보기에만 적는다.
- * @param label 대상 종류(`컴포넌트`, `조립`)
- * @param targets 대상과 main 기준 변경
- * @returns 표 줄
- */
-function changeTable(label: string, targets: readonly TargetChanges[]): string[] {
-  return [
-    `| ${label} | 바뀐 변형 |`,
-    '|---|---|',
-    ...targets.map(
-      (target) => `| ${tableCell(target.name)} | ${String(target.changedVariants.length)} |`,
-    ),
-  ];
-}
-
-/**
- * 표 아래에 붙이는 사라진 변형과 이름이 바뀌어 지운 이전 폴더 줄을 만든다. 없으면 줄을 만들지 않는다.
- * @param targets 대상과 main 기준 변경
- * @param renamedFolders 이름이 바뀌어 지운 이전 폴더
- * @returns 목록 줄(앞에 빈 줄 포함)
- */
-function noteLines(targets: readonly TargetChanges[], renamedFolders: readonly string[]): string[] {
-  const lines = [
-    ...targets.flatMap((target) =>
-      target.removedVariants.map((variant) => `- ${target.name} 사라진 변형: \`${variant}\``),
-    ),
-    ...renamedFolders.map((folder) => `- 이름이 바뀌어 이전 폴더 삭제: \`${folder}\``),
-  ];
-  return lines.length === 0 ? [] : ['', ...lines];
-}
-
-/**
- * 바뀐 변형 미리보기를 대상마다 만든다. 대상마다 `## 이름` 아래 표에 변형을 두 개씩 나란히 놓고, 이미지 아래 변형 이름에서
- * 최신 피그마 노드로 연결한다. 바뀐 변형이 많은 대상은 이름과 변형 수만 보이게 접는다. 바뀐 변형이 없는 대상은 싣지 않는다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param branch PR 브랜치
- * @param targets 대상과 main 기준 변경
- * @returns 미리보기 줄
- */
-export function variantPreviews(branch: string, targets: readonly TargetChanges[]): string[] {
-  const blocks: string[][] = [];
-  for (const target of targets) {
-    const cells = target.variants
-      .filter((variant) => target.changedVariants.includes(variant.name))
-      .map((variant) => previewCell(branch, target.folder, variant));
-    if (cells.length === 0) {
-      continue;
-    }
-    const table = previewTable(cells);
-    blocks.push(
-      cells.length > FOLD_VARIANT_COUNT
-        ? [
-            `<details><summary><b>${htmlText(target.name)}</b> · 변형 ${String(cells.length)}개</summary>`,
-            '',
-            ...table,
-            '',
-            '</details>',
-          ]
-        : [`## ${target.name}`, '', ...table],
-    );
-  }
-  return blocks.length === 0
-    ? ['바뀐 변형이 없다.']
-    : blocks.flatMap((block, index) => (index === 0 ? block : ['', ...block]));
-}
-
-/**
- * 미리보기 칸을 두 개씩 줄로 묶은 HTML 표를 만든다.
- * @param cells 미리보기 칸
- * @returns 표 줄
- */
-function previewTable(cells: readonly string[]): string[] {
-  const rows: string[] = [];
-  for (let index = 0; index < cells.length; index += PREVIEW_COLUMNS) {
-    rows.push('<tr>', ...cells.slice(index, index + PREVIEW_COLUMNS), '</tr>');
-  }
-  return ['<table>', ...rows, '</table>'];
-}
-
-/**
- * 변형 하나의 미리보기 칸을 만든다. 이미지 아래 변형 이름이 피그마 노드 링크다.
- * @param branch PR 브랜치
- * @param folder 대상 폴더
- * @param variant 변형 이름과 최신 피그마 노드 ID
- * @returns `<td>` 한 줄
- */
-function previewCell(
-  branch: string,
-  folder: string,
-  variant: TargetChanges['variants'][number],
-): string {
-  const image = `${blobRoot(branch)}/${encodeURI(`${folder}/${pngFile(variant.name)}`)}?raw=true`;
-  const url = `https://www.figma.com/design/${FILE_KEY}?node-id=${encodeURIComponent(variant.nodeId)}`;
-  return `<td align="center"><img src="${htmlText(image)}" width="${String(PREVIEW_IMAGE_WIDTH)}"><br><a href="${htmlText(url)}">${htmlText(variant.name)}</a></td>`;
-}
-
-/**
- * HTML 글자와 속성 값에 넣을 수 있게 특수 문자를 바꾼다.
- * @param text 글
- * @returns 바꾼 글
- */
-function htmlText(text: string): string {
-  return text
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
-}
-
-/**
- * Markdown 표 칸에 넣을 수 있게 `|`를 바꾼다.
- * @param text 글
- * @returns 바꾼 글
- */
-function tableCell(text: string): string {
-  return text.replaceAll('|', '\\|');
-}
-
-/**
  * 토큰 PR의 영어 커밋 제목을 만든다. PR 제목도 같다.
  * @codocs [[Git 작업 규칙:커밋]]
  * @returns 커밋 제목
@@ -406,36 +85,138 @@ export function tokensCommitSubject(): string {
 }
 
 /**
+ * 자산 PR의 영어 커밋 제목을 만든다. PR 제목도 같다.
+ * @codocs [[Git 작업 규칙:커밋]]
+ * @returns 커밋 제목
+ */
+export function assetsCommitSubject(): string {
+  return 'feat(figma): export assets';
+}
+
+/**
+ * changeset 파일의 저장소 경로를 만든다.
+ * @codocs [[디자인 시스템:PR 흐름]]
+ * @param name 파일 이름(확장자 제외, `figma-button`)
+ * @returns 저장소 경로
+ */
+export function changesetPath(name: string): string {
+  return `${CHANGESET_DIR}/${name}.md`;
+}
+
+/**
+ * PR을 열 때 함께 올리는 changeset 내용을 만든다. 대상은 디자인 시스템, 종류는 `patch`, 설명은 무엇을 다시 내보냈는지 한 줄이다.
+ * @codocs [[디자인 시스템:PR 흐름]]
+ * @codocs [[Git 작업 규칙:Changesets]]
+ * @param target 다시 내보낸 것(`토큰`, `자산`, `Button 컴포넌트`)
+ * @returns changeset 파일 내용
+ */
+export function changesetText(target: string): string {
+  return `---\n'${DESIGN_SYSTEM_PACKAGE}': patch\n---\n\n피그마에서 ${target}${objectParticle(target)} 다시 내보냈다.\n`;
+}
+
+/**
+ * `main`의 스키마와 견줘 새로 생긴 변형, 바뀐 변형, 사라진 변형을 구한다. 변형은 이름으로 짝짓고 스키마의 변형 내용 전체를 견준다.
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @param main main의 스키마. 없으면(새 컴포넌트) null
+ * @param next 이번에 내보낸 스키마
+ * @returns 변형 변경
+ */
+export function variantChanges(
+  main: ComponentSchema | null,
+  next: ComponentSchema,
+): VariantChanges {
+  const before = new Map((main?.variants ?? []).map((variant) => [variant.name, variant]));
+  const after = new Set(next.variants.map((variant) => variant.name));
+  const added: VariantRef[] = [];
+  const changed: VariantRef[] = [];
+  for (const variant of next.variants) {
+    const old = before.get(variant.name);
+    const ref = { name: variant.name, nodeId: variant.nodeId };
+    if (old === undefined) {
+      added.push(ref);
+    } else if (JSON.stringify(old) !== JSON.stringify(variant)) {
+      changed.push(ref);
+    }
+  }
+  const removed = (main?.variants ?? [])
+    .filter((variant) => !after.has(variant.name))
+    .map((variant) => ({ name: variant.name, nodeId: variant.nodeId }));
+  return { added, changed, removed };
+}
+
+/**
+ * 컴포넌트 PR의 한국어 본문을 만든다. `main`의 스키마와 견준 변형 변경을 표로 적고, 변형 이름은 피그마의 그 변형으로 가는 링크다.
+ * 그림은 넣지 않는다.
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @param name 컴포넌트 이름
+ * @param changes 변형 변경
+ * @param isNew main에 스키마가 없던 새 컴포넌트인지
+ * @returns PR 본문(Markdown)
+ */
+export function componentPullRequestBody(
+  name: string,
+  changes: VariantChanges,
+  isNew: boolean,
+): string {
+  const rows = [
+    ...changes.added.map((variant) => ['새로 생김', variant] as const),
+    ...changes.changed.map((variant) => ['바뀜', variant] as const),
+    ...changes.removed.map((variant) => ['사라짐', variant] as const),
+  ];
+  return [
+    '## 변경',
+    '',
+    isNew
+      ? `피그마의 ${name} 컴포넌트를 처음 내보냈다.`
+      : `피그마에서 다시 내보낸 ${name}의 스키마를 \`main\`과 견줬다.`,
+    '',
+    `새로 생긴 변형 ${String(changes.added.length)} · 바뀐 변형 ${String(changes.changed.length)} · 사라진 변형 ${String(changes.removed.length)}`,
+    '',
+    ...(rows.length === 0
+      ? ['변형 스키마는 `main`과 같다(검증 자료만 바뀌었다).']
+      : [
+          '| 변경 | 변형 |',
+          '|---|---|',
+          ...rows.map(
+            ([kind, variant]) =>
+              `| ${kind} | [${tableCell(variant.name)}](${figmaNodeUrl(variant.nodeId)}) |`,
+          ),
+        ]),
+  ].join('\n');
+}
+
+/**
  * 토큰 PR 커밋의 한국어 본문을 만든다.
  * @codocs [[Git 작업 규칙:커밋]]
  * @param summary 토큰 변경
  * @returns 커밋 본문
  */
 export function tokensCommitBody(summary: TokensSummary): string {
-  return [
-    '피그마에서 내보낸 tokens.json과 그것으로 만든 tokens.css, 바뀐 토큰을 쓰는 컴포넌트의 변형 이미지를 갱신한다.',
-    '',
-    ...tokenLines(summary),
-  ].join('\n');
+  return ['피그마에서 내보낸 tokens.json을 갱신한다.', '', ...tokenLines(summary)].join('\n');
 }
 
 /**
- * 토큰 PR의 한국어 본문을 만든다. 새로 생기거나 바뀌거나 사라진 토큰과, 그 토큰을 쓰는 컴포넌트를 적는다.
+ * 토큰 PR의 한국어 본문을 만든다. 새로 생기거나 바뀌거나 사라진 토큰을 적는다.
  * @codocs [[디자인 시스템:피그마 플러그인]]
  * @param summary 토큰 변경
  * @returns PR 본문(Markdown)
  */
 export function tokensPullRequestBody(summary: TokensSummary): string {
+  return ['## 변경', '', ...tokenLines(summary)].join('\n');
+}
+
+/**
+ * 자산 PR 커밋과 PR의 한국어 본문을 만든다.
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @param summary 자산 변경
+ * @returns 본문(Markdown)
+ */
+export function assetsPullRequestBody(summary: AssetsSummary): string {
   return [
     '## 변경',
     '',
-    ...tokenLines(summary),
-    '',
-    '## 확인',
-    '',
-    '- `src/tokens.css`와 `src/token-names.ts`는 `figma/tokens.json`에서 변환 스크립트와 같은 함수로 만들었다. 손으로 고치지 않는다.',
-    '- 토큰 이름이 바뀌거나 지워져 lint가 모르는 클래스로 실패하면, 같은 PR에서 옛 클래스를 쓰는 코드를 고친다.',
-    '- 새 토큰을 쓰는 컴포넌트 PR보다 먼저 병합한다.',
+    ...listLines('새로 생기거나 바뀐 자산 원본', summary.changedFiles),
+    ...listLines('지운 자산 원본', summary.deletedFiles),
   ].join('\n');
 }
 
@@ -445,241 +226,42 @@ export function tokensPullRequestBody(summary: TokensSummary): string {
  * @returns 변경 목록 줄
  */
 function tokenLines(summary: TokensSummary): string[] {
-  const tokens = [
-    ...pathList('새 토큰', summary.addedPaths),
-    ...pathList('값이 바뀐 토큰', summary.modifiedPaths),
-    ...pathList('이름이 바뀌었거나 지워진 토큰', summary.removedPaths),
+  const lines = [
+    ...listLines('새 토큰', summary.addedPaths),
+    ...listLines('값이 바뀐 토큰', summary.modifiedPaths),
+    ...listLines('이름이 바뀌었거나 지워진 토큰', summary.removedPaths),
   ];
-  const refreshed = new Set(summary.refreshedComponents);
-  const components =
-    summary.usingComponents.length === 0
-      ? ['- 바뀐 토큰을 쓰는 컴포넌트 없음']
-      : [
-          `- 바뀐 토큰을 쓰는 컴포넌트 ${summary.usingComponents.length}개`,
-          ...summary.usingComponents.map(
-            (name) => `  - ${name}${refreshed.has(name) ? ' (변형 이미지 다시 내보냄)' : ''}`,
-          ),
-        ];
-  const images =
-    summary.imageUploadCount > 0 ? [`- 이미지 자산 ${summary.imageUploadCount}개 갱신`] : [];
-  return [...(tokens.length === 0 ? ['- 바뀐 토큰 없음'] : tokens), ...components, ...images];
+  return lines.length === 0 ? ['- 바뀐 토큰 없음(파일의 꼴만 바뀌었다)'] : lines;
 }
 
 /**
- * 토큰 경로 목록 줄을 만든다. 비어 있으면 줄을 만들지 않는다.
+ * 목록 줄을 만든다. 비어 있으면 줄을 만들지 않는다.
  * @param label 목록 이름
- * @param paths 토큰 경로
+ * @param items 항목
  * @returns 목록 줄
  */
-function pathList(label: string, paths: readonly string[]): string[] {
-  if (paths.length === 0) {
+function listLines(label: string, items: readonly string[]): string[] {
+  if (items.length === 0) {
     return [];
   }
-  return [`- ${label} ${paths.length}개`, ...paths.map((path) => `  - \`${path}\``)];
+  return [`- ${label} ${String(items.length)}개`, ...items.map((item) => `  - \`${item}\``)];
 }
 
 /**
- * 브랜치의 파일 웹 주소 앞부분을 만든다.
- * @param branch 브랜치
- * @returns `https://github.com/<owner>/<repo>/blob/<branch>`
+ * 표 칸 안의 `|`를 이스케이프한다.
+ * @param text 칸 글
+ * @returns 이스케이프한 글
  */
-function blobRoot(branch: string): string {
-  return `https://github.com/${REPO_OWNER}/${REPO_NAME}/blob/${branch}`;
+function tableCell(text: string): string {
+  return text.replaceAll('|', '\\|').replaceAll(']', '\\]');
 }
 
 /**
- * 애니메이션 PR 브랜치 이름을 만든다. 견본마다 고정이다. 견본 이름에서 앞의 `motion-`을 뺀 이름을 붙인다
- * (json 파일 이름은 견본 이름 그대로다). 예: `motion-progress-ring` → `feat/figma-motion-progress-ring`
- * @codocs [[Git 작업 규칙:브랜치]]
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param name 견본 이름
- * @returns 브랜치 이름
+ * 낱말 뒤에 붙는 목적격 조사(을/를)를 고른다. 한글이 아닌 끝 글자는 받침이 없는 것으로 본다.
+ * @param word 낱말
+ * @returns 받침이 있으면 '을', 없으면 '를'
  */
-export function motionBranchName(name: string): string {
-  return `${MOTION_BRANCH_PREFIX}${name.replace(MOTION_NAME_PREFIX_PATTERN, '')}`;
-}
-
-/**
- * 애니메이션 PR의 영어 커밋 제목을 만든다. PR 제목도 같다.
- * @codocs [[Git 작업 규칙:커밋]]
- * @param name 견본 이름
- * @returns 커밋 제목
- */
-export function motionCommitSubject(name: string): string {
-  return `feat(figma): export ${name} motion`;
-}
-
-/**
- * 애니메이션 PR 커밋의 한국어 본문을 만든다.
- * @codocs [[Git 작업 규칙:커밋]]
- * @param motion 내보낸 모션
- * @returns 커밋 본문
- */
-export function motionCommitBody(motion: MotionExport): string {
-  return [
-    `피그마 ${sourceTexts[motion.source]}에서 ${motion.name}의 키프레임과 토큰 짝을 내보낸다.`,
-    '',
-    `- 트랙 ${String(motion.tracks.length)}개, 전체 길이 ${timeText(motion.duration)}`,
-  ].join('\n');
-}
-
-/**
- * 애니메이션 PR의 한국어 본문을 만든다. 피그마 견본 링크, 키프레임 표, 토큰 짝 표를 담는다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @codocs [[디자인 시스템:모션]]
- * @param motion 내보낸 모션
- * @returns PR 본문(Markdown)
- */
-export function motionPullRequestBody(motion: MotionExport): string {
-  return [
-    '## 변경',
-    '',
-    `- 자리: [${motion.name}](${motion.url}) (${sourceTexts[motion.source]})`,
-    `- 자료: \`packages/design-system/figma/motions/${motion.name}.json\``,
-    `- 전체 길이 ${timeText(motion.duration)}, 시작 지연 ${timeText(motion.delay)}`,
-    `- 반복: ${iterationText(motion)}`,
-    ...motionNoteLines(motion),
-    '',
-    '## 키프레임',
-    '',
-    '| 노드 | 항목 | 시간 | 값 | 이징 | 값 토큰 |',
-    '|---|---|---|---|---|---|',
-    ...motion.tracks.flatMap(keyframeRows),
-    '',
-    '## 토큰 짝',
-    '',
-    '구현할 때 짝은 `var()`로 쓰고, 짝이 없는 값은 그대로 옮긴다.',
-    '',
-    '| 쓰는 곳 | 값 | 토큰 |',
-    '|---|---|---|',
-    ...tokenPairRows(motion),
-    '',
-    '## 확인',
-    '',
-    `- 피그마 견본과 \`Motion/${motion.name}\` 모션 스토리를 나란히 보고 키프레임 모양을 확인한다.`,
-    '- 시간·이징·지연·반복 횟수는 스킬이 로컬에서 모션 검사를 돌려 모션 스토리에서 읽고 이 자료와 비교한다.',
-    `- 새 모션 토큰이 필요하면 토큰 PR(\`${TOKENS_BRANCH}\`), 키프레임이 걸린 자산이 컴포넌트 PR로 들어오면 그 PR을 먼저 병합한다.`,
-  ].join('\n');
-}
-
-/**
- * 반복을 글로 만든다. 옛 견본은 주석의 `@repeat`, 나머지는 재생 설정 Loop에서 온다.
- * @codocs [[디자인 시스템:모션]]
- * @param motion 내보낸 모션
- * @returns 반복 글
- */
-function iterationText(motion: MotionExport): string {
-  if (motion.iterations === null) {
-    return '읽지 못함';
-  }
-  const from = motion.source === 'sample' ? '견본 주석 @repeat' : '재생 설정 Loop';
-  return `${String(motion.iterations)}(${from})`;
-}
-
-/**
- * Development·Accessibility 주석 줄을 만든다. 실행 중 값과 동작 줄이기에서 남기는 움직임이다.
- * @codocs [[디자인 시스템:모션]]
- * @param motion 내보낸 모션
- * @returns 목록 줄
- */
-function motionNoteLines(motion: MotionExport): string[] {
-  return motion.notes.map(
-    (note) =>
-      `- ${note.category} 주석${note.path === '' ? '' : `(${note.path})`}: ${note.text.replaceAll('\n', ' ')}`,
-  );
-}
-
-/**
- * 트랙 하나의 키프레임 표 줄을 만든다.
- * @param track 트랙
- * @returns 표 줄
- */
-function keyframeRows(track: MotionExport['tracks'][number]): string[] {
-  return track.keyframes.map(
-    (keyframe) =>
-      `| ${track.node} | \`${track.property}\` | ${msText(keyframe.time)} | ${valueText(keyframe.value)} | ${codeOrDash(keyframe.easing)} | ${codeOrDash(keyframe.valueToken)} |`,
-  );
-}
-
-/**
- * 토큰 짝 표의 줄을 만든다. 같은 줄은 한 번만 쓴다.
- * @param motion 내보낸 모션
- * @returns 표 줄
- */
-function tokenPairRows(motion: MotionExport): string[] {
-  const rows: string[] = [];
-  /**
-   * 줄을 더한다. 이미 있으면 더하지 않는다.
-   * @param where 쓰는 곳
-   * @param value 값
-   * @param token 토큰
-   */
-  function add(where: string, value: string, token: string): void {
-    const row = `| ${where} | ${value} | \`${token}\` |`;
-    if (!rows.includes(row)) {
-      rows.push(row);
-    }
-  }
-  for (const track of motion.tracks) {
-    const where = `${track.node} \`${track.property}\``;
-    if (track.duration.token !== null) {
-      add(`${where} 트랙 길이`, msText(track.duration.ms), track.duration.token);
-    }
-    if (track.delay.token !== null) {
-      add(`${where} 시작 지연`, msText(track.delay.ms), track.delay.token);
-    }
-    for (const keyframe of track.keyframes) {
-      if (keyframe.easing !== null) {
-        add(`${where} 이징`, '곡선', keyframe.easing);
-      }
-      if (keyframe.valueToken !== null) {
-        add(`${where} 값`, valueText(keyframe.value), keyframe.valueToken);
-      }
-    }
-  }
-  return rows.length === 0 ? ['| 없음 | | |'] : rows;
-}
-
-/**
- * 시간 값과 토큰을 글로 만든다.
- * @param time 시간 값
- * @returns `250ms(motion/duration/normal)` 꼴
- */
-function timeText(time: MotionTime): string {
-  return time.token === null ? msText(time.ms) : `${msText(time.ms)}(\`${time.token}\`)`;
-}
-
-/**
- * ms 값을 글로 만든다.
- * @param ms 시간
- * @returns `250ms`
- */
-function msText(ms: number): string {
-  return `${String(roundMs(ms))}ms`;
-}
-
-/**
- * 키프레임 값을 표에 쓸 글로 만든다.
- * @param value 키프레임 값
- * @returns `0.96`, `x 0.96, y 0.96` 꼴
- */
-function valueText(value: MotionValue): string {
-  if (typeof value === 'number') {
-    return String(roundValue(value));
-  }
-  if (typeof value !== 'object') {
-    return String(value);
-  }
-  return Object.entries(value)
-    .map(([key, item]) => `${key} ${String(roundValue(item))}`)
-    .join(', ');
-}
-
-/**
- * 값이 있으면 코드 글꼴로, 없으면 `-`로 쓴다.
- * @param value 값
- * @returns 표 칸
- */
-function codeOrDash(value: string | null): string {
-  return value === null ? '-' : `\`${value}\``;
+function objectParticle(word: string): string {
+  const code = word.charCodeAt(word.length - 1) - 0xac00;
+  return code >= 0 && code < 11172 && code % 28 !== 0 ? '을' : '를';
 }

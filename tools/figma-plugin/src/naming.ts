@@ -1,12 +1,12 @@
-import { ASSETS_DIR, COMPONENTS_DIR, PATTERNS_DIR } from './plugin-config';
+import { ASSETS_DIR, COMPONENTS_DIR, FILE_KEY } from './plugin-config';
 
-/** 단독 컴포넌트(변형 없음)의 변형 이름 */
-export const DEFAULT_VARIANT = 'default';
+// 피그마 이름에서 저장소의 파일 이름과 피그마 링크를 만드는 순수 계산이다.
 
 /**
- * 컴포넌트(세트) 이름을 이미지 폴더 이름(kebab-case)으로 바꾼다.
+ * 컴포넌트(세트) 이름을 컴포넌트 폴더 이름(kebab-case)으로 바꾼다.
  * 예: `TaskbarPreviewList` → `taskbar-preview-list`
- * @codocs [[저장소 구성:디자인 시스템 패키지 구조]]
+ * @codocs [[코드 작성 규칙:파일과 폴더 이름]]
+ * @codocs [[디자인 시스템:스키마]]
  * @param name 피그마 컴포넌트(세트) 이름
  * @returns kebab-case 폴더 이름
  */
@@ -18,69 +18,34 @@ export function componentSlug(name: string): string {
 }
 
 /**
- * 변형 속성을 피그마가 준 순서대로 `prop=value`로 이어 이미지 파일 이름(확장자 제외)을 만든다.
- * 속성이 없으면(단독 컴포넌트) `default`다.
- * 예: `Variant=Accent, State=Rest` → `variant=accent,state=rest`
- * @codocs [[저장소 구성:디자인 시스템 패키지 구조]]
- * @param properties 변형 속성 이름과 값(피그마 순서)
- * @returns 변형 파일 이름(확장자 제외)
- */
-export function variantSlug(properties: Readonly<Record<string, string>>): string {
-  const entries = Object.entries(properties);
-  if (entries.length === 0) {
-    return DEFAULT_VARIANT;
-  }
-  return entries
-    .map(
-      ([prop, value]) =>
-        `${requireSlug(slugPart(prop), prop)}=${requireSlug(slugPart(value), value)}`,
-    )
-    .join(',');
-}
-
-/**
- * 컴포넌트 폴더 안 파일의 저장소 경로를 만든다.
- * @codocs [[저장소 구성:디자인 시스템 패키지 구조]]
- * @param component 컴포넌트 폴더 이름
- * @param file 폴더 안 파일 이름(예: `variant=accent,state=rest.png`, `export.json`)
+ * 컴포넌트 스키마 파일의 저장소 경로를 만든다(`src/components/<이름>/<이름>.json`).
+ * @codocs [[디자인 시스템:스키마]]
+ * @param slug 컴포넌트 폴더 이름
  * @returns 저장소 루트 기준 경로
  */
-export function componentFilePath(component: string, file: string): string {
-  return `${COMPONENTS_DIR}/${component}/${file}`;
-}
-
-/** 조립의 영역과 이름(폴더 이름) */
-export type PatternPlace = { area: string; name: string };
-
-/**
- * 조립 이름(`영역/이름`)을 폴더 이름(kebab-case)으로 바꾼다. 예: `Menu/ViewSubmenu` → `menu`, `view-submenu`
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param name 피그마 조립 이름
- * @returns 영역과 이름 폴더, `영역/이름` 꼴이 아니면 null
- */
-export function patternPlace(name: string): PatternPlace | null {
-  const parts = name.split('/').map((part) => part.trim());
-  const [area, rest] = parts;
-  if (
-    parts.length !== 2 ||
-    area === undefined ||
-    rest === undefined ||
-    area === '' ||
-    rest === ''
-  ) {
-    return null;
-  }
-  return { area: componentSlug(area), name: componentSlug(rest) };
+export function componentSchemaPath(slug: string): string {
+  return `${COMPONENTS_DIR}/${slug}/${slug}.json`;
 }
 
 /**
- * 조립 폴더의 저장소 경로를 만든다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param place 조립의 영역과 이름
- * @returns `apps/web/figma/patterns/<영역>/<이름>`
+ * 컴포넌트 검증 자료 파일의 저장소 경로를 만든다(`src/components/<이름>/<이름>.layout.json`).
+ * @codocs [[디자인 시스템:스키마]]
+ * @codocs [[디자인 시스템:생성 결과 검증]]
+ * @param slug 컴포넌트 폴더 이름
+ * @returns 저장소 루트 기준 경로
  */
-export function patternFolder(place: PatternPlace): string {
-  return `${PATTERNS_DIR}/${place.area}/${place.name}`;
+export function componentLayoutPath(slug: string): string {
+  return `${COMPONENTS_DIR}/${slug}/${slug}.layout.json`;
+}
+
+/**
+ * 피그마 노드로 가는 링크를 만든다. 노드 ID의 `:`는 주소에서 `-`로 쓴다.
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @param nodeId 피그마 노드 ID
+ * @returns 피그마 파일의 그 노드 주소
+ */
+export function figmaNodeUrl(nodeId: string): string {
+  return `https://www.figma.com/design/${FILE_KEY}/?node-id=${nodeId.replaceAll(':', '-')}`;
 }
 
 /**
@@ -112,7 +77,7 @@ function requireSlug(slug: string, original: string): string {
 /**
  * 자산 컴포넌트 이름이나 묶음 이름을 파일 이름 조각으로 바꾼다.
  * 소문자로 바꾸고 `[a-z0-9_-]` 밖의 문자를 `-`로 바꾼다. 예: `ic_fluent_search_16_regular`는 그대로, `Icons`는 `icons`
- * @codocs [[저장소 구성:디자인 시스템 패키지 구조]]
+ * @codocs [[디자인 시스템:자산]]
  * @param name 자산 컴포넌트 이름이나 묶음 이름
  * @returns 파일 이름 조각
  */
@@ -126,7 +91,7 @@ export function assetSlug(name: string): string {
 }
 
 /**
- * 자산 이름(`<묶음>/<자산>`)을 만든다. 확장자는 넣지 않는다. 코드와 tokens.json이 이 이름으로 자산을 찾는다.
+ * 자산 이름(`<묶음>/<자산>`)을 만든다. 확장자는 넣지 않는다. 스키마의 `AssetRef.file`이고 코드가 이 이름으로 자산을 찾는다.
  * @codocs [[디자인 시스템:자산]]
  * @param asset 자산 묶음과 이름
  * @param asset.group 묶음 이름
@@ -150,6 +115,7 @@ export function assetFile(name: string, extension: string): string {
 
 /**
  * 자산 파일의 저장소 경로를 만든다.
+ * @codocs [[디자인 시스템:스키마]]
  * @param file 자산 폴더 기준 파일 경로
  * @returns 저장소 루트 기준 경로
  */

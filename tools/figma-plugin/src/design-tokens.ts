@@ -708,6 +708,10 @@ function paintStyleToken(style: PaintStyleInput, context: ConversionContext): Js
   }
   for (const paint of visible) {
     checkBoundColors(paint, label, context);
+    // 다이아몬드 그라데이션은 대응하는 CSS가 없다([[디자인 시스템:토큰 검사]]).
+    if (paint.type === 'GRADIENT_DIAMOND') {
+      context.problems.push(`${label}: 다이아몬드 그라데이션은 CSS로 옮길 수 없다`);
+    }
   }
   const [only] = visible;
   if (

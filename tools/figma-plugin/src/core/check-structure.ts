@@ -1,27 +1,24 @@
 import {
-  type CodeVariable,
-  type CodeVariables,
-  cssAngle,
-  noCodeVariables,
-  pairedVariable,
-} from './code-variables';
-import type { MotionVariable } from './motion-data';
-import type { Bound, NodeData, PaintData, ReactionData } from './node-data';
-import type { TokenValue } from './pattern-report';
+  type BehaviorSpec,
+  behaviorSpecOf,
+  findStateWord,
+  ON_OFF_VALUE_PAIRS,
+  type RoleSelector,
+  STATE_AXIS,
+  stateWordsOf,
+} from '../../../../packages/design-system/src/figma-contract';
+import type { Bound, ComponentData, NodeData, PaintData, VariantData } from './node-data';
 
-// 내보내기 전 구조 검사. 컴포넌트의 변형에서 다음을 막는다. 조립은 검사하지 않고 보고만 한다(pattern-report.ts).
-// 1. 변수·스타일에 연결되지 않은 시각 값(토큰 클래스로 쓸 수 없는 값, 코드 전용 변수와 짝이 없는 값 포함)
-// 2. CSS로 그릴 수 없는 피그마 기능
-// 3. 인스턴스 모양(칠·선·효과·불투명도)의 직접 덮어쓰기
-// 6. 이미지 자산의 비율 바꾸기, 7. 잘못된 `@` 줄과 빠진 필수 줄, 모션 변수 값이 아닌 변형 전환
-// 5번(변형을 자르는 조상)은 변형 트리가 아니라 대상의 조상을 보므로 checkClippingAncestors가 대상마다 한 번 검사한다.
-// 4번(모션 변수 값이 아닌 키프레임 시간·지연, 변수에 연결되지 않은 키프레임 이징)은 모션 견본을 보는 check-motion.ts에 있다.
-// 나머지 작성 규칙은 리뷰로 지킨다.
+// 내보내기 전 구조 검사. 변형마다 검사하고, 어긋난 것이 하나라도 있으면 그 컴포넌트를 내보내지 않는다.
+// 막는 것은 토큰 없는 값, CSS로 그릴 수 없는 기능, 모양 덮어쓰기 세 묶음과 읽을 수 없는 구조다([[디자인 시스템:구조 검사]]).
+// 피그마 API를 쓰지 않는 순수 함수다. 동작 등록부는 인자로 받는다(테스트는 가짜 등록부를 넣는다).
 
 /**
  * 위반 하나.
- * - where: 컴포넌트·변형·레이어 경로
- * - nodeId: 고칠 레이어의 피그마 노드 ID. 플러그인 화면의 "피그마에서 보기"가 쓴다. 가리킬 노드가 없으면(토큰 변환 실패 등) null
+ * - where: 위치(컴포넌트 / 변형 / 레이어 키)
+ * - reason: 이유
+ * - fix: 고칠 방법
+ * - nodeId: 고칠 레이어의 피그마 노드 ID. 플러그인 화면의 "피그마에서 보기"가 쓴다. 가리킬 노드가 없으면 null
  */
 export type Violation = {
   where: string;
@@ -30,219 +27,58 @@ export type Violation = {
   nodeId: string | null;
 };
 
-type Add = (node: NodeData, reason: string, fix: string) => void;
+/** 종류 이름으로 동작의 종류 규칙을 찾는 함수(동작 등록부). 없으면 undefined */
+export type BehaviorLookup = (name: string) => BehaviorSpec | undefined;
 
-/**
- * 검사에 쓰는 파일 정보.
- * - imageHashes: 이름 있는 이미지 자산(Foundations `group/Images`)의 이미지 해시
- * - codeVariables: 회전·최대 줄 수·비율과 짝짓는 코드 전용 변수
- * - motionVariables: 변형 전환과 대조하는 `motion/*` 변수. 없으면 전환 시간·이징을 대조하지 않는다
- * - tokenValues: 조립 보고가 가까운 토큰을 찾는 Foundations 변수 값. 없으면 가까운 토큰을 찾지 않는다
- */
-export type CheckContext = {
-  imageHashes: ReadonlySet<string>;
-  codeVariables?: CodeVariables;
-  motionVariables?: readonly MotionVariable[];
-  tokenValues?: readonly TokenValue[];
-};
+type Add = (node: NodeData, reason: string, fix: string) => void;
 
 // 반올림 오차로 본 값의 차이다.
 const EPSILON = 1e-6;
-// 자산이 아니면 막는 모양(호가 아닌 완전한 원과 사각형만 CSS로 그린다)
-const SHAPE_TYPES = ['VECTOR', 'BOOLEAN_OPERATION', 'STAR', 'POLYGON', 'LINE', 'ELLIPSE'] as const;
+// 자산이 아니면 막는 모양. 원·타원도 자산으로 둔다([[디자인 시스템:자산]]).
+const shapeTypes: readonly string[] = [
+  'VECTOR',
+  'BOOLEAN_OPERATION',
+  'STAR',
+  'POLYGON',
+  'LINE',
+  'ELLIPSE',
+];
 // CSS로 그리는 노드 종류
-const DRAWABLE_TYPES = [
+const drawableTypes: readonly string[] = [
   'FRAME',
   'GROUP',
   'COMPONENT',
   'INSTANCE',
   'SLOT',
   'RECTANGLE',
-  'ELLIPSE',
   'TEXT',
-] as const;
-// CSS로 그리는 칠 종류. 그라데이션과 이미지는 칠 스타일로만 쓴다.
-const FILL_TYPES = [
+];
+// CSS로 그리는 칠 종류. 그라데이션과 이미지는 칠 스타일이나 이미지 자산으로만 쓴다(다이아몬드는 없다).
+const fillTypes: readonly string[] = [
   'SOLID',
   'GRADIENT_LINEAR',
   'GRADIENT_RADIAL',
   'GRADIENT_ANGULAR',
   'IMAGE',
-] as const;
+];
 // CSS로 그리는 선 종류. 그라데이션 선은 칠 스타일로만 쓴다.
-const STROKE_TYPES = ['SOLID', 'GRADIENT_LINEAR'] as const;
+const strokeTypes: readonly string[] = ['SOLID', 'GRADIENT_LINEAR'];
 // CSS로 그리는 효과 종류. 효과는 효과 스타일로만 쓴다.
-const EFFECT_TYPES = ['DROP_SHADOW', 'INNER_SHADOW', 'LAYER_BLUR', 'BACKGROUND_BLUR'] as const;
-
-// 한글 음절·자모(호환 자모·확장 자모 포함) 범위
-const HANGUL_PATTERN = /[\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uAC00-\uD7AF\uD7B0-\uD7FF]/u;
-// 한글을 그리는 글꼴. 본문 한글은 Pretendard, 코드는 한글이 든 고정폭 서체 하나로 그린다.
-const HANGUL_FONT_FAMILY = 'Pretendard';
-const hangulFontFamilies: readonly string[] = [HANGUL_FONT_FAMILY, 'NanumGothicCoding'];
-
+const effectTypes: readonly string[] = [
+  'DROP_SHADOW',
+  'INNER_SHADOW',
+  'LAYER_BLUR',
+  'BACKGROUND_BLUR',
+];
+// CSS `object-fit`으로 옮기는 이미지 칠 맞춤 방식
+const imageScaleModes: readonly string[] = ['FILL', 'FIT'];
 const BIND_FIX = '변수에 연결한다.';
-// 이미지 자산의 원본 비율과 같다고 보는 상대 차이다. 크기를 정수로 둔 반올림을 넘긴다.
-const RATIO_TOLERANCE = 0.01;
-// 곡선이 같다고 보는 차이다.
-const CURVE_TOLERANCE = 1e-3;
-const TIME_TOLERANCE_MS = 0.5;
-const MOTION_DURATION_PREFIX = 'motion/duration/';
-const MOTION_EASING_PREFIX = 'motion/easing/';
 
-/**
- * 변형 하나의 구조를 검사한다. 숨긴 노드는 이미 빠져 있다.
- * 막는 것은 변수·스타일에 연결되지 않은 시각 값, CSS로 그릴 수 없는 기능, 인스턴스 모양의 직접 덮어쓰기 세 가지다.
- * @codocs [[디자인 시스템:구조 검사]]
- * @param root 변형 루트 노드 데이터
- * @param where 위치 접두어(`Button / Style=Accent, State=Rest`)
- * @param context 이름 있는 이미지 자산과 코드 전용 변수
- * @returns 위반 목록(모두)
- */
-export function checkVariant(root: NodeData, where: string, context: CheckContext): Violation[] {
-  const violations: Violation[] = [];
-  /**
-   * 위반을 더한다.
-   * @param node 노드
-   * @param reason 이유
-   * @param fix 고칠 방법
-   */
-  function add(node: NodeData, reason: string, fix: string): void {
-    violations.push({
-      where: node.path === '' ? where : `${where} / ${node.path}`,
-      reason,
-      fix,
-      nodeId: node.id,
-    });
-  }
-  checkNode(root, true, context, add);
-  checkInstanceOverrides(root, add);
-  if (context.motionVariables !== undefined) {
-    for (const reaction of root.reactions) {
-      checkTransitionValues(root, reaction, context.motionVariables, add);
-    }
-  }
-  return violations;
-}
-
-/**
- * 변형 전환의 시간과 이징이 모션 변수 값인지 본다. 재생 시작 조건(트리거)은 읽지 않는다.
- * @codocs [[디자인 시스템:구조 검사]]
- * @codocs [[디자인 시스템:모션]]
- * @param root 변형 루트
- * @param reaction 전환
- * @param variables 모션 변수
- * @param add 위반을 더하는 함수
- */
-function checkTransitionValues(
-  root: NodeData,
-  reaction: ReactionData,
-  variables: readonly MotionVariable[],
-  add: Add,
-): void {
-  const label = `${reaction.trigger} → ${reaction.destination ?? '알 수 없는 노드'} 전환`;
-  const { transition } = reaction;
-  if (transition === null) {
-    return;
-  }
-  const isDuration = variables.some(
-    (variable) =>
-      variable.name.startsWith(MOTION_DURATION_PREFIX) &&
-      variable.value !== null &&
-      Math.abs(variable.value - transition.durationMs) <= TIME_TOLERANCE_MS,
-  );
-  if (!isDuration) {
-    add(
-      root,
-      `${label}의 시간 ${String(transition.durationMs)}ms가 \`${MOTION_DURATION_PREFIX}*\` 변수 값이 아니다`,
-      '전환 시간을 모션 변수 값으로 맞춘다(00 · Guide의 Motion).',
-    );
-  }
-  const { bezier } = transition.easing;
-  const isEasing =
-    bezier !== null &&
-    variables.some(
-      /**
-       * 곡선이 전환 이징과 같은 이징 변수인지 본다.
-       * @param variable 모션 변수
-       * @returns 같으면 true
-       */
-      (variable) =>
-        variable.name.startsWith(MOTION_EASING_PREFIX) &&
-        variable.curve?.length === bezier.length &&
-        variable.curve.every(
-          (value, index) => Math.abs(value - (bezier[index] ?? 0)) <= CURVE_TOLERANCE,
-        ),
-    );
-  if (!isEasing) {
-    add(
-      root,
-      `${label}의 이징 ${transition.easing.type}이 \`${MOTION_EASING_PREFIX}*\` 변수 값이 아니다`,
-      '전환 이징을 모션 변수의 곡선으로 맞춘다(00 · Guide의 Motion).',
-    );
-  }
-}
-
-/**
- * 내보내는 변형의 조상 하나. 컴포넌트 세트의 변형이면 세트가 가장 가까운 조상이다.
- * - id: 피그마 노드 ID
- * - type: 피그마 노드 종류(`FRAME`, `COMPONENT_SET` 등)
- * - isClippingContent: 내용 자르기(Clip content). 이 속성이 없는 노드(그룹·섹션)는 false
- */
-export type AncestorData = {
-  id: string;
-  name: string;
-  type: string;
-  isClippingContent: boolean;
-};
-
-// 메시지에 쓰는 조상 종류 이름
-const ancestorKinds: Readonly<Record<string, string>> = {
-  FRAME: '프레임',
-  COMPONENT_SET: '컴포넌트 세트',
-  COMPONENT: '컴포넌트',
-  INSTANCE: '인스턴스',
-};
-
-/**
- * 내보내는 변형을 자르는 조상을 막는다. 피그마는 노드를 PNG로 내보낼 때 조상의 내용 자르기를 적용해,
- * 변형의 그림자와 변형 밖으로 나온 자식이 PNG에서 빠진다. 한 대상의 변형은 모두 같은 조상 아래에 있으므로
- * 변형마다가 아니라 대상마다 한 번, 자르는 조상마다 위반 하나를 낸다.
- * 페이지와 섹션은 자르지 않는다. 변형 자신의 자르기는 보지 않는다(자기 그림자는 자기 자르기에 잘리지 않는다).
- * @codocs [[디자인 시스템:구조 검사]]
- * @param target 대상 이름(컴포넌트 세트, 단독 컴포넌트, 조립)
- * @param ancestors 변형의 조상(페이지 아래 가장 바깥부터 가장 가까운 것까지)
- * @returns 위반 목록(자르는 조상마다 하나)
- */
-export function checkClippingAncestors(
-  target: string,
-  ancestors: readonly AncestorData[],
-): Violation[] {
-  const violations: Violation[] = [];
-  for (const [index, ancestor] of ancestors.entries()) {
-    if (!ancestor.isClippingContent || ancestor.type === 'SECTION' || ancestor.type === 'PAGE') {
-      continue;
-    }
-    const kind = ancestorKinds[ancestor.type] ?? ancestor.type;
-    const path = ancestors
-      .slice(0, index + 1)
-      .map((item) => item.name)
-      .join(' / ');
-    violations.push({
-      where: `${target} (모든 변형)`,
-      reason: `조상 ${kind} \`${path}\`의 Clip content가 켜져 있어 PNG에서 변형의 그림자와 변형 밖으로 나온 자식이 잘린다`,
-      fix: `${kind} \`${ancestor.name}\`의 Clip content를 끈다.`,
-      nodeId: ancestor.id,
-    });
-  }
-  return violations;
-}
-
-// 인스턴스에서 직접 덮어쓰면 막는 모양 필드(`NodeChangeProperty`) → 메시지 이름
-const appearanceFields: Readonly<Record<string, string>> = {
+// 인스턴스에서 바꾸면 막는 모양 필드 → 메시지 이름
+const appearanceLabels: Readonly<Record<string, string>> = {
   fills: '칠',
   strokes: '선',
   strokeWeight: '선 두께',
-  // 피그마 타입 정의의 철자 그대로다(strokeTopWeight가 아니다).
   stokeTopWeight: '선 두께',
   strokeTopWeight: '선 두께',
   strokeRightWeight: '선 두께',
@@ -254,175 +90,120 @@ const appearanceFields: Readonly<Record<string, string>> = {
   strokeStyleId: '선 스타일',
   effectStyleId: '효과 스타일',
 };
-
-// 변수 연결(`boundVariables`)을 바꿨을 때 막는 모양 필드 → 메시지 이름
-const appearanceBindings: Readonly<Record<string, string>> = {
-  fills: '칠 변수',
-  strokes: '선 변수',
-  strokeWeight: '선 두께 변수',
-  strokeTopWeight: '선 두께 변수',
-  strokeRightWeight: '선 두께 변수',
-  strokeBottomWeight: '선 두께 변수',
-  strokeLeftWeight: '선 두께 변수',
-  effects: '효과 변수',
-  opacity: '불투명도 변수',
-};
-
-// 자산 인스턴스에서 막지 않는 색 필드(`fields`와 `boundVariables.<필드>` 표기)
-const assetColorFields: ReadonlySet<string> = new Set([
+// 자산 인스턴스와 그 안쪽에서 허용하는 색 필드
+const assetColorFields: readonly string[] = [
   'fills',
   'strokes',
   'fillStyleId',
   'strokeStyleId',
   'boundVariables.fills',
   'boundVariables.strokes',
-]);
+];
+// 자산 인스턴스 자신에서 허용하는 불투명도 필드
+const assetOpacityFields: readonly string[] = ['opacity', 'boundVariables.opacity'];
 
 /**
- * 레이어 ID가 자산 인스턴스의 안쪽 레이어인지 확인한다(자산 ID 뒤에 `;`로 이어진다).
- * @param id 레이어 ID
- * @param assetIds 자산 인스턴스 ID
- * @returns 안쪽이면 true
- */
-function isInsideAsset(id: string, assetIds: ReadonlySet<string>): boolean {
-  for (const assetId of assetIds) {
-    if (id.startsWith(`${assetId};`)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/** 덮어쓰기를 검사할 수 있는 레이어. component: 이 레이어를 정의한 원본 컴포넌트(자신이나 가장 가까운 바깥 인스턴스의 원본). */
-type OverrideTarget = {
-  node: NodeData;
-  component: string;
-};
-
-/**
- * 인스턴스 모양의 직접 덮어쓰기를 막는다. 변형 안 모든 인스턴스(중첩 포함)의 덮어쓰기를 모아,
- * 칠·선·선 두께·효과·불투명도와 그 스타일·변수 연결을 바꾼 레이어를 알린다.
- * 원본이 속성으로 연 것(글자, 표시 여부, 인스턴스 교체, 변형 선택)과 크기·배치는 막지 않는다.
- * 예외로 막지 않는 것:
- * - 자산 인스턴스의 색 덮어쓰기(어디에 놓였든). 자산 안쪽 레이어의 덮어쓰기는 모두, 자산 인스턴스 자체는 칠·선과 그 스타일·변수 연결만 허용한다.
- *   색은 쓰는 곳이 정하고, 토큰에 없는 색은 구조 검사 1번(자산의 색 변수 연결)이 막는다.
- * - 직접 놓은 인스턴스 전체의 불투명도(`opacity`와 그 변수 연결). 안쪽 레이어나 다른 인스턴스 안에 든 인스턴스의 불투명도는 막는다.
- * 숨긴 레이어와 줄인 인스턴스(`scaleFactor`가 1이 아님)의 안쪽은 보지 않는다.
+ * 컴포넌트 하나를 검사한다. 한 대상의 위반은 모두 한 번에 돌려준다.
  * @codocs [[디자인 시스템:구조 검사]]
- * @param root 변형 루트 노드 데이터
- * @param add 위반을 더하는 함수
+ * @param component 읽은 컴포넌트
+ * @param lookupBehavior 동작 등록부. 기본은 디자인 시스템의 등록부다
+ * @returns 위반 목록(모두)
  */
-function checkInstanceOverrides(root: NodeData, add: Add): void {
-  const targets = new Map<string, OverrideTarget>();
-  const fieldsById = new Map<string, Set<string>>();
-  // 자산 인스턴스 ID. 자산은 안쪽 레이어를 읽지 않으므로 ID 접두어(`<자산 ID>;`)로 안쪽 덮어쓰기를 알아본다.
-  const assetIds = new Set<string>();
+export function checkComponent(
+  component: ComponentData,
+  lookupBehavior: BehaviorLookup = behaviorSpecOf,
+): Violation[] {
+  const violations: Violation[] = [];
+  if (component.sameNameCount > 1) {
+    violations.push({
+      where: component.name,
+      reason: `이름이 같은 컴포넌트가 ${String(component.sameNameCount)}개 있다`,
+      fix: 'Controls·Shell·Blog 페이지에서 컴포넌트 이름이 하나씩만 있게 바꾼다.',
+      nodeId: component.nodeId,
+    });
+  }
+  let spec: BehaviorSpec | undefined;
+  if (component.behavior !== null) {
+    spec = lookupBehavior(component.behavior);
+    if (spec === undefined) {
+      violations.push({
+        where: component.name,
+        reason: `적힌 동작의 종류 \`${component.behavior}\`가 동작 등록부에 없다`,
+        fix: '있는 종류를 고르거나, 새 종류를 먼저 만들어 main에 넣은 뒤 내보낸다.',
+        nodeId: component.nodeId,
+      });
+    }
+  }
+  for (const variant of component.variants) {
+    const where = `${component.name} / ${variant.name}`;
+    violations.push(...checkVariant(variant, where));
+    violations.push(...checkStateWords(component, variant, where, spec));
+    if (spec !== undefined) {
+      violations.push(...checkRoles(component, variant, where, spec));
+    }
+  }
+  return violations;
+}
+
+/**
+ * 변형 하나의 구조를 검사한다. 변형에 바로 놓인 레이어는 숨긴 것도 보고, 품은 인스턴스 안쪽은 보이는 것만 본다.
+ * @codocs [[디자인 시스템:구조 검사]]
+ * @param variant 변형
+ * @param where 위치 접두어(`Button / Variant=Accent, State=Rest`)
+ * @returns 위반 목록
+ */
+export function checkVariant(variant: VariantData, where: string): Violation[] {
+  const violations: Violation[] = [];
   /**
-   * 레이어를 모으고 인스턴스의 덮어쓰기를 합친다. 같은 덮어쓰기를 바깥·안쪽 인스턴스가 함께 알려 줄 수 있어 합친다.
+   * 위반을 더한다.
    * @param node 노드
-   * @param component 바깥 인스턴스의 원본 컴포넌트, 없으면 null
+   * @param reason 이유
+   * @param fix 고칠 방법
    */
-  function collect(node: NodeData, component: string | null): void {
-    const { instance } = node;
-    const owner = instance?.component ?? component;
-    if (owner !== null) {
-      targets.set(node.id, { node, component: owner });
-    }
-    if (node.asset !== null) {
-      assetIds.add(node.id);
-    }
-    if (instance === null) {
-      for (const child of node.children) {
-        collect(child, component);
-      }
-      return;
-    }
-    const isScaled = Math.abs(instance.scaleFactor - 1) > EPSILON;
-    for (const override of instance.overrides) {
-      if (isScaled && override.id !== node.id) {
-        continue;
-      }
-      // 직접 놓은 인스턴스 전체의 불투명도는 쓰는 곳이 정한다.
-      const isOwnOpacity = override.id === node.id && component === null;
-      const fields = fieldsById.get(override.id) ?? new Set<string>();
-      for (const field of override.fields) {
-        if (appearanceFields[field] !== undefined && !(isOwnOpacity && field === 'opacity')) {
-          fields.add(field);
-        }
-      }
-      for (const field of override.changedBindings) {
-        if (appearanceBindings[field] !== undefined && !(isOwnOpacity && field === 'opacity')) {
-          fields.add(`boundVariables.${field}`);
-        }
-      }
-      fieldsById.set(override.id, fields);
-    }
-    if (!isScaled) {
-      for (const child of node.children) {
-        collect(child, instance.component);
-      }
-    }
+  function add(node: NodeData, reason: string, fix: string): void {
+    violations.push({
+      where: node.key === '' ? where : `${where} / ${node.key}`,
+      reason,
+      fix,
+      nodeId: node.id,
+    });
   }
-  collect(root, null);
-  for (const [id, fields] of fieldsById) {
-    const target = targets.get(id);
-    if (target === undefined || fields.size === 0 || isInsideAsset(id, assetIds)) {
-      continue;
-    }
-    if (assetIds.has(id)) {
-      for (const field of [...fields]) {
-        if (assetColorFields.has(field)) {
-          fields.delete(field);
-        }
-      }
-      if (fields.size === 0) {
-        continue;
-      }
-    }
-    const names = [...fields].sort();
-    const labels = [
-      ...new Set(
-        names.map((field) =>
-          field.startsWith('boundVariables.')
-            ? appearanceBindings[field.slice('boundVariables.'.length)]
-            : appearanceFields[field],
-        ),
-      ),
-    ].filter((label) => label !== undefined);
-    const list = labels.join('·');
-    add(
-      target.node,
-      `인스턴스의 ${list}${objectParticle(list)} 직접 바꿨다(${names.join(', ')})`,
-      `덮어쓰기를 되돌리고, ${target.component}에 변형이나 속성을 열어 그것을 고른다.`,
-    );
+  checkNode(variant.root, true, add);
+  checkInstanceOverrides(variant.root, add);
+  checkDuplicatedRoles(variant.root, add);
+  for (const problem of variant.motionProblems) {
+    violations.push({
+      where: problem.layer === '' ? where : `${where} / ${problem.layer}`,
+      reason: `${problem.property === '' ? '' : `${problem.property}: `}${problem.reason}`,
+      fix: '키프레임은 투명도·배율·이동·회전·선 그리기 시작과 끝에만 숫자 값으로 건다.',
+      nodeId: problem.nodeId,
+    });
   }
+  return violations;
 }
 
 /**
- * 낱말 뒤에 붙는 목적격 조사(을/를)를 고른다.
- * @param word 낱말
- * @returns 받침이 있으면 '을', 없으면 '를'
- */
-function objectParticle(word: string): string {
-  const code = word.charCodeAt(word.length - 1) - 0xac00;
-  return code >= 0 && code < 11172 && code % 28 !== 0 ? '을' : '를';
-}
-
-/**
- * 노드 하나와 그 아래를 검사한다. 줄인 인스턴스(`scaleFactor`가 1이 아님)의 안쪽은 건너뛴다.
+ * 노드 하나와 그 아래를 검사한다. 크기를 줄인 인스턴스(`scaleFactor`가 1이 아님)는 인스턴스 자체만 검사하고 안쪽은 건너뛴다.
  * @param node 노드
  * @param isRoot 변형 루트인지
- * @param context 이름 있는 이미지 자산
  * @param add 위반을 더하는 함수
  */
-function checkNode(node: NodeData, isRoot: boolean, context: CheckContext, add: Add): void {
+function checkNode(node: NodeData, isRoot: boolean, add: Add): void {
+  if (!node.isVisible && node.isInsideInstance) {
+    return;
+  }
   if (!isRoot && !checkType(node, add)) {
     return;
   }
-  checkCommon(node, context.codeVariables ?? noCodeVariables, add);
-  checkSizes(node, isRoot, add);
+  if (!node.isVisible && node.propertyRefs.visible === undefined) {
+    add(
+      node,
+      '숨긴 레이어가 켜고 끄는 속성에 묶여 있지 않다',
+      '불리언 속성에 묶거나, 상태에 따라 있고 없는 것이면 그 상태의 변형에만 그리고 숨긴 레이어를 지운다.',
+    );
+  }
+  checkCommon(node, add);
   if (node.asset !== null) {
-    checkImageRatio(node, isRoot, add);
     for (const problem of node.asset.problems) {
       add(
         node,
@@ -430,50 +211,47 @@ function checkNode(node: NodeData, isRoot: boolean, context: CheckContext, add: 
         '한 가지 색 자산은 모든 칠·선을 같은 색 변수 하나에 연결한다. 여러 색이면 Illustrations 묶음에 둔다.',
       );
     }
+    checkScaleMode(node, node.asset.scaleMode, add);
     return;
   }
   if (node.fills !== null && node.text === null) {
     if (node.fills === 'mixed') {
       add(node, '칠이 섞여 있다', '칠을 하나로 정한다.');
     } else {
-      checkPaints(node, '칠', node.fills, node.fillStyle, FILL_TYPES, context, add);
+      checkPaints(node, '칠', node.fills, node.fillStyle, fillTypes, add);
     }
   }
-  checkStrokes(node, context, add);
+  checkStrokes(node, add);
   checkCorners(node, add);
   checkEffects(node, add);
   checkLayout(node, add);
   if (node.text !== null) {
-    checkText(node, context, add);
+    checkText(node, add);
   }
-  // 줄인 인스턴스는 자기만 검사한다. 안쪽은 따로 검사받는 조립이고, 줄인 값은 CSS `scale`로 만들어진다.
   if (node.instance !== null && Math.abs(node.instance.scaleFactor - 1) > EPSILON) {
     return;
   }
   for (const child of node.children) {
-    checkNode(child, false, context, add);
+    checkNode(child, false, add);
   }
 }
 
 /**
- * 노드 종류를 검사한다. 자산이 아닌 호·별·다각형·선·불리언·벡터와 CSS로 그리지 않는 노드 종류를 막는다.
+ * 노드 종류를 검사한다. 자산이 아닌 원·타원·호·별·다각형·선·불리언·벡터와 CSS로 그리지 않는 노드 종류를 막는다.
  * @param node 노드
  * @param add 위반을 더하는 함수
  * @returns 안쪽을 계속 검사하면 true
  */
 function checkType(node: NodeData, add: Add): boolean {
-  if (
-    isOneOf(SHAPE_TYPES, node.type) &&
-    !(node.type === 'ELLIPSE' && node.isFullEllipse === true)
-  ) {
+  if (shapeTypes.includes(node.type)) {
     add(
       node,
-      `${node.type === 'ELLIPSE' ? '호' : node.type}는 CSS로 그릴 수 없는 모양이다`,
-      'Foundations 자산 묶음(Icons, Shapes, Illustrations, Images)의 컴포넌트로 만들고 인스턴스로 넣는다. 완전한 원과 사각형은 그대로 쓸 수 있다.',
+      `${node.type}는 자산이 아닌 도형이라 CSS로 그릴 수 없다`,
+      'Foundations 자산(Icons, Shapes, Illustrations, Images)의 컴포넌트로 만들고 인스턴스로 넣는다. 사각형은 그대로 쓸 수 있다.',
     );
     return false;
   }
-  if (!isOneOf(DRAWABLE_TYPES, node.type)) {
+  if (!drawableTypes.includes(node.type)) {
     add(node, `노드 종류 ${node.type}는 CSS로 그릴 수 없다`, '프레임·사각형·글자로 바꾼다.');
     return false;
   }
@@ -481,127 +259,45 @@ function checkType(node: NodeData, add: Add): boolean {
 }
 
 /**
- * 이미지 자산 인스턴스의 비율이 원본과 같은지 본다. 높이는 칸 너비와 자산 비율에서 나오므로 숫자를 정하지 않는다.
- * 두 축 모두 부모가 크기를 정하면(FILL, 양쪽 늘이기) 틀에 맞춰 자르는 그림(커버, 바탕화면)이라 막지 않는다.
- * @codocs [[디자인 시스템:구조 검사]]
- * @param node 자산 인스턴스
- * @param isRoot 변형 루트인지
- * @param add 위반을 더하는 함수
- */
-function checkImageRatio(node: NodeData, isRoot: boolean, add: Add): void {
-  const { asset } = node;
-  if (asset === null || asset.kind !== 'raster' || asset.sourceHeight === 0) {
-    return;
-  }
-  const { horizontal, vertical } = sizingOf(node, isRoot);
-  const isFramed =
-    ['FILL', 'DERIVED'].includes(horizontal) && ['FILL', 'DERIVED'].includes(vertical);
-  const source = asset.sourceWidth / asset.sourceHeight;
-  const ratio = node.width.value / node.height.value;
-  if (!isFramed && Math.abs(ratio / source - 1) > RATIO_TOLERANCE) {
-    add(
-      node,
-      `이미지 자산 ${asset.name}의 비율이 원본과 다르다(${String(node.width.value)}×${String(node.height.value)}, 원본 비율 ${source.toFixed(3)})`,
-      '비율을 잠그고 원본 비율로 되돌린다. 틀에 맞춰 잘라야 하면 두 축을 FILL로 둔다.',
-    );
-  }
-}
-
-/**
- * 노드에 변수를 연결할 수 없는 값이 코드 전용 변수와 짝이 있는지 본다. 묶음에 변수가 없으면 아직 만들지 않은 것이라 보지 않는다.
- * @codocs [[디자인 시스템:구조 검사]]
+ * 회전과 마스크를 검사한다. 정지 회전은 90도 단위만 허용한다([[디자인 시스템:회전 구현]]).
  * @param node 노드
- * @param label 메시지에 쓸 이름
- * @param value 짝을 찾는 값
- * @param shown 메시지에 쓸 값
- * @param variables 묶음의 변수
  * @param add 위반을 더하는 함수
  */
-function requirePair(
-  node: NodeData,
-  label: string,
-  value: number,
-  shown: string,
-  variables: readonly CodeVariable[],
-  add: Add,
-): void {
-  if (variables.length > 0 && pairedVariable(value, variables) === undefined) {
-    add(
-      node,
-      `${label} ${shown}와 같은 값의 코드 전용 변수가 없다`,
-      `값을 ${variables.map((variable) => variable.name).join(', ')} 가운데 하나로 맞추거나 코드 전용 변수를 더한다.`,
-    );
-  }
-}
-
-/**
- * 불투명도·회전·비율·제약·마스크와 주석의 `@` 줄을 검사한다.
- * @param node 노드
- * @param codeVariables 코드 전용 변수
- * @param add 위반을 더하는 함수
- */
-function checkCommon(node: NodeData, codeVariables: CodeVariables, add: Add): void {
-  if (node.rotation !== 0) {
-    requirePair(
-      node,
-      '회전',
-      cssAngle(node.rotation),
-      `${String(node.rotation)}°`,
-      codeVariables.rotate,
-      add,
-    );
-  }
-  if (node.aspectRatio !== null && node.asset?.kind !== 'raster') {
-    requirePair(
-      node,
-      '비율',
-      node.aspectRatio,
-      node.aspectRatio.toFixed(3),
-      codeVariables.ratio,
-      add,
-    );
-  }
-  // 한 줄 말줄임은 `truncate` 클래스라 짝이 필요 없다.
-  const maxLines = node.text?.maxLines ?? null;
-  if (maxLines !== null && maxLines > 1) {
-    requirePair(node, '최대 줄 수', maxLines, String(maxLines), codeVariables.lineClamp, add);
-  }
-  requireBound(node, '불투명도', node.opacity, 'opacity', add, 1);
+function checkCommon(node: NodeData, add: Add): void {
   const quarter = node.rotation / 90;
   if (Math.abs(quarter - Math.round(quarter)) > EPSILON) {
-    add(
-      node,
-      `회전 ${String(node.rotation)}°는 90° 배수가 아니라 토큰 클래스로 쓸 수 없다`,
-      '회전을 90° 배수로 둔다.',
-    );
-  }
-  const { child } = node;
-  const isConstrained =
-    child !== null && (node.parentLayoutMode === null || child.positioning === 'ABSOLUTE');
-  if (
-    isConstrained &&
-    (child.constraints.horizontal === 'SCALE' || child.constraints.vertical === 'SCALE')
-  ) {
-    add(
-      node,
-      '비례 제약(SCALE)은 토큰 클래스로 쓸 수 없다',
-      '제약을 왼쪽·오른쪽·양쪽·가운데 중 하나로 둔다.',
-    );
+    add(node, `회전 ${String(node.rotation)}°는 90° 단위가 아니다`, '회전을 90° 단위로 둔다.');
   }
   if (node.isMask) {
-    add(node, '마스크는 CSS로 그릴 수 없다', '자르기는 clipsContent나 모서리 반경으로 표현한다.');
+    add(node, '마스크는 CSS로 그릴 수 없다', '자르기는 Clip content나 모서리 반경으로 표현한다.');
   }
 }
 
 /**
- * 칠·선 목록 하나를 검사한다. 스타일이 없으면 단색은 색 변수에, 그라데이션·이미지·여러 칠은 칠 스타일에 연결해야 한다.
- * 블렌드가 들어간 칠, CSS로 그리지 않는 칠 종류, 이름 있는 자산에 없는 이미지는 스타일 안에 있어도 막는다.
+ * 이미지 칠의 맞춤 방식을 검사한다. `FILL`·`FIT`만 CSS `object-fit`으로 옮긴다.
+ * @codocs [[디자인 시스템:자산]]
+ * @param node 노드
+ * @param scaleMode 맞춤 방식. 이미지가 아니면 null
+ * @param add 위반을 더하는 함수
+ */
+function checkScaleMode(node: NodeData, scaleMode: string | null, add: Add): void {
+  if (scaleMode !== null && !imageScaleModes.includes(scaleMode)) {
+    add(
+      node,
+      `이미지 칠의 맞춤 방식 ${scaleMode}는 CSS로 옮길 수 없다`,
+      '이미지 칠의 맞춤 방식을 Fill이나 Fit으로 바꾼다.',
+    );
+  }
+}
+
+/**
+ * 칠·선 목록 하나를 검사한다. 스타일이 없으면 단색은 색 변수에, 그라데이션·여러 칠은 칠 스타일에 연결해야 한다.
+ * 블렌드가 들어간 칠, CSS로 그리지 않는 칠 종류, 이름 있는 자산에 없는 이미지, `CROP`·`TILE` 이미지는 스타일 안에 있어도 막는다.
  * @param node 노드
  * @param label 메시지에 쓸 이름(칠·선)
  * @param paints 칠 목록
  * @param style 연결한 스타일 이름
  * @param types CSS로 그리는 칠 종류
- * @param context 이름 있는 이미지 자산
  * @param add 위반을 더하는 함수
  */
 function checkPaints(
@@ -610,12 +306,11 @@ function checkPaints(
   paints: readonly PaintData[],
   style: string | undefined,
   types: readonly string[],
-  context: CheckContext,
   add: Add,
 ): void {
   const visible = paints.filter((paint) => paint.isVisible);
   for (const paint of visible) {
-    if (!isOneOf(types, paint.type)) {
+    if (!types.includes(paint.type)) {
       add(
         node,
         `${label} 종류 ${paint.type}는 CSS로 그릴 수 없다`,
@@ -629,12 +324,15 @@ function checkPaints(
         `${label}의 블렌드를 일반(NORMAL)으로 둔다.`,
       );
     }
-    if (paint.type === 'IMAGE' && !context.imageHashes.has(paint.imageHash ?? '')) {
-      add(
-        node,
-        `${label}의 이미지가 이름 있는 이미지 자산에 없다`,
-        'Foundations Images 묶음에 이미지 자산 컴포넌트를 만들고, 그 인스턴스나 같은 이미지의 칠 스타일을 쓴다.',
-      );
+    if (paint.type === 'IMAGE') {
+      if (paint.imageAsset == null) {
+        add(
+          node,
+          `${label}의 이미지가 이름 있는 이미지 자산에 없다`,
+          'Foundations Images 묶음에 이미지 자산 컴포넌트를 만들고, 그 인스턴스를 쓴다.',
+        );
+      }
+      checkScaleMode(node, paint.scaleMode ?? null, add);
     }
   }
   if (style !== undefined) {
@@ -647,13 +345,13 @@ function checkPaints(
       `${label}이 ${String(visible.length)}개인데 스타일에 연결되어 있지 않다`,
       `${label} 스타일로 묶는다.`,
     );
-  } else if (paint !== undefined && paint.type !== 'SOLID') {
+  } else if (paint !== undefined && paint.type !== 'SOLID' && paint.type !== 'IMAGE') {
     add(
       node,
       `${paint.type} ${label}이 스타일에 연결되어 있지 않다`,
-      `그라데이션과 이미지는 ${label} 스타일로만 쓴다.`,
+      `그라데이션은 ${label} 스타일로만 쓴다.`,
     );
-  } else if (paint !== undefined && paint.variable === undefined) {
+  } else if (paint?.type === 'SOLID' && paint.variable === undefined) {
     add(node, `단색 ${label}이 색 변수에 연결되어 있지 않다`, `${label} 색을 색 ${BIND_FIX}`);
   }
 }
@@ -661,14 +359,13 @@ function checkPaints(
 /**
  * 선을 검사한다. 선 종류·두께 연결과 점선·가변 두께·브러시 선을 본다.
  * @param node 노드
- * @param context 이름 있는 이미지 자산
  * @param add 위반을 더하는 함수
  */
-function checkStrokes(node: NodeData, context: CheckContext, add: Add): void {
+function checkStrokes(node: NodeData, add: Add): void {
   if (node.strokes === null || !node.strokes.some((paint) => paint.isVisible)) {
     return;
   }
-  checkPaints(node, '선', node.strokes, node.strokeStyle, STROKE_TYPES, context, add);
+  checkPaints(node, '선', node.strokes, node.strokeStyle, strokeTypes, add);
   if (node.dashPattern.length > 0) {
     add(node, '점선은 CSS로 같게 그릴 수 없다', '실선으로 바꾼다.');
   }
@@ -705,7 +402,7 @@ function checkEffects(node: NodeData, add: Add): void {
     add(node, '효과가 효과 스타일에 연결되어 있지 않다', '효과를 효과 스타일로 묶는다.');
   }
   for (const effect of visible) {
-    if (!isOneOf(EFFECT_TYPES, effect.type)) {
+    if (!effectTypes.includes(effect.type)) {
       add(node, `효과 ${effect.type}는 CSS로 그릴 수 없다`, '효과를 지운다.');
     }
     if (effect.blendMode !== 'NORMAL') {
@@ -735,13 +432,22 @@ function checkEffects(node: NodeData, add: Add): void {
  */
 function checkLayout(node: NodeData, add: Add): void {
   const { layout } = node;
-  if (layout === null || layout.mode === 'NONE') {
+  if (layout === null) {
     return;
+  }
+  if (layout.primaryAlign === 'SPACE_EVENLY' || layout.primaryAlign === 'SPACE_AROUND') {
+    add(
+      node,
+      `주축 정렬 ${layout.primaryAlign}는 스키마 꼴에 없어 내보낼 수 없다`,
+      '주축 정렬을 왼쪽·가운데·오른쪽이나 Space between으로 둔다.',
+    );
   }
   for (const [side, padding] of Object.entries(layout.padding)) {
     requireBound(node, `여백(${side})`, padding, 'spacing', add);
   }
-  const flowChildren = node.children.filter((child) => child.child?.positioning !== 'ABSOLUTE');
+  const flowChildren = node.children.filter(
+    (child) => child.isVisible && child.placement?.positioning !== 'ABSOLUTE',
+  );
   if (
     (node.type === 'SLOT' || flowChildren.length > 1) &&
     layout.primaryAlign !== 'SPACE_BETWEEN'
@@ -754,175 +460,11 @@ function checkLayout(node: NodeData, add: Add): void {
 }
 
 /**
- * 내용 맞춤 축의 크기와 최소·최대 크기가 변수에 연결됐는지 검사한다.
- * 고정 크기는 막지 않는다. 변수에 연결된 고정 크기는 고정 크기, 변수 없는 숫자는 견본 크기다(layer-tree가 나눠 적는다).
- * 변수를 빠뜨린 진짜 고정 크기는 이 검사로 잡지 못한다.
- * 양쪽 제약(STRETCH)인 축의 크기는 제약이 정하는 값이라 검사하지 않는다.
- * 배율 인스턴스(`scaleFactor`가 1이 아님) 자체의 고정 너비·높이는 검사하지 않는다.
- * 배율이 고정일 수도 칸에 맞춘 값일 수도 있어 결과 크기가 토큰이 아닐 수 있고, 피그마는 배율 인스턴스의 크기를 변수에 연결하면 배율을 풀기 때문이다. 크기는 그것을 담는 칸이 변수로 지킨다.
- * @codocs [[디자인 시스템:구조 검사]]
- * @codocs [[디자인 시스템:크기 변수]]
- * @param node 노드
- * @param isRoot 변형 루트인지
- * @param add 위반을 더하는 함수
- */
-function checkSizes(node: NodeData, isRoot: boolean, add: Add): void {
-  const { horizontal, vertical } = sizingOf(node, isRoot);
-  if (node.instance === null || Math.abs(node.instance.scaleFactor - 1) <= EPSILON) {
-    checkHugSizes(node, horizontal, vertical, add);
-  }
-  for (const [label, bound] of [
-    ['최소 너비', node.minWidth],
-    ['최대 너비', node.maxWidth],
-    ['최소 높이', node.minHeight],
-    ['최대 높이', node.maxHeight],
-  ] as const) {
-    if (bound !== null && bound.variable === undefined) {
-      add(
-        node,
-        `${label} ${String(bound.value)}가 변수에 연결되어 있지 않다`,
-        `${label}를 size ${BIND_FIX}`,
-      );
-    }
-  }
-}
-
-/**
- * 내용 맞춤(HUG) 축의 크기를 정하는 자식이 있는지 검사한다. 자식이 모두 그 축에서 부모 채움(FILL)이거나 절대 위치이면
- * 그 축의 크기가 어떤 변수에도 묶이지 않은 채 피그마에 저장된 값으로 정해진다.
- * 다만 그 축의 최대 크기가 변수에 연결돼 있고 그 축에서 부모 채움인 글자 자식이 있으면, 글자 내용이 크기를 정하고 최대 크기에서 멈추므로 막지 않는다.
- * @codocs [[디자인 시스템:구조 검사]]
- * @param node 노드
- * @param horizontal 가로 크기 방식
- * @param vertical 세로 크기 방식
- * @param add 위반을 더하는 함수
- */
-function checkHugSizes(node: NodeData, horizontal: string, vertical: string, add: Add): void {
-  if (node.text !== null || node.asset !== null || node.children.length === 0) {
-    return;
-  }
-  for (const [axis, sizing, label, bound, maxBound] of [
-    ['horizontal', horizontal, '너비', node.minWidth, node.maxWidth],
-    ['vertical', vertical, '높이', node.minHeight, node.maxHeight],
-  ] as const) {
-    // 최대 크기가 변수에 연결돼 있고 그 축에서 부모 채움인 글자가 있으면 글자 내용이 크기를 정하고 최대 크기에서 멈춘다(CSS `fit-content`와 `max-*`).
-    const isTextFilled =
-      maxBound?.variable !== undefined &&
-      node.children.some((child) => child.text !== null && sizingOf(child, false)[axis] === 'FILL');
-    if (
-      sizing === 'HUG' &&
-      bound?.variable === undefined &&
-      !isTextFilled &&
-      !isChildrenSized(node, axis, sizing)
-    ) {
-      add(
-        node,
-        `내용 맞춤 ${label}를 정하는 자식이 없어 ${label}가 변수 없이 정해진다(자식이 모두 ${label}에서 부모 채움이거나 절대 위치)`,
-        `${label}를 size 변수에 연결한 고정 크기로 바꾸거나, ${label}를 정하는 자식(고정 크기나 내용 맞춤 글자)을 둔다.`,
-      );
-    }
-  }
-}
-
-/**
- * 노드의 한 축 크기가 고정 크기나 내용 맞춤 글자로 정해지는지 본다. 부모 채움 글자와 내용이 없는 채움 노드는 정하지 못한다.
- * @param node 노드
- * @param axis 축
- * @returns 정해지면 true
- */
-function isSized(node: NodeData, axis: 'horizontal' | 'vertical'): boolean {
-  const own = sizingOf(node, false)[axis];
-  if (own === 'FIXED' || own === 'DERIVED') {
-    return true;
-  }
-  if (node.text !== null) {
-    return own === 'HUG';
-  }
-  return isChildrenSized(node, axis, own);
-}
-
-/**
- * 자식이 노드의 한 축 크기를 정하는지 본다. 쌓는 방향(주축)은 자식이 모두 정해야 하고, 가로지르는 방향은 하나만 정해도 된다.
- * 절대 위치 자식은 크기에 들어가지 않는다. 자식이 아예 없으면 내용 맞춤은 정해지고 채움은 정해지지 않는다. 자식이 모두 절대 위치이면 정해지지 않는다.
- * @param node 노드
- * @param axis 축
- * @param sizing 노드의 그 축 크기 방식
- * @returns 정해지면 true
- */
-function isChildrenSized(node: NodeData, axis: 'horizontal' | 'vertical', sizing: string): boolean {
-  const live = node.children.filter((child) => child.child?.positioning !== 'ABSOLUTE');
-  if (live.length === 0) {
-    return node.children.length === 0 && sizing !== 'FILL';
-  }
-  const mode = node.layout?.mode;
-  const isPrimary =
-    (mode === 'HORIZONTAL' && axis === 'horizontal') ||
-    (mode === 'VERTICAL' && axis === 'vertical');
-  return isPrimary
-    ? live.every((child) => isSized(child, axis))
-    : live.some((child) => isSized(child, axis));
-}
-
-/**
- * 노드 자신의 자동 배치가 정하는 가로·세로 크기 방식을 돌려준다. 자동 배치가 없으면 둘 다 FIXED다.
- * @param node 노드
- * @returns 가로·세로 크기 방식(FIXED, HUG)
- */
-function ownSizing(node: NodeData): { horizontal: string; vertical: string } {
-  if (node.layout === null || node.layout.mode === 'NONE') {
-    return { horizontal: 'FIXED', vertical: 'FIXED' };
-  }
-  const isRow = node.layout.mode === 'HORIZONTAL';
-  const primary = node.layout.primarySizing === 'AUTO' ? 'HUG' : 'FIXED';
-  const counter = node.layout.counterSizing === 'AUTO' ? 'HUG' : 'FIXED';
-  return { horizontal: isRow ? primary : counter, vertical: isRow ? counter : primary };
-}
-
-/**
- * 노드의 가로·세로 크기 방식을 정한다. 루트와 부모 자동 배치에서 크기를 받지 않는 노드는 자기 자동 배치 축 크기 방식, 자동 배치 안의 자식은 layoutSizing, 글자는 자동 크기를 따른다.
- * @param node 노드
- * @param isRoot 변형 루트인지
- * @returns 가로·세로 크기 방식(FIXED, HUG, FILL, DERIVED)
- */
-export function sizingOf(
-  node: NodeData,
-  isRoot: boolean,
-): { horizontal: string; vertical: string } {
-  let horizontal = 'FIXED';
-  let vertical = 'FIXED';
-  const own = ownSizing(node);
-  if (isRoot) {
-    horizontal = own.horizontal;
-    vertical = own.vertical;
-  } else if (node.child !== null) {
-    if (node.parentLayoutMode !== null && node.child.positioning !== 'ABSOLUTE') {
-      horizontal = node.child.sizingHorizontal;
-      vertical = node.child.sizingVertical;
-    } else {
-      // 부모 자동 배치에서 크기를 받지 않는 노드는 루트처럼 자기 자동 배치의 내용 맞춤 축을 HUG로 본다.
-      // 양쪽 늘이기(STRETCH) 축은 내용 맞춤이어도 크기를 부모 제약이 정하므로 DERIVED가 먼저다.
-      horizontal = node.child.constraints.horizontal === 'STRETCH' ? 'DERIVED' : own.horizontal;
-      vertical = node.child.constraints.vertical === 'STRETCH' ? 'DERIVED' : own.vertical;
-    }
-  }
-  if (node.text !== null) {
-    if (node.text.autoResize === 'WIDTH_AND_HEIGHT') {
-      horizontal = 'HUG';
-      vertical = 'HUG';
-    } else if (node.text.autoResize === 'HEIGHT') {
-      vertical = 'HUG';
-    }
-  }
-  return { horizontal, vertical };
-}
-
-/**
- * 글자 노드를 검사한다. 구간마다 글자 스타일 연결과 덮어쓰기, 글자 칠, OpenType 기능을 보고, 빠진 글꼴과 한글을 Pretendard가 아닌 글꼴로 그리는 구간을 막는다.
+ * 글자 노드를 검사한다. 글자 스타일 연결과 덮어쓰기, 글자 스타일이 둘 이상 섞인 것, 글자 칠, OpenType 기능, 빠진 글꼴을 본다.
  * @param node 글자 노드
- * @param context 이름 있는 이미지 자산
  * @param add 위반을 더하는 함수
  */
-function checkText(node: NodeData, context: CheckContext, add: Add): void {
+function checkText(node: NodeData, add: Add): void {
   const { text } = node;
   if (text === null) {
     return;
@@ -930,19 +472,16 @@ function checkText(node: NodeData, context: CheckContext, add: Add): void {
   if (text.hasMissingFont) {
     add(node, '글꼴이 없어 대체 글꼴로 그려진다', '글꼴을 설치하거나 글자 스타일의 글꼴을 바꾼다.');
   }
+  const styles = new Set(text.segments.map((segment) => segment.textStyle ?? ''));
+  if (styles.size > 1) {
+    add(
+      node,
+      `글자 레이어 하나에 글자 스타일이 ${String(styles.size)}개 섞여 있다`,
+      '글자 레이어 하나에는 글자 스타일 하나만 쓴다. 어느 낱말이 굵은지는 내용이 정한다.',
+    );
+  }
   for (const segment of text.segments) {
     const label = `"${segment.characters.slice(0, 12)}" 구간`;
-    // hasMissingFont가 false여도 피그마가 한글을 알 수 없는 대체 글꼴로 그리는 경우가 있어 구간 글꼴로 막는다.
-    if (
-      HANGUL_PATTERN.test(segment.characters) &&
-      !hangulFontFamilies.includes(segment.fontFamily ?? '')
-    ) {
-      add(
-        node,
-        `${label}에 한글이 있는데 글꼴이 ${segment.fontFamily ?? '알 수 없음'}라 대체 글꼴로 그려질 수 있다`,
-        `한글 구간에 Hangul 글자 스타일(${HANGUL_FONT_FAMILY})을 입힌다.`,
-      );
-    }
     if (segment.textStyle === undefined) {
       add(node, `${label}에 글자 스타일이 없다`, '구간을 글자 스타일에 연결한다.');
     }
@@ -953,19 +492,303 @@ function checkText(node: NodeData, context: CheckContext, add: Add): void {
         '덮어쓴 값을 지우거나 새 글자 스타일을 만든다.',
       );
     }
-    checkPaints(
-      node,
-      `${label} 글자 칠`,
-      segment.fills,
-      segment.fillStyle,
-      FILL_TYPES,
-      context,
-      add,
-    );
+    checkPaints(node, `${label} 글자 칠`, segment.fills, segment.fillStyle, fillTypes, add);
     if (segment.hasOpenTypeFeatures) {
       add(node, `${label}에 OpenType 기능이 켜져 있다`, 'OpenType 기능을 끈다.');
     }
   }
+}
+
+/**
+ * 인스턴스 안 레이어의 칠·선·효과·불투명도가 원본과 값이 다른 덮어쓰기를 막는다(읽을 때 값이 같은 기록은 이미 뺐다).
+ * 자산 인스턴스(와 그 안쪽)의 색, 자산 인스턴스 전체의 불투명도는 허용한다. 글자·아이콘 교체·불리언·변형 고르기는
+ * 모양 필드가 아니라 여기 오지 않는다.
+ * @codocs [[디자인 시스템:구조 검사]]
+ * @param root 변형 루트
+ * @param add 위반을 더하는 함수
+ */
+function checkInstanceOverrides(root: NodeData, add: Add): void {
+  const nodes = [root, ...descendants(root)];
+  const assets = nodes.filter((node) => node.asset !== null);
+  for (const owner of nodes) {
+    for (const override of owner.instance?.overrides ?? []) {
+      const target = nodes.find((node) => node.id === override.id);
+      const asset = assets.find(
+        (node) => node.id === override.id || override.id.startsWith(`${node.id};`),
+      );
+      const isAssetItself = asset !== undefined && asset.id === override.id;
+      const blocked = override.fields.filter(
+        (field) =>
+          !(asset !== undefined && assetColorFields.includes(field)) &&
+          !(isAssetItself && assetOpacityFields.includes(field)),
+      );
+      if (blocked.length === 0) {
+        continue;
+      }
+      const labels = [
+        ...new Set(
+          blocked.map(
+            (field) => appearanceLabels[field.replace(/^boundVariables\./u, '')] ?? field,
+          ),
+        ),
+      ];
+      const list = labels.join('·');
+      add(
+        target ?? asset ?? owner,
+        `인스턴스의 ${list}${objectParticle(list)} 원본과 다르게 바꿨다(${blocked.join(', ')})`,
+        `덮어쓰기를 되돌리고, ${owner.instance?.component ?? '원본 컴포넌트'}에 변형이나 속성을 열어 그것을 고른다.`,
+      );
+    }
+  }
+}
+
+/**
+ * 입력이나 동작의 역할이 되는 레이어(컴포넌트 속성에 묶인 레이어)끼리 이름이 같은지 본다.
+ * 그 밖의 레이어와 슬롯 안의 견본 내용은 이름이 겹쳐도 막지 않는다.
+ * 동작의 종류가 이름으로 찾는 역할 레이어는 checkRoles가 함께 본다.
+ * @codocs [[디자인 시스템:구조 검사]]
+ * @param root 변형 루트
+ * @param add 위반을 더하는 함수
+ */
+function checkDuplicatedRoles(root: NodeData, add: Add): void {
+  reportDuplicates(
+    ownLayers(root).filter((node) => Object.keys(node.propertyRefs).length > 0),
+    add,
+  );
+}
+
+/**
+ * 역할 레이어 목록에서 이름이 겹치는 것을 알린다.
+ * @param layers 역할 레이어
+ * @param add 위반을 더하는 함수
+ */
+function reportDuplicates(layers: readonly NodeData[], add: Add): void {
+  const byName = new Map<string, NodeData[]>();
+  for (const layer of layers) {
+    const list = byName.get(layer.name) ?? [];
+    if (!list.some((item) => item.key === layer.key)) {
+      list.push(layer);
+    }
+    byName.set(layer.name, list);
+  }
+  for (const [name, list] of byName) {
+    const [, second] = list;
+    if (second !== undefined) {
+      add(
+        second,
+        `입력이나 동작의 역할이 되는 레이어 \`${name}\`가 ${String(list.length)}개다`,
+        '역할 레이어의 이름을 서로 다르게 짓는다(클래스 이름은 레이어 자리로 짓는다).',
+      );
+    }
+  }
+}
+
+/**
+ * 변형의 상태 이름에 낱말 표에 없는 낱말이 있는지 본다. 동작의 종류가 없으면 낱말을 옮길 표가 없어 막는다.
+ * @codocs [[디자인 시스템:상태]]
+ * @codocs [[디자인 시스템:구조 검사]]
+ * @param component 컴포넌트
+ * @param variant 변형
+ * @param where 위치
+ * @param spec 동작의 종류. 적히지 않았거나 등록부에 없으면 undefined
+ * @returns 위반 목록
+ */
+function checkStateWords(
+  component: ComponentData,
+  variant: VariantData,
+  where: string,
+  spec: BehaviorSpec | undefined,
+): Violation[] {
+  const state = variant.values[STATE_AXIS];
+  if (state === undefined || (component.behavior !== null && spec === undefined)) {
+    return [];
+  }
+  if (spec === undefined) {
+    return [
+      {
+        where,
+        reason: `${STATE_AXIS} 축이 있는데 동작의 종류가 적혀 있지 않아 상태 낱말을 옮길 표가 없다`,
+        fix: '컴포넌트 세트에 Interaction 주석으로 동작의 종류를 적는다.',
+        nodeId: variant.nodeId,
+      },
+    ];
+  }
+  return stateWordsOf(state)
+    .filter((word) => findStateWord(spec, word) === undefined)
+    .map(
+      /**
+       * 표에 없는 낱말 하나를 위반으로 옮긴다.
+       * @param word 상태 낱말
+       * @returns 위반
+       */
+      (word) => ({
+        where,
+        reason: `상태 낱말 \`${word}\`가 동작의 종류 \`${spec.name}\`의 낱말 표에 없다`,
+        fix: '낱말 표에 있는 낱말로 상태 이름을 고치거나, 종류의 낱말 표에 낱말을 더한다.',
+        nodeId: variant.nodeId,
+      }),
+    );
+}
+
+/**
+ * 종류가 요구하는 역할 레이어가 변형에 있는지 보고, 이름으로 찾는 역할 레이어끼리 이름이 겹치는지 본다.
+ * 표시 레이어(indicator)는 켜짐과 꺼짐 축이 켜진 변형에서, 꺼진 짝 변형에는 없는 레이어가 있어야 한다.
+ * @codocs [[디자인 시스템:동작의 종류]]
+ * @codocs [[디자인 시스템:구조 검사]]
+ * @param component 컴포넌트
+ * @param variant 변형
+ * @param where 위치
+ * @param spec 동작의 종류
+ * @returns 위반 목록
+ */
+function checkRoles(
+  component: ComponentData,
+  variant: VariantData,
+  where: string,
+  spec: BehaviorSpec,
+): Violation[] {
+  const violations: Violation[] = [];
+  const layers = ownLayers(variant.root);
+  const named: NodeData[] = [];
+  for (const role of spec.roles) {
+    const found = layers.filter((node) => matchesSelector(node, role.selector));
+    if (role.selector.kind === 'layer-name' || role.selector.kind === 'nested-behavior') {
+      named.push(...found);
+    }
+    const isMissing =
+      role.selector.kind === 'indicator'
+        ? isIndicatorMissing(component, variant, layers)
+        : role.selector.kind !== 'root' && found.length === 0;
+    if (role.isRequired && isMissing) {
+      violations.push({
+        where,
+        reason: `동작의 종류 \`${spec.name}\`가 요구하는 \`${role.role}\` 역할 레이어(${selectorText(role.selector)})가 없다`,
+        fix: '종류가 요구하는 레이어를 변형에 그리거나, 맞는 종류를 고른다.',
+        nodeId: variant.nodeId,
+      });
+    }
+  }
+  reportDuplicates(named, (node, reason, fix) => {
+    violations.push({ where: `${where} / ${node.key}`, reason, fix, nodeId: node.id });
+  });
+  return violations;
+}
+
+/**
+ * 레이어가 역할의 선택자에 맞는지 본다. 표시 레이어는 변형끼리 견줘야 해서 여기서는 맞지 않는다.
+ * @param node 레이어
+ * @param selector 역할의 선택자
+ * @returns 맞으면 true
+ */
+function matchesSelector(node: NodeData, selector: RoleSelector): boolean {
+  switch (selector.kind) {
+    case 'root':
+      return node.key === '';
+    case 'text-property':
+      return node.propertyRefs.characters !== undefined;
+    case 'swap-property':
+      return node.propertyRefs.mainComponent !== undefined;
+    case 'layer-name':
+      return selector.names.includes(node.name);
+    case 'nested-behavior':
+      return node.instance?.componentBehavior === selector.behavior;
+    case 'indicator':
+      return false;
+  }
+}
+
+/**
+ * 켜진 변형에 표시 레이어(꺼진 짝 변형에는 없는 레이어)가 없는지 본다. 켜진 변형이 아니거나 꺼진 짝이 없으면 보지 않는다.
+ * @param component 컴포넌트
+ * @param variant 변형
+ * @param layers 변형에 바로 놓인 레이어
+ * @returns 표시 레이어가 없으면 true
+ */
+function isIndicatorMissing(
+  component: ComponentData,
+  variant: VariantData,
+  layers: readonly NodeData[],
+): boolean {
+  for (const [axis, value] of Object.entries(variant.values)) {
+    const pair = ON_OFF_VALUE_PAIRS.find(([on]) => on.toLowerCase() === value.toLowerCase());
+    if (pair === undefined) {
+      continue;
+    }
+    const off = component.variants.find(
+      /**
+       * 켜짐 축만 꺼진 값이고 다른 축은 같은 변형인지 본다.
+       * @param other 다른 변형
+       * @returns 꺼진 짝이면 true
+       */
+      (other) =>
+        Object.entries(variant.values).every(([name, own]) =>
+          name === axis
+            ? other.values[name]?.toLowerCase() === pair[1].toLowerCase()
+            : other.values[name] === own,
+        ),
+    );
+    if (off === undefined) {
+      continue;
+    }
+    const offKeys = new Set(ownLayers(off.root).map((node) => node.key));
+    return !layers.some((node) => !offKeys.has(node.key));
+  }
+  return false;
+}
+
+/**
+ * 선택자를 메시지 글로 옮긴다.
+ * @param selector 역할의 선택자
+ * @returns 설명
+ */
+function selectorText(selector: RoleSelector): string {
+  switch (selector.kind) {
+    case 'root':
+      return '변형 루트';
+    case 'text-property':
+      return '글자 속성에 묶인 글자';
+    case 'swap-property':
+      return '인스턴스 교체 속성에 묶인 레이어';
+    case 'indicator':
+      return '켜진 변형에만 있는 표시 레이어';
+    case 'layer-name':
+      return `이름 ${selector.names.map((name) => `\`${name}\``).join('·')}`;
+    case 'nested-behavior':
+      return `종류가 \`${selector.behavior}\`인 컴포넌트의 인스턴스`;
+  }
+}
+
+/**
+ * 변형에 바로 놓인 레이어를 모은다. 품은 인스턴스 안쪽과 슬롯 안의 견본 내용은 뺀다.
+ * @param root 변형 루트
+ * @returns 레이어(루트 포함)
+ */
+function ownLayers(root: NodeData): NodeData[] {
+  const result: NodeData[] = [];
+  /**
+   * 레이어를 모은다.
+   * @param node 노드
+   */
+  function walk(node: NodeData): void {
+    result.push(node);
+    if (node.instance !== null || node.type === 'SLOT') {
+      return;
+    }
+    for (const child of node.children) {
+      walk(child);
+    }
+  }
+  walk(root);
+  return result;
+}
+
+/**
+ * 노드 아래 모든 노드를 모은다.
+ * @param node 노드
+ * @returns 자손 노드
+ */
+function descendants(node: NodeData): NodeData[] {
+  return node.children.flatMap((child) => [child, ...descendants(child)]);
 }
 
 /**
@@ -975,7 +798,6 @@ function checkText(node: NodeData, context: CheckContext, add: Add): void {
  * @param bound 값과 변수
  * @param collection 연결할 변수 종류(메시지용)
  * @param add 위반을 더하는 함수
- * @param neutral 연결하지 않아도 되는 기본값
  */
 function requireBound(
   node: NodeData,
@@ -983,9 +805,8 @@ function requireBound(
   bound: Bound,
   collection: string,
   add: Add,
-  neutral = 0,
 ): void {
-  if (Math.abs(bound.value - neutral) > EPSILON && bound.variable === undefined) {
+  if (Math.abs(bound.value) > EPSILON && bound.variable === undefined) {
     add(
       node,
       `${label} ${String(bound.value)}가 변수에 연결되어 있지 않다`,
@@ -995,11 +816,11 @@ function requireBound(
 }
 
 /**
- * 값이 목록에 있는지 확인한다.
- * @param list 목록
- * @param value 값
- * @returns 있으면 true
+ * 낱말 뒤에 붙는 목적격 조사(을/를)를 고른다.
+ * @param word 낱말
+ * @returns 받침이 있으면 '을', 없으면 '를'
  */
-function isOneOf(list: readonly string[], value: string): boolean {
-  return list.includes(value);
+function objectParticle(word: string): string {
+  const code = word.charCodeAt(word.length - 1) - 0xac00;
+  return code >= 0 && code < 11172 && code % 28 !== 0 ? '을' : '를';
 }

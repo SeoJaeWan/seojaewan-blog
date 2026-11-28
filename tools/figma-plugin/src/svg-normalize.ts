@@ -1,4 +1,4 @@
-import { utf8Encode } from './sha256';
+import { utf8Encode } from './utf8';
 
 // 피그마가 내보낸 SVG의 내부 id를 내용만으로 정해지는 이름으로 바꾼다.
 // 피그마는 마스크·클립 id에 노드 ID를 넣어(`clip0_14_106`) 같은 모양도 노드마다 파일 내용이 달라진다.

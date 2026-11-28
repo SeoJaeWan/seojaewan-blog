@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { type JsonObject, stableStringify } from './stable-json';
-import { componentsUsingTokens, tokenChanges, tokenSummary } from './token-changes';
+import { tokenChanges, tokenSummary } from './token-changes';
 
 /**
  * 테스트용 토큰을 만든다.
@@ -108,26 +108,6 @@ describe('바뀐 토큰과 영향받는 이름', () => {
     const changes = tokenChanges(stableStringify(rooted), stableStringify(changed));
     expect(changes.changedPaths).toEqual(['color/white']);
     expect([...changes.affectedNames].sort()).toEqual(['color/white', 'text-fill/primary']);
-  });
-});
-
-// @codocs [[디자인 시스템:피그마 플러그인]]
-describe('바뀐 토큰을 쓰는 컴포넌트', () => {
-  const usages = new Map([
-    ['Button', new Set(['accent-fill/default', 'Hangul/Body'])],
-    ['Flyout', new Set(['spacing/16'])],
-  ]);
-
-  it('바뀐 토큰 이름을 하나라도 쓰면 영향받는다', () => {
-    expect(componentsUsingTokens(usages, new Set(['accent-fill/default']))).toEqual(['Button']);
-    expect(componentsUsingTokens(usages, new Set(['Hangul/Body', 'spacing/16']))).toEqual([
-      'Button',
-      'Flyout',
-    ]);
-  });
-
-  it('이름 일부만 같은 것은 쓰는 것이 아니다', () => {
-    expect(componentsUsingTokens(usages, new Set(['spacing/1']))).toEqual([]);
   });
 });
 

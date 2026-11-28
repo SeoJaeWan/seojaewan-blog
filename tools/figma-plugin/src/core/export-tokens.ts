@@ -1,35 +1,22 @@
-import {
-  tokensJsonToCss,
-  tokensJsonToNames,
-} from '../../../../packages/design-system/scripts/tokens/tokens-css';
 import { buildDesignTokens } from '../design-tokens';
-import { readDesignTokensInput, readImageAssets, readUsageInput } from '../figma-reader';
-import { assetFile } from '../naming';
+import { readDesignTokensInput, readUsageInput } from '../figma-reader';
 import { stableStringify } from '../stable-json';
 import { unusedNotices } from '../unused-tokens';
-import { rasterAsset } from './export-component';
 
 /**
  * tokens.json 내보내기 결과.
  * - text: tokens.json 내용
- * - css: tokens.json에서 변환 함수로 만든 tokens.css 내용
- * - names: tokens.json에서 변환 함수로 만든 token-names.ts 내용
  * - skippedStyles: 토큰으로 옮기지 않은 칠 스타일 이름
- * - images: 토큰의 이미지 칠이 가리키는 이미지 자산 파일(`images/<자산>.<실제 형식의 확장자>`) → 바이트
- * - notices: 막지 않는 알림: 블렌드 층의 날값 색, 쓰는 곳이 없는 변수·스타일
+ * - notices: 막지 않는 알림(블렌드 층의 날값 색, 쓰는 곳이 없는 변수·스타일)
  */
 export type TokensExport = {
   text: string;
-  css: string;
-  names: string;
   skippedStyles: string[];
-  images: Map<string, Uint8Array>;
   notices: string[];
 };
 
 /**
- * tokens.json 내용만 만든다. 이미지 자산 바이트, tokens.css, 사용처 알림은 만들지 않아 가볍다.
- * 플러그인을 열 때 `main`의 tokens.json과 비교하는 데 쓴다. 내용은 exportTokensText의 text와 같다.
+ * tokens.json 내용만 만든다. 사용처 알림은 만들지 않아 가볍다. 플러그인을 열 때 `main`의 tokens.json과 비교하는 데 쓴다.
  * @codocs [[디자인 시스템:플러그인 화면]]
  * @returns tokens.json 내용
  */
@@ -39,67 +26,17 @@ export async function tokensJsonText(): Promise<string> {
 }
 
 /**
- * Variables와 글자·효과·칠 스타일을 읽어 tokens.json 내용을 만들고, 변환 스크립트와 같은 함수(tokensJsonToCss)로
- * tokens.css를 만든다. 플러그인과 피그마 MCP가 함께 쓴다.
- * 이미지 칠은 이름 있는 이미지 자산을 가리키고, 그 자산 파일도 함께 돌려준다.
- * 쓰는 곳이 없는 변수·스타일은 알림으로 함께 돌려준다(막지 않음).
- * 변환 규칙에 맞지 않는 토큰이 있으면 tokensJsonToCss가 경로와 이유를 담아 실패한다.
+ * Variables와 글자·효과·칠 스타일을 읽어 tokens.json 내용을 만든다. tokens.css는 만들지 않는다(CI가 생성한다).
+ * 쓰는 곳이 없는 변수·스타일은 알림으로 함께 돌려준다(막지 않음). 규칙에 맞지 않는 토큰이 있으면 이유를 모아 실패한다.
  * @codocs [[디자인 시스템:토큰 생성]]
- * @returns tokens.json과 tokens.css 문자열, 토큰으로 옮기지 않은 칠 스타일 이름, 이미지 자산, 알림
+ * @codocs [[디자인 시스템:토큰 검사]]
+ * @returns tokens.json 문자열, 토큰으로 옮기지 않은 칠 스타일 이름, 알림
  */
 export async function exportTokensText(): Promise<TokensExport> {
-  const input = await readDesignTokensInput();
-  const { tokens, skippedStyles, notices: tokenNotices } = buildDesignTokens(input);
-  const assets = await readImageAssets();
-  const images = new Map<string, Uint8Array>();
-  const exportedNames = new Set<string>();
-  for (const style of input.paintStyles) {
-    if (skippedStyles.includes(style.name)) {
-      continue;
-    }
-    for (const paint of style.paints) {
-      if (paint.type !== 'IMAGE' || paint.imageHash === null) {
-        continue;
-      }
-      const asset = assets.get(paint.imageHash);
-      if (asset !== undefined && !exportedNames.has(asset.name)) {
-        exportedNames.add(asset.name);
-        const raster = await rasterAsset(asset.node);
-        images.set(assetFile(asset.name, raster.extension), raster.bytes);
-      }
-    }
-  }
-  const notices = [...tokenNotices, ...unusedNotices(await readUsageInput())];
-  const text = stableStringify(tokens);
+  const { tokens, skippedStyles, notices } = buildDesignTokens(await readDesignTokensInput());
   return {
-    text,
-    css: tokensCssText(text),
-    names: tokenNamesText(text),
+    text: stableStringify(tokens),
     skippedStyles: [...skippedStyles],
-    images,
-    notices,
+    notices: [...notices, ...unusedNotices(await readUsageInput())],
   };
-}
-
-/**
- * tokens.json 내용으로 token-names.ts 내용을 만든다. 변환 스크립트와 같은 함수다.
- * @codocs [[디자인 시스템:토큰 검사]]
- * @param text tokens.json 내용
- * @returns token-names.ts 내용
- */
-export function tokenNamesText(text: string): string {
-  const json: unknown = JSON.parse(text);
-  return tokensJsonToNames(json);
-}
-
-/**
- * tokens.json 내용으로 tokens.css 내용을 만든다. 변환 스크립트(`generate:tokens`)와 같은 함수를 써서,
- * 플러그인이 커밋한 tokens.css가 변환 스크립트가 다시 만든 것과 같다.
- * @codocs [[디자인 시스템:토큰 검사]]
- * @param text tokens.json 내용
- * @returns tokens.css 내용
- */
-export function tokensCssText(text: string): string {
-  const json: unknown = JSON.parse(text);
-  return tokensJsonToCss(json);
 }

@@ -1,11 +1,9 @@
-import { reportSections } from '../core/pattern-report';
 import type {
   ConnectionResult,
   ExportMessage,
   ExportOutcome,
   ExportProgress,
   MainMessage,
-  PatternReportView,
   PullRequestCommit,
   RepoStatus,
   UiMessage,
@@ -14,17 +12,14 @@ import type {
 } from '../messages';
 import { matchPasteNames, parsePasteText } from './paste-selection';
 import {
-  bandGroups,
-  bandKeyOf,
+  ASSETS_KEY,
   buildCatalog,
   type Catalog,
-  type CatalogBand,
   type CatalogGroup,
   type CatalogItem,
   estimatePullRequests,
   filterItems,
   groupSelection,
-  type ItemKind,
   TOKENS_KEY,
 } from './target-catalog';
 
@@ -47,12 +42,11 @@ type RunState = {
 // 종류별 이름(결과 묶음과 목록 제목)
 const KIND_TITLES = {
   tokens: '토큰',
+  assets: '자산',
   component: '컴포넌트',
-  pattern: '조립',
-  motion: '애니메이션',
 } as const;
 // 결과 화면에서 PR을 묶는 순서
-const RESULT_ORDER = ['tokens', 'component', 'pattern', 'motion'] as const;
+const RESULT_ORDER = ['tokens', 'assets', 'component'] as const;
 /** 로그의 맨 아래로 치는 여유(px) */
 const LOG_END_SLACK = 4;
 
@@ -87,7 +81,6 @@ const ui = {
 /**
  * 화면 상태.
  * - isLoaded: 본체가 목록을 보냈는지
- * - motionUnavailable: 애니메이션을 내보낼 수 없을 때의 안내
  * - selected: 고른 키(토큰은 TOKENS_KEY)
  * - expanded: 펼친 묶음 키
  * - openDetails: 펼쳐 둔 결과 영역 키. 다시 그려도 펼친 채로 둔다
@@ -98,7 +91,6 @@ type State = {
   view: View;
   isLoaded: boolean;
   catalog: Catalog;
-  motionUnavailable: string | null;
   selected: Set<string>;
   expanded: Set<string>;
   openDetails: Set<string>;
@@ -113,7 +105,6 @@ const state: State = {
   view: 'list',
   isLoaded: false,
   catalog: { groups: [], items: [] },
-  motionUnavailable: null,
   selected: new Set(),
   expanded: new Set(),
   openDetails: new Set(),
@@ -157,8 +148,7 @@ function handleMainMessage(message: MainMessage): void {
   switch (message.type) {
     case 'init':
       state.isLoaded = true;
-      state.catalog = buildCatalog(message.components, message.patterns, message.motions);
-      state.motionUnavailable = message.motionUnavailable;
+      state.catalog = buildCatalog(message.components);
       ui.token.value = message.token;
       ui.repoName.textContent = message.settings.repo;
       ui.fileKey.textContent = message.settings.fileKey;
@@ -226,10 +216,6 @@ function handlePasteSelectClick(): void {
   for (const item of state.catalog.items) {
     if (state.selected.has(item.key)) {
       state.expanded.add(item.groupKey);
-      const bandKey = bandKeyOf(item);
-      if (bandKey !== null) {
-        state.expanded.add(bandKey);
-      }
     }
   }
   const parts: (Node | string)[] = [`${String(match.keys.length)}개 선택`];
@@ -310,23 +296,14 @@ function handleClearTokenClick(): void {
  * @codocs [[디자인 시스템:플러그인 화면]]
  */
 function handleExportClick(): void {
-  /**
-   * 고른 항목 가운데 한 종류의 노드 ID를 모은다.
-   * @param kind 종류
-   * @returns 노드 ID
-   */
-  function idsOf(kind: ItemKind): string[] {
-    return state.catalog.items
-      .filter((item) => item.kind === kind && state.selected.has(item.key))
-      .map((item) => item.id);
-  }
   startExport({
     type: 'export',
     token: ui.token.value,
     isTokensSelected: state.selected.has(TOKENS_KEY),
-    componentIds: idsOf('component'),
-    patternIds: idsOf('pattern'),
-    motionIds: idsOf('motion'),
+    isAssetsSelected: state.selected.has(ASSETS_KEY),
+    componentIds: state.catalog.items
+      .filter((item) => state.selected.has(item.key))
+      .map((item) => item.id),
   });
 }
 
@@ -406,61 +383,57 @@ function hasTokenChanges(): boolean | null {
 }
 
 /**
- * 대상 목록(토큰 줄, 컴포넌트·조립·애니메이션 묶음)을 그린다. 목록 안 찾기에 걸린 항목만 보이고, 걸린 묶음은 펼친다.
+ * 대상 목록(토큰 줄, 자산 줄, 페이지로 묶은 컴포넌트)을 그린다. 목록 안 찾기에 걸린 항목만 보이고, 걸린 묶음은 펼친다.
  * @codocs [[디자인 시스템:플러그인 화면]]
  */
 function renderList(): void {
   if (!state.isLoaded) {
     return;
   }
-  const isFiltering = state.filter.trim() !== '';
+  const query = state.filter.trim().toLowerCase();
+  const isFiltering = query !== '';
   const visible = new Set(filterItems(state.catalog.items, state.filter).map((item) => item.key));
   const nodes: Node[] = [];
-  if (!isFiltering || '토큰 tokens'.includes(state.filter.trim().toLowerCase())) {
+  if (!isFiltering || '토큰 tokens'.includes(query)) {
     nodes.push(...tokenRow());
   }
-  for (const kind of ['component', 'pattern', 'motion'] as const) {
-    const groups = state.catalog.groups.filter((group) => group.kind === kind);
-    const all = groups.flatMap((group) => group.items);
-    const shown = groups
-      .map((group) => ({ group, items: group.items.filter((item) => visible.has(item.key)) }))
-      .filter(({ items }) => items.length > 0);
-    if (isFiltering && shown.length === 0) {
-      continue;
-    }
-    const selection = groupSelection(all, state.selected);
+  if (!isFiltering || '자산 assets'.includes(query)) {
+    nodes.push(assetRow());
+  }
+  const shown = state.catalog.groups
+    .map((group) => ({ group, items: group.items.filter((item) => visible.has(item.key)) }))
+    .filter(({ items }) => items.length > 0);
+  if (!isFiltering || shown.length > 0) {
+    const selection = groupSelection(state.catalog.items, state.selected);
     nodes.push(
       make('h2', 'section-title', [
-        KIND_TITLES[kind],
+        KIND_TITLES.component,
         make('span', 'count', `${String(selection.selected)} / ${String(selection.total)}`),
         make('span', 'status muted', sectionStatus()),
       ]),
     );
-    if (kind === 'motion' && state.motionUnavailable !== null) {
-      nodes.push(make('p', 'empty muted', state.motionUnavailable));
-      continue;
+    if (state.catalog.items.length === 0) {
+      nodes.push(make('p', 'empty muted', '컴포넌트 없음'));
     }
-    if (all.length === 0) {
-      nodes.push(make('p', 'empty muted', `${KIND_TITLES[kind]} 없음`));
-      continue;
-    }
-    for (const band of bandGroups(shown.map(({ group }) => group))) {
-      const blocks: HTMLElement[] = [];
-      for (const group of band.groups) {
-        const items = group.items.filter((item) => visible.has(item.key));
-        blocks.push(groupBlock(group, items, isFiltering));
-      }
-      const keys = band.groups
-        .flatMap((group) => group.items)
-        .filter((item) => visible.has(item.key))
-        .map((item) => item.key);
-      nodes.push(...(band.band === null ? blocks : [bandBlock(band, blocks, keys, isFiltering)]));
+    for (const { group, items } of shown) {
+      nodes.push(groupBlock(group, items, isFiltering));
     }
   }
   if (isFiltering && nodes.length === 0) {
     nodes.push(make('p', 'empty muted', `"${state.filter.trim()}"가 든 대상이 없다.`));
   }
   ui.listView.replaceChildren(...nodes);
+}
+
+/**
+ * 자산 줄을 만든다. 자산은 한 줄이고 Foundations의 자산 원본을 모두 내보낸다.
+ * @codocs [[디자인 시스템:플러그인 화면]]
+ * @returns 자산 줄 요소
+ */
+function assetRow(): HTMLElement {
+  const label = make('label', '', [checkboxFor(ASSETS_KEY, '자산'), make('span', 'name', '자산')]);
+  const meta = make('span', 'meta', [make('span', 'muted', 'Foundations 자산 원본 전체')]);
+  return make('div', 'row token-row', [label, meta]);
 }
 
 /**
@@ -585,9 +558,6 @@ function groupBlock(group: CatalogGroup, items: CatalogItem[], isFiltering: bool
   const meta = make('span', 'meta', [
     make('span', 'count', `${String(selection.selected)} / ${String(selection.total)}`),
   ]);
-  if (group.kind === 'pattern') {
-    meta.prepend(make('span', 'muted', 'PR 1개'));
-  }
   const head = make('div', 'row group-head', [
     toggle,
     make('label', '', [checkbox, make('span', 'name', group.title)]),
@@ -607,56 +577,6 @@ function groupBlock(group: CatalogGroup, items: CatalogItem[], isFiltering: bool
 }
 
 /**
- * 묶음 섹션(컴포넌트 섹션을 담은 페이지 바로 아래 섹션)을 만든다. 접고 펼칠 수 있고, 체크박스와 고른 수 / 전체 수를 둔다.
- * @codocs [[디자인 시스템:플러그인 화면]]
- * @param band 묶음 섹션
- * @param blocks 그 안의 묶음(컴포넌트 섹션) 요소
- * @param keys 체크박스로 고르는 항목 키(보이는 항목)
- * @param isFiltering 목록 안 찾기 중인지(찾는 동안은 모두 펼친다)
- * @returns 묶음 섹션 요소
- */
-function bandBlock(
-  band: CatalogBand,
-  blocks: HTMLElement[],
-  keys: readonly string[],
-  isFiltering: boolean,
-): HTMLElement {
-  const title = band.band ?? '';
-  const isExpanded = isFiltering || state.expanded.has(band.key);
-  const toggle = make('button', 'toggle', '▸');
-  toggle.type = 'button';
-  toggle.setAttribute('aria-expanded', String(isExpanded));
-  toggle.setAttribute('aria-label', `${title} ${isExpanded ? '접기' : '펼치기'}`);
-  toggle.addEventListener('click', () => {
-    toggleGroup(band.key);
-  });
-
-  const all = band.groups.flatMap((group) => group.items);
-  const selection = groupSelection(all, state.selected);
-  const checkbox = document.createElement('input');
-  checkbox.type = 'checkbox';
-  checkbox.checked = selection.state === 'all';
-  checkbox.indeterminate = selection.state === 'some';
-  checkbox.setAttribute('aria-label', `${title} 모두 고르기`);
-  checkbox.addEventListener('change', () => {
-    setSelected(keys, checkbox.checked);
-  });
-
-  const head = make('div', 'row group-head band-head', [
-    toggle,
-    make('label', '', [checkbox, make('span', 'name', title)]),
-    make('span', 'meta', [
-      make('span', 'count', `${String(selection.selected)} / ${String(selection.total)}`),
-    ]),
-  ]);
-  const block = make('div', 'band', [head]);
-  if (isExpanded) {
-    block.append(make('div', 'band-groups', blocks));
-  }
-  return block;
-}
-
-/**
  * 항목 한 줄(체크박스, 이름, 변형 수, 상태)을 만든다.
  * @codocs [[디자인 시스템:플러그인 화면]]
  * @param item 항목
@@ -668,9 +588,7 @@ function itemRow(item: CatalogItem): HTMLLIElement {
   if (status.kind === 'ready' && status.newIds.includes(item.id)) {
     meta.append(badge('new', '새로 만듦'));
   }
-  if (item.variantCount !== null) {
-    meta.append(make('span', 'muted', `변형 ${String(item.variantCount)}`));
-  }
+  meta.append(make('span', 'muted', `변형 ${String(item.variantCount)}`));
   const label = make('label', '', [
     checkboxFor(item.key, item.name),
     make('span', 'name', item.name),
@@ -743,7 +661,6 @@ function renderRun(): void {
     nodes.push(...violationBlocks(run.outcome.groups));
   } else if (run.outcome?.kind === 'done') {
     nodes.push(...resultBlocks(run.outcome.commits, run.outcome.unchanged));
-    nodes.push(...reportBlocks(run.outcome.reports));
   }
   if (!run.isRunning) {
     if (run.notices.length > 0) {
@@ -835,7 +752,7 @@ function progressBlock(progress: ExportProgress | null): HTMLElement {
 }
 
 /**
- * 커밋 결과를 PR 종류(토큰·컴포넌트·조립·애니메이션)별로 묶어 만든다. 바뀐 것 없음은 접어 둔다.
+ * 커밋 결과를 PR 종류(토큰·자산·컴포넌트)별로 묶어 만든다. 바뀐 것 없음은 접어 둔다.
  * @codocs [[디자인 시스템:플러그인 화면]]
  * @param commits PR별 커밋
  * @param unchanged 바뀐 것이 없는 대상
@@ -885,81 +802,6 @@ function resultBlocks(commits: readonly PullRequestCommit[], unchanged: readonly
 }
 
 /**
- * 조립 보고를 조립마다 접은 묶음으로 만든다. 막지 않는 보고라 결과 아래에 둔다. 줄마다 그 레이어를 피그마에서 보는 버튼을 둔다.
- * @codocs [[디자인 시스템:플러그인 화면]]
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param reports 이번에 내보낸 조립의 보고
- * @returns 보고 요소
- */
-function reportBlocks(reports: readonly PatternReportView[]): Node[] {
-  if (reports.length === 0) {
-    return [];
-  }
-  return [
-    make('h3', '', `조립 보고 ${String(reports.length)} (막지 않음)`),
-    ...reports.map(
-      /**
-       * 조립 하나의 보고를 만든다.
-       * @param pattern 조립 보고
-       */
-      (pattern) =>
-        collapsible(
-          [pattern.name, make('span', 'count', `변형 ${String(pattern.variants.length)}`)],
-          make(
-            'div',
-            '',
-            pattern.variants.map(
-              /**
-               * 변형 하나의 보고를 만든다.
-               * @param variant 변형과 보고
-               */
-              (variant) =>
-                make('section', 'result-group', [
-                  make('h3', '', variant.name),
-                  ...reportSections(variant.report).map(
-                    /**
-                     * 보고 묶음 하나를 만든다.
-                     * @param section 보고 묶음
-                     */
-                    (section) =>
-                      make('div', '', [
-                        make('p', 'muted', section.title),
-                        make(
-                          'ul',
-                          '',
-                          section.lines.map((line) => reportLine(line.text, line.nodeId)),
-                        ),
-                      ]),
-                  ),
-                ]),
-            ),
-          ),
-          `report:${pattern.name}`,
-        ),
-    ),
-  ];
-}
-
-/**
- * 조립 보고 한 줄을 만든다. 노드가 있으면 "피그마에서 보기"를 둔다.
- * @param text 줄 글
- * @param nodeId 피그마 노드 ID. 없으면 null
- * @returns 목록 항목
- */
-function reportLine(text: string, nodeId: string | null): HTMLLIElement {
-  const item = make('li', '', [make('span', '', text)]);
-  if (nodeId !== null) {
-    const show = make('button', '', '피그마에서 보기');
-    show.type = 'button';
-    show.addEventListener('click', () => {
-      post({ type: 'focus-node', nodeId });
-    });
-    item.append(show);
-  }
-  return item;
-}
-
-/**
  * PR 하나의 결과 줄(대상, 새 PR·열린 PR, PR과 커밋 링크)을 만든다.
  * @param commit 커밋 결과
  * @returns 목록 항목
@@ -1000,7 +842,9 @@ function violationBlocks(groups: readonly ViolationGroup[]): Node[] {
 function violationGroupBlock(group: ViolationGroup): HTMLDetailsElement {
   const details = collapsible(
     [
-      group.kind === 'tokens' ? '토큰 ' : `${KIND_TITLES[group.kind]} · ${group.target} `,
+      group.kind === 'component'
+        ? `${KIND_TITLES.component} · ${group.target} `
+        : `${KIND_TITLES[group.kind]} `,
       make('span', 'count', `위반 ${String(group.violations.length)}`),
     ],
     make(

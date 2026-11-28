@@ -1,302 +1,150 @@
-import { type ExportManifest, nodeBox, type VariantEntry } from '../export-manifest';
-import { rasterExtension } from '../image-format';
-import { assetFile, assetName, variantSlug } from '../naming';
-import { utf8Encode } from '../sha256';
-import type { JsonObject } from '../stable-json';
-import { monoColorSvg, normalizeSvgBytes, utf8Decode } from '../svg-normalize';
-import { relativeTransform, trimmedPathSvg, type TrimmedVector } from '../svg-trim';
+import type {
+  ComponentLayout,
+  ComponentRef,
+  ComponentSchema,
+  PropertyDefinition,
+  VariantTransition,
+} from '../../../../packages/design-system/src/figma-contract';
+import { componentPageOf } from '../component-pages';
+import { componentsByKey, listComponentNodes, placeOf, readImageAssets } from '../figma-reader';
+import { buildComponentLayout } from './build-layout';
+import { buildComponentSchema } from './build-schema';
+import { type BehaviorLookup, checkComponent, type Violation } from './check-structure';
+import type { ComponentData, VariantData } from './node-data';
+import { easingData, readVariantMotion } from './read-motion';
 import {
-  type AncestorData,
-  checkClippingAncestors,
-  type CheckContext,
-  checkVariant,
-  type Violation,
-} from './check-structure';
-import { noCodeVariables } from './code-variables';
-import { parseVariantDirectives, retiredNotice } from './directives';
-import { layerTree, rootFrame } from './layer-tree';
-import type { AssetData, NodeData } from './node-data';
-import { type AnimatedLayer, patternReport } from './pattern-report';
-import { isMotionApiError } from './read-motion';
-import { type NameCache, readNodeTree } from './read-node';
+  behaviorOf,
+  componentRef,
+  componentRefById,
+  createReadContext,
+  type ReadContext,
+  readVariantTree,
+  slotKeysOf,
+} from './read-node';
 
-// 컴포넌트나 조립 하나를 검사하고 export.json 내용, 변형 PNG, 쓰는 자산 파일을 만든다.
-// 플러그인 UI와 피그마 MCP(use_figma)가 같은 함수를 쓴다. GitHub와 UI는 모르고, 파일을 바꾸지 않는다.
+// 컴포넌트 하나를 읽어 스키마(`<이름>.json`)와 검증 자료(`<이름>.layout.json`)를 만들고 구조 검사를 한다.
+// GitHub와 UI를 모르고 파일을 쓰지 않는다. 피그마에서 이 함수만 묶어 실행해 실제 값을 뽑을 수 있다.
 
 /**
- * 내보낸 대상(컴포넌트나 조립).
- * - pngs: 변형 이름 → PNG
- * - assets: 자산 파일(`<묶음>/<자산>.<확장자>`) → 내용. 래스터 자산의 확장자는 바이트의 실제 형식이다
+ * 파일 전체에서 한 번 읽어 두는 정보.
+ * - read: 노드를 읽을 때 쓰는 파일 정보와 캐시
+ * - nameCounts: 내보내는 페이지의 컴포넌트 이름 → 그 이름을 가진 컴포넌트 수
  */
-export type TargetExport = {
-  manifest: ExportManifest;
-  pngs: Map<string, Uint8Array>;
-  assets: Map<string, Uint8Array>;
+export type ExportContext = {
+  read: ReadContext;
+  nameCounts: ReadonlyMap<string, number>;
 };
 
 /**
- * 대상 하나의 검사·내보내기 결과. notices: 막지 않는 알림(지울 `@` 줄 등).
+ * 컴포넌트 하나를 내보낸 결과.
+ * - schema, layout: 스키마와 검증 자료. 페이지가 Controls·Shell·Blog가 아니면 null
+ * - violations: 구조 검사 위반. 하나라도 있으면 파일로 쓰지 않는다
  */
-export type TargetOutcome =
-  | { ok: true; target: TargetExport; notices: string[] }
-  | { ok: false; name: string; violations: Violation[] };
-
-/** 내보내는 대상 종류. 컴포넌트는 구조 검사를 하고, 조립(03 · Patterns)은 검사 없이 보고만 한다 */
-export type TargetKind = 'component' | 'pattern';
+export type ComponentExport = {
+  schema: ComponentSchema | null;
+  layout: ComponentLayout | null;
+  violations: Violation[];
+};
 
 /**
- * 컴포넌트(세트)나 조립을 변형마다 내보낸다.
- * 컴포넌트는 구조 검사를 하고 위반이 하나라도 있으면 파일을 만들지 않고 위반을 모두 돌려준다.
- * 조립은 구조 검사를 하지 않고 막지 않으며, 변형마다 조립 보고를 담는다([[디자인 시스템:구조 검사]]).
- * 내보내는 것은 변형 이름과 속성, 변형 PNG와 PNG 안 노드 위치, 쓰는 자산 파일, 구현 참고용 레이어 트리다. 레이어 트리는 판정에 쓰지 않는다.
+ * 내보내기에 쓰는 파일 정보를 읽는다. 이름 있는 이미지 자산, 컴포넌트 키 표, 같은 이름 컴포넌트 수다.
+ * 여러 컴포넌트를 내보낼 때는 한 번만 읽어 exportComponent에 넘긴다.
  * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
- * @param scale PNG 배율
- * @param context 구조 검사와 조립 보고에 쓰는 파일 정보
- * @param kind 대상 종류(컴포넌트, 조립)
- * @returns 내보낸 대상, 또는 위반 목록
+ * @returns 파일 정보
  */
-export async function exportTargetCore(
-  nodeId: string,
-  scale: number,
-  context: CheckContext,
-  kind: TargetKind,
-): Promise<TargetOutcome> {
-  const node = await findComponent(nodeId);
-  if (node === null) {
-    throw new Error(`컴포넌트 ${nodeId}를 찾을 수 없다.`);
+export async function createExportContext(): Promise<ExportContext> {
+  const images = await readImageAssets();
+  const read = createReadContext(
+    new Map([...images].map(([hash, asset]) => [hash, asset.ref])),
+    await componentsByKey(),
+  );
+  const nameCounts = new Map<string, number>();
+  for (const { node } of await listComponentNodes()) {
+    nameCounts.set(node.name, (nameCounts.get(node.name) ?? 0) + 1);
   }
-  const names: NameCache = new Map();
-  const isPattern = kind === 'pattern';
-  const violations: Violation[] = isPattern
-    ? []
-    : checkClippingAncestors(node.name, variantAncestors(node));
-  const notices: string[] = [];
-  const variants: Record<string, VariantEntry> = {};
-  const assetNodes = new Map<string, AssetData>();
-  const nodes = new Map<string, ComponentNode>();
-  const codeVariables = context.codeVariables ?? noCodeVariables;
-  const retiredLines = new Set<string>();
-  for (const variant of variantsOf(node)) {
-    const tree = await readNodeTree(variant, names);
-    const where = `${node.name} / ${variant.name}`;
-    const { problems, retired } = parseVariantDirectives(node, variant);
-    for (const line of retired) {
-      retiredLines.add(line);
-    }
-    if (isPattern) {
-      notices.push(...problems.map((problem) => `${where}: description의 ${problem}`));
-    } else {
-      violations.push(...checkVariant(tree, where, context));
-      for (const problem of problems) {
-        violations.push({
-          where,
-          reason: `description의 ${problem}`,
-          fix: 'description 줄을 고친다.',
-          nodeId: variant.id,
-        });
-      }
-    }
-    collectAssets(tree, assetNodes);
-    const properties = propertiesOf(node, variant);
-    const slug = variantSlug(properties);
-    if (slug in variants) {
-      throw new Error(`${node.name}: 변형 파일 이름 "${slug}"가 겹친다.`);
-    }
-    const box = variant.absoluteBoundingBox;
-    if (box === null) {
-      throw new Error(`${node.name} / ${variant.name}: 노드 상자를 읽을 수 없다.`);
-    }
-    variants[slug] = {
-      nodeId: variant.id,
-      properties,
-      node: nodeBox(box, variant.absoluteRenderBounds),
-      tree: isPattern ? rootFrame(tree) : layerTree(tree, codeVariables),
-      ...(isPattern
-        ? {
-            report: patternReport(
-              tree,
-              context.tokenValues ?? [],
-              animatedLayers(variant, where, notices),
-            ),
-          }
-        : {}),
-    };
-    nodes.set(slug, variant);
-  }
-  if (violations.length > 0) {
-    return { ok: false, name: node.name, violations };
-  }
-  const pngs = new Map<string, Uint8Array>();
-  for (const [slug, variant] of nodes) {
-    pngs.set(slug, await exportPng(variant, scale));
-  }
-  const assets = new Map<string, Uint8Array>();
-  for (const [name, asset] of assetNodes) {
-    const exported = await exportAsset(asset);
-    assets.set(assetFile(name, exported.extension), exported.bytes);
+  return { read, nameCounts };
+}
+
+/**
+ * 컴포넌트 하나(세트이거나 변형이 없는 컴포넌트)를 읽어 스키마와 검증 자료를 만들고 구조 검사를 한다.
+ * 위반이 있어도 읽은 스키마와 검증 자료를 돌려준다(쓸지는 부르는 쪽이 정한다). 세트의 변형을 넘기면 그 세트를 읽는다.
+ * @codocs [[디자인 시스템:스키마]]
+ * @codocs [[디자인 시스템:생성 결과 검증]]
+ * @codocs [[디자인 시스템:구조 검사]]
+ * @param node 컴포넌트 세트나 변형이 없는 컴포넌트(세트의 변형이면 그 세트)
+ * @param options 파일 정보와 동작 등록부. 없으면 파일 정보를 새로 읽고 디자인 시스템의 등록부를 쓴다
+ * @param options.context 파일 정보
+ * @param options.lookupBehavior 동작 등록부
+ * @returns 스키마, 검증 자료, 위반
+ */
+export async function exportComponent(
+  node: ComponentSetNode | ComponentNode,
+  options: { context?: ExportContext; lookupBehavior?: BehaviorLookup } = {},
+): Promise<ComponentExport> {
+  const context = options.context ?? (await createExportContext());
+  // 세트의 변형 하나를 넘기면 그 세트를 내보낸다.
+  const target =
+    node.type === 'COMPONENT' && node.parent?.type === 'COMPONENT_SET' ? node.parent : node;
+  const data = await readComponent(target, context);
+  const violations = checkComponent(data, options.lookupBehavior);
+  if (data.page === null) {
+    violations.unshift({
+      where: data.name,
+      reason: '컴포넌트가 Controls·Shell·Blog 페이지에 있지 않다',
+      fix: '내보낼 컴포넌트는 Controls·Shell·Blog 페이지에 둔다.',
+      nodeId: data.nodeId,
+    });
+    return { schema: null, layout: null, violations };
   }
   return {
-    ok: true,
-    notices: [
-      ...(retiredLines.size === 0 ? [] : [retiredNotice(node.name, [...retiredLines])]),
-      ...notices,
-    ],
-    target: {
-      manifest: {
-        name: node.name,
-        nodeId: node.id,
-        ...(node.description === '' ? {} : { description: node.description }),
-        propertyDefinitions: propertyDefinitionsOf(node),
-        variants,
-      },
-      pngs,
-      assets,
-    },
+    schema: buildComponentSchema(data, data.page),
+    layout: buildComponentLayout(data),
+    violations,
   };
 }
 
 /**
- * 변형 안에서 키프레임이 걸린 보이는 레이어를 찾는다. 경로는 변형 기준 레이어 경로(`a/b`)다.
- * 모션 API를 쓸 수 없는 계정이면 빈 목록과 알림이다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param variant 변형
- * @param where 알림에 쓸 위치
- * @param notices 알림 목록
- * @returns 키프레임이 걸린 레이어
+ * 컴포넌트를 순수 데이터로 읽는다.
+ * @param node 컴포넌트 세트나 변형이 없는 컴포넌트
+ * @param context 파일 정보
+ * @returns 컴포넌트 데이터
  */
-function animatedLayers(variant: ComponentNode, where: string, notices: string[]): AnimatedLayer[] {
-  const layers: AnimatedLayer[] = [];
-  /**
-   * 노드와 보이는 자식을 훑는다.
-   * @param node 노드
-   * @param path 변형 기준 경로
-   */
-  function walk(node: SceneNode, path: string): void {
-    if (!node.visible) {
-      return;
-    }
-    if ('animations' in node) {
-      const properties = Object.keys(node.animations).filter(
-        (key) => Reflect.get(node.animations, key) !== undefined,
-      );
-      if (properties.length > 0) {
-        layers.push({ path, nodeId: node.id, properties: properties.sort() });
-      }
-    }
-    if ('children' in node) {
-      for (const child of node.children) {
-        walk(child, path === '' ? child.name : `${path}/${child.name}`);
-      }
-    }
-  }
-  try {
-    walk(variant, '');
-  } catch (error) {
-    if (!isMotionApiError(error)) {
-      throw error;
-    }
-    notices.push(`${where}: 모션 API를 쓸 수 없어 움직임을 보고하지 않았다.`);
-    return [];
-  }
-  return layers;
-}
-
-/**
- * 컴포넌트 속성 정의를 읽는다. 변형이 아닌 단독 컴포넌트와 세트만 정의를 가진다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param node 컴포넌트 세트나 단독 컴포넌트
- * @returns 속성 이름 → 종류와 기본값
- */
-function propertyDefinitionsOf(node: ComponentSetNode | ComponentNode): JsonObject {
-  const result: JsonObject = {};
-  for (const [key, definition] of Object.entries(node.componentPropertyDefinitions)) {
-    result[key.split('#')[0] ?? key] = {
-      type: definition.type,
-      ...(definition.type === 'INSTANCE_SWAP' ? {} : { default: definition.defaultValue }),
-      ...(definition.variantOptions === undefined
-        ? {}
-        : { options: [...definition.variantOptions] }),
-    };
-  }
-  return result;
-}
-
-/** 변형 PNG만 다시 내보낸 결과 */
-export type VariantImagesOutcome =
-  { ok: true; pngs: Map<string, Uint8Array> } | { ok: false; violations: Violation[] };
-
-/**
- * 컴포넌트(세트)의 변형 PNG만 다시 내보낸다. 바뀐 토큰을 쓰는 컴포넌트의 모습만 갱신할 때 쓴다.
- * 변형 트리의 구조 검사(checkVariant)는 하지 않는다. 자르는 조상만은 PNG 자체를 틀리게 만들므로 검사하고, 걸리면 PNG를 만들지 않는다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @codocs [[디자인 시스템:구조 검사]]
- * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
- * @param variants 내보낼 변형 이름(저장소에 있는 변형)
- * @param scale PNG 배율
- * @returns 변형 이름 → PNG, 또는 자르는 조상 위반. 노드를 찾지 못하면 null
- */
-export async function exportVariantImages(
-  nodeId: string,
-  variants: ReadonlySet<string>,
-  scale: number,
-): Promise<VariantImagesOutcome | null> {
-  const node = await findComponent(nodeId);
-  if (node === null) {
-    return null;
-  }
-  const violations = checkClippingAncestors(node.name, variantAncestors(node));
-  if (violations.length > 0) {
-    return { ok: false, violations };
-  }
-  const pngs = new Map<string, Uint8Array>();
-  for (const variant of variantsOf(node)) {
-    const slug = variantSlug(propertiesOf(node, variant));
-    if (variants.has(slug)) {
-      pngs.set(slug, await exportPng(variant, scale));
-    }
-  }
-  return { ok: true, pngs };
-}
-
-/**
- * 변형의 조상을 페이지 아래 가장 바깥부터 읽는다. 컴포넌트 세트의 변형은 세트가 가장 가까운 조상이고,
- * 세트의 변형은 모두 세트의 바로 아래 자식이라 조상이 같다. 변형 자신은 넣지 않는다.
- * @codocs [[디자인 시스템:구조 검사]]
- * @param node 컴포넌트 세트나 단독 컴포넌트
- * @returns 조상 목록
- */
-function variantAncestors(node: ComponentSetNode | ComponentNode): AncestorData[] {
-  const ancestors: AncestorData[] = [];
-  let current: BaseNode | null = node.type === 'COMPONENT_SET' ? node : node.parent;
-  while (current !== null && current.type !== 'PAGE' && current.type !== 'DOCUMENT') {
-    ancestors.unshift({
-      id: current.id,
-      name: current.name,
-      type: current.type,
-      isClippingContent: 'clipsContent' in current && current.clipsContent,
+export async function readComponent(
+  node: ComponentSetNode | ComponentNode,
+  context: ExportContext,
+): Promise<ComponentData> {
+  const slotKeys = slotKeysOf(node);
+  const variants = variantsOf(node);
+  const variantData: VariantData[] = [];
+  for (const variant of variants) {
+    const root = await readVariantTree(variant, slotKeys, context.read);
+    const { motion, problems } = await readVariantMotion(variant, root);
+    variantData.push({
+      name: variant.name,
+      nodeId: variant.id,
+      values: node.type === 'COMPONENT_SET' ? { ...variant.variantProperties } : {},
+      root,
+      transitions: transitionsOf(variant, variants),
+      motion,
+      motionProblems: problems,
     });
-    current = current.parent;
   }
-  return ancestors;
+  return {
+    name: node.name,
+    nodeId: node.id,
+    page: componentPageOf(placeOf(node).page),
+    description: node.description,
+    behavior: await behaviorOf(node, context.read),
+    sameNameCount: context.nameCounts.get(node.name) ?? 1,
+    properties: await propertyDefinitions(node, context.read),
+    variants: variantData,
+  };
 }
 
 /**
- * ID로 컴포넌트 세트나 단독 컴포넌트를 찾는다.
- * @param nodeId 노드 ID
- * @returns 노드, 없거나 컴포넌트가 아니면 null
- */
-async function findComponent(nodeId: string): Promise<ComponentSetNode | ComponentNode | null> {
-  const node = await figma.getNodeByIdAsync(nodeId);
-  return node !== null && (node.type === 'COMPONENT_SET' || node.type === 'COMPONENT')
-    ? node
-    : null;
-}
-
-/**
- * 컴포넌트 세트의 변형 목록을 구한다. 단독 컴포넌트는 자기 하나다.
- * @param node 컴포넌트 세트나 단독 컴포넌트
- * @returns 변형 목록
+ * 컴포넌트 세트의 변형 목록을 구한다. 변형이 없는 컴포넌트는 자기 하나다.
+ * @param node 컴포넌트 세트나 컴포넌트
+ * @returns 변형 목록(피그마 순서)
  */
 function variantsOf(node: ComponentSetNode | ComponentNode): ComponentNode[] {
   return node.type === 'COMPONENT_SET'
@@ -305,178 +153,115 @@ function variantsOf(node: ComponentSetNode | ComponentNode): ComponentNode[] {
 }
 
 /**
- * 변형 속성을 피그마 순서대로 읽는다. 단독 컴포넌트는 비어 있다.
- * @param node 컴포넌트 세트나 단독 컴포넌트
+ * 변형에서 다른 변형으로 걸린 전환(`CHANGE_TO`)을 읽는다. 계기(누르면, 올리면)는 읽지 않는다.
+ * @codocs [[디자인 시스템:상태]]
  * @param variant 변형
- * @returns 변형 속성 이름 → 값
+ * @param variants 같은 세트의 변형
+ * @returns 전환
  */
-function propertiesOf(
-  node: ComponentSetNode | ComponentNode,
+function transitionsOf(
   variant: ComponentNode,
-): Record<string, string> {
-  return node.type === 'COMPONENT_SET' ? { ...variant.variantProperties } : {};
-}
-
-/**
- * 변형을 PNG로 내보낸다.
- * @param variant 변형
- * @param scale 배율
- * @returns PNG 바이트
- */
-async function exportPng(variant: ComponentNode, scale: number): Promise<Uint8Array> {
-  return variant.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: scale } });
-}
-
-/**
- * 자산 인스턴스를 자산 이름별로 모은다. 같은 자산 이름에 다른 원본 컴포넌트가 있으면 실패한다.
- * @param node 노드 데이터
- * @param assets 자산 이름 → 자산
- */
-function collectAssets(node: NodeData, assets: Map<string, AssetData>): void {
-  if (node.asset !== null) {
-    const name = assetName(node.asset);
-    const known = assets.get(name);
-    if (known !== undefined && known.mainComponentId !== node.asset.mainComponentId) {
-      throw new Error(`자산 "${name}"에 해당하는 컴포넌트가 둘 이상이다.`);
+  variants: readonly ComponentNode[],
+): VariantTransition[] {
+  const result: VariantTransition[] = [];
+  for (const reaction of variant.reactions) {
+    for (const action of reaction.actions ?? []) {
+      if (action.type !== 'NODE' || action.navigation !== 'CHANGE_TO') {
+        continue;
+      }
+      const destination = variants.find((other) => other.id === action.destinationId);
+      if (destination === undefined) {
+        continue;
+      }
+      const { transition } = action;
+      result.push({
+        destination: destination.name,
+        transition:
+          transition === null
+            ? null
+            : {
+                type: transition.type,
+                duration: transition.duration,
+                easing: easingData(transition.easing),
+              },
+      });
     }
-    assets.set(name, node.asset);
-    return;
   }
-  for (const child of node.children) {
-    collectAssets(child, assets);
-  }
+  return result;
 }
 
 /**
- * 자산 원본 컴포넌트를 파일로 내보낸다.
- * 한 가지 색 자산은 SVG의 색을 currentColor로 바꾸고(색은 코드의 글자 색 클래스가 정한다),
- * 여러 색 자산은 SVG 그대로 내보낸다. 래스터 이미지는 rasterAsset이 정한다. SVG 안의 id는 내용으로 정해지는 이름으로 바꾼다.
- * 경로 트림이 걸린 벡터는 벡터 경로와 트림 기본값으로 `pathLength="1"`·`stroke-dasharray` 요소를 직접 만든다.
- * 트림이 없는 자산은 피그마가 내보낸 SVG를 그대로 쓴다.
- * @codocs [[디자인 시스템:자산]]
- * @codocs [[디자인 시스템:모션]]
- * @param asset 자산
- * @returns 파일 내용과 확장자
+ * 컴포넌트 속성 정의를 피그마 순서대로 읽는다. 변형 축도 `VARIANT` 속성으로 담는다.
+ * 인스턴스 교체 속성의 기본값과 선호값은 원본 참조로 옮긴다. 키로 찾지 못한 선호값은 뺀다.
+ * @codocs [[디자인 시스템:컴포넌트 입력]]
+ * @codocs [[디자인 시스템:아이콘 자리]]
+ * @param node 컴포넌트 세트나 변형이 없는 컴포넌트
+ * @param context 읽기 정보
+ * @returns 속성 정의
  */
-async function exportAsset(asset: AssetData): Promise<AssetExport> {
-  const node = await figma.getNodeByIdAsync(asset.mainComponentId);
-  if (node === null || node.type !== 'COMPONENT') {
-    throw new Error(`자산 컴포넌트 ${asset.name}를 찾을 수 없다.`);
-  }
-  if (asset.kind === 'raster') {
-    return rasterAsset(node);
-  }
-  const exported = normalizeSvgBytes(
-    await node.exportAsync({ format: 'SVG', svgOutlineText: true, svgIdAttribute: false }),
-  );
-  const trims = trimmedVectors(node);
-  const svg =
-    trims.length === 0
-      ? exported
-      : utf8Encode(trimmedPathSvg(utf8Decode(exported), asset.name, trims));
-  return { bytes: asset.kind === 'mono' ? monoColorSvg(svg) : svg, extension: 'svg' };
-}
-
-/**
- * 자산 컴포넌트 안에서 경로 트림 키프레임(PATH_TRIM_START·PATH_TRIM_END)이 걸린 레이어를 읽는다.
- * 경로는 벡터의 `vectorPaths`(트림 전 전체), 위치는 두 노드의 `absoluteTransform`, 보이는 범위는 트랙의 기본값(baseValue)이다.
- * 트랙이 없는 쪽은 트림이 없는 값(시작 0, 끝 1)이다.
- * @codocs [[디자인 시스템:모션]]
- * @param component 자산 컴포넌트
- * @returns 트림 레이어
- */
-function trimmedVectors(component: ComponentNode): TrimmedVector[] {
-  let nodes: SceneNode[];
-  try {
-    nodes = component.findAll((node) => {
-      const tracks = trimTracks(node);
-      return tracks.start !== undefined || tracks.end !== undefined;
+async function propertyDefinitions(
+  node: ComponentSetNode | ComponentNode,
+  context: ReadContext,
+): Promise<PropertyDefinition[]> {
+  const result: PropertyDefinition[] = [];
+  for (const [key, definition] of Object.entries(node.componentPropertyDefinitions)) {
+    const name = key.split('#')[0] ?? key;
+    const preferredValues = (definition.preferredValues ?? []).flatMap((value): ComponentRef[] => {
+      const found = context.componentsByKey.get(value.key);
+      return found === undefined ? [] : [componentRef(found, context)];
     });
-  } catch (error) {
-    if (isMotionApiError(error)) {
-      throw new Error(
-        `자산 ${component.name}: 모션 API를 쓸 수 없어 경로 트림을 확인할 수 없다. 모션 기능을 쓸 수 있는 계정으로 내보낸다.`,
-      );
-    }
-    throw error;
-  }
-  return nodes.map((node) => trimmedVector(component, node));
-}
-
-/**
- * 트림 레이어 하나를 순수 데이터로 옮긴다.
- * @param component 자산 컴포넌트
- * @param node 트림 레이어
- * @returns 트림 벡터
- */
-function trimmedVector(component: ComponentNode, node: SceneNode): TrimmedVector {
-  const tracks = trimTracks(node);
-  return {
-    name: node.name,
-    paths: node.type === 'VECTOR' ? node.vectorPaths.map((path) => path.data) : null,
-    transform: relativeTransform(component.absoluteTransform, node.absoluteTransform),
-    start: trimBase(tracks.start, 0),
-    end: trimBase(tracks.end, 1),
-  };
-}
-
-/**
- * 노드의 경로 트림 트랙을 꺼낸다.
- * @param node 노드
- * @returns 시작·끝 트랙(없으면 undefined)
- */
-function trimTracks(node: SceneNode): {
-  start: ManualKeyframeBinding | undefined;
-  end: ManualKeyframeBinding | undefined;
-} {
-  if (!('manualKeyframeTracks' in node)) {
-    return { start: undefined, end: undefined };
-  }
-  const tracks = node.manualKeyframeTracks;
-  return { start: tracks.PATH_TRIM_START, end: tracks.PATH_TRIM_END };
-}
-
-/**
- * 트림 트랙의 기본값을 읽는다.
- * @param track 트림 트랙
- * @param fallback 트랙이 없을 때의 값
- * @returns 기본값, 숫자가 아니면 null
- */
-function trimBase(track: ManualKeyframeBinding | undefined, fallback: number): number | null {
-  if (track === undefined) {
-    return fallback;
-  }
-  return track.baseValue.type === 'FLOAT' ? track.baseValue.value : null;
-}
-
-/** 내보낸 자산 파일의 내용과 확장자. extension: 바이트의 실제 형식에 맞는 확장자(`svg`, `png`, `jpg` 등). */
-export type AssetExport = {
-  bytes: Uint8Array;
-  extension: string;
-};
-
-/**
- * 이미지 자산의 바이트를 읽는다. 이미지 칠 하나만 있으면 원본 이미지를, 아니면 1배 PNG를 쓴다.
- * 원본을 쓰면 토큰의 이미지 칠과 같은 해시의 파일이 된다. 확장자는 바이트의 매직넘버로 정한다(JPEG 원본이면 `jpg`).
- * 원본이 알 수 없는 형식이면 1배 PNG로 내보낸다.
- * @codocs [[디자인 시스템:자산]]
- * @param node 자산 컴포넌트
- * @returns 이미지 바이트와 확장자
- */
-export async function rasterAsset(node: ComponentNode): Promise<AssetExport> {
-  const fills =
-    node.fills === figma.mixed ? [] : node.fills.filter((fill) => fill.visible !== false);
-  const [fill] = fills;
-  if (fills.length === 1 && fill?.type === 'IMAGE' && fill.imageHash !== null) {
-    const image = figma.getImageByHash(fill.imageHash);
-    if (image !== null) {
-      const bytes = await image.getBytesAsync();
-      const extension = rasterExtension(bytes);
-      if (extension !== undefined) {
-        return { bytes, extension };
+    switch (definition.type) {
+      case 'VARIANT':
+        result.push({
+          type: 'VARIANT',
+          key,
+          name,
+          options: [...(definition.variantOptions ?? [])],
+          default: String(definition.defaultValue),
+        });
+        break;
+      case 'BOOLEAN':
+        result.push({
+          type: 'BOOLEAN',
+          key,
+          name,
+          isOnByDefault: definition.defaultValue === true,
+        });
+        break;
+      case 'TEXT':
+        result.push({ type: 'TEXT', key, name, default: String(definition.defaultValue) });
+        break;
+      case 'INSTANCE_SWAP': {
+        const fallback: ComponentRef = { kind: 'component', name: '', values: {} };
+        const defaultRef = await componentRefById(String(definition.defaultValue), context);
+        result.push({
+          type: 'INSTANCE_SWAP',
+          key,
+          name,
+          default: defaultRef ?? fallback,
+          preferredValues,
+        });
+        break;
+      }
+      case 'SLOT': {
+        const settings = definition.slotSettings ?? {};
+        result.push({
+          type: 'SLOT',
+          key,
+          name,
+          description: definition.description ?? '',
+          preferredValues,
+          settings: {
+            minChildren: settings.minChildren ?? null,
+            maxChildren: settings.maxChildren ?? null,
+            shouldStretchChildOnInsert: settings.stretchChildOnInsert ?? false,
+            isEmptyByDefault: settings.displayEmptyByDefault ?? false,
+            isPreferredValuesOnly: settings.allowPreferredValuesOnly ?? false,
+          },
+        });
+        break;
       }
     }
   }
-  const png = await node.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: 1 } });
-  return { bytes: png, extension: 'png' };
+  return result;
 }

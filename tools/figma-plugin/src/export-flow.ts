@@ -1,19 +1,11 @@
-import { TokenFormatError } from '../../../packages/design-system/scripts/tokens/tokens-css';
-import type { Violation } from './core/check-structure';
-import { exportTargetCore, exportVariantImages, type TargetExport } from './core/export-component';
-import { exportMotionCore, type MotionFileExport } from './core/export-motion';
+import type {
+  ComponentLayout,
+  ComponentSchema,
+} from '../../../packages/design-system/src/figma-contract';
+import { exportAssets } from './core/export-assets';
+import { createExportContext, exportComponent } from './core/export-component';
 import { exportTokensText, type TokensExport } from './core/export-tokens';
-import { isMotionApiError, readMotionVariables } from './core/read-motion';
-import {
-  MANIFEST_FILE,
-  manifestFiles,
-  manifestText,
-  pngFile,
-  readManifestNodeId,
-  renamedFolders,
-  settingsText,
-} from './export-manifest';
-import { readCheckContext, readComponentTokenUsage } from './figma-reader';
+import { gitBlobSha } from './git-blob';
 import {
   commitUrl,
   createBlob,
@@ -34,60 +26,44 @@ import {
 import type {
   ExportOutcome,
   ExportProgress,
-  PatternReportView,
   PullRequestCommit,
+  TargetKind,
   ViolationGroup,
 } from './messages';
-import { assetFilePath, componentSlug, patternFolder, patternPlace } from './naming';
+import { assetFilePath, componentLayoutPath, componentSchemaPath, componentSlug } from './naming';
+import { ASSETS_DIR, BASE_BRANCH, FILE_KEY, TOKENS_PATH } from './plugin-config';
 import {
-  ASSETS_DIR,
-  BASE_BRANCH,
-  COMPONENTS_DIR,
-  FIGMA_DIR,
-  FILE_KEY,
-  MOTIONS_DIR,
-  PATTERNS_DIR,
-  SCALE,
-  SETTINGS_PATH,
-  TOKEN_NAMES_PATH,
-  TOKENS_CSS_PATH,
-  TOKENS_PATH,
-} from './plugin-config';
-import {
+  ASSETS_BRANCH,
+  assetsCommitSubject,
+  assetsPullRequestBody,
+  changesetPath,
+  changesetText,
   componentBranchName,
   componentCommitSubject,
   componentPullRequestBody,
-  motionBranchName,
-  motionCommitBody,
-  motionCommitSubject,
-  motionPullRequestBody,
-  patternBranchName,
-  patternPullRequestBody,
-  patternsCommitSubject,
-  type TargetChanges,
-  targetCommitBody,
   TOKENS_BRANCH,
   tokensCommitBody,
   tokensCommitSubject,
   tokensPullRequestBody,
+  variantChanges,
 } from './pull-request-text';
-import { utf8Encode } from './sha256';
-import { componentsUsingTokens, tokenChanges } from './token-changes';
-import { parentFolder, planTree } from './tree-changes';
+import { tokenChanges } from './token-changes';
+import { COMPARED_PREFIXES, isAssetSourcePath, planTree } from './tree-changes';
+import { utf8Encode } from './utf8';
 
 /**
  * 내보내기 요청.
- * - componentIds: 내보낼 컴포넌트. 조립·애니메이션과 함께 비어 있으면 토큰만 내보낸다
- * - patternIds: 내보낼 조립
- * - motionIds: 내보낼 애니메이션 견본
- * - notify: 막지 않는 알림(쓰는 곳이 없는 변수·스타일, 같은 값 변수가 여럿인 모션 짝, 건너뛴 애니메이션)을 UI에 보여 준다
+ * - isTokensSelected: 토큰을 골랐는지. 고르지 않아도 토큰은 늘 읽어 main과 비교하고, 다르면 토큰 PR을 연다
+ * - isAssetsSelected: 자산을 골랐는지
+ * - componentIds: 내보낼 컴포넌트(세트이거나 변형이 없는 컴포넌트)
+ * - notify: 막지 않는 알림(쓰는 곳이 없는 변수·스타일)을 UI에 보여 준다
  * - progress: 진행 막대와 지금 하는 일을 UI에 알린다
  */
 export type ExportRequest = {
   token: string;
+  isTokensSelected: boolean;
+  isAssetsSelected: boolean;
   componentIds: readonly string[];
-  patternIds: readonly string[];
-  motionIds: readonly string[];
   log: (text: string) => void;
   notify: (notices: string[]) => void;
   progress: (update: ExportProgress) => void;
@@ -96,11 +72,8 @@ export type ExportRequest = {
 /** 브랜치 끝 커밋과 트리 */
 type Head = { commitSha: string; treeSha: string };
 
-/** 브랜치 끝과 그때의 피그마 기준 자료 파일(경로 → blob SHA) */
+/** 브랜치 끝과 그때의 비교 범위 파일(경로 → blob SHA) */
 type RepoState = { head: Head; files: Map<string, string> };
-
-/** 저장소에서 읽는 파일 범위 */
-const REPO_PREFIXES = [`${FIGMA_DIR}/`, TOKENS_CSS_PATH, `${PATTERNS_DIR}/`] as const;
 
 /**
  * 커밋할 PR 브랜치의 상태.
@@ -113,26 +86,36 @@ type Target = {
   openPullRequest: { url: string; number: number } | null;
 };
 
-/** 내보낸 대상 하나와 저장소 위치. folder: 저장소의 대상 폴더. */
-type PlacedTarget = {
-  exported: TargetExport;
-  folder: string;
+/** 쓸 파일 하나. sha는 플러그인에서 계산한 git blob SHA-1이다 */
+type DesiredFile = { path: string; bytes: Uint8Array; sha: string };
+
+/** 검사를 통과한 컴포넌트 */
+type ExportedComponent = {
+  name: string;
+  slug: string;
+  schema: ComponentSchema;
+  layout: ComponentLayout;
 };
 
-/** 내보낸 조립 하나와 영역 */
-type PlacedPattern = PlacedTarget & { area: string };
+/** 커밋 글. subject: 커밋 제목(PR 제목), message: 커밋 메시지, body: PR 본문, changeset: PR을 열 때 올리는 changeset */
+type CommitText = {
+  target: string;
+  kind: TargetKind;
+  subject: string;
+  message: string;
+  body: string;
+  changeset: { name: string; target: string };
+};
 
 /**
- * 고른 컴포넌트·조립·애니메이션을 구조 검사한 뒤, 컴포넌트마다 고정 브랜치(`feat/figma-<컴포넌트>`)의 PR에,
- * 조립은 영역마다 고정 브랜치(`feat/figma-patterns-<영역>`)의 PR에, 애니메이션은 견본마다 고정 브랜치
- * (`feat/figma-motion-<견본 이름에서 motion-을 뺀 이름>`)의 PR에 커밋한다. 위반이 하나라도 있으면 아무것도 커밋하지 않는다.
- * 컴포넌트 PR은 그 컴포넌트 폴더와 쓰는 자산(과 figma.json)만, 조립 PR은 그 영역의 조립 폴더와 쓰는 자산만,
- * 애니메이션 PR은 `figma/motions/<이름>.json`만 바꾼다. 토큰만 고르면 토큰만 내보낸다.
- * 토큰은 늘 읽어 main의 tokens.json과 비교하고, 다르면 토큰 PR(`feat/figma-tokens`)을 따로 열거나 갱신한다.
- * 진행은 검사(대상마다 하나와 토큰)와 커밋(PR마다 하나와 토큰) 두 단계로 알린다.
+ * 고른 대상을 구조 검사한 뒤 PR에 커밋한다. 컴포넌트는 하나마다 `feat/figma-<컴포넌트>`, 자산은 `feat/figma-assets`,
+ * 토큰은 `feat/figma-tokens` PR이다. 위반이 하나라도 있으면 아무것도 커밋하지 않는다.
+ * 컴포넌트 PR은 그 컴포넌트의 스키마와 검증 자료만, 자산 PR은 자산 원본만, 토큰 PR은 tokens.json만 바꾸고,
+ * PR을 열 때 changeset을 함께 올린다. 바뀐 파일만 blob으로 올린다.
+ * 토큰은 고르지 않아도 늘 읽어 main의 tokens.json과 비교하고, 다르면 토큰 PR을 열거나 갱신한다.
  * @codocs [[디자인 시스템:피그마 플러그인]]
- * @codocs [[디자인 시스템:플러그인 화면]]
- * @param request 토큰, 고른 컴포넌트와 조립, 진행 로그
+ * @codocs [[디자인 시스템:PR 흐름]]
+ * @param request 토큰, 고른 대상, 진행 로그
  * @returns PR별 커밋 결과, 또는 대상별 위반 목록
  */
 export async function runExport(request: ExportRequest): Promise<ExportOutcome> {
@@ -140,10 +123,7 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
   if (figma.fileKey !== undefined && figma.fileKey !== FILE_KEY) {
     throw new Error(`이 파일(${figma.fileKey})은 내보내기 대상(${FILE_KEY})이 아니다.`);
   }
-
-  log('구조 검사 중');
-  const checkTotal =
-    request.componentIds.length + request.patternIds.length + request.motionIds.length + 1;
+  const checkTotal = request.componentIds.length + (request.isAssetsSelected ? 1 : 0) + 1;
   let checked = 0;
   /**
    * 검사 단계에서 대상 하나를 시작했음을 알린다.
@@ -153,93 +133,59 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
     request.progress({ phase: 'check', done: checked, total: checkTotal, text });
     checked += 1;
   }
-  const context = await readCheckContext();
-  const components: PlacedTarget[] = [];
+
+  log('구조 검사 중');
   const groups: ViolationGroup[] = [];
-  const targetNotices: string[] = [];
+  const components: ExportedComponent[] = [];
+  const context = request.componentIds.length === 0 ? null : await createExportContext();
   for (const id of request.componentIds) {
-    checkStep(`${await nodeName(id)} 검사·내보내는 중`);
-    const outcome = await exportTargetCore(id, SCALE, context, 'component');
-    if (!outcome.ok) {
-      log(`${outcome.name}: 위반 ${String(outcome.violations.length)}개`);
-      groups.push({ target: outcome.name, kind: 'component', violations: outcome.violations });
+    const node = await figma.getNodeByIdAsync(id);
+    if (node?.type !== 'COMPONENT_SET' && node?.type !== 'COMPONENT') {
+      throw new Error(`컴포넌트 ${id}를 찾을 수 없다.`);
+    }
+    checkStep(`${node.name} 검사·내보내는 중`);
+    const outcome = await exportComponent(node, context === null ? {} : { context });
+    if (outcome.violations.length > 0 || outcome.schema === null || outcome.layout === null) {
+      log(`${node.name}: 위반 ${String(outcome.violations.length)}개`);
+      groups.push({ target: node.name, kind: 'component', violations: outcome.violations });
       continue;
     }
-    targetNotices.push(...outcome.notices);
-    const slug = componentSlug(outcome.target.manifest.name);
-    if (components.some((other) => other.folder === `${COMPONENTS_DIR}/${slug}`)) {
+    const slug = componentSlug(node.name);
+    if (components.some((other) => other.slug === slug)) {
       throw new Error(`컴포넌트 폴더 이름 "${slug}"가 겹친다.`);
     }
     componentBranchName(slug);
-    log(`${outcome.target.manifest.name}: 변형 ${String(outcome.target.pngs.size)}개 내보냄`);
-    components.push({
-      exported: outcome.target,
-      folder: `${COMPONENTS_DIR}/${slug}`,
-    });
-  }
-  const patterns: PlacedPattern[] = [];
-  for (const id of request.patternIds) {
-    checkStep(`${await nodeName(id)} 검사·내보내는 중`);
-    const outcome = await exportTargetCore(id, SCALE, context, 'pattern');
-    const name = outcome.ok ? outcome.target.manifest.name : outcome.name;
-    const place = patternPlace(name);
-    const violations: Violation[] = [];
-    if (place === null) {
-      violations.push({
-        where: name,
-        reason: '조립 이름이 `영역/이름` 꼴이 아니라 폴더를 정할 수 없다',
-        fix: '조립 이름을 `영역/이름`(예: `Menu/Folder`)으로 바꾼다.',
-        nodeId: id,
-      });
-    }
-    if (!outcome.ok) {
-      log(`${name}: 위반 ${String(outcome.violations.length)}개`);
-      violations.push(...outcome.violations);
-    }
-    if (violations.length > 0) {
-      groups.push({ target: name, kind: 'pattern', violations });
-    }
-    if (!outcome.ok || place === null) {
-      continue;
-    }
-    targetNotices.push(...outcome.notices);
-    const folder = patternFolder(place);
-    if (patterns.some((other) => other.folder === folder)) {
-      throw new Error(`조립 폴더 "${folder}"가 겹친다.`);
-    }
-    log(`${name}: 변형 ${String(outcome.target.pngs.size)}개 내보냄`);
-    patterns.push({
-      exported: outcome.target,
-      folder,
-      area: place.area,
-    });
+    log(`${node.name}: 변형 ${String(outcome.schema.variants.length)}개 읽음`);
+    components.push({ name: node.name, slug, schema: outcome.schema, layout: outcome.layout });
   }
 
-  const motionNotices: string[] = [];
-  const motions = await exportMotions(request.motionIds, {
-    groups,
-    notices: motionNotices,
-    log,
-    step: checkStep,
-  });
+  let assets: Map<string, Uint8Array> | null = null;
+  if (request.isAssetsSelected) {
+    checkStep('자산 내보내는 중');
+    log('자산 내보내는 중');
+    const exported = await exportAssets();
+    if (exported.violations.length > 0) {
+      groups.push({ target: '자산', kind: 'assets', violations: exported.violations });
+    } else {
+      assets = exported.files;
+      log(`자산 ${String(exported.files.size)}개 읽음`);
+    }
+  }
 
-  checkStep('토큰 변환 중');
-  log('토큰 변환 중');
+  checkStep('토큰 읽는 중');
+  log('토큰 읽는 중');
   const tokens = await readTokens(groups);
   if (tokens === null || groups.length > 0) {
-    request.notify([...targetNotices, ...motionNotices]);
     return { kind: 'blocked', groups };
   }
   for (const name of tokens.skippedStyles) {
     log(`토큰이 아닌 칠 스타일이라 건너뜀: ${name}`);
   }
-  request.notify([...targetNotices, ...motionNotices, ...tokens.notices]);
+  request.notify(tokens.notices);
 
-  log(`${BASE_BRANCH} 브랜치의 기준 자료를 읽는 중`);
+  log(`${BASE_BRANCH} 브랜치를 읽는 중`);
   const main = await readRepoState(token, BASE_BRANCH);
-
-  const areas = [...new Set(patterns.map((pattern) => pattern.area))];
-  const commitTotal = components.length + areas.length + motions.length + 1;
+  const commitTotal = components.length + (assets === null ? 0 : 1) + 1;
   let committed = 0;
   /**
    * 커밋 단계에서 PR 하나를 시작했음을 알린다.
@@ -251,175 +197,54 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
   }
   const commits: PullRequestCommit[] = [];
   const unchanged: string[] = [];
+  /**
+   * 커밋 결과를 모은다.
+   * @param name 대상 이름
+   * @param commit 커밋 결과, 바뀐 것이 없으면 null
+   */
+  function collect(name: string, commit: PullRequestCommit | null): void {
+    if (commit === null) {
+      unchanged.push(name);
+    } else {
+      commits.push(commit);
+    }
+  }
   for (const component of components) {
-    commitStep(`${component.exported.manifest.name} 커밋 중`);
-    const commit = await commitComponent(token, component, main, log);
-    if (commit === null) {
-      unchanged.push(component.exported.manifest.name);
-    } else {
-      commits.push(commit);
-    }
+    commitStep(`${component.name} 커밋 중`);
+    collect(component.name, await commitComponent(token, component, main, log));
   }
-  for (const area of areas) {
-    commitStep(`${area} 조립 커밋 중`);
-    const group = patterns.filter((pattern) => pattern.area === area);
-    const commit = await commitPatterns(token, area, group, main, log);
-    if (commit === null) {
-      unchanged.push(...group.map((pattern) => pattern.exported.manifest.name));
-    } else {
-      commits.push(commit);
-    }
-  }
-  for (const motion of motions) {
-    commitStep(`${motion.name} 커밋 중`);
-    const commit = await commitMotion(token, motion, main, log);
-    if (commit === null) {
-      unchanged.push(motion.name);
-    } else {
-      commits.push(commit);
-    }
+  if (assets !== null) {
+    commitStep('자산 커밋 중');
+    collect('자산', await commitAssets(token, assets, main, log));
   }
   commitStep('토큰 비교·커밋 중');
-  const tokensCommit = await commitTokens(
-    token,
-    tokens,
-    main,
-    new Set(components.map((component) => component.exported.manifest.name)),
-    log,
-  );
+  const tokensCommit = await commitTokens(token, tokens, main, log);
   if (tokensCommit !== null) {
     commits.push(tokensCommit);
+  } else if (request.isTokensSelected) {
+    unchanged.push('토큰');
   }
   request.progress({ phase: 'commit', done: commitTotal, total: commitTotal, text: '끝' });
-  return { kind: 'done', commits, unchanged, reports: patterns.map(reportView) };
+  return { kind: 'done', commits, unchanged };
 }
 
 /**
- * 진행 문구에 쓸 노드 이름을 읽는다.
- * @param id 노드 ID
- * @returns 노드 이름, 찾지 못하면 ID
- */
-async function nodeName(id: string): Promise<string> {
-  return (await figma.getNodeByIdAsync(id))?.name ?? id;
-}
-
-/**
- * 고른 애니메이션 견본을 모션 검사하고 json 내용을 만든다. 위반은 견본별 묶음으로 더한다.
- * 모션 API를 쓸 수 없는 계정이면 애니메이션만 건너뛰고 알림을 남긴다(다른 대상은 그대로 내보낸다).
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @codocs [[디자인 시스템:모션]]
- * @param ids 견본 프레임 ID
- * @param sink 위반 묶음·알림을 더할 목록과 진행 알림
- * @param sink.groups 위반 묶음을 더할 목록
- * @param sink.notices 알림을 더할 목록
- * @param sink.log 진행 로그
- * @param sink.step 견본 하나를 시작할 때 진행을 알리는 함수
- * @returns 검사를 통과한 모션
- */
-async function exportMotions(
-  ids: readonly string[],
-  sink: {
-    groups: ViolationGroup[];
-    notices: string[];
-    log: (text: string) => void;
-    step: (text: string) => void;
-  },
-): Promise<MotionFileExport[]> {
-  const { groups, notices, log, step } = sink;
-  if (ids.length === 0) {
-    return [];
-  }
-  log('모션 검사 중');
-  const motions: MotionFileExport[] = [];
-  try {
-    const variables = await readMotionVariables();
-    for (const id of ids) {
-      step(`${await nodeName(id)} 모션 검사 중`);
-      const outcome = await exportMotionCore(id, variables, FILE_KEY);
-      if (!outcome.ok) {
-        log(`${outcome.name}: 위반 ${String(outcome.violations.length)}개`);
-        groups.push({ target: outcome.name, kind: 'motion', violations: outcome.violations });
-        continue;
-      }
-      const { motion } = outcome;
-      if (motions.some((other) => other.name === motion.name)) {
-        throw new Error(`애니메이션 견본 이름 "${motion.name}"가 겹친다.`);
-      }
-      log(`${motion.name}: 트랙 ${String(motion.result.motion.tracks.length)}개 내보냄`);
-      notices.push(...motion.result.notices);
-      motions.push(motion);
-    }
-  } catch (error) {
-    if (!isMotionApiError(error)) {
-      throw error;
-    }
-    log('모션 API를 쓸 수 없어 애니메이션 내보내기를 건너뛴다.');
-    notices.push('이 계정은 피그마 모션 API를 쓸 수 없어 애니메이션을 내보내지 않았다.');
-    return [];
-  }
-  return motions;
-}
-
-/**
- * 애니메이션 견본 하나를 그 견본의 PR(`feat/figma-motion-<견본 이름에서 motion-을 뺀 이름>`)에 커밋한다. `figma/motions/<이름>.json`만 바꾼다.
- * 브랜치와 내용이 같으면 커밋하지 않는다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param token GitHub 토큰
- * @param motion 내보낸 모션
- * @param main main 상태
- * @param log 진행 로그
- * @returns 커밋 결과, 바뀐 것이 없으면 null
- */
-async function commitMotion(
-  token: string,
-  motion: MotionFileExport,
-  main: RepoState,
-  log: (text: string) => void,
-): Promise<PullRequestCommit | null> {
-  const branch = motionBranchName(motion.name);
-  const target = await readTarget(token, branch, main);
-  log(
-    `${motion.name}: ${target.openPullRequest === null ? BASE_BRANCH : branch} 기준으로 비교하는 중`,
-  );
-  const desired = new Map([
-    [`${MOTIONS_DIR}/${motion.name}.json`, await textBlob(token, motion.text)],
-  ]);
-  const plan = planTree(desired, target.state.files, []);
-  if (plan.entries.length === 0) {
-    log(`${motion.name}: 바뀐 것이 없어 커밋하지 않는다.`);
-    return null;
-  }
-  const subject = motionCommitSubject(motion.name);
-  return commitToPullRequest(token, target, plan.entries, {
-    target: motion.name,
-    kind: 'motion',
-    subject,
-    message: `${subject}\n\n${motionCommitBody(motion.result.motion)}`,
-    body: motionPullRequestBody(motion.result.motion),
-    log,
-  });
-}
-
-/**
- * tokens.json과 tokens.css를 만든다. 변환 규칙에 맞지 않는 토큰이 있으면 위반으로 더하고 null을 돌려준다.
- * @codocs [[디자인 시스템:토큰 생성]]
+ * tokens.json을 만든다. 규칙에 맞지 않는 토큰이 있으면 위반으로 더하고 null을 돌려준다.
+ * @codocs [[디자인 시스템:토큰 검사]]
  * @param groups 위반 묶음을 더할 목록
- * @returns 내보낸 토큰, 변환에 실패하면 null
+ * @returns 내보낸 토큰, 만들 수 없으면 null
  */
 async function readTokens(groups: ViolationGroup[]): Promise<TokensExport | null> {
   try {
     return await exportTokensText();
   } catch (error) {
-    if (!(error instanceof TokenFormatError)) {
-      throw error;
-    }
     groups.push({
       target: '토큰',
       kind: 'tokens',
       violations: [
         {
           where: '토큰',
-          reason: `tokens.css를 만들 수 없다: ${error.message}`,
+          reason: error instanceof Error ? error.message : String(error),
           fix: '피그마에서 토큰 이름이나 값을 고친다. 규칙이 없는 변수 묶음·스타일 종류면 토큰 생성 규칙을 먼저 정한다.',
           nodeId: null,
         },
@@ -430,14 +255,238 @@ async function readTokens(groups: ViolationGroup[]): Promise<TokensExport | null
 }
 
 /**
- * 브랜치 끝과 피그마 기준 자료 파일 목록을 읽는다.
+ * 컴포넌트 하나를 그 컴포넌트의 PR에 커밋한다. 스키마와 검증 자료만 바꾼다.
+ * PR 본문은 main의 스키마와 견준 변형 변경 표다.
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @param token GitHub 토큰
+ * @param component 검사를 통과한 컴포넌트
+ * @param main main 상태
+ * @param log 진행 로그
+ * @returns 커밋 결과, 바뀐 것이 없으면 null
+ */
+async function commitComponent(
+  token: string,
+  component: ExportedComponent,
+  main: RepoState,
+  log: (text: string) => void,
+): Promise<PullRequestCommit | null> {
+  const schemaPath = componentSchemaPath(component.slug);
+  const files = [
+    textFile(schemaPath, jsonFileText(component.schema)),
+    textFile(componentLayoutPath(component.slug), jsonFileText(component.layout)),
+  ];
+  const target = await readTarget(token, componentBranchName(component.slug), main);
+  log(
+    `${component.name}: ${target.openPullRequest === null ? BASE_BRANCH : target.branch} 기준으로 비교하는 중`,
+  );
+  if (planTree(shaMap(files), target.state.files).entries.length === 0) {
+    log(`${component.name}: 바뀐 것이 없어 커밋하지 않는다.`);
+    return null;
+  }
+  const mainText = main.files.has(schemaPath)
+    ? await getFileText(token, schemaPath, main.head.commitSha)
+    : null;
+  const mainSchema = mainText === null ? null : parseSchema(mainText);
+  const subject = componentCommitSubject(component.slug);
+  return commitFiles(
+    token,
+    target,
+    files,
+    () => false,
+    {
+      target: component.name,
+      kind: 'component',
+      subject,
+      message: `${subject}\n\n피그마에서 내보낸 ${component.name}의 스키마와 검증 자료를 갱신한다.`,
+      body: componentPullRequestBody(
+        component.name,
+        variantChanges(mainSchema, component.schema),
+        mainText === null,
+      ),
+      changeset: { name: `figma-${component.slug}`, target: `${component.name} 컴포넌트` },
+    },
+    log,
+  );
+}
+
+/**
+ * 자산 원본을 자산 PR에 커밋한다. 자산을 모두 내보냈으므로, 피그마에서 지웠거나 형식이 바뀐 예전 원본은 지운다.
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @codocs [[디자인 시스템:자산]]
+ * @param token GitHub 토큰
+ * @param assets 자산 폴더 기준 경로 → 내용
+ * @param main main 상태
+ * @param log 진행 로그
+ * @returns 커밋 결과, 바뀐 것이 없으면 null
+ */
+async function commitAssets(
+  token: string,
+  assets: ReadonlyMap<string, Uint8Array>,
+  main: RepoState,
+  log: (text: string) => void,
+): Promise<PullRequestCommit | null> {
+  const files = [...assets].map(([file, bytes]) => desiredFile(assetFilePath(file), bytes));
+  const target = await readTarget(token, ASSETS_BRANCH, main);
+  if (planTree(shaMap(files), target.state.files, isAssetSourcePath).entries.length === 0) {
+    log('자산: 바뀐 것이 없어 커밋하지 않는다.');
+    return null;
+  }
+  const fromMain = planTree(shaMap(files), main.files, isAssetSourcePath);
+  const prefixLength = ASSETS_DIR.length + 1;
+  const body = assetsPullRequestBody({
+    changedFiles: fromMain.changed.map((path) => path.slice(prefixLength)),
+    deletedFiles: fromMain.deleted.map((path) => path.slice(prefixLength)),
+  });
+  const subject = assetsCommitSubject();
+  return commitFiles(
+    token,
+    target,
+    files,
+    isAssetSourcePath,
+    {
+      target: '자산',
+      kind: 'assets',
+      subject,
+      message: `${subject}\n\n${body}`,
+      body,
+      changeset: { name: 'figma-assets', target: '자산' },
+    },
+    log,
+  );
+}
+
+/**
+ * 토큰이 main과 다르면 토큰 PR에 커밋한다. tokens.json만 바꾼다. main과 같으면 PR을 열지 않는다.
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @param token GitHub 토큰
+ * @param tokens 내보낸 토큰
+ * @param main main 상태
+ * @param log 진행 로그
+ * @returns 커밋 결과, main과 같거나 토큰 PR이 이미 같은 내용이면 null
+ */
+async function commitTokens(
+  token: string,
+  tokens: TokensExport,
+  main: RepoState,
+  log: (text: string) => void,
+): Promise<PullRequestCommit | null> {
+  const files = [textFile(TOKENS_PATH, tokens.text)];
+  if (planTree(shaMap(files), main.files).entries.length === 0) {
+    log(`토큰이 ${BASE_BRANCH}와 같아 토큰 PR을 만들지 않는다.`);
+    return null;
+  }
+  const target = await readTarget(token, TOKENS_BRANCH, main);
+  if (planTree(shaMap(files), target.state.files).entries.length === 0) {
+    log(`토큰 PR(${TOKENS_BRANCH})이 이미 같은 토큰을 담고 있어 커밋하지 않는다.`);
+    return null;
+  }
+  const changes = tokenChanges(
+    await getFileText(token, TOKENS_PATH, main.head.commitSha),
+    tokens.text,
+  );
+  const summary = {
+    addedPaths: changes.addedPaths,
+    modifiedPaths: changes.modifiedPaths,
+    removedPaths: changes.removedPaths,
+  };
+  const subject = tokensCommitSubject();
+  return commitFiles(
+    token,
+    target,
+    files,
+    () => false,
+    {
+      target: '토큰',
+      kind: 'tokens',
+      subject,
+      message: `${subject}\n\n${tokensCommitBody(summary)}`,
+      body: tokensPullRequestBody(summary),
+      changeset: { name: 'figma-tokens', target: '토큰' },
+    },
+    log,
+  );
+}
+
+/**
+ * 파일을 커밋하고, 열린 PR이 있으면 그 브랜치에 이어서, 없으면 main에서 브랜치를 만들어 PR을 연다.
+ * PR을 새로 열 때는 changeset을 함께 올린다. 커밋할 브랜치와 SHA가 다른 파일만 blob으로 올린다.
+ * 열린 PR이 없는데 브랜치가 남아 있으면(병합했거나 닫은 PR) main 기준 커밋으로 옮긴다. PR 본문은 늘 새로 쓴다.
+ * @codocs [[디자인 시스템:피그마 플러그인]]
+ * @codocs [[디자인 시스템:PR 흐름]]
+ * @param token GitHub 토큰
+ * @param target 커밋할 브랜치의 상태
+ * @param files 쓸 파일
+ * @param isOwned 이 커밋이 맡아 사라지면 지우는 파일인지
+ * @param text 대상 이름, 커밋·PR 글, changeset
+ * @param log 진행 로그
+ * @returns 커밋 결과
+ */
+async function commitFiles(
+  token: string,
+  target: Target,
+  files: readonly DesiredFile[],
+  isOwned: (path: string) => boolean,
+  text: CommitText,
+  log: (text: string) => void,
+): Promise<PullRequestCommit> {
+  const isNew = target.openPullRequest === null;
+  const all = isNew
+    ? [...files, textFile(changesetPath(text.changeset.name), changesetText(text.changeset.target))]
+    : files;
+  const plan = planTree(shaMap(all), target.state.files, isOwned);
+  const contents = new Map(all.map((file) => [file.path, file.bytes]));
+  const entries: TreeEntry[] = [];
+  for (const entry of plan.entries) {
+    const bytes = entry.sha === null ? undefined : contents.get(entry.path);
+    if (bytes === undefined) {
+      entries.push(entry);
+      continue;
+    }
+    log(`올리는 중: ${entry.path}`);
+    entries.push({ path: entry.path, sha: await createBlob(token, figma.base64Encode(bytes)) });
+  }
+  const { head } = target.state;
+  const tree = await createTree(token, head.treeSha, entries);
+  const commit = await createCommit(token, text.message, tree, head.commitSha);
+  const result = {
+    target: text.target,
+    kind: text.kind,
+    branch: target.branch,
+    commitUrl: commitUrl(commit),
+  };
+  if (target.openPullRequest !== null) {
+    log(`${target.branch} 브랜치에 이어서 커밋하는 중`);
+    await updateBranch(token, target.branch, commit);
+    await updatePullRequestBody(token, target.openPullRequest.number, text.body);
+    return { ...result, pullRequestUrl: target.openPullRequest.url, isNewPullRequest: false };
+  }
+  log(`${target.branch} 브랜치에 커밋하고 PR을 여는 중`);
+  if ((await findBranchCommit(token, target.branch)) === null) {
+    await createBranch(token, target.branch, commit);
+  } else {
+    await resetBranch(token, target.branch, commit);
+  }
+  return {
+    ...result,
+    pullRequestUrl: await createPullRequest(token, {
+      title: text.subject,
+      body: text.body,
+      head: target.branch,
+      base: BASE_BRANCH,
+    }),
+    isNewPullRequest: true,
+  };
+}
+
+/**
+ * 브랜치 끝과 비교 범위의 파일 목록을 읽는다.
  * @param token GitHub 토큰
  * @param branch 브랜치 이름
  * @returns 브랜치 상태
  */
 async function readRepoState(token: string, branch: string): Promise<RepoState> {
   const head = await getBranchHead(token, branch);
-  return { head, files: await listTreeFiles(token, head.treeSha, REPO_PREFIXES) };
+  return { head, files: await listTreeFiles(token, head.treeSha, COMPARED_PREFIXES) };
 }
 
 /**
@@ -454,419 +503,80 @@ async function readTarget(token: string, branch: string, main: RepoState): Promi
 }
 
 /**
- * 컴포넌트 하나를 그 컴포넌트의 PR에 커밋한다. 컴포넌트 폴더의 export.json과 모든 변형 PNG를 새로 쓰고,
- * 사라진 변형의 파일과 이름이 바뀐 이전 폴더를 지우고, 쓰는 자산과 figma.json을 담는다.
- * 브랜치와 내용이 같은 파일은 바꾸지 않으므로, 바뀐 것이 없으면 커밋하지 않는다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param token GitHub 토큰
- * @param component 내보낸 컴포넌트
- * @param main main 상태
- * @param log 진행 로그
- * @returns 커밋 결과, 바뀐 것이 없으면 null
+ * 스키마·검증 자료 파일 내용을 만든다. 2칸 들여쓴 JSON이고 끝에 줄바꿈을 붙인다.
+ * @param value 스키마나 검증 자료
+ * @returns 파일 내용
  */
-async function commitComponent(
-  token: string,
-  component: PlacedTarget,
-  main: RepoState,
-  log: (text: string) => void,
-): Promise<PullRequestCommit | null> {
-  const { name } = component.exported.manifest;
-  const branch = componentBranchName(componentSlug(name));
-  const target = await readTarget(token, branch, main);
-  log(`${name}: ${target.openPullRequest === null ? BASE_BRANCH : branch} 기준으로 비교하는 중`);
-
-  const desired = await targetBlobs(token, [component], log);
-  desired.set(
-    SETTINGS_PATH,
-    await textBlob(token, settingsText({ fileKey: FILE_KEY, scale: SCALE })),
-  );
-  const renamed = await renamedOldFolders(token, main, COMPONENTS_DIR, [component]);
-  const owned = [component.folder, ...renamed];
-  const plan = planTree(desired, target.state.files, owned);
-  if (plan.entries.length === 0) {
-    log(`${name}: 바뀐 것이 없어 커밋하지 않는다.`);
-    return null;
-  }
-
-  const subject = componentCommitSubject(componentSlug(name));
-  const message = `${subject}\n\n${targetCommitBody([name], {
-    changedCount: plan.changed.length,
-    deletedCount: plan.deleted.length,
-    assetCount: plan.changed.filter((path) => path.startsWith(`${ASSETS_DIR}/`)).length,
-  })}`;
-  const changes = targetChanges(component, desired, main);
-  return commitToPullRequest(token, target, plan.entries, {
-    target: name,
-    kind: 'component',
-    subject,
-    message,
-    body: componentPullRequestBody(branch, changes, renamed),
-    log,
-  });
+function jsonFileText(value: ComponentSchema | ComponentLayout): string {
+  return `${JSON.stringify(value, null, 2)}\n`;
 }
 
 /**
- * 한 영역의 조립을 그 영역의 조립 PR에 커밋한다. 조립 폴더마다 export.json과 모든 변형 PNG를 새로 쓰고,
- * 사라진 변형의 파일과 이름이 바뀐 이전 폴더를 지우고, 쓰는 자산을 담는다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param token GitHub 토큰
- * @param area 영역 폴더 이름
- * @param patterns 이번에 내보낸 그 영역의 조립
- * @param main main 상태
- * @param log 진행 로그
- * @returns 커밋 결과, 바뀐 것이 없으면 null
- */
-async function commitPatterns(
-  token: string,
-  area: string,
-  patterns: readonly PlacedPattern[],
-  main: RepoState,
-  log: (text: string) => void,
-): Promise<PullRequestCommit | null> {
-  const branch = patternBranchName(area);
-  const target = await readTarget(token, branch, main);
-  log(
-    `${area} 조립: ${target.openPullRequest === null ? BASE_BRANCH : branch} 기준으로 비교하는 중`,
-  );
-
-  const desired = await targetBlobs(token, patterns, log);
-  const renamed = await renamedOldFolders(token, main, `${PATTERNS_DIR}/${area}`, patterns);
-  const owned = [...patterns.map((pattern) => pattern.folder), ...renamed];
-  const plan = planTree(desired, target.state.files, owned);
-  const names = patterns.map((pattern) => pattern.exported.manifest.name);
-  if (plan.entries.length === 0) {
-    log(`${area} 조립: 바뀐 것이 없어 커밋하지 않는다.`);
-    return null;
-  }
-
-  const subject = patternsCommitSubject(area);
-  const message = `${subject}\n\n${targetCommitBody(names, {
-    changedCount: plan.changed.length,
-    deletedCount: plan.deleted.length,
-    assetCount: plan.changed.filter((path) => path.startsWith(`${ASSETS_DIR}/`)).length,
-  })}`;
-  const changes: TargetChanges[] = [];
-  for (const pattern of patterns) {
-    changes.push(targetChanges(pattern, desired, main));
-  }
-  return commitToPullRequest(token, target, plan.entries, {
-    target: `${area} 조립`,
-    kind: 'pattern',
-    subject,
-    message,
-    body: patternPullRequestBody(branch, area, changes, renamed, patterns.map(reportView)),
-    log,
-  });
-}
-
-/**
- * 내보낸 조립의 변형별 보고를 모은다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param pattern 내보낸 조립
- * @returns 조립 보고
- */
-function reportView(pattern: PlacedPattern): PatternReportView {
-  const { manifest } = pattern.exported;
-  return {
-    name: manifest.name,
-    variants: Object.entries(manifest.variants).flatMap(([name, entry]) =>
-      entry.report === undefined ? [] : [{ name, report: entry.report }],
-    ),
-  };
-}
-
-/**
- * 대상들의 export.json, 변형 PNG, 쓰는 자산을 blob으로 올리고 경로 → blob SHA를 만든다.
- * 같은 내용은 같은 SHA라, 브랜치의 SHA와 비교해 바뀐 파일만 고를 수 있다.
- * @param token GitHub 토큰
- * @param targets 내보낸 대상
- * @param log 진행 로그
- * @returns 저장소 경로 → blob SHA
- */
-async function targetBlobs(
-  token: string,
-  targets: readonly PlacedTarget[],
-  log: (text: string) => void,
-): Promise<Map<string, string>> {
-  const desired = new Map<string, string>();
-  for (const { exported, folder } of targets) {
-    desired.set(
-      `${folder}/${MANIFEST_FILE}`,
-      await textBlob(token, manifestText(exported.manifest)),
-    );
-    for (const [variant, png] of exported.pngs) {
-      log(`이미지 올리는 중: ${folder}/${pngFile(variant)}`);
-      desired.set(`${folder}/${pngFile(variant)}`, await bytesBlob(token, png));
-    }
-    for (const [file, bytes] of exported.assets) {
-      const path = assetFilePath(file);
-      if (!desired.has(path)) {
-        desired.set(path, await bytesBlob(token, bytes));
-      }
-    }
-  }
-  return desired;
-}
-
-/**
- * main에서 이름이 바뀐 대상의 이전 폴더를 찾는다. 같은 nodeId의 export.json이 다른 폴더에 있으면 이전 폴더다.
- * @param token GitHub 토큰
- * @param main main 상태
- * @param root 대상 폴더들이 놓이는 폴더
- * @param targets 이번에 내보낸 대상
- * @returns 지울 이전 폴더
- */
-async function renamedOldFolders(
-  token: string,
-  main: RepoState,
-  root: string,
-  targets: readonly PlacedTarget[],
-): Promise<string[]> {
-  const exported = targets.map((item) => ({
-    folder: item.folder,
-    nodeId: item.exported.manifest.nodeId,
-  }));
-  const others = new Map<string, string>();
-  for (const path of main.files.keys()) {
-    const folder = parentFolder(path);
-    if (
-      !path.startsWith(`${root}/`) ||
-      !path.endsWith(`/${MANIFEST_FILE}`) ||
-      exported.some((item) => item.folder === folder)
-    ) {
-      continue;
-    }
-    const text = await getFileText(token, path, main.head.commitSha);
-    const nodeId = text === null ? null : readManifestNodeId(text);
-    if (nodeId !== null) {
-      others.set(folder, nodeId);
-    }
-  }
-  return [...renamedFolders(exported, others).keys()];
-}
-
-/**
- * main과 비교한 대상의 변경과 현재 변형의 피그마 노드 ID를 구한다.
- * @param placed 대상
- * @param desired 이번에 쓸 파일 경로 → blob SHA
- * @param main main 상태
- * @returns PR 본문에 쓰는 대상 변경
- */
-function targetChanges(
-  placed: PlacedTarget,
-  desired: ReadonlyMap<string, string>,
-  main: RepoState,
-): TargetChanges {
-  const variants = Object.keys(placed.exported.manifest.variants);
-  /**
-   * 변형 PNG의 저장소 경로를 만든다.
-   * @param variant 변형 이름
-   * @returns 저장소 경로
-   */
-  function pngPath(variant: string): string {
-    return `${placed.folder}/${pngFile(variant)}`;
-  }
-  const wanted = new Set(manifestFiles(placed.exported.manifest));
-  const removed = [...main.files.keys()]
-    .filter((path) => parentFolder(path) === placed.folder && path.endsWith('.png'))
-    .map((path) => path.slice(placed.folder.length + 1))
-    .filter((file) => !wanted.has(file))
-    .map((file) => file.slice(0, -'.png'.length));
-  return {
-    name: placed.exported.manifest.name,
-    folder: placed.folder,
-    changedVariants: variants.filter(
-      (variant) => main.files.get(pngPath(variant)) !== desired.get(pngPath(variant)),
-    ),
-    removedVariants: removed.sort(),
-    variants: Object.entries(placed.exported.manifest.variants).map(([name, entry]) => ({
-      name,
-      nodeId: entry.nodeId,
-    })),
-  };
-}
-
-/**
- * 토큰이 main과 다르면 토큰 PR에 커밋한다. tokens.json과 같은 변환 함수로 만든 tokens.css, 토큰이 가리키는 이미지 자산,
- * 바뀐 토큰을 쓰는 컴포넌트의 변형 PNG를 담아 바로 병합할 수 있게 한다. 이번에 함께 내보낸 컴포넌트의 PNG는 그 컴포넌트 PR에만 넣으므로 여기서 뺀다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param token GitHub 토큰
- * @param tokens 내보낸 토큰
- * @param main main 상태
- * @param exportedNames 이번에 함께 내보낸 컴포넌트 이름
- * @param log 진행 로그
- * @returns 커밋 결과, 토큰이 main과 같거나 토큰 PR이 이미 같은 내용이면 null
- */
-async function commitTokens(
-  token: string,
-  tokens: TokensExport,
-  main: RepoState,
-  exportedNames: ReadonlySet<string>,
-  log: (text: string) => void,
-): Promise<PullRequestCommit | null> {
-  const desired = new Map<string, string>([
-    [TOKENS_PATH, await textBlob(token, tokens.text)],
-    [TOKENS_CSS_PATH, await textBlob(token, tokens.css)],
-    [TOKEN_NAMES_PATH, await textBlob(token, tokens.names)],
-  ]);
-  for (const [file, bytes] of tokens.images) {
-    desired.set(assetFilePath(file), await bytesBlob(token, bytes));
-  }
-  if (planTree(desired, main.files, []).entries.length === 0) {
-    log(`토큰이 ${BASE_BRANCH}와 같아 토큰 PR을 만들지 않는다.`);
-    return null;
-  }
-
-  const mainTokens = await getFileText(token, TOKENS_PATH, main.head.commitSha);
-  const changes = tokenChanges(mainTokens, tokens.text);
-  log('바뀐 토큰을 쓰는 컴포넌트를 찾는 중');
-  const usages = await readComponentTokenUsage();
-  const affected = componentsUsingTokens(
-    new Map(usages.map((usage) => [usage.name, usage.tokens])),
-    changes.affectedNames,
-  );
-  const refreshed: string[] = [];
-  for (const usage of usages) {
-    if (!affected.includes(usage.name) || exportedNames.has(usage.name)) {
-      continue;
-    }
-    const folder = `${COMPONENTS_DIR}/${componentSlug(usage.name)}`;
-    const variants = new Set(
-      [...main.files.keys()]
-        .filter((path) => parentFolder(path) === folder && path.endsWith('.png'))
-        .map((path) => path.slice(folder.length + 1, -'.png'.length)),
-    );
-    if (variants.size === 0) {
-      continue;
-    }
-    const images = await exportVariantImages(usage.id, variants, SCALE);
-    if (images === null) {
-      log(`${usage.name}: 피그마에서 컴포넌트를 찾지 못해 변형 이미지를 다시 내보내지 않는다.`);
-      continue;
-    }
-    if (!images.ok) {
-      // 잘린 PNG는 틀린 그림이라 넣지 않고, main의 PNG를 그대로 둔다.
-      for (const violation of images.violations) {
-        log(`${violation.where}: ${violation.reason}. ${violation.fix}`);
-      }
-      log(`${usage.name}: 자르는 조상이 있어 변형 이미지를 다시 내보내지 않는다.`);
-      continue;
-    }
-    const { pngs } = images;
-    refreshed.push(usage.name);
-    for (const [variant, png] of pngs) {
-      log(`토큰 PR 이미지 올리는 중: ${folder}/${pngFile(variant)}`);
-      desired.set(`${folder}/${pngFile(variant)}`, await bytesBlob(token, png));
-    }
-  }
-
-  const target = await readTarget(token, TOKENS_BRANCH, main);
-  const plan = planTree(desired, target.state.files, []);
-  if (plan.entries.length === 0) {
-    log(`토큰 PR(${TOKENS_BRANCH})이 이미 같은 토큰을 담고 있어 커밋하지 않는다.`);
-    return null;
-  }
-  const summary = {
-    addedPaths: changes.addedPaths,
-    modifiedPaths: changes.modifiedPaths,
-    removedPaths: changes.removedPaths,
-    usingComponents: affected,
-    refreshedComponents: refreshed,
-    imageUploadCount: plan.changed.filter((path) => path.startsWith(`${ASSETS_DIR}/`)).length,
-  };
-  const subject = tokensCommitSubject();
-  return commitToPullRequest(token, target, plan.entries, {
-    target: '토큰',
-    kind: 'tokens',
-    subject,
-    message: `${subject}\n\n${tokensCommitBody(summary)}`,
-    body: tokensPullRequestBody(summary),
-    log,
-  });
-}
-
-/**
- * 트리 항목으로 커밋하고, 열린 PR이 있으면 그 브랜치에 이어서, 없으면 main에서 브랜치를 만들어 PR을 연다.
- * 열린 PR이 없는데 브랜치가 남아 있으면(병합했거나 닫은 PR) main 기준 커밋으로 옮긴다. PR 본문은 늘 새로 쓴다.
- * @codocs [[디자인 시스템:피그마 플러그인]]
- * @param token GitHub 토큰
- * @param target 커밋할 브랜치의 상태
- * @param entries 트리 항목
- * @param text 대상 이름, 커밋 제목·메시지, PR 본문, 진행 로그
- * @param text.target 대상 이름(컴포넌트 이름이나 `토큰`)
- * @param text.kind 대상 종류
- * @param text.subject 커밋 제목(PR 제목)
- * @param text.message 커밋 메시지
- * @param text.body PR 본문
- * @param text.log 진행 로그
- * @returns 커밋 결과
- */
-async function commitToPullRequest(
-  token: string,
-  target: Target,
-  entries: readonly TreeEntry[],
-  text: {
-    target: string;
-    kind: PullRequestCommit['kind'];
-    subject: string;
-    message: string;
-    body: string;
-    log: (text: string) => void;
-  },
-): Promise<PullRequestCommit> {
-  const { head } = target.state;
-  const tree = await createTree(token, head.treeSha, entries);
-  const commit = await createCommit(token, text.message, tree, head.commitSha);
-  if (target.openPullRequest !== null) {
-    text.log(`${target.branch} 브랜치에 이어서 커밋하는 중`);
-    await updateBranch(token, target.branch, commit);
-    await updatePullRequestBody(token, target.openPullRequest.number, text.body);
-    return {
-      target: text.target,
-      kind: text.kind,
-      branch: target.branch,
-      commitUrl: commitUrl(commit),
-      pullRequestUrl: target.openPullRequest.url,
-      isNewPullRequest: false,
-    };
-  }
-  text.log(`${target.branch} 브랜치에 커밋하고 PR을 여는 중`);
-  if ((await findBranchCommit(token, target.branch)) === null) {
-    await createBranch(token, target.branch, commit);
-  } else {
-    await resetBranch(token, target.branch, commit);
-  }
-  return {
-    target: text.target,
-    kind: text.kind,
-    branch: target.branch,
-    commitUrl: commitUrl(commit),
-    pullRequestUrl: await createPullRequest(token, {
-      title: text.subject,
-      body: text.body,
-      head: target.branch,
-      base: BASE_BRANCH,
-    }),
-    isNewPullRequest: true,
-  };
-}
-
-/**
- * 글자 파일을 blob으로 올린다.
- * @param token GitHub 토큰
+ * 저장소의 스키마 파일을 읽는다. 꼴이 맞지 않으면(옛 판 등) 없는 것으로 본다.
  * @param text 파일 내용
- * @returns blob SHA
+ * @returns 스키마, 읽을 수 없으면 null
  */
-async function textBlob(token: string, text: string): Promise<string> {
-  return createBlob(token, figma.base64Encode(utf8Encode(text)));
+function parseSchema(text: string): ComponentSchema | null {
+  try {
+    const value: unknown = JSON.parse(text);
+    return isSchema(value) ? value : null;
+  } catch {
+    return null;
+  }
 }
 
 /**
- * 바이너리 파일을 blob으로 올린다.
- * @param token GitHub 토큰
- * @param bytes 파일 내용
- * @returns blob SHA
+ * 값이 변형 목록을 가진 스키마 꼴인지 본다. PR 본문의 변형 비교에 필요한 만큼만 본다.
+ * @param value JSON 값
+ * @returns 스키마 꼴이면 true
  */
-async function bytesBlob(token: string, bytes: Uint8Array): Promise<string> {
-  return createBlob(token, figma.base64Encode(bytes));
+function isSchema(value: unknown): value is ComponentSchema {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+  const variants: unknown = Reflect.get(value, 'variants');
+  return (
+    Array.isArray(variants) &&
+    variants.every(
+      /**
+       * 변형 하나가 이름과 노드 ID를 가졌는지 본다.
+       * @param variant 변형 값
+       * @returns 가졌으면 true
+       */
+      (variant: unknown) =>
+        typeof variant === 'object' &&
+        variant !== null &&
+        typeof Reflect.get(variant, 'name') === 'string' &&
+        typeof Reflect.get(variant, 'nodeId') === 'string',
+    )
+  );
+}
+
+/**
+ * 글자 파일을 만든다.
+ * @param path 저장소 경로
+ * @param text 내용
+ * @returns 쓸 파일
+ */
+function textFile(path: string, text: string): DesiredFile {
+  return desiredFile(path, utf8Encode(text));
+}
+
+/**
+ * 쓸 파일을 만들고 git blob SHA-1을 계산한다.
+ * @param path 저장소 경로
+ * @param bytes 내용
+ * @returns 쓸 파일
+ */
+function desiredFile(path: string, bytes: Uint8Array): DesiredFile {
+  return { path, bytes, sha: gitBlobSha(bytes) };
+}
+
+/**
+ * 쓸 파일을 경로 → SHA 표로 바꾼다.
+ * @param files 쓸 파일
+ * @returns 경로 → SHA
+ */
+function shaMap(files: readonly DesiredFile[]): Map<string, string> {
+  return new Map(files.map((file) => [file.path, file.sha]));
 }

@@ -1,31 +1,26 @@
-import type { PatternReport } from './core/pattern-report';
+import type { ComponentPage } from '../../../packages/design-system/src/figma-contract';
 import type { TokenSummary } from './token-changes';
 
 // UI(iframe)와 플러그인 본체가 주고받는 메시지 모양. UI와 본체 양쪽에서 타입으로만 쓴다.
 
 /**
- * 페이지에서 찾은 컴포넌트나 조립.
- * - group: 묶음 이름. 컴포넌트는 컴포넌트 섹션(`Button (버튼)`), 조립은 이름의 영역(`Menu/Folder` → `Menu`)
- * - band: 묶음 섹션(페이지 바로 아래 섹션, `Controls (컨트롤)`) 이름. 섹션 밖 컴포넌트와 조립은 없다
+ * 내보낼 수 있는 컴포넌트(세트이거나 변형이 없는 컴포넌트).
+ * - page: 놓인 페이지(Controls·Shell·Blog). 목록은 페이지로 묶는다
+ * - variantCount: 변형 수. 변형이 없는 컴포넌트는 1
  */
 export type ComponentSummary = {
   id: string;
   name: string;
-  kind: 'COMPONENT_SET' | 'COMPONENT';
+  page: ComponentPage;
   variantCount: number;
-  group: string;
-  band?: string | null;
 };
 
-/** UI 목록에 보이는 애니메이션 견본 */
-export type MotionSummary = { id: string; name: string };
-
 /** 내보내기 대상 종류 */
-export type TargetKind = 'tokens' | 'component' | 'pattern' | 'motion';
+export type TargetKind = 'tokens' | 'assets' | 'component';
 
 /**
- * PR 하나에 한 커밋(컴포넌트·조립·애니메이션·토큰 PR).
- * - target: 컴포넌트 이름, 조립 PR이면 `<영역> 조립`, 애니메이션 PR이면 견본 이름, 토큰 PR이면 `토큰`
+ * PR 하나에 한 커밋.
+ * - target: 컴포넌트 이름, 또는 `토큰`, `자산`
  * - kind: PR 종류. 결과 화면이 종류별로 묶는다
  * - branch: 커밋한 브랜치
  * - commitUrl: 만든 커밋 주소
@@ -49,7 +44,7 @@ export type ViolationLine = {
   nodeId: string | null;
 };
 
-/** 한 대상의 위반. target: 대상 이름(컴포넌트·조립·견본 이름이나 `토큰`). */
+/** 한 대상의 위반. target: 대상 이름(컴포넌트 이름이나 `토큰`, `자산`). */
 export type ViolationGroup = {
   target: string;
   kind: TargetKind;
@@ -57,26 +52,12 @@ export type ViolationGroup = {
 };
 
 /**
- * 조립 하나의 보고. variants: 변형 이름과 그 변형의 조립 보고.
- */
-export type PatternReportView = {
-  name: string;
-  variants: { name: string; report: PatternReport }[];
-};
-
-/**
  * 내보내기 결과. 구조 검사 위반이 있으면 아무것도 커밋하지 않고 대상별 위반 목록을 돌려준다.
  * - commits: 커밋한 PR
  * - unchanged: 바뀐 것이 없어 커밋하지 않은 대상
- * - reports: 이번에 내보낸 조립의 보고
  */
 export type ExportOutcome =
-  | {
-      kind: 'done';
-      commits: PullRequestCommit[];
-      unchanged: string[];
-      reports: PatternReportView[];
-    }
+  | { kind: 'done'; commits: PullRequestCommit[]; unchanged: string[] }
   | { kind: 'blocked'; groups: ViolationGroup[] };
 
 /**
@@ -96,7 +77,7 @@ export type ExportProgress = {
  * 저장소와 비교한 목록 상태.
  * - tokens: 토큰 변경. 피그마 토큰을 변환하지 못했으면 null
  * - tokensError: 토큰 변환 실패 이유
- * - newIds: 저장소 `main`에 폴더(애니메이션은 json)가 없는 대상의 노드 ID
+ * - newIds: 저장소 `main`에 스키마가 없는 컴포넌트의 노드 ID
  */
 export type RepoStatus =
   /** GitHub 토큰이 없어 비교하지 못함 */
@@ -117,7 +98,7 @@ export type ConnectionResult =
 /**
  * 설정 화면에 보이는 고정 값.
  * - repo: `owner/name`
- * - rulesUrl: PR 규칙 문서 주소
+ * - rulesUrl: 플러그인 규칙 문서 주소
  * - newTokenUrl: fine-grained 토큰 만들기 주소
  */
 export type PluginSettings = {
@@ -129,9 +110,7 @@ export type PluginSettings = {
 
 /**
  * 본체 → UI.
- * - components: 캔버스 순서(위→아래 행, 행 안 왼→오른)의 컴포넌트
- * - patterns: 캔버스 순서의 조립
- * - motionUnavailable: 모션 API를 쓸 수 없어 애니메이션을 내보낼 수 없으면 그 안내. 쓸 수 있으면 null
+ * - components: 페이지 순서(Controls → Shell → Blog), 페이지 안은 캔버스 순서의 컴포넌트
  */
 export type MainMessage =
   | {
@@ -139,15 +118,12 @@ export type MainMessage =
       token: string;
       settings: PluginSettings;
       components: ComponentSummary[];
-      patterns: ComponentSummary[];
-      motions: MotionSummary[];
-      motionUnavailable: string | null;
     }
   | { type: 'repo-status'; status: RepoStatus }
   | { type: 'connection'; result: ConnectionResult }
   | { type: 'log'; text: string }
   | { type: 'progress'; progress: ExportProgress }
-  /** 막지 않는 알림(쓰는 곳이 없는 변수·스타일, 건너뛴 애니메이션 등) */
+  /** 막지 않는 알림(쓰는 곳이 없는 변수·스타일 등) */
   | { type: 'notices'; notices: string[] }
   | { type: 'done'; result: ExportOutcome }
   | { type: 'failed'; message: string };
@@ -155,17 +131,15 @@ export type MainMessage =
 /**
  * 내보내기 요청.
  * - isTokensSelected: 토큰을 내보낼 대상으로 골랐는지. 다른 대상을 내보낼 때는 고르지 않아도 토큰을 비교한다
+ * - isAssetsSelected: 자산을 내보낼 대상으로 골랐는지
  * - componentIds: 내보낼 컴포넌트
- * - patternIds: 내보낼 조립
- * - motionIds: 내보낼 애니메이션 견본
  */
 export type ExportMessage = {
   type: 'export';
   token: string;
   isTokensSelected: boolean;
+  isAssetsSelected: boolean;
   componentIds: string[];
-  patternIds: string[];
-  motionIds: string[];
 };
 
 /** UI → 본체 */

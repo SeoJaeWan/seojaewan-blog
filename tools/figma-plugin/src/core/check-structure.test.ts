@@ -1,311 +1,218 @@
 import { describe, expect, it } from 'vitest';
 
-import { checkClippingAncestors, type CheckContext, checkVariant } from './check-structure';
-import { noCodeVariables } from './code-variables';
-import { layerTree } from './layer-tree';
-import type { MotionVariable } from './motion-data';
-import type { NodeData, ReactionData } from './node-data';
-import { buttonRoot, node, segment, solid } from './node-data.fixture';
+import type { BehaviorSpec } from '../../../../packages/design-system/src/figma-contract';
+import { checkComponent, checkVariant } from './check-structure';
+import type { NodeData } from './node-data';
+import {
+  buttonRoot,
+  component,
+  dimension,
+  iconAsset,
+  instance,
+  node,
+  segment,
+  solid,
+  text,
+  variant,
+} from './node-data.fixture';
 
-const context = {
-  imageHashes: new Set(['wallpaper-hash']),
-};
-
-/**
- * 루트를 바꿔 검사하고 위반 이유만 돌려준다.
- * @param change 루트를 바꾸는 함수
- * @returns 위반 이유 목록
- */
-function reasonsAfter(change: (root: NodeData) => void): string[] {
-  const root = buttonRoot();
-  change(root);
-  return checkVariant(root, 'Button / Rest', context).map((violation) => violation.reason);
-}
-
-/**
- * 값이 있는지 확인하고 돌려준다.
- * @param value 값
- * @returns 값
- */
-function must<T>(value: T | null | undefined): T {
-  if (value === null || value === undefined) {
-    throw new Error('값이 없다');
-  }
-  return value;
-}
-
-/**
- * 루트의 첫 자식(label)을 돌려준다.
- * @param root 루트
- * @returns 첫 자식
- */
-function label(root: NodeData): NodeData {
-  return must(root.children[0]);
-}
-
-/**
- * 크기 변수에 연결한 고정 크기 자식을 만든다.
- * @param overrides 바꿀 값
- * @returns 노드 데이터
- */
-function fixedChild(overrides: Partial<NodeData> & Pick<NodeData, 'path' | 'type'>): NodeData {
-  return node({
-    width: { value: 16, variable: 'size/icon/16' },
-    height: { value: 16, variable: 'size/icon/16' },
-    child: {
-      sizingHorizontal: 'FIXED',
-      sizingVertical: 'FIXED',
-      positioning: 'AUTO',
-      constraints: { horizontal: 'MIN', vertical: 'MIN' },
+// 가짜 동작 등록부. 등록부가 비어 있는 지금도 검사를 시험하려고 종류 둘을 넣는다.
+const buttonSpec: BehaviorSpec = {
+  name: 'button',
+  roles: [
+    {
+      role: 'root',
+      selector: { kind: 'root' },
+      isRequired: true,
+      isMultiple: false,
+      tag: 'button',
     },
-    ...overrides,
-  });
+    {
+      role: 'label',
+      selector: { kind: 'text-property' },
+      isRequired: true,
+      isMultiple: false,
+      tag: null,
+    },
+  ],
+  stateWords: [
+    { word: 'Rest', condition: null, target: 'root', codeName: null },
+    {
+      word: 'Hover',
+      condition: { kind: 'pseudo-class', name: 'hover' },
+      target: 'root',
+      codeName: null,
+    },
+  ],
+  axes: [],
+  event: { inputName: 'onClick', nestedSuffix: '' },
+  runtimeValues: [],
+};
+const checkboxSpec: BehaviorSpec = {
+  name: 'checkbox',
+  roles: [
+    { role: 'root', selector: { kind: 'root' }, isRequired: true, isMultiple: false, tag: null },
+    {
+      role: 'indicator',
+      selector: { kind: 'indicator' },
+      isRequired: true,
+      isMultiple: false,
+      tag: null,
+    },
+    {
+      role: 'close',
+      selector: { kind: 'layer-name', names: ['close button', 'icon'] },
+      isRequired: false,
+      isMultiple: false,
+      tag: null,
+    },
+  ],
+  stateWords: [{ word: 'Rest', condition: null, target: 'root', codeName: null }],
+  axes: [
+    {
+      kind: 'on-off',
+      codeName: 'isChecked',
+      target: 'root',
+      condition: { kind: 'aria', attribute: 'aria-checked', value: 'true' },
+    },
+  ],
+  event: null,
+  runtimeValues: [],
+};
+const specs = [buttonSpec, checkboxSpec];
+
+/**
+ * 가짜 동작 등록부에서 종류를 찾는다.
+ * @param name 종류 이름
+ * @returns 종류 규칙
+ */
+function fakeRegistry(name: string): BehaviorSpec | undefined {
+  return specs.find((spec) => spec.name === name);
+}
+
+/**
+ * Button 루트의 자식을 바꾼 변형 하나를 검사한다.
+ * @param children 루트 자식
+ * @returns 위반 이유
+ */
+function reasonsOf(children: NodeData[]): string[] {
+  return checkVariant(variant('V', {}, { ...buttonRoot(), children }), 'Button / V').map(
+    (violation) => violation.reason,
+  );
 }
 
 // @codocs [[디자인 시스템:구조 검사]]
-describe('구조 검사: 변수·스타일에 연결되지 않은 시각 값', () => {
+describe('구조 검사: 토큰 없는 값', () => {
   it('변수·스타일에 연결된 정상 구조는 위반이 없다', () => {
-    expect(reasonsAfter(() => undefined)).toEqual([]);
+    expect(checkComponent(component(), fakeRegistry)).toEqual([]);
   });
 
-  it('위반에는 레이어 경로·이유·고칠 방법과 피그마에서 보기에 쓸 노드 ID가 있다', () => {
-    const root = buttonRoot();
-    root.id = '10:1';
-    root.fills = [solid()];
-    expect(checkVariant(root, 'Button / Rest', context)).toEqual([
-      {
-        where: 'Button / Rest',
-        reason: '단색 칠이 색 변수에 연결되어 있지 않다',
-        fix: '칠 색을 색 변수에 연결한다.',
-        nodeId: '10:1',
+  it('위반에는 레이어 키·이유·고칠 방법과 피그마에서 보기에 쓸 노드 ID가 있다', () => {
+    const [violation] = checkVariant(
+      variant(
+        'V',
+        {},
+        { ...buttonRoot(), children: [node({ key: 'box', type: 'FRAME', fills: [solid()] })] },
+      ),
+      'Button / V',
+    );
+    expect(violation).toEqual({
+      where: 'Button / V / box',
+      reason: '단색 칠이 색 변수에 연결되어 있지 않다',
+      fix: '칠 색을 색 변수에 연결한다.',
+      nodeId: 'box',
+    });
+  });
+
+  it('여백·간격·선 두께·반경이 변수에 연결되지 않으면 막는다. 크기 숫자는 막지 않는다', () => {
+    const box = node({
+      key: 'box',
+      type: 'FRAME',
+      width: { value: 37 },
+      minWidth: { value: 10 },
+      strokes: [solid('Black/6')],
+      strokeWeight: {
+        top: { value: 1 },
+        right: { value: 0 },
+        bottom: { value: 0 },
+        left: { value: 0 },
       },
-    ]);
-  });
-
-  it('한 변형의 위반을 모두 한 번에 돌려준다', () => {
-    const reasons = reasonsAfter((root) => {
-      must(root.layout).padding.left = { value: 12 };
-      must(root.layout).itemSpacing = { value: 8 };
-      root.children.push(fixedChild({ path: 'icon', type: 'RECTANGLE' }));
-      root.radius = { ...must(root.radius), topLeft: { value: 4 } };
-      root.strokeWeight = { ...must(root.strokeWeight), top: { value: 1 } };
-      root.opacity = { value: 0.5 };
+      radius: {
+        topLeft: { value: 3 },
+        topRight: { value: 0 },
+        bottomRight: { value: 0 },
+        bottomLeft: { value: 0 },
+      },
+      layout: {
+        mode: 'VERTICAL',
+        wrap: 'NO_WRAP',
+        primaryAlign: 'MIN',
+        counterAlign: 'MIN',
+        counterAlignContent: 'AUTO',
+        padding: {
+          top: { value: 4 },
+          right: { value: 0 },
+          bottom: { value: 0 },
+          left: { value: 0 },
+        },
+        itemSpacing: { value: 2 },
+        counterAxisSpacing: null,
+        isReversingZIndex: false,
+      },
+      children: [node({ key: 'box/a', type: 'FRAME' }), node({ key: 'box/b', type: 'FRAME' })],
     });
-    expect(reasons).toEqual([
-      '불투명도 0.5가 변수에 연결되어 있지 않다',
+    expect(reasonsOf([box])).toEqual([
       '선 두께(top) 1가 변수에 연결되어 있지 않다',
-      '반경(topLeft) 4가 변수에 연결되어 있지 않다',
-      '여백(left) 12가 변수에 연결되어 있지 않다',
-      '간격 8가 변수에 연결되어 있지 않다',
+      '반경(topLeft) 3가 변수에 연결되어 있지 않다',
+      '여백(top) 4가 변수에 연결되어 있지 않다',
+      '간격 2가 변수에 연결되어 있지 않다',
     ]);
   });
 
-  it('변수 없는 고정 크기는 견본 크기라 루트와 안쪽 모두 막지 않는다', () => {
+  it('그라데이션은 칠 스타일로만, 효과는 효과 스타일로만 쓴다', () => {
     expect(
-      reasonsAfter((root) => {
-        must(root.layout).primarySizing = 'FIXED';
-        root.children.push(fixedChild({ path: 'icon', type: 'RECTANGLE', width: { value: 16 } }));
-      }),
-    ).toEqual([]);
-  });
-
-  describe('내용 맞춤 축의 크기를 정하는 자식', () => {
-    const widthReason =
-      '내용 맞춤 너비를 정하는 자식이 없어 너비가 변수 없이 정해진다(자식이 모두 너비에서 부모 채움이거나 절대 위치)';
-
-    /**
-     * 루트 최소 너비를 없애고 라벨을 부모 채움 글자로 바꾼다. Flyout처럼 너비가 저장된 값으로만 정해지는 구조다.
-     * @param root 루트
-     */
-    function fillLabel(root: NodeData): void {
-      root.minWidth = null;
-      const label = must(root.children[0]);
-      must(label.text).autoResize = 'HEIGHT';
-      must(label.child).sizingHorizontal = 'FILL';
-    }
-
-    it('자식이 모두 그 축에서 부모 채움이면 막는다', () => {
-      expect(reasonsAfter(fillLabel)).toEqual([widthReason]);
-    });
-
-    it('최소 너비가 변수에 연결돼 있으면 크기가 변수로 정해지므로 막지 않는다', () => {
-      expect(
-        reasonsAfter((root) => {
-          fillLabel(root);
-          root.minWidth = { value: 120, variable: 'size/button/min-width' };
+      reasonsOf([
+        node({
+          key: 'box',
+          type: 'FRAME',
+          fills: [{ type: 'GRADIENT_LINEAR', isVisible: true, blendMode: 'NORMAL', opacity: 1 }],
+          effects: [{ type: 'DROP_SHADOW', isVisible: true, blendMode: 'NORMAL' }],
         }),
-      ).toEqual([]);
-    });
-
-    it('최대 너비가 변수에 연결돼 있고 부모 채움 글자가 있으면 글자 내용이 너비를 정하므로 막지 않는다', () => {
-      expect(
-        reasonsAfter((root) => {
-          fillLabel(root);
-          root.maxWidth = { value: 318, variable: 'size/tooltip/max-width' };
-        }),
-      ).toEqual([]);
-    });
-
-    it('최대 너비가 변수에 연결되지 않았으면 부모 채움 글자가 있어도 막는다', () => {
-      const reasons = reasonsAfter((root) => {
-        fillLabel(root);
-        root.maxWidth = { value: 318 };
-      });
-      expect(reasons).toContain(widthReason);
-    });
-
-    it('최대 너비가 없으면 부모 채움 글자가 있어도 막는다', () => {
-      expect(
-        reasonsAfter((root) => {
-          fillLabel(root);
-          root.maxWidth = null;
-        }),
-      ).toEqual([widthReason]);
-    });
-
-    it('쌓는 방향은 자식이 하나라도 정하지 못하면 막고, 고정 크기 자식만으로는 정해졌다고 보지 않는다', () => {
-      expect(
-        reasonsAfter((root) => {
-          fillLabel(root);
-          root.children.push(fixedChild({ path: 'icon', type: 'RECTANGLE' }));
-        }),
-      ).toEqual([widthReason]);
-    });
-
-    it('가로지르는 방향은 자식 하나만 정해도 된다', () => {
-      expect(
-        reasonsAfter((root) => {
-          fillLabel(root);
-          must(root.layout).mode = 'VERTICAL';
-          root.children.push(fixedChild({ path: 'icon', type: 'RECTANGLE' }));
-        }),
-      ).toEqual([]);
-    });
-
-    it('절대 위치 자식은 크기를 정하지 않는다', () => {
-      expect(
-        reasonsAfter((root) => {
-          root.minWidth = null;
-          must(root.children[0]).child = {
-            sizingHorizontal: 'HUG',
-            sizingVertical: 'HUG',
-            positioning: 'ABSOLUTE',
-            constraints: { horizontal: 'MIN', vertical: 'MIN' },
-          };
-        }),
-      ).toEqual([
-        widthReason,
-        '내용 맞춤 높이를 정하는 자식이 없어 높이가 변수 없이 정해진다(자식이 모두 높이에서 부모 채움이거나 절대 위치)',
-      ]);
-    });
-
-    it('부모 채움 자식이어도 안쪽이 고정 크기나 내용 맞춤 글자로 정하면 막지 않는다', () => {
-      expect(
-        reasonsAfter((root) => {
-          root.minWidth = null;
-          const wrapper = node({
-            path: 'wrapper',
-            type: 'FRAME',
-            layout: must(root.layout),
-            child: {
-              sizingHorizontal: 'FILL',
-              sizingVertical: 'HUG',
-              positioning: 'AUTO',
-              constraints: { horizontal: 'MIN', vertical: 'MIN' },
-            },
-            children: root.children.map((child) => ({ ...child, path: `wrapper/${child.path}` })),
-          });
-          wrapper.layout = { ...must(root.layout), padding: must(root.layout).padding };
-          root.children = [wrapper];
-        }),
-      ).toEqual([]);
-    });
-  });
-
-  it('그라데이션과 이미지는 칠 스타일로만, 효과는 효과 스타일로만 쓴다', () => {
-    expect(
-      reasonsAfter((root) => {
-        root.strokeStyle = undefined;
-        root.effects = [{ type: 'DROP_SHADOW', isVisible: true, blendMode: 'NORMAL' }];
-      }),
+      ]),
     ).toEqual([
-      'GRADIENT_LINEAR 선이 스타일에 연결되어 있지 않다',
+      'GRADIENT_LINEAR 칠이 스타일에 연결되어 있지 않다',
       '효과가 효과 스타일에 연결되어 있지 않다',
     ]);
   });
 
-  it('글자 구간은 글자 스타일에 연결해야 하고 스타일을 덮어쓰면 막는다', () => {
-    expect(
-      reasonsAfter((root) => {
-        must(label(root).text).segments = [
-          segment({ textStyle: undefined }),
-          segment({ overrides: ['TEXT_DECORATION'] }),
-        ];
+  it('글자는 스타일에 연결해야 하고, 덮어쓰거나 한 레이어에 스타일이 둘 이상 섞이면 막는다', () => {
+    const label = node({
+      key: 'label',
+      type: 'TEXT',
+      text: text({
+        segments: [
+          segment({ characters: '굵게', textStyle: 'Body Strong' }),
+          segment({ characters: '보통', overrides: ['fontSize'] }),
+          segment({ characters: '없음', textStyle: undefined }),
+        ],
       }),
-    ).toEqual([
-      '"버튼" 구간에 글자 스타일이 없다',
-      '"버튼" 구간이 글자 스타일을 덮어썼다(TEXT_DECORATION)',
+    });
+    expect(reasonsOf([label])).toEqual([
+      '글자 레이어 하나에 글자 스타일이 3개 섞여 있다',
+      '"보통" 구간이 글자 스타일을 덮어썼다(fontSize)',
+      '"없음" 구간에 글자 스타일이 없다',
     ]);
-  });
-
-  it('토큰 클래스로 쓸 수 없는 값(90° 배수가 아닌 회전, 비례 제약)을 막는다', () => {
-    expect(reasonsAfter((root) => (label(root).rotation = 180))).toEqual([]);
-    expect(reasonsAfter((root) => (label(root).rotation = 45))).toEqual([
-      '회전 45°는 90° 배수가 아니라 토큰 클래스로 쓸 수 없다',
-    ]);
-    expect(
-      reasonsAfter((root) => {
-        root.children.push(
-          fixedChild({
-            path: 'badge',
-            type: 'RECTANGLE',
-            child: {
-              sizingHorizontal: 'FIXED',
-              sizingVertical: 'FIXED',
-              positioning: 'ABSOLUTE',
-              constraints: { horizontal: 'SCALE', vertical: 'MIN' },
-            },
-          }),
-        );
-      }),
-    ).toEqual(['비례 제약(SCALE)은 토큰 클래스로 쓸 수 없다']);
   });
 
   it('한 가지 색 자산의 색이 색 변수 하나로 정해지지 않으면 막는다', () => {
-    expect(
-      reasonsAfter((root) =>
-        root.children.push(
-          fixedChild({
-            path: 'add icon',
-            type: 'INSTANCE',
-            asset: {
-              name: 'ic_fluent_add_20_regular',
-              mainComponentId: '1:1',
-              group: 'Icons',
-              kind: 'mono',
-              sourceWidth: 16,
-              sourceHeight: 16,
-              problems: ['한 가지 색 자산인데 색이 여럿이다'],
-            },
-          }),
-        ),
-      ),
-    ).toEqual(['자산 Icons/ic_fluent_add_20_regular: 한 가지 색 자산인데 색이 여럿이다']);
-  });
-
-  it('슬롯은 채운 내용까지 같은 규칙으로 검사한다', () => {
-    const slot = node({
-      path: 'Content',
-      type: 'SLOT',
-      layout: { ...must(buttonRoot().layout), itemSpacing: { value: 8 } },
-      children: [
-        node({ path: 'Content/a', type: 'FRAME' }),
-        node({ path: 'Content/b', type: 'FRAME', fills: [solid()] }),
-      ],
+    const icon = node({
+      key: 'icon',
+      type: 'INSTANCE',
+      asset: iconAsset({ problems: ['한 가지 색 자산의 색이 색 변수에 연결되어 있지 않다'] }),
+      instance: instance(),
     });
-    expect(reasonsAfter((root) => root.children.push(slot))).toEqual([
-      '간격 8가 변수에 연결되어 있지 않다',
-      '단색 칠이 색 변수에 연결되어 있지 않다',
+    expect(reasonsOf([icon])).toEqual([
+      '자산 Icons/ic_fluent_add_20_regular: 한 가지 색 자산의 색이 색 변수에 연결되어 있지 않다',
     ]);
   });
 });
@@ -313,53 +220,48 @@ describe('구조 검사: 변수·스타일에 연결되지 않은 시각 값', (
 // @codocs [[디자인 시스템:구조 검사]]
 describe('구조 검사: CSS로 그릴 수 없는 기능', () => {
   it('노이즈·텍스처·점진 블러 효과, 블렌드 효과, 투명한 부분 뒤 그림자를 막는다', () => {
-    expect(
-      reasonsAfter((root) => {
-        root.effectStyle = 'Elevation/Flyout';
-        root.effects = [
-          { type: 'NOISE', isVisible: true, blendMode: 'NORMAL' },
-          { type: 'TEXTURE', isVisible: true, blendMode: 'NORMAL' },
-          {
-            type: 'BACKGROUND_BLUR',
-            isVisible: true,
-            blendMode: 'NORMAL',
-            blurType: 'PROGRESSIVE',
-          },
-          {
-            type: 'DROP_SHADOW',
-            isVisible: true,
-            blendMode: 'MULTIPLY',
-            isShadowShownBehindNode: true,
-          },
-        ];
-      }),
-    ).toEqual([
+    const box = node({
+      key: 'box',
+      type: 'FRAME',
+      effectStyle: 'Elevation/Flyout',
+      effects: [
+        { type: 'NOISE', isVisible: true, blendMode: 'NORMAL' },
+        { type: 'BACKGROUND_BLUR', isVisible: true, blendMode: 'NORMAL', blurType: 'PROGRESSIVE' },
+        {
+          type: 'DROP_SHADOW',
+          isVisible: true,
+          blendMode: 'MULTIPLY',
+          isShadowShownBehindNode: true,
+        },
+      ],
+    });
+    expect(reasonsOf([box])).toEqual([
       '효과 NOISE는 CSS로 그릴 수 없다',
-      '효과 TEXTURE는 CSS로 그릴 수 없다',
       '흐림 PROGRESSIVE는 CSS로 그릴 수 없다',
       '효과에 블렌드 MULTIPLY가 들어 있다(CSS로 그릴 수 없다)',
       '그림자 "투명한 부분 뒤에도 표시"는 CSS로 그릴 수 없다',
     ]);
   });
 
-  it('블렌드가 들어간 칠은 칠 스타일 안에 있어도 막는다', () => {
-    expect(
-      reasonsAfter((root) => {
-        root.fillStyle = 'Material/Mica Base';
-        root.fills = [{ type: 'SOLID', isVisible: true, blendMode: 'LUMINOSITY' }];
-      }),
-    ).toEqual(['칠에 블렌드 LUMINOSITY가 들어 있다(CSS로 그릴 수 없다)']);
-  });
-
-  it('점선, 가변 두께 선, 모서리 스무딩, 마스크를 막는다', () => {
-    expect(
-      reasonsAfter((root) => {
-        root.dashPattern = [4, 4];
-        root.hasVariableWidthStroke = true;
-        root.cornerSmoothing = 0.6;
-        root.isMask = true;
-      }),
-    ).toEqual([
+  it('점선, 가변 두께 선, 모서리 스무딩, 마스크, 90° 단위가 아닌 회전을 막는다', () => {
+    const box = node({
+      key: 'box',
+      type: 'FRAME',
+      strokes: [solid('Black/6')],
+      strokeWeight: {
+        top: dimension(1, 'stroke-width/default'),
+        right: dimension(1, 'stroke-width/default'),
+        bottom: dimension(1, 'stroke-width/default'),
+        left: dimension(1, 'stroke-width/default'),
+      },
+      dashPattern: [2, 2],
+      hasVariableWidthStroke: true,
+      cornerSmoothing: 0.6,
+      isMask: true,
+      rotation: 45,
+    });
+    expect(reasonsOf([box])).toEqual([
+      '회전 45°는 90° 단위가 아니다',
       '마스크는 CSS로 그릴 수 없다',
       '점선은 CSS로 같게 그릴 수 없다',
       '가변 두께·브러시 선은 CSS로 그릴 수 없다',
@@ -367,902 +269,342 @@ describe('구조 검사: CSS로 그릴 수 없는 기능', () => {
     ]);
   });
 
-  it('자산이 아닌 벡터·호를 막고 완전한 원은 허용한다', () => {
-    expect(
-      reasonsAfter((root) => root.children.push(fixedChild({ path: 'v', type: 'VECTOR' }))),
-    ).toEqual(['VECTOR는 CSS로 그릴 수 없는 모양이다']);
-    expect(
-      reasonsAfter((root) =>
-        root.children.push(fixedChild({ path: 'dot', type: 'ELLIPSE', isFullEllipse: true })),
-      ),
-    ).toEqual([]);
-    expect(
-      reasonsAfter((root) =>
-        root.children.push(fixedChild({ path: 'arc', type: 'ELLIPSE', isFullEllipse: false })),
-      ),
-    ).toEqual(['호는 CSS로 그릴 수 없는 모양이다']);
+  it('90° 단위 회전은 허용한다', () => {
+    expect(reasonsOf([node({ key: 'box', type: 'FRAME', rotation: -90 })])).toEqual([]);
   });
 
-  it('이름 있는 이미지 자산에 없는 이미지를 막는다', () => {
+  it('자산이 아닌 벡터와 원·타원을 막고, CSS로 그리지 않는 노드 종류를 막는다', () => {
+    expect(
+      reasonsOf([
+        node({ key: 'v', type: 'VECTOR' }),
+        node({ key: 'dot', type: 'ELLIPSE' }),
+        node({ key: 'sticker', type: 'STICKY' }),
+      ]),
+    ).toEqual([
+      'VECTOR는 자산이 아닌 도형이라 CSS로 그릴 수 없다',
+      'ELLIPSE는 자산이 아닌 도형이라 CSS로 그릴 수 없다',
+      '노드 종류 STICKY는 CSS로 그릴 수 없다',
+    ]);
+  });
+
+  it('이름 있는 이미지 자산에 없는 이미지와 맞춤 방식 CROP·TILE 이미지 칠을 막는다', () => {
     /**
-     * 이미지 칠 스타일을 입힌 자식을 더해 검사한다.
-     * @param imageHash 이미지 해시
-     * @returns 위반 이유
+     * 이미지 칠을 가진 사각형을 만든다.
+     * @param scaleMode 맞춤 방식
+     * @param isNamed 이름 있는 자산의 이미지인지
+     * @returns 노드
      */
-    function image(imageHash: string): string[] {
-      return reasonsAfter((root) =>
-        root.children.push(
-          fixedChild({
-            path: 'wallpaper',
-            type: 'RECTANGLE',
-            fillStyle: 'Wallpaper',
-            fills: [{ type: 'IMAGE', isVisible: true, blendMode: 'NORMAL', imageHash }],
-          }),
-        ),
-      );
+    function image(scaleMode: string, isNamed: boolean): NodeData {
+      return node({
+        key: `img-${scaleMode}`,
+        type: 'RECTANGLE',
+        fills: [
+          {
+            type: 'IMAGE',
+            isVisible: true,
+            blendMode: 'NORMAL',
+            opacity: 1,
+            imageHash: 'h',
+            scaleMode,
+            imageAsset: isNamed ? { group: 'Images', name: 'a', file: 'images/a' } : null,
+          },
+        ],
+      });
     }
-    expect(image('wallpaper-hash')).toEqual([]);
-    expect(image('pasted-hash')).toEqual(['칠의 이미지가 이름 있는 이미지 자산에 없다']);
+    expect(reasonsOf([image('FILL', true), image('CROP', true), image('FIT', false)])).toEqual([
+      '이미지 칠의 맞춤 방식 CROP는 CSS로 옮길 수 없다',
+      '칠의 이미지가 이름 있는 이미지 자산에 없다',
+    ]);
+  });
+
+  it('이미지 자산 인스턴스의 맞춤 방식 TILE을 막는다', () => {
+    const photo = node({
+      key: 'photo',
+      type: 'INSTANCE',
+      asset: iconAsset({ group: 'Images', kind: 'raster', color: null, scaleMode: 'TILE' }),
+      instance: instance(),
+    });
+    expect(reasonsOf([photo])).toEqual(['이미지 칠의 맞춤 방식 TILE는 CSS로 옮길 수 없다']);
   });
 
   it('빠진 글꼴과 OpenType 기능을 막는다', () => {
-    expect(
-      reasonsAfter((root) => {
-        const text = must(label(root).text);
-        text.hasMissingFont = true;
-        text.segments = [segment({ hasOpenTypeFeatures: true })];
-      }),
-    ).toEqual(['글꼴이 없어 대체 글꼴로 그려진다', '"버튼" 구간에 OpenType 기능이 켜져 있다']);
-  });
-
-  it('한글이 든 구간의 글꼴이 Pretendard가 아니면 hasMissingFont가 false여도 막는다', () => {
-    expect(
-      reasonsAfter((root) => {
-        must(label(root).text).segments = [segment({ fontFamily: 'Open Sans' })];
-      }),
-    ).toEqual(['"버튼" 구간에 한글이 있는데 글꼴이 Open Sans라 대체 글꼴로 그려질 수 있다']);
-    expect(
-      reasonsAfter((root) => {
-        must(label(root).text).segments = [segment({ characters: 'ㄱ', fontFamily: undefined })];
-      }),
-    ).toHaveLength(1);
-  });
-
-  it('한글이 없는 구간은 글꼴과 상관없이, 한글 구간은 Pretendard면 허용한다', () => {
-    expect(
-      reasonsAfter((root) => {
-        must(label(root).text).segments = [
-          segment({ characters: 'OK 123', fontFamily: 'Open Sans', textStyle: 'Body' }),
-          segment({ characters: '확인', fontFamily: 'Pretendard' }),
-        ];
-      }),
-    ).toEqual([]);
-  });
-
-  // @codocs [[디자인 시스템:서체 구현]]
-  it('코드 서체 NanumGothicCoding은 한글이 들어 있어 한글 구간에도 허용한다', () => {
-    expect(
-      reasonsAfter((root) => {
-        must(label(root).text).segments = [
-          segment({ characters: '// 글을 읽어 제목을', fontFamily: 'NanumGothicCoding' }),
-        ];
-      }),
-    ).toEqual([]);
-  });
-
-  it('CSS로 그리지 않는 노드 종류를 막는다', () => {
-    expect(
-      reasonsAfter((root) => root.children.push(node({ path: 'x', type: 'TEXT_PATH' }))),
-    ).toEqual(['노드 종류 TEXT_PATH는 CSS로 그릴 수 없다']);
-  });
-});
-
-/**
- * 덮어쓰기가 있는 인스턴스 노드를 만든다. 노드 ID는 경로다.
- * @param path 레이어 경로
- * @param component 원본 컴포넌트 이름
- * @param overrides 덮어쓴 레이어(ID는 경로)
- * @param children 자식
- * @param scaleFactor 크기 배율
- * @returns 인스턴스 노드 데이터
- */
-function instance(
-  path: string,
-  component: string,
-  overrides: { id: string; fields: string[]; changedBindings?: string[] }[],
-  children: NodeData[] = [],
-  scaleFactor = 1,
-): NodeData {
-  return node({
-    path,
-    type: 'INSTANCE',
-    instance: {
-      component,
-      scaleFactor,
-      properties: {},
-      overrides: overrides.map((item) => ({ changedBindings: [], ...item })),
-    },
-    children,
-  });
-}
-
-/**
- * 글자 자식을 만든다.
- * @param path 레이어 경로
- * @returns 글자 노드 데이터
- */
-function textChild(path: string): NodeData {
-  return node({
-    path,
-    type: 'TEXT',
-    fills: 'mixed',
-    text: {
-      autoResize: 'WIDTH_AND_HEIGHT',
-      hasMissingFont: false,
-      truncation: 'DISABLED',
-      maxLines: null,
-      segments: [segment()],
-    },
-  });
-}
-
-/**
- * 인스턴스를 자식으로 둔 루트를 검사한다.
- * @param child 루트에 넣을 인스턴스
- * @returns 위반 목록
- */
-function checkWith(child: NodeData): ReturnType<typeof checkVariant> {
-  const root = buttonRoot();
-  root.children = [child];
-  return checkVariant(root, 'Menu/Folder / Default', context);
-}
-
-// @codocs [[디자인 시스템:구조 검사]]
-describe('구조 검사: 인스턴스 모양의 직접 덮어쓰기', () => {
-  it('인스턴스 안 레이어의 칠을 덮어쓰면 위치·이유·고칠 방법을 알린다', () => {
-    expect(
-      checkWith(
-        instance(
-          'item',
-          'MenuItem',
-          [{ id: 'item/label', fields: ['fills', 'characters'] }],
-          [textChild('item/label')],
-        ),
-      ),
-    ).toEqual([
-      {
-        where: 'Menu/Folder / Default / item/label',
-        reason: '인스턴스의 칠을 직접 바꿨다(fills)',
-        fix: '덮어쓰기를 되돌리고, MenuItem에 변형이나 속성을 열어 그것을 고른다.',
-        nodeId: 'item/label',
-      },
+    const label = node({
+      key: 'label',
+      type: 'TEXT',
+      text: text({ hasMissingFont: true, segments: [segment({ hasOpenTypeFeatures: true })] }),
+    });
+    expect(reasonsOf([label])).toEqual([
+      '글꼴이 없어 대체 글꼴로 그려진다',
+      '"버튼" 구간에 OpenType 기능이 켜져 있다',
     ]);
   });
 
-  it('선·선 두께·효과와 스타일 덮어쓰기를 한 레이어에 모아 알린다', () => {
-    const reasons = checkWith(
-      instance('item', 'MenuItem', [
-        {
-          id: 'item',
-          fields: [
-            'strokes',
-            'strokeWeight',
-            'stokeTopWeight',
-            'effects',
-            'fillStyleId',
-            'strokeStyleId',
-            'effectStyleId',
-          ],
-        },
-      ]),
-    ).map((violation) => violation.reason);
-    expect(reasons).toEqual([
-      '인스턴스의 효과 스타일·효과·칠 스타일·선 두께·선 스타일·선을 직접 바꿨다(effectStyleId, effects, fillStyleId, stokeTopWeight, strokeStyleId, strokeWeight, strokes)',
-    ]);
-  });
-
-  it('모양 필드의 변수 연결을 바꾸면 막고, 크기 변수 연결은 막지 않는다', () => {
-    const reasons = checkWith(
-      instance('item', 'MenuItem', [
-        { id: 'item', fields: ['boundVariables'], changedBindings: ['fills', 'width'] },
-      ]),
-    ).map((violation) => violation.reason);
-    expect(reasons).toEqual(['인스턴스의 칠 변수를 직접 바꿨다(boundVariables.fills)']);
-    expect(
-      checkWith(
-        instance('item', 'MenuItem', [
-          { id: 'item', fields: ['boundVariables', 'width'], changedBindings: ['width'] },
-        ]),
-      ),
-    ).toEqual([]);
-  });
-
-  it('변형을 바꿔 끼운 인스턴스가 새 원본과 같은 변수면 막지 않고, 다른 변수로 덮어쓰면 막는다', () => {
-    function outer(changedBindings: string[]): NodeData {
-      return instance(
-        'zone',
-        'SnapZone',
-        [
-          { id: 'zone/swapped', fields: ['mainComponent'] },
-          { id: 'zone/swapped/rect', fields: ['boundVariables'], changedBindings },
-        ],
-        [node({ path: 'zone/swapped/rect', type: 'RECTANGLE' })],
-      );
+  it('스키마 꼴에 없는 주축 정렬(SPACE_EVENLY)을 막는다', () => {
+    const root = buttonRoot();
+    if (root.layout === null) {
+      throw new Error('fixture');
     }
-    expect(checkWith(outer([]))).toEqual([]);
-    expect(checkWith(outer(['fills', 'strokes'])).map((violation) => violation.reason)).toEqual([
-      '인스턴스의 칠 변수·선 변수를 직접 바꿨다(boundVariables.fills, boundVariables.strokes)',
+    const violations = checkVariant(
+      variant('V', {}, { ...root, layout: { ...root.layout, primaryAlign: 'SPACE_EVENLY' } }),
+      'Button / V',
+    );
+    expect(violations.map((violation) => violation.reason)).toEqual([
+      '주축 정렬 SPACE_EVENLY는 스키마 꼴에 없어 내보낼 수 없다',
+    ]);
+  });
+});
+
+// @codocs [[디자인 시스템:구조 검사]]
+describe('구조 검사: 숨긴 레이어', () => {
+  it('켜고 끄는 속성에 묶이지 않은 숨긴 레이어를 막는다', () => {
+    expect(reasonsOf([node({ key: 'ghost', type: 'FRAME', isVisible: false })])).toEqual([
+      '숨긴 레이어가 켜고 끄는 속성에 묶여 있지 않다',
     ]);
   });
 
-  it('원본이 속성으로 연 것과 크기·배치 덮어쓰기는 막지 않는다', () => {
-    expect(
-      checkWith(
-        instance(
-          'item',
-          'MenuItem',
-          [
-            { id: 'item', fields: ['componentProperties', 'width', 'height', 'layoutGrow'] },
-            { id: 'item/label', fields: ['characters', 'visible', 'name', 'textStyleId'] },
-          ],
-          [textChild('item/label')],
-        ),
-      ),
-    ).toEqual([]);
+  it('숨긴 레이어도 토큰 값을 검사한다(속성을 켜면 그려진다)', () => {
+    const hidden = node({
+      key: 'badge',
+      type: 'FRAME',
+      isVisible: false,
+      propertyRefs: { visible: 'Has badge#1:0' },
+      fills: [solid()],
+    });
+    expect(reasonsOf([hidden])).toEqual(['단색 칠이 색 변수에 연결되어 있지 않다']);
   });
 
-  it('중첩 인스턴스의 덮어쓰기는 그 레이어를 정의한 원본 컴포넌트로 알리고, 겹친 보고는 하나로 합친다', () => {
-    const violations = checkWith(
-      instance(
-        'menu',
-        'Menu',
-        [{ id: 'menu/item/label', fields: ['fills'] }],
-        [
-          instance(
-            'menu/item',
-            'MenuItem',
-            [{ id: 'menu/item/label', fields: ['fills'] }],
-            [textChild('menu/item/label')],
-          ),
+  it('품은 인스턴스 안쪽의 숨긴 레이어는 보지 않는다', () => {
+    const inner = node({
+      key: 'button/ghost',
+      type: 'FRAME',
+      isVisible: false,
+      isInsideInstance: true,
+      fills: [solid()],
+    });
+    const button = node({
+      key: 'button',
+      type: 'INSTANCE',
+      instance: instance(),
+      children: [inner],
+    });
+    expect(reasonsOf([button])).toEqual([]);
+  });
+});
+
+// @codocs [[디자인 시스템:구조 검사]]
+describe('구조 검사: 모양 덮어쓰기', () => {
+  it('인스턴스 안 레이어의 칠·효과가 원본과 다르면 막는다', () => {
+    const inner = node({ key: 'button/label', type: 'TEXT', isInsideInstance: true, text: text() });
+    const button = node({
+      key: 'button',
+      type: 'INSTANCE',
+      instance: instance({ overrides: [{ id: 'button/label', fields: ['effects', 'fills'] }] }),
+      children: [inner],
+    });
+    const [violation] = checkVariant(
+      variant('V', {}, { ...buttonRoot(), children: [button] }),
+      'Button / V',
+    );
+    expect(violation).toEqual({
+      where: 'Button / V / button/label',
+      reason: '인스턴스의 효과·칠을 원본과 다르게 바꿨다(effects, fills)',
+      fix: '덮어쓰기를 되돌리고, Button에 변형이나 속성을 열어 그것을 고른다.',
+      nodeId: 'button/label',
+    });
+  });
+
+  it('자산 인스턴스(와 그 안쪽)의 색, 자산 인스턴스 전체의 불투명도는 허용한다', () => {
+    const icon = node({
+      key: 'button/icon',
+      type: 'INSTANCE',
+      isInsideInstance: true,
+      asset: iconAsset(),
+      instance: instance(),
+    });
+    const button = node({
+      key: 'button',
+      type: 'INSTANCE',
+      instance: instance({
+        overrides: [
+          { id: 'button/icon', fields: ['boundVariables.fills', 'opacity'] },
+          { id: 'button/icon;path', fields: ['fills'] },
         ],
-      ),
-    );
-    expect(violations).toEqual([
-      {
-        where: 'Menu/Folder / Default / menu/item/label',
-        reason: '인스턴스의 칠을 직접 바꿨다(fills)',
-        fix: '덮어쓰기를 되돌리고, MenuItem에 변형이나 속성을 열어 그것을 고른다.',
-        nodeId: 'menu/item/label',
-      },
+      }),
+      children: [icon],
+    });
+    expect(reasonsOf([button])).toEqual([]);
+  });
+
+  it('자산 안쪽 레이어의 불투명도와 자산이 아닌 인스턴스 전체의 불투명도는 막는다', () => {
+    const icon = node({
+      key: 'button/icon',
+      type: 'INSTANCE',
+      isInsideInstance: true,
+      asset: iconAsset(),
+      instance: instance(),
+    });
+    const button = node({
+      key: 'button',
+      type: 'INSTANCE',
+      instance: instance({
+        overrides: [
+          { id: 'button/icon;path', fields: ['opacity'] },
+          { id: 'button', fields: ['opacity'] },
+        ],
+      }),
+      children: [icon],
+    });
+    expect(reasonsOf([button])).toEqual([
+      '인스턴스의 불투명도를 원본과 다르게 바꿨다(opacity)',
+      '인스턴스의 불투명도를 원본과 다르게 바꿨다(opacity)',
     ]);
   });
 
-  it('숨긴 레이어(읽지 않은 레이어)의 덮어쓰기는 보지 않는다', () => {
-    expect(
-      checkWith(instance('item', 'MenuItem', [{ id: 'item/hidden', fields: ['fills'] }])),
-    ).toEqual([]);
-  });
-
-  it('줄인 인스턴스는 자기 덮어쓰기만 보고 안쪽은 건너뛴다', () => {
-    const scaled = instance(
-      'window/preview',
-      'Window',
-      [
-        { id: 'window/preview', fields: ['opacity'] },
-        { id: 'window/preview/title', fields: ['fills'] },
-      ],
-      [textChild('window/preview/title')],
-      0.135,
-    );
-    const reasons = checkWith(
-      instance(
-        'window',
-        'SnapAssist',
-        [{ id: 'window/preview/title', fields: ['fills'] }],
-        [scaled],
-      ),
-    ).map((violation) => `${violation.where}: ${violation.reason}`);
-    expect(reasons).toEqual([
-      'Menu/Folder / Default / window/preview: 인스턴스의 불투명도를 직접 바꿨다(opacity)',
-    ]);
-  });
-});
-
-/**
- * 자산(아이콘) 인스턴스 노드를 만든다. 자산 인스턴스는 안쪽 레이어를 읽지 않는다.
- * @param path 레이어 경로
- * @param overrides 이 인스턴스가 직접 덮어쓴 레이어(ID는 경로 뒤에 `;`로 이은 안쪽 레이어)
- * @returns 자산 인스턴스 노드 데이터
- */
-function assetInstance(path: string, overrides: { id: string; fields: string[] }[] = []): NodeData {
-  return fixedChild({
-    path,
-    type: 'INSTANCE',
-    asset: {
-      name: 'ic_fluent_add_20_regular',
-      mainComponentId: '1:1',
-      group: 'Icons',
-      kind: 'mono',
-      sourceWidth: 16,
-      sourceHeight: 16,
-      problems: [],
-    },
-    instance: {
-      component: 'ic_fluent_add_20_regular',
-      scaleFactor: 1,
-      properties: {},
-      overrides: overrides.map((item) => ({ changedBindings: [], ...item })),
-    },
-  });
-}
-
-// @codocs [[디자인 시스템:구조 검사]]
-describe('구조 검사: 자산 인스턴스 안쪽의 덮어쓰기', () => {
-  it('검사 대상이 직접 놓은 자산 인스턴스의 안쪽 덮어쓰기는 막지 않는다', () => {
-    expect(checkWith(assetInstance('icon', [{ id: 'icon;vector', fields: ['fills'] }]))).toEqual(
-      [],
-    );
-  });
-
-  it('다른 인스턴스 안에 든 자산의 안쪽 덮어쓰기도 막지 않는다', () => {
-    const button = instance(
-      'button',
-      'IconButton',
-      [{ id: 'button/icon;vector', fields: ['fills', 'strokes', 'opacity'] }],
-      [assetInstance('button/icon', [{ id: 'button/icon;vector', fields: ['fills'] }])],
-    );
-    expect(checkWith(button)).toEqual([]);
-  });
-
-  it('다른 인스턴스 안에 든 자산 인스턴스의 색 덮어쓰기는 막지 않고 다른 모양은 막는다', () => {
-    /**
-     * 자산 인스턴스의 지정한 필드를 덮어쓴 IconButton을 만든다.
-     * @param fields 덮어쓴 필드
-     * @returns 노드 데이터
-     */
-    function button(fields: string[]): NodeData {
-      return instance(
-        'button',
-        'IconButton',
-        [{ id: 'button/icon', fields }],
-        [assetInstance('button/icon')],
-      );
-    }
-    expect(checkWith(button(['fills', 'strokes', 'fillStyleId']))).toEqual([]);
-    expect(checkWith(button(['fills', 'effects'])).map((violation) => violation.reason)).toEqual([
-      '인스턴스의 효과를 직접 바꿨다(effects)',
-    ]);
-  });
-
-  it('자산이 아닌 컴포넌트 인스턴스의 칠 덮어쓰기는 계속 막는다', () => {
-    const button = instance(
-      'button',
-      'IconButton',
-      [{ id: 'button/label', fields: ['fills'] }],
-      [instance('button/label', 'Label', [])],
-    );
-    expect(checkWith(button).map((violation) => violation.where)).toEqual([
-      'Menu/Folder / Default / button/label',
-    ]);
-  });
-});
-
-// @codocs [[디자인 시스템:구조 검사]]
-describe('구조 검사: 인스턴스 전체의 불투명도', () => {
-  it('직접 놓은 인스턴스 전체의 불투명도와 그 변수 연결은 막지 않는다', () => {
-    expect(
-      checkWith(
-        instance('folder', 'FileIcon', [
-          {
-            id: 'folder',
-            fields: ['opacity', 'boundVariables'],
-            changedBindings: ['opacity'],
-          },
-        ]),
-      ),
-    ).toEqual([]);
-  });
-
-  it('직접 놓은 인스턴스 안쪽 레이어의 불투명도는 계속 막는다', () => {
-    expect(
-      checkWith(
-        instance(
-          'folder',
-          'FileIcon',
-          [{ id: 'folder/body', fields: ['opacity'] }],
-          [node({ path: 'folder/body', type: 'FRAME' })],
-        ),
-      ).map((violation) => violation.reason),
-    ).toEqual(['인스턴스의 불투명도를 직접 바꿨다(opacity)']);
-  });
-
-  it('다른 인스턴스 안에 든 인스턴스 전체의 불투명도를 바깥에서 바꾸면 막는다', () => {
-    const violations = checkWith(
-      instance(
-        'menu',
-        'Menu',
-        [{ id: 'menu/item', fields: ['opacity'] }],
-        [instance('menu/item', 'MenuItem', [])],
-      ),
-    );
-    expect(violations).toEqual([
-      {
-        where: 'Menu/Folder / Default / menu/item',
-        reason: '인스턴스의 불투명도를 직접 바꿨다(opacity)',
-        fix: '덮어쓰기를 되돌리고, MenuItem에 변형이나 속성을 열어 그것을 고른다.',
-        nodeId: 'menu/item',
-      },
-    ]);
-  });
-});
-
-// @codocs [[디자인 시스템:구조 검사]]
-describe('구조 검사: 줄인 인스턴스', () => {
-  /**
-   * 칠이 변수에 연결되지 않은 자식을 만든다.
-   * @returns 자식 노드 데이터
-   */
-  function unlinkedChild(): NodeData {
-    return node({ path: 'window/title', type: 'FRAME', fills: [solid()] });
-  }
-
-  it('줄인 인스턴스의 안쪽은 변수 미연결 값을 건너뛴다', () => {
-    expect(checkWith(instance('window', 'Window', [], [unlinkedChild()], 0.135))).toEqual([]);
-  });
-
-  it('줄이지 않은 인스턴스의 안쪽은 변수 미연결 값을 막는다', () => {
-    expect(
-      checkWith(instance('window', 'Window', [], [unlinkedChild()])).map(
-        (violation) => violation.reason,
-      ),
-    ).toEqual(['단색 칠이 색 변수에 연결되어 있지 않다']);
-  });
-
-  /**
-   * 고정 크기 배율 인스턴스(진행 링 호 자산처럼 선 두께까지 함께 바뀌는 확대·축소)를 만든다.
-   * @param size 배율을 곱한 너비·높이(px)
-   * @param scaleFactor 배율
-   * @returns 인스턴스 노드 데이터
-   */
-  function scaledArc(size: number, scaleFactor: number): NodeData {
-    const arc = instance('ring/arc', 'progress-ring/Arc', [], [], scaleFactor);
-    arc.width = { value: size };
-    arc.height = { value: size };
-    arc.child = {
-      sizingHorizontal: 'FIXED',
-      sizingVertical: 'FIXED',
-      positioning: 'AUTO',
-      constraints: { horizontal: 'MIN', vertical: 'MIN' },
-    };
-    return arc;
-  }
-
-  it('배율 인스턴스 자체의 고정 크기는 토큰 값이 아니어도 검사하지 않는다', () => {
-    expect(checkWith(scaledArc(16, 0.5))).toEqual([]);
-    expect(checkWith(scaledArc(134.4, 0.131))).toEqual([]);
-    expect(checkWith(scaledArc(172.8, 0.135))).toEqual([]);
-  });
-
-  it('배율이 1인 노드의 변수 없는 고정 크기는 견본 크기로 적는다', () => {
-    expect(checkWith(scaledArc(16, 1))).toEqual([]);
-    expect(layerTree(scaledArc(16, 1), noCodeVariables, false).sampleSize).toEqual([
-      'width',
-      'height',
-    ]);
-    expect(layerTree(scaledArc(16, 0.5), noCodeVariables, false).sampleSize).toBeUndefined();
-  });
-
-  it('줄인 인스턴스 자체는 계속 검사한다', () => {
-    const scaled = instance('window', 'Window', [], [], 0.135);
-    scaled.fills = [solid()];
-    expect(checkWith(scaled).map((violation) => violation.reason)).toEqual([
+  it('크기를 줄인 인스턴스는 안쪽을 건너뛴다', () => {
+    const inner = node({
+      key: 'tile/box',
+      type: 'FRAME',
+      isInsideInstance: true,
+      fills: [solid()],
+    });
+    const tile = node({
+      key: 'tile',
+      type: 'INSTANCE',
+      instance: instance({ scaleFactor: 0.5 }),
+      children: [inner],
+    });
+    expect(reasonsOf([tile])).toEqual([]);
+    expect(reasonsOf([{ ...tile, instance: instance() }])).toEqual([
       '단색 칠이 색 변수에 연결되어 있지 않다',
     ]);
   });
 });
 
 // @codocs [[디자인 시스템:구조 검사]]
-describe('구조 검사: 부모 자동 배치 밖 노드의 크기 판단', () => {
-  function frameWith(
-    sizing: 'AUTO' | 'FIXED',
-    child: Partial<NonNullable<NodeData['child']>> = {},
-    parentLayoutMode: NodeData['parentLayoutMode'] = null,
-  ): NodeData {
-    return node({
-      path: 'box',
-      type: 'FRAME',
-      parentLayoutMode,
-      width: { value: 208 },
-      height: { value: 164 },
-      layout: { ...must(buttonRoot().layout), primarySizing: sizing, counterSizing: sizing },
-      child: {
-        sizingHorizontal: 'FIXED',
-        sizingVertical: 'FIXED',
-        positioning: 'AUTO',
-        constraints: { horizontal: 'MIN', vertical: 'MIN' },
-        ...child,
-      },
-    });
-  }
-
-  it('부모가 자동 배치가 아니어도 자기 자동 배치가 내용 맞춤이면 위반이 없다', () => {
-    expect(reasonsAfter((root) => root.children.push(frameWith('AUTO')))).toEqual([]);
-  });
-
-  it('부모가 자동 배치가 아니고 자기 자동 배치가 고정이면 두 축을 견본 크기로 적는다', () => {
-    expect(reasonsAfter((root) => root.children.push(frameWith('FIXED')))).toEqual([]);
-    expect(layerTree(frameWith('FIXED'), noCodeVariables, false).sampleSize).toEqual([
-      'width',
-      'height',
-    ]);
-  });
-
-  it('절대 위치 자식도 자기 자동 배치가 내용 맞춤이면 위반이 없다', () => {
-    expect(
-      reasonsAfter((root) =>
-        root.children.push(frameWith('AUTO', { positioning: 'ABSOLUTE' }, 'HORIZONTAL')),
-      ),
-    ).toEqual([]);
-  });
-
-  it('양쪽 늘이기 축은 자기 자동 배치와 상관없이 부모가 정한 크기로 본다', () => {
-    expect(
-      reasonsAfter((root) =>
-        root.children.push(
-          frameWith('FIXED', { constraints: { horizontal: 'STRETCH', vertical: 'MIN' } }),
-        ),
-      ),
-    ).toEqual([]);
-    const stretched = frameWith('FIXED', {
-      constraints: { horizontal: 'STRETCH', vertical: 'MIN' },
-    });
-    expect(layerTree(stretched, noCodeVariables, false).sampleSize).toEqual(['height']);
-  });
-});
-
-// @codocs [[디자인 시스템:구조 검사]]
-describe('구조 검사: 변형을 자르는 조상', () => {
-  it('자르기가 꺼진 조상과 섹션·그룹은 위반이 없다', () => {
-    expect(
-      checkClippingAncestors('Button', [
-        { id: '1:1', name: 'Buttons', type: 'SECTION', isClippingContent: false },
-        { id: '1:2', name: 'row', type: 'FRAME', isClippingContent: false },
-        { id: '1:3', name: 'group', type: 'GROUP', isClippingContent: false },
-        { id: '1:4', name: 'Button', type: 'COMPONENT_SET', isClippingContent: false },
-      ]),
-    ).toEqual([]);
-  });
-
-  it('조상이 없으면(페이지 바로 아래 단독 컴포넌트) 위반이 없다', () => {
-    expect(checkClippingAncestors('Icon', [])).toEqual([]);
-  });
-
-  it('자르는 배치 프레임마다 위치·조상 경로·고칠 방법과 그 프레임의 노드 ID를 대상마다 한 번 돌려준다', () => {
-    expect(
-      checkClippingAncestors('MessageBox/EmptyRecycleBin', [
-        { id: '2:1', name: 'pattern grid', type: 'FRAME', isClippingContent: true },
-        { id: '2:2', name: 'row', type: 'FRAME', isClippingContent: true },
-        {
-          id: '2:3',
-          name: 'MessageBox/EmptyRecycleBin',
-          type: 'COMPONENT_SET',
-          isClippingContent: false,
-        },
-      ]),
-    ).toEqual([
-      {
-        where: 'MessageBox/EmptyRecycleBin (모든 변형)',
-        reason:
-          '조상 프레임 `pattern grid`의 Clip content가 켜져 있어 PNG에서 변형의 그림자와 변형 밖으로 나온 자식이 잘린다',
-        fix: '프레임 `pattern grid`의 Clip content를 끈다.',
-        nodeId: '2:1',
-      },
-      {
-        where: 'MessageBox/EmptyRecycleBin (모든 변형)',
-        reason:
-          '조상 프레임 `pattern grid / row`의 Clip content가 켜져 있어 PNG에서 변형의 그림자와 변형 밖으로 나온 자식이 잘린다',
-        fix: '프레임 `row`의 Clip content를 끈다.',
-        nodeId: '2:2',
-      },
-    ]);
-  });
-
-  it('변형을 담은 컴포넌트 세트의 자르기도 막는다', () => {
-    expect(
-      checkClippingAncestors('WindowFrame', [
-        { id: '3:1', name: 'Windows', type: 'SECTION', isClippingContent: false },
-        { id: '3:2', name: 'WindowFrame', type: 'COMPONENT_SET', isClippingContent: true },
-      ]),
-    ).toEqual([
-      {
-        where: 'WindowFrame (모든 변형)',
-        reason:
-          '조상 컴포넌트 세트 `Windows / WindowFrame`의 Clip content가 켜져 있어 PNG에서 변형의 그림자와 변형 밖으로 나온 자식이 잘린다',
-        fix: '컴포넌트 세트 `WindowFrame`의 Clip content를 끈다.',
-        nodeId: '3:2',
-      },
-    ]);
-  });
-
-  it('섹션은 자르기 값이 켜져 있다고 읽혀도 대상이 아니다', () => {
-    expect(
-      checkClippingAncestors('Button', [
-        { id: '4:1', name: 'Buttons', type: 'SECTION', isClippingContent: true },
-      ]),
-    ).toEqual([]);
-  });
-});
-
-/**
- * 이미지 자산 인스턴스를 만든다.
- * @param overrides 바꿀 값
- * @returns 노드 데이터
- */
-function imageAsset(overrides: Partial<NodeData>): NodeData {
-  return node({
-    path: 'image',
-    type: 'INSTANCE',
-    asset: {
-      name: 'wallpaper/Bloom',
-      mainComponentId: 'main',
-      group: 'Images',
-      kind: 'raster',
-      sourceWidth: 480,
-      sourceHeight: 300,
-      problems: [],
-    },
-    ...overrides,
-  });
-}
-
-/**
- * 크기를 변수에 연결한 변형 루트를 만든다.
- * @param overrides 바꿀 값
- * @returns 변형 루트
- */
-function fixedRoot(overrides: Partial<NodeData>): NodeData {
-  return node({
-    path: '',
-    type: 'COMPONENT',
-    child: null,
-    width: { value: 16, variable: 'size/16' },
-    height: { value: 16, variable: 'size/16' },
-    ...overrides,
-  });
-}
-
-/**
- * 변형 루트 아래에 노드를 두고 위반 이유를 모은다.
- * @param child 검사할 노드
- * @param extra 더할 검사 정보
- * @returns 위반 이유
- */
-function reasonsOf(child: NodeData, extra: Partial<CheckContext> = {}): string[] {
-  return checkVariant(fixedRoot({ children: [child] }), 'Figure', { ...context, ...extra }).map(
-    (violation) => violation.reason,
-  );
-}
-
-// @codocs [[디자인 시스템:구조 검사]]
-describe('이미지 자산 비율', () => {
-  it('비율이 원본과 다른 이미지 자산을 막는다', () => {
-    const reasons = reasonsOf(
-      imageAsset({
-        width: { value: 720, variable: 'size/720' },
-        height: { value: 420, variable: 'size/420' },
-      }),
+describe('구조 검사: 읽을 수 없는 구조', () => {
+  it('이름이 같은 컴포넌트가 둘 이상이면 막는다', () => {
+    expect(checkComponent(component({ sameNameCount: 2 }), fakeRegistry)[0]?.reason).toBe(
+      '이름이 같은 컴포넌트가 2개 있다',
     );
-    expect(reasons.some((reason) => reason.includes('비율이 원본과 다르다'))).toBe(true);
   });
 
-  it('비율을 잠근 FILL 이미지의 높이는 변수 없는 고정 높이로 막지 않는다', () => {
-    const reasons = reasonsOf(
-      imageAsset({
-        width: { value: 720 },
-        height: { value: 450 },
-        aspectRatio: 1.6,
-        child: {
-          sizingHorizontal: 'FILL',
-          sizingVertical: 'FIXED',
-          positioning: 'AUTO',
-          constraints: { horizontal: 'MIN', vertical: 'MIN' },
-        },
-      }),
-    );
-    expect(reasons).toEqual([]);
-  });
-
-  it('비율을 잠갔어도 어느 축도 정해지지 않으면 두 축을 견본 크기로 적는다', () => {
-    const reasons = reasonsOf(
-      imageAsset({
-        width: { value: 720 },
-        height: { value: 450 },
-        aspectRatio: 1.6,
-        child: {
-          sizingHorizontal: 'FIXED',
-          sizingVertical: 'FIXED',
-          positioning: 'AUTO',
-          constraints: { horizontal: 'MIN', vertical: 'MIN' },
-        },
-      }),
-    );
-    expect(reasons).toEqual([]);
-    const locked = imageAsset({
-      width: { value: 720 },
-      height: { value: 450 },
-      aspectRatio: 1.6,
-      child: {
-        sizingHorizontal: 'FIXED',
-        sizingVertical: 'FIXED',
-        positioning: 'AUTO',
-        constraints: { horizontal: 'MIN', vertical: 'MIN' },
-      },
-    });
-    expect(layerTree(locked, noCodeVariables, false).sampleSize).toEqual(['width', 'height']);
-  });
-
-  it('두 축을 부모가 정하면 틀에 맞춰 자르는 그림이라 막지 않는다', () => {
-    const reasons = reasonsOf(
-      imageAsset({
-        width: { value: 720 },
-        height: { value: 240 },
-        child: {
-          sizingHorizontal: 'FILL',
-          sizingVertical: 'FILL',
-          positioning: 'AUTO',
-          constraints: { horizontal: 'MIN', vertical: 'MIN' },
-        },
-      }),
-    );
-    expect(reasons).toEqual([]);
-  });
-});
-
-// @codocs [[디자인 시스템:구조 검사]]
-describe('코드 전용 변수 짝', () => {
-  const codeVariables = {
-    rotate: [{ name: 'rotate/quarter', value: 90 }],
-    lineClamp: [{ name: 'line-clamp/two', value: 2 }],
-    ratio: [{ name: 'ratio/wide', value: 1.6 }],
-  };
-
-  it('묶음에 변수가 없으면 짝을 보지 않는다', () => {
-    expect(reasonsOf(node({ path: 'a', type: 'FRAME', rotation: -180 }))).toEqual([]);
-  });
-
-  it('피그마 회전은 부호를 뒤집어 CSS 각도로 짝짓는다', () => {
-    expect(reasonsOf(node({ path: 'a', type: 'FRAME', rotation: -90 }), { codeVariables })).toEqual(
-      [],
-    );
-    expect(reasonsOf(node({ path: 'a', type: 'FRAME', rotation: 90 }), { codeVariables })).toEqual([
-      '회전 90°와 같은 값의 코드 전용 변수가 없다',
-    ]);
-  });
-
-  it('비율에 짝이 없으면 막는다', () => {
-    expect(
-      reasonsOf(node({ path: 'a', type: 'FRAME', aspectRatio: 2 }), { codeVariables }),
-    ).toEqual(['비율 2.000와 같은 값의 코드 전용 변수가 없다']);
-  });
-
-  it('둘 이상의 최대 줄 수만 짝을 찾는다. 한 줄 말줄임은 truncate다', () => {
-    /**
-     * 최대 줄 수가 있는 글자를 만든다.
-     * @param maxLines 최대 줄 수
-     * @returns 노드 데이터
-     */
-    function text(maxLines: number): NodeData {
-      return node({
-        path: 'a',
-        type: 'TEXT',
-        text: {
-          autoResize: 'HEIGHT',
-          hasMissingFont: false,
-          truncation: 'ENDING',
-          maxLines,
-          segments: [],
-        },
-      });
-    }
-    expect(reasonsOf(text(1), { codeVariables })).toEqual([]);
-    expect(reasonsOf(text(2), { codeVariables })).toEqual([]);
-    expect(reasonsOf(text(3), { codeVariables })).toEqual([
-      '최대 줄 수 3와 같은 값의 코드 전용 변수가 없다',
-    ]);
-  });
-});
-
-// @codocs [[디자인 시스템:구조 검사]]
-describe('다이아몬드 그라데이션', () => {
-  it('구조 검사가 막는다', () => {
-    const reasons = reasonsOf(
+  it('입력의 역할이 되는 레이어(속성에 묶인 레이어)끼리 이름이 같으면 막고, 그 밖의 레이어는 막지 않는다', () => {
+    const labels = [
+      node({ key: 'label', type: 'TEXT', text: text(), propertyRefs: { characters: 'A#1:0' } }),
       node({
-        path: 'a',
-        type: 'FRAME',
-        fillStyle: 'Diamond',
-        fills: [{ type: 'GRADIENT_DIAMOND', isVisible: true, blendMode: 'NORMAL' }],
+        key: 'label[2]',
+        name: 'label',
+        type: 'TEXT',
+        text: text(),
+        propertyRefs: { characters: 'B#1:1' },
       }),
+      node({ key: 'box', type: 'FRAME' }),
+      node({ key: 'box[2]', name: 'box', type: 'FRAME' }),
+    ];
+    expect(reasonsOf(labels)).toEqual(['입력이나 동작의 역할이 되는 레이어 `label`가 2개다']);
+  });
+
+  it('옮기는 속성 밖의 키프레임을 막는다', () => {
+    const moving = {
+      ...variant('V', {}),
+      motionProblems: [
+        {
+          nodeId: 'motion',
+          layer: 'motion',
+          property: 'WIDTH',
+          reason: '옮기는 속성 밖의 WIDTH 키프레임이다',
+        },
+      ],
+    };
+    expect(checkVariant(moving, 'Button / V').map((violation) => violation.where)).toEqual([
+      'Button / V / motion',
+    ]);
+  });
+});
+
+// @codocs [[디자인 시스템:동작의 종류]]
+// @codocs [[디자인 시스템:구조 검사]]
+describe('구조 검사: 동작의 종류', () => {
+  it('적힌 종류가 등록부에 없으면 막는다', () => {
+    const reasons = checkComponent(component({ behavior: 'menuitem' }), fakeRegistry).map(
+      (violation) => violation.reason,
     );
-    expect(reasons).toEqual(['칠 종류 GRADIENT_DIAMOND는 CSS로 그릴 수 없다']);
-  });
-});
-
-// @codocs [[디자인 시스템:구조 검사]]
-describe('변형 전환', () => {
-  const motionVariables: MotionVariable[] = [
-    { name: 'motion/duration/faster', resolvedType: 'FLOAT', value: 83 },
-    { name: 'motion/easing/fade', resolvedType: 'EASING', value: null, curve: [0, 0, 1, 1] },
-  ];
-
-  /**
-   * 전환이 있는 변형을 검사한다.
-   * @param reaction 전환
-   * @returns 위반 이유
-   */
-  function check(reaction: ReactionData): string[] {
-    return checkVariant(fixedRoot({ reactions: [reaction] }), 'SearchBox', {
-      ...context,
-      motionVariables,
-    }).map((violation) => violation.reason);
-  }
-
-  const hover: ReactionData = {
-    trigger: 'ON_HOVER',
-    destination: 'State=Hover',
-    navigation: 'CHANGE_TO',
-    transition: {
-      type: 'SMART_ANIMATE',
-      durationMs: 83,
-      easing: { type: 'LINEAR', bezier: [0, 0, 1, 1] },
-    },
-  };
-
-  it('모션 변수 값이면 막지 않는다', () => {
-    expect(check(hover)).toEqual([]);
+    expect(reasons).toEqual(['적힌 동작의 종류 `menuitem`가 동작 등록부에 없다']);
   });
 
-  it('모션 변수 값이 아닌 시간과 이징을 막는다', () => {
-    const reasons = check({
-      ...hover,
-      transition: {
-        type: 'SMART_ANIMATE',
-        durationMs: 100,
-        easing: { type: 'EASE_OUT', bezier: null },
+  it('등록부가 비어 있으면 종류가 적힌 컴포넌트는 모두 막힌다', () => {
+    expect(checkComponent(component({ behavior: 'button' }), () => undefined)).toHaveLength(1);
+  });
+
+  it('종류가 요구하는 역할 레이어가 없는 변형을 막는다', () => {
+    const noLabel = variant('Variant=Icon', { Variant: 'Icon' }, { ...buttonRoot(), children: [] });
+    const reasons = checkComponent(
+      component({
+        behavior: 'button',
+        variants: [variant('Variant=Text', { Variant: 'Text' }), noLabel],
+      }),
+      fakeRegistry,
+    ).map((violation) => `${violation.where}: ${violation.reason}`);
+    expect(reasons).toEqual([
+      'Button / Variant=Icon: 동작의 종류 `button`가 요구하는 `label` 역할 레이어(글자 속성에 묶인 글자)가 없다',
+    ]);
+  });
+
+  it('상태 이름의 낱말이 낱말 표에 없으면 막는다. 대소문자는 가리지 않는다', () => {
+    const reasons = checkComponent(
+      component({
+        behavior: 'button',
+        variants: [
+          variant('State=hover', { State: 'hover' }),
+          variant('State=Hover dragging', { State: 'Hover dragging' }),
+        ],
+      }),
+      fakeRegistry,
+    ).map((violation) => violation.reason);
+    expect(reasons).toEqual(['상태 낱말 `dragging`가 동작의 종류 `button`의 낱말 표에 없다']);
+  });
+
+  it('State 축이 있는데 종류가 적혀 있지 않으면 낱말을 옮길 표가 없어 막는다', () => {
+    const reasons = checkComponent(
+      component({ variants: [variant('State=Rest', { State: 'Rest' })] }),
+      fakeRegistry,
+    ).map((violation) => violation.reason);
+    expect(reasons).toEqual([
+      'State 축이 있는데 동작의 종류가 적혀 있지 않아 상태 낱말을 옮길 표가 없다',
+    ]);
+  });
+
+  it('켜진 변형에 꺼진 짝 변형에는 없는 표시 레이어가 없으면 막는다', () => {
+    const check = node({ key: 'check', type: 'FRAME' });
+    const off = variant('Checked=Off', { Checked: 'Off' }, { ...buttonRoot(), children: [] });
+    const on = variant('Checked=On', { Checked: 'On' }, { ...buttonRoot(), children: [check] });
+    const same = variant('Checked=On', { Checked: 'On' }, { ...buttonRoot(), children: [] });
+    expect(
+      checkComponent(component({ behavior: 'checkbox', variants: [off, on] }), fakeRegistry),
+    ).toEqual([]);
+    expect(
+      checkComponent(component({ behavior: 'checkbox', variants: [off, same] }), fakeRegistry).map(
+        (violation) => violation.where,
+      ),
+    ).toEqual(['Button / Checked=On']);
+  });
+
+  it('종류가 이름으로 찾는 역할 레이어끼리 이름이 같으면 막는다', () => {
+    const off = variant(
+      'Checked=Off',
+      { Checked: 'Off' },
+      {
+        ...buttonRoot(),
+        children: [
+          node({ key: 'close button', type: 'FRAME' }),
+          node({ key: 'close button[2]', name: 'close button', type: 'FRAME' }),
+        ],
       },
-    });
-    expect(reasons).toHaveLength(2);
-  });
-
-  it('트리거는 읽지 않는다. Focused 변형으로 가는 전환도 시간·이징만 본다', () => {
-    const focused = { ...hover, trigger: 'ON_CLICK', destination: 'Filled=False, State=Focused' };
-    expect(check(focused)).toEqual([]);
-  });
-});
-
-// @codocs [[디자인 시스템:구조 검사]]
-// @codocs [[디자인 시스템:크기 변수]]
-describe('구조 검사: 견본 크기(변수 연결 여부)', () => {
-  it('변수 없는 고정 크기는 견본 크기라 루트와 안쪽 레이어 모두 막지 않는다', () => {
-    const root = node({
-      path: '',
-      type: 'COMPONENT',
-      parentLayoutMode: null,
-      child: null,
-      width: { value: 320 },
-      height: { value: 40 },
-      children: [fixedChild({ path: 'icon', type: 'RECTANGLE', width: { value: 16 } })],
-    });
-    expect(checkVariant(root, 'FileRow / Default', context)).toEqual([]);
-  });
-
-  it('주석은 `@` 줄로 읽지 않는다', () => {
-    const root = node({
-      path: '',
-      type: 'COMPONENT',
-      parentLayoutMode: null,
-      child: null,
-      annotations: [{ text: '@sample-size depth', category: 'Development' }],
-    });
-    expect(checkVariant(root, 'Equation / Default', context)).toEqual([]);
+    );
+    const reasons = checkComponent(
+      component({ behavior: 'checkbox', variants: [off] }),
+      fakeRegistry,
+    ).map((violation) => violation.reason);
+    expect(reasons).toEqual(['입력이나 동작의 역할이 되는 레이어 `close button`가 2개다']);
   });
 });
