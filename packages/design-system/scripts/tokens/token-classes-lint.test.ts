@@ -134,6 +134,7 @@ async function misreadBuiltInClasses(): Promise<string[]> {
 }
 
 // @codocs [[디자인 시스템:토큰 사용 강제]]
+// @codocs [[디자인 시스템:크기 변수]]
 describe('토큰 사용 강제', () => {
   it('tokens.css의 @utility가 만든 토큰 클래스와 값 종류 토큰의 Tailwind 기본 클래스는 lint가 안다', async () => {
     await expect(
@@ -285,18 +286,45 @@ describe('토큰 사용 강제', () => {
       'opacity-37',
       'order-3',
       'grid-cols-5',
-      'w-1/2',
       'aspect-3/2',
       'mask-l-from-50%',
       'bg-color-white-70/50',
       'text-color-gray-12',
       'hover:rotate-45',
+      'p-4',
+      'gap-2',
+      '-top-4',
       'laptop:shrink-0',
       'shrink-0!',
     ];
     const errors = await lintClassErrors(classes.join(' '), RESTRICTED_CLASS_RULE, true);
     expect(errors).toHaveLength(classes.length);
     expect(errors.every((message) => message.includes('숫자 값 클래스'))).toBe(true);
+  }, 60_000);
+
+  it('크기(너비, 높이, 최소·최대, size-, basis-)의 숫자 값과 임의 값은 lint가 막지 않는다', async () => {
+    await expect(
+      lintClassErrors(
+        'w-4 h-0 min-w-0 max-w-96 min-h-10 max-h-px size-10 basis-1/2 w-1/2 h-[294px] max-w-[294px] min-h-[calc(100%-8px)] size-[20px] basis-[30%] hover:w-4 laptop:max-h-[10px] [&>svg]:size-[12px] w-4!',
+        RESTRICTED_CLASS_RULE,
+      ),
+    ).resolves.toEqual([]);
+  }, 60_000);
+
+  it('크기가 아닌 임의 값(색, 간격, 모서리, 선, 글자)은 lint가 막는다', async () => {
+    const classes = [
+      'bg-[#fff]',
+      'text-[13px]',
+      'p-[13px]',
+      'm-[3px]',
+      'gap-[8px]',
+      'rounded-[4px]',
+      'border-[3px]',
+      'hover:p-[13px]',
+    ];
+    const errors = await lintClassErrors(classes.join(' '), RESTRICTED_CLASS_RULE, true);
+    expect(errors).toHaveLength(classes.length);
+    expect(errors.every((message) => message.includes('임의 값'))).toBe(true);
   }, 60_000);
 
   it('토큰 이름의 클래스와 숫자가 아닌 기본 클래스는 숫자 규칙에 걸리지 않는다', async () => {

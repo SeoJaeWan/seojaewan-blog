@@ -20,3 +20,6 @@ export const figmaAssetsDir = path.join(figmaDir, 'assets');
 export const sourceAssetsDir = path.join(sourceDir, 'assets');
 export const assetDataPath = path.join(sourceAssetsDir, 'asset-data.ts');
 export const imageDataPath = path.join(sourceAssetsDir, 'image-data.ts');
+
+// 컴포넌트 폴더(src/components/<이름>/)다. generate:components가 피그마 스키마 옆에 생성 파일을 만든다.
+export const componentsDir = path.join(sourceDir, 'components');

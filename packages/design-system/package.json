@@ -20,6 +20,7 @@
     "test:storybook": "vitest run --config vitest.storybook.config.ts",
     "generate:fonts": "node scripts/fonts/generate-fonts.ts",
     "generate:assets": "node scripts/assets/generate-assets.ts",
+    "generate:components": "node scripts/components/generate-components.ts",
     "generate:tokens": "node scripts/tokens/generate-tokens.ts"
   },
   "peerDependencies": {

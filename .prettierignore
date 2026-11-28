@@ -22,5 +22,10 @@ packages/design-system/figma/
 apps/web/figma/
 **/parity-results/
 
+# 피그마 플러그인이 내보낸 자료(스키마, 검증 자료, 토큰)는 플러그인이 쓴 모양을 그대로 둔다.
+# 이 자료에서 만든 생성 파일(이름에 `.gen.`)은 생성기가 Prettier 모양으로 쓰므로 뺀 목록에 넣지 않는다
+packages/design-system/src/components/*/*.json
+packages/design-system/src/tokens/tokens.json
+
 # 내보내기 스크립트가 만든 글 JSON. 스크립트가 쓰는 모양(키 정렬, 2칸 들여쓰기)을 그대로 둔다
 apps/web/content/

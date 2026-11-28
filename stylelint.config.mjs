@@ -6,6 +6,10 @@ const TOKENS_CSS = 'packages/design-system/src/tokens.css';
 // 움직임(`@keyframes`와 motion-* 클래스를 만드는 `@utility`)은 손으로 쓰는 motion.css에서만 정의한다.
 // motion.css의 `@utility` 이름이 motion-으로 시작하는지는 src/motion.test.ts가 지킨다.
 const MOTION_CSS = 'packages/design-system/src/motion.css';
+// @codocs [[디자인 시스템:모션]]
+// 컴포넌트 생성 CSS(`<이름>.gen.css`)는 Motion 변형의 속성마다 `@keyframes`를 만든다. 생성기가 쓰는 것이라 `@keyframes`만 푼다.
+// 토큰과 토큰 유틸리티(`@theme`, `@utility`)와 `@custom-variant`는 여기서도 막는다.
+const GENERATED_COMPONENT_CSS = 'packages/design-system/src/components/**/*.gen.css';
 
 /**
  * 막는 at-rule의 오류 메시지를 만든다.
@@ -53,6 +57,15 @@ const config = {
       files: [MOTION_CSS],
       rules: {
         'at-rule-disallowed-list': [['theme', 'custom-variant'], { message: disallowedMessage }],
+      },
+    },
+    {
+      files: [GENERATED_COMPONENT_CSS],
+      rules: {
+        'at-rule-disallowed-list': [
+          ['theme', 'utility', 'custom-variant'],
+          { message: disallowedMessage },
+        ],
       },
     },
   ],

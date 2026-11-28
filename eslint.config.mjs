@@ -286,6 +286,13 @@ const numericTokenLookahead =
     ? ''
     : `(?!(?:.*:)?[a-z-]+?-(?:${numericTokenNames.join('|')})!?$)`;
 
+// @codocs [[디자인 시스템:크기 변수]]
+// 크기(너비, 높이, 최소·최대 너비·높이, `size-`, `basis-`)는 예외로 숫자를 직접 쓸 수 있다(`w-4`, `max-w-[294px]`, `h-1/2`).
+// 아래 임의 값 규칙과 숫자 값 클래스 규칙의 패턴 앞에 붙여, 변형을 뗀 유틸리티가 크기 접두사이면 걸리지 않게 한다.
+// 간격·여백(`p-`, `m-`, `gap-`), 모서리, 선, 색, 글자는 접두사가 달라 그대로 막힌다.
+const sizeUtilityPrefixes = ['w', 'h', 'min-w', 'max-w', 'min-h', 'max-h', 'size', 'basis'];
+const NOT_SIZE_UTILITY = `(?!(?:[^:]*:)*!?-?(?:${sizeUtilityPrefixes.join('|')})-)`;
+
 // @codocs [[디자인 시스템:토큰 사용 강제]]
 // 이름이 `ClassName`·`CLASS_NAME`(복수 포함)로 끝나는 변수의 문자열·배열·객체 값과 `*ClassName` 속성도 클래스로 검사한다.
 // 객체의 `className` 키 값(`createElement('ul', { className: '…' })`, 스토리 `args: { className: '…' }`)도 검사한다.
@@ -750,7 +757,7 @@ export default defineConfig(
         {
           restrict: [
             {
-              pattern: '\\[[^\\]]*\\](\\/[^:]*)?$',
+              pattern: `^${NOT_SIZE_UTILITY}.*\\[[^\\]]*\\](\\/[^:]*)?$`,
               message:
                 'Tailwind 임의 값("$0")은 쓰지 않는다. 토큰에 없는 값이 필요하면 피그마부터 고친다.',
             },
@@ -772,7 +779,7 @@ export default defineConfig(
             // 토큰 이름의 클래스(`text-color-gray-11`)만 두고, Tailwind 기본 숫자 클래스(`shrink-0`, `rotate-180`, `z-10`),
             // 비율(`w-1/2`), 투명도 덧붙임(`bg-x/50`), 토큰에 없는 이름(`text-color-gray-12`)을 막는다.
             {
-              pattern: `^${numericTokenLookahead}.*[0-9]%?!?$`,
+              pattern: `^${NOT_SIZE_UTILITY}${numericTokenLookahead}.*[0-9]%?!?$`,
               message:
                 '숫자 값 클래스("$0")는 쓰지 않는다. 피그마 토큰 이름의 클래스를 쓰고, 없으면 피그마에 변수를 더한다.',
             },
