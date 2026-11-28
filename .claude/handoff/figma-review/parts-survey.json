@@ -1,0 +1,192 @@
+{
+  "note": "읽기 전용 조사 요약. 원자료(호출 반환값)는 대화 기록에 있고, 여기에는 센 값만 옮겼다. 쓰임 표기: d=조립 변형에 직접, n=다른 인스턴스 안, p=옛 Patterns 견본을 거쳐, a=다른 조립 세트의 인스턴스를 거쳐.",
+  "counts": { "Controls": 37, "Shell": 22, "Blog": 17, "total": 76 },
+  "partsByPage": {
+    "Controls": [
+      "Button 13:62 (15)",
+      "IconButton 13:105 (15)",
+      "DropDownButton 307:22812 (5)",
+      "CloseButton 3666:16705 (4)",
+      "ViewSwitchButton 3681:16728 (2)",
+      "Checkbox 1380:1100 (2)",
+      "SearchBox 14:92 (16)",
+      "SearchBoxButton 3666:16703 (20)",
+      "AddressBar 36:582 (6)",
+      "AddressBarSuggesting 36:532 (1)",
+      "RenameField 29:276 (1)",
+      "Menu 3678:18810 (5)",
+      "MenuCommandButton 3477:15829 (4)",
+      "MenuItem 14:205 (25)",
+      "MenuZoomItem 1846:7626 (1)",
+      "Tooltip 14:345 (2)",
+      "MessageBox 16:226 (2)",
+      "ListItem 31:515 (8)",
+      "SectionTitle 388:13925 (1)",
+      "NavigationItem 29:427 (84)",
+      "Tab 18:367 (10)",
+      "ExplorerFileItem 29:527 (20)",
+      "DesktopFileItem 3666:16702 (21)",
+      "FileRow 514:15135 (20)",
+      "ColumnHeader 31:359 (7)",
+      "PinnedTile 37:521 (8)",
+      "JumpListLetter 755:678 (5)",
+      "TaskbarButton 26:257 (16)",
+      "SelectionMarquee 90:2738 (1)",
+      "ProgressRing 16:245 (6)",
+      "Scrollbar 16:137 (4)",
+      "Separator 509:5923 (2)",
+      "MenuSeparator 3975:5364 (2)",
+      "WindowFrame 18:338 (29)",
+      "WindowTitle 395:15808 (4)",
+      "CaptionButton 18:185 (16)",
+      "WindowPreview 70:1426 (8)"
+    ],
+    "Shell": [
+      "SnapLayoutFlyout 90:2713 (1)",
+      "SnapLayoutOption 396:15872 (4)",
+      "SnapZone 90:2711 (2)",
+      "SnapPreview 90:2737 (1)",
+      "TaskbarPreviewList 3504:2379 (3)",
+      "SystemTray 26:274 (1)",
+      "Taskbar 26:281 (1)",
+      "StartCategoryCard 3348:1889 (20)",
+      "StartCategoryFolder 3392:5512 (5)",
+      "ProfileButton 3359:13664 (1)",
+      "JumpList 3991:484 (3)",
+      "StartCategoryFolderPageDot 6076:11634 (2)",
+      "BestMatchCard 399:15535 (1)",
+      "SectionHeader 3339:13944 (3)",
+      "Breadcrumb 3339:13946 (3)",
+      "BreadcrumbItem 31:420 (4)",
+      "BreadcrumbChevron 3477:15533 (3)",
+      "NavigationPane 439:5773 (1)",
+      "ShellSurface 3993:410 (4)",
+      "Flyout 3994:462 (3)",
+      "BootScreen 3995:478 (4)",
+      "AccessibilityPanel 6148:515 (1)"
+    ],
+    "Blog": [
+      "PostNavCard 399:5487 (4)",
+      "PostCover 1380:1105 (1)",
+      "TocItem 398:5460 (13)",
+      "Toc 398:5502 (2)",
+      "Quote 1380:1125 (1)",
+      "Callout 1380:1131 (1)",
+      "Toggle 1380:6849 (2)",
+      "ListBlock 2466:62 (4)",
+      "CodeBlock 399:5519 (1)",
+      "Figure 3348:2152 (5)",
+      "Equation 1380:1119 (1)",
+      "Bookmark 1380:6869 (1)",
+      "ImageViewer 1382:6525 (2)",
+      "Table 1380:6863 (1)",
+      "TableCell 1380:6858 (2)",
+      "UnsupportedBlock 1380:6880 (1)",
+      "EmptyState 399:5549 (1)"
+    ]
+  },
+  "assemblies": {
+    "Desktop": { "variants": 64, "instances": 1218 },
+    "Taskbar": { "variants": 36, "instances": 3630 },
+    "Start": { "variants": 43, "instances": 2354 },
+    "Search": { "variants": 9, "instances": 250 },
+    "Chrome": { "variants": 35, "instances": 1911 },
+    "Article": { "variants": 10, "instances": 211 },
+    "Explorer": { "variants": 86, "instances": 8606 },
+    "Windows": { "variants": 26, "instances": 4412 }
+  },
+  "unusedByAssemblies": {
+    "Controls": ["Checkbox"],
+    "Shell": ["Taskbar", "Flyout"],
+    "Blog": [
+      "Quote",
+      "Callout",
+      "Toggle",
+      "ListBlock",
+      "Equation",
+      "Bookmark",
+      "Table",
+      "TableCell",
+      "UnsupportedBlock"
+    ],
+    "onlyViaOldSample": [
+      "EmptyState (Chrome/Page Not found)",
+      "BestMatchCard (Search/Results)",
+      "ColumnHeader (Explorer/DetailsHeader)"
+    ]
+  },
+  "oldSamplesStillUsed": {
+    "Search": { "Search/Results": 4 },
+    "Taskbar": { "Window/Explorer": 22, "Window/Chrome": 1, "Chrome/Page": 1 },
+    "Start": { "Search/Results": 1 },
+    "Chrome": { "Chrome/Page": 9 },
+    "Explorer": { "Explorer/DetailsHeader": 13 },
+    "Windows": { "Window/Chrome": 4 }
+  },
+  "drawnDirectly": {
+    "Taskbar(FRAME, 작업 표시줄 띠를 떼어 낸 복사본)": {
+      "Search": 3,
+      "Taskbar": 6,
+      "Start": 5,
+      "Chrome": 2,
+      "Article": 1,
+      "Explorer": 3,
+      "Windows": 26
+    },
+    "Start": { "FRAME search band": 39, "FRAME body": 39, "FRAME footer": 39 },
+    "Chrome": { "FRAME ChromeFindBar": 3, "TEXT count": 3 },
+    "Article": {
+      "TEXT paragraph": 18,
+      "TEXT heading": 16,
+      "TEXT meta": 9,
+      "TEXT title": 9,
+      "TEXT paragraph with link": 9
+    },
+    "Explorer": { "RECTANGLE drop line": 1 },
+    "Search": { "TEXT message": 1 }
+  },
+  "lookOverrides": {
+    "Explorer": {
+      "Breadcrumb self strokes": 85,
+      "Breadcrumb self fills": 80,
+      "Breadcrumb self visible": 2,
+      "icon glyph fills (14종 아이콘, 종마다 78~89)": "약 1200",
+      "ExplorerFileItem self opacity": 3
+    },
+    "Start": {
+      "ic_fluent_power glyph fills": 39,
+      "StartCategoryFolder self visible": 4,
+      "SectionTitle clipsContent": 2,
+      "JumpList clipsContent": 2
+    },
+    "Chrome": { "찾기 막대 아이콘 glyph fills": 9 },
+    "Windows": {
+      "WindowFrame self effects": 4,
+      "CaptionButton strokes/strokeWeight/strokeAlign": 1,
+      "SnapZone strokes/strokeWeight/strokeAlign": 1,
+      "Article clipsContent": 3
+    },
+    "Desktop": { "file/Link opacity": 2, "file/Recycle Bin Empty opacity": 1 }
+  },
+  "slotSizeOverridesExplorer": {
+    "IconButton": 671,
+    "Separator": 262,
+    "NavigationItem": 254,
+    "DropDownButton": 172,
+    "ViewSwitchButton": 172,
+    "BreadcrumbItem": 158,
+    "ExplorerFileItem": 138,
+    "Breadcrumb": 86,
+    "SearchBox": 86,
+    "Button": 86,
+    "NavigationPane": 86,
+    "MenuItem": 52,
+    "Tab": 25
+  },
+  "limits": [
+    "크기 덮어쓰기는 '채우기로 늘림'과 '숫자를 직접 바꿈'을 가르지 못했다",
+    "Desktop·Taskbar·Start·Search·Chrome에서는 슬롯 안 인스턴스의 덮어쓰기를 보지 않았다(Explorer·Article·Windows만 봄)",
+    "옛 Patterns 견본과 Screens 안의 쓰임은 세지 않았다",
+    "Disabled와 Rest의 모양이 같은지는 재지 않았다(앞선 보고에서 옮김)"
+  ]
+}

@@ -1,0 +1,10 @@
+- [피그마 일치 검사 개편 방향](figma-parity-redesign.md) — 2026-10-23 합의, 문서 반영 전: 객관적 판정만, 1컴포넌트 1PR, 캡처 표, 수동+스킬
+- [.codocs에는 정해진 규칙만](codocs-only-decided-content.md) — 대화의 결정 번호·경위 표현은 문서에 넣지 않음
+- [CI 커밋은 chore](commit-type-ci-as-chore.md) — CI 변경도 `chore:` 종류로 커밋
+- [완전히 덮는 것만 판정](parity-judge-only-full-coverage.md) — 일부만 되면 판정하지 않음, 절충안 반복 질문 금지, 설명은 쉽게
+- [push·PR은 시킬 때만](no-push-pr-without-ask.md) — 작업 끝나면 예시와 함께 상세 설명 후 대기
+- [확인하고 나서 묻기](verify-before-asking.md) — "확인하지 못한 것"을 단 채 결정을 묻지 않음
+- [맡긴 작업은 결정하고 끝까지](decide-and-run-delegated-work.md) — 작업 중 세부 판단은 묻지 말고 원칙대로 정해 진행, 보고에 기록
+- [되물음에 바로 뒤집지 않기](hold-position-when-questioned.md) — 제안 전에 끝까지 따지고, 되물으면 근거부터 다시 확인
+- [조립은 그릇, 기능은 흐름도](assembly-as-container-and-flows.md) — <Desktop> 꼴 조립, 흐름도는 e2e 테스트 케이스, 문서 반영됨
+- [피그마 검토 이어 하기](figma-review-handoff.md) — 2026-11-28 상태, 기다리는 물음 셋, 다음은 부품 재정비, 인계 자료 폴더
